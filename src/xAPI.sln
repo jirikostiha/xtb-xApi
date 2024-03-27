@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAPITest", "xAPITest\xAPITe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncAPIConnect", "SyncAPIConnector\SyncAPIConnect.csproj", "{E6BC484B-A042-4CA6-9079-E91136D92207}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{2D6B372D-4BBE-456D-B399-D07957698056}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

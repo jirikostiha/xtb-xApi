@@ -1,0 +1,33 @@
+name: Build
+
+env:
+  sln-path: "./src/xAPI.sln"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/**'
+      - '!src/**.sln' # ignore sln changes
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: .NET Info
+        run: dotnet --info
+
+      - name: Restore dependencies
+        run: dotnet restore "${{ env.sln-path }}"
+
+      - name: Build debug
+        run: dotnet build "${{ env.sln-path }}" --no-restore
