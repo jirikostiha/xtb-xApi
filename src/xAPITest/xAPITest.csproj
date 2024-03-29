@@ -45,9 +45,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SyncAPIConnector\SyncAPIConnect.csproj">
       <Project>{e6bc484b-a042-4ca6-9079-e91136d92207}</Project>
       <Name>SyncAPIConnect</Name>
