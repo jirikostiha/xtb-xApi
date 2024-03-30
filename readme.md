@@ -5,6 +5,11 @@
 
 This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wrappers.html) with some improvements to make life easier.  
 
+## Changelog
+
+2.5.2 new csproj format, set dotnetstandard 2.0  
+2.5.1 cleaned linked binaries and set nuget dependencies
+
 ## Setup
 
 Add [nuget package](https://www.nuget.org/packages/SyncAPIConnect) to the project.  
