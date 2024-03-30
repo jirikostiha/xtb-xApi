@@ -117,6 +117,10 @@ namespace xAPI.Sync
                     if (lookForBackups)
                     {
                         this.server = Servers.GetBackup(this.server);
+                        if (this.server == null)
+                        {
+                            throw new APICommunicationException("Connection timeout.");
+                        }
                         apiSocket = new System.Net.Sockets.TcpClient();
                     }
                     else

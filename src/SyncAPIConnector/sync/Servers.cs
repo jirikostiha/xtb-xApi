@@ -113,6 +113,10 @@ namespace xAPI.Sync
         public static Server GetBackup(Server server)
         {
             ApiAddress address = GetNextAddress(server.Address);
+            if (address == null)
+            {
+                return null;
+            }
             return new Server(address.Address, server.MainPort, server.StreamingPort, server.Secure, address.Name);
         }
 
@@ -127,7 +131,8 @@ namespace xAPI.Sync
 
             if (apiAddress == null)
             {
-                throw new APICommunicationException("Connection error (and no backup server available for " + address + ")");
+                return null;
+                //throw new APICommunicationException("Connection error (and no backup server available for " + address + ")");
             }
             else
             {
@@ -140,7 +145,8 @@ namespace xAPI.Sync
                     return ADDRESSES[0];
                 }
 
-                throw new APICommunicationException("Connection error (and no more backup servers available)");
+                return null;
+                //throw new APICommunicationException("Connection error (and no more backup servers available)");
             }
         }
 
