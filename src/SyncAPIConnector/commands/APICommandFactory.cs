@@ -63,7 +63,7 @@ namespace xAPI.Commands
             }
             return response;
         }
-        
+
         public static AllSymbolsCommand CreateAllSymbolsCommand(bool prettyPrint = false)
         {
             return new AllSymbolsCommand(prettyPrint);
@@ -160,7 +160,7 @@ namespace xAPI.Commands
             return new PingCommand(prettyPrint);
         }
 
-        public static ProfitCalculationCommand CreateProfitCalculationCommand(string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice ,bool prettyPrint = false)
+        public static ProfitCalculationCommand CreateProfitCalculationCommand(string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
         {
             JSONObject args = new JSONObject();
             args.Add("symbol", symbol);
@@ -168,7 +168,7 @@ namespace xAPI.Commands
             args.Add("cmd", cmd.Code);
             args.Add("openPrice", openPrice);
             args.Add("closePrice", closePrice);
-            return new ProfitCalculationCommand(args,prettyPrint);
+            return new ProfitCalculationCommand(args, prettyPrint);
         }
 
         [Obsolete("Command not available in API any more")]
@@ -228,27 +228,27 @@ namespace xAPI.Commands
             args.Add("tradeTransInfo", (new TradeTransInfoRecord(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration)).toJSONObject());
             return new TradeTransactionCommand(args, prettyPrint);
         }
-        
+
         [Obsolete("Method outdated. ie_deviation and comment are not available any more")]
         public static TradeTransactionCommand CreateTradeTransactionCommand(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? ie_deviation, long? order, string comment, long? expiration, bool prettyPrint = false)
         {
             return CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, "", expiration);
         }
-        
+
         public static TradeTransactionStatusCommand CreateTradeTransactionStatusCommand(long? order, bool prettyPrint = false)
         {
             JSONObject args = new JSONObject();
             args.Add("order", order);
             return new TradeTransactionStatusCommand(args, prettyPrint);
         }
-        
+
         public static TradesCommand CreateTradesCommand(bool openedOnly, bool prettyPrint = false)
         {
             JSONObject args = new JSONObject();
             args.Add("openedOnly", openedOnly);
             return new TradesCommand(args, prettyPrint);
         }
-        
+
         public static TradesHistoryCommand CreateTradesHistoryCommand(long? start, long? end, bool prettyPrint = false)
         {
             JSONObject args = new JSONObject();
@@ -256,7 +256,7 @@ namespace xAPI.Commands
             args.Add("end", end);
             return new TradesHistoryCommand(args, prettyPrint);
         }
-        
+
         public static TradingHoursCommand CreateTradingHoursCommand(List<string> symbols, bool prettyPrint = false)
         {
             JSONObject args = new JSONObject();
@@ -277,7 +277,7 @@ namespace xAPI.Commands
         #endregion
 
         #region Command executors
-        
+
         public static AllSymbolsResponse ExecuteAllSymbolsCommand(SyncAPIConnector connector, bool prettyPrint = false)
         {
             return new AllSymbolsResponse(connector.ExecuteCommand(CreateAllSymbolsCommand(prettyPrint)).ToString());
@@ -287,7 +287,7 @@ namespace xAPI.Commands
         {
             return new CalendarResponse(connector.ExecuteCommand(CreateCalendarCommand(prettyPrint)).ToString());
         }
-        
+
         public static ChartLastResponse ExecuteChartLastCommand(SyncAPIConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
         {
             return new ChartLastResponse(connector.ExecuteCommand(CreateChartLastCommand(info, prettyPrint)).ToString());
@@ -297,17 +297,17 @@ namespace xAPI.Commands
         {
             return new ChartLastResponse(connector.ExecuteCommand(CreateChartLastCommand(symbol, period, start, prettyPrint)).ToString());
         }
-        
+
         public static ChartRangeResponse ExecuteChartRangeCommand(SyncAPIConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
         {
             return new ChartRangeResponse(connector.ExecuteCommand(CreateChartRangeCommand(info, prettyPrint)).ToString());
         }
-        
+
         public static ChartRangeResponse ExecuteChartRangeCommand(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
         {
             return new ChartRangeResponse(connector.ExecuteCommand(CreateChartRangeCommand(symbol, period, start, end, ticks, prettyPrint)).ToString());
         }
-        
+
         public static CommissionDefResponse ExecuteCommissionDefCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             return new CommissionDefResponse(connector.ExecuteCommand(CreateCommissionDefCommand(symbol, volume, prettyPrint)).ToString());
@@ -355,12 +355,12 @@ namespace xAPI.Commands
 
             return loginResponse;
         }
-        
+
         public static LogoutResponse ExecuteLogoutCommand(SyncAPIConnector connector)
         {
             return new LogoutResponse(connector.ExecuteCommand(CreateLogoutCommand()).ToString());
         }
-        
+
         public static MarginLevelResponse ExecuteMarginLevelCommand(SyncAPIConnector connector, bool prettyPrint = false)
         {
             return new MarginLevelResponse(connector.ExecuteCommand(CreateMarginLevelCommand(prettyPrint)).ToString());
@@ -370,7 +370,7 @@ namespace xAPI.Commands
         {
             return new MarginTradeResponse(connector.ExecuteCommand(CreateMarginTradeCommand(symbol, volume, prettyPrint)).ToString());
         }
-        
+
         public static NewsResponse ExecuteNewsCommand(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
         {
             return new NewsResponse(connector.ExecuteCommand(CreateNewsCommand(start, end, prettyPrint)).ToString());
@@ -391,7 +391,7 @@ namespace xAPI.Commands
             return new PingResponse(connector.ExecuteCommand(CreatePingCommand(prettyPrint)).ToString());
         }
 
-        public static ProfitCalculationResponse ExecuteProfitCalculationCommand(SyncAPIConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice , bool prettyPrint = false)
+        public static ProfitCalculationResponse ExecuteProfitCalculationCommand(SyncAPIConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
         {
             return new ProfitCalculationResponse(connector.ExecuteCommand(CreateProfitCalculationCommand(symbol, volume, cmd, openPrice, closePrice, prettyPrint)).ToString());
         }
@@ -411,17 +411,17 @@ namespace xAPI.Commands
         {
             return new SymbolResponse(connector.ExecuteCommand(CreateSymbolCommand(symbol, prettyPrint)).ToString());
         }
-        
+
         public static TickPricesResponse ExecuteTickPricesCommand(SyncAPIConnector connector, List<string> symbols, long? timestamp, bool prettyPrint = false)
         {
             return new TickPricesResponse(connector.ExecuteCommand(CreateTickPricesCommand(symbols, timestamp, prettyPrint)).ToString());
         }
-        
+
         public static TradeRecordsResponse ExecuteTradeRecordsCommand(SyncAPIConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
         {
             return new TradeRecordsResponse(connector.ExecuteCommand(CreateTradeRecordsCommand(orders, prettyPrint)).ToString());
         }
-        
+
         public static TradeTransactionResponse ExecuteTradeTransactionCommand(SyncAPIConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
         {
             return new TradeTransactionResponse(connector.ExecuteCommand(CreateTradeTransactionCommand(tradeTransInfo, prettyPrint)).ToString());
@@ -437,17 +437,17 @@ namespace xAPI.Commands
         {
             return new TradeTransactionResponse(connector.ExecuteCommand(CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, "", expiration, prettyPrint)).ToString());
         }
-        
+
         public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(SyncAPIConnector connector, long? order, bool prettyPrint = false)
         {
             return new TradeTransactionStatusResponse(connector.ExecuteCommand(CreateTradeTransactionStatusCommand(order, prettyPrint)).ToString());
         }
-        
+
         public static TradesResponse ExecuteTradesCommand(SyncAPIConnector connector, bool openedOnly, bool prettyPrint = false)
         {
             return new TradesResponse(connector.ExecuteCommand(CreateTradesCommand(openedOnly, prettyPrint)).ToString());
         }
-        
+
         public static TradesHistoryResponse ExecuteTradesHistoryCommand(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
         {
             return new TradesHistoryResponse(connector.ExecuteCommand(CreateTradesHistoryCommand(start, end, prettyPrint)).ToString());

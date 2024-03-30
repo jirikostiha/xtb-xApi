@@ -22,9 +22,9 @@
                 return null;
         }
 
-        private Side(int code) 
-            : base(code) 
-        { 
+        private Side(int code)
+            : base(code)
+        {
         }
     }
 }

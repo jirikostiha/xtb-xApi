@@ -11,7 +11,7 @@ namespace xAPI.Streaming
     {
         private string symbol;
         private string streamSessionId;
-        
+
         public CandleRecordsSubscribe(string symbol, string streamSessionId)
         {
             this.streamSessionId = streamSessionId;

@@ -44,25 +44,25 @@ namespace xAPI.Records
 
         public virtual long? QuoteId
         {
-            get 
-            { 
-                return quoteId; 
+            get
+            {
+                return quoteId;
             }
-            set 
-            { 
-                quoteId = value; 
+            set
+            {
+                quoteId = value;
             }
         }
 
         public virtual long? Value
         {
-            get 
-            { 
-                return this.value; 
+            get
+            {
+                return this.value;
             }
-            set 
-            { 
-                this.value = value; 
+            set
+            {
+                this.value = value;
             }
         }
 

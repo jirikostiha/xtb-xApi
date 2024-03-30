@@ -12,14 +12,14 @@ namespace xAPI.Responses
     public class AllSpreadsResponse : BaseResponse
     {
         private LinkedList<SpreadRecord> spreadRecords = (LinkedList<SpreadRecord>)new LinkedList<SpreadRecord>();
-        
+
         public AllSpreadsResponse(string body) : base(body)
         {
-            JSONArray symbolRecords = (JSONArray) this.ReturnData;
+            JSONArray symbolRecords = (JSONArray)this.ReturnData;
             foreach (JSONObject e in symbolRecords)
             {
                 SpreadRecord spreadRecord = new SpreadRecord();
-				spreadRecord.FieldsFromJSONObject(e);
+                spreadRecord.FieldsFromJSONObject(e);
                 this.spreadRecords.AddLast(spreadRecord);
             }
         }

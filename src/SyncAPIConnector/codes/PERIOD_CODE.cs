@@ -12,9 +12,9 @@ namespace xAPI.Codes
         public static readonly PERIOD_CODE PERIOD_W1 = new PERIOD_CODE(10080L);
         public static readonly PERIOD_CODE PERIOD_MN1 = new PERIOD_CODE(43200L);
 
-        public PERIOD_CODE(long code) 
-            : base(code) 
-        { 
+        public PERIOD_CODE(long code)
+            : base(code)
+        {
         }
     }
 }

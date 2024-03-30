@@ -122,7 +122,7 @@ namespace xAPI.Sync
                     OnMessageSended.Invoke(message);
             }
         }
-        
+
         /// <summary>
         /// Reads raw message from the remote server.
         /// </summary>

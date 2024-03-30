@@ -10,9 +10,9 @@ namespace xAPI.Codes
         public static readonly TRADE_OPERATION_CODE SELL_STOP = new TRADE_OPERATION_CODE(5L);
         public static readonly TRADE_OPERATION_CODE BALANCE = new TRADE_OPERATION_CODE(6L);
 
-        public TRADE_OPERATION_CODE(long code) 
-            : base(code) 
-        { 
+        public TRADE_OPERATION_CODE(long code)
+            : base(code)
+        {
         }
 
         public override string ToString()

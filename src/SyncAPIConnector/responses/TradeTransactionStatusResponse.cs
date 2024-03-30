@@ -4,38 +4,38 @@ namespace xAPI.Responses
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class TradeTransactionStatusResponse : BaseResponse
-	{
-		private double? ask;
-		private double? bid;
+    public class TradeTransactionStatusResponse : BaseResponse
+    {
+        private double? ask;
+        private double? bid;
         private string customComment;
         private string message;
-		private long? order;
-		private REQUEST_STATUS requestStatus;
+        private long? order;
+        private REQUEST_STATUS requestStatus;
 
-		public TradeTransactionStatusResponse(string body) : base(body)
-		{
-			JSONObject ob = (JSONObject) this.ReturnData;
+        public TradeTransactionStatusResponse(string body) : base(body)
+        {
+            JSONObject ob = (JSONObject)this.ReturnData;
             this.ask = (double?)ob["ask"];
             this.bid = (double?)ob["bid"];
             this.customComment = (string)ob["customComment"];
             this.message = (string)ob["message"];
-			this.order = (long?) ob["order"];
-			this.requestStatus = new REQUEST_STATUS((long) ob["requestStatus"]);
-		}
+            this.order = (long?)ob["order"];
+            this.requestStatus = new REQUEST_STATUS((long)ob["requestStatus"]);
+        }
 
-		public virtual double? Ask
-		{
+        public virtual double? Ask
+        {
             get
             {
                 return ask;
             }
 
-			set
-			{
-				this.ask = value;
-			}
-		}
+            set
+            {
+                this.ask = value;
+            }
+        }
 
         public virtual double? Bid
         {
@@ -67,28 +67,28 @@ namespace xAPI.Responses
             }
         }
 
-		public virtual long? Order
-		{
+        public virtual long? Order
+        {
             get
             {
                 return order;
             }
-			set
-			{
-				this.order = value;
-			}
-		}
+            set
+            {
+                this.order = value;
+            }
+        }
 
-		public virtual REQUEST_STATUS RequestStatus
-		{
+        public virtual REQUEST_STATUS RequestStatus
+        {
             get
             {
                 return requestStatus;
             }
             set
-			{
-				this.requestStatus = value;
-			}
-		}
-	}
+            {
+                this.requestStatus = value;
+            }
+        }
+    }
 }

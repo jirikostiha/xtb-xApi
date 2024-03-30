@@ -7,13 +7,13 @@ namespace xAPI.Responses
     using JSONArray = Newtonsoft.Json.Linq.JArray;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class StepRulesResponse : BaseResponse
-	{
-		private LinkedList<StepRuleRecord> stepRulesRecords = (LinkedList<StepRuleRecord>)new LinkedList<StepRuleRecord>();
+    public class StepRulesResponse : BaseResponse
+    {
+        private LinkedList<StepRuleRecord> stepRulesRecords = (LinkedList<StepRuleRecord>)new LinkedList<StepRuleRecord>();
 
         public StepRulesResponse(string body)
             : base(body)
-		{
+        {
             JSONArray stepRulesRecords = (JSONArray)this.ReturnData;
             foreach (JSONObject e in stepRulesRecords)
             {
@@ -21,15 +21,15 @@ namespace xAPI.Responses
                 stepRulesRecord.FieldsFromJSONObject(e);
                 this.stepRulesRecords.AddLast(stepRulesRecord);
             }
-		}
+        }
 
         public virtual LinkedList<StepRuleRecord> StepRulesRecords
-		{
-			get
-			{
+        {
+            get
+            {
                 return stepRulesRecords;
-			}
-		}
-	}
+            }
+        }
+    }
 
 }

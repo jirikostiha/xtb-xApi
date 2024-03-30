@@ -8,8 +8,8 @@ namespace xAPI.Responses
     using JSONArray = Newtonsoft.Json.Linq.JArray;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class IbsHistoryResponse : BaseResponse
-	{
+    public class IbsHistoryResponse : BaseResponse
+    {
         /// <summary>
         /// IB records.
         /// </summary>
@@ -17,14 +17,14 @@ namespace xAPI.Responses
 
         public IbsHistoryResponse(string body)
             : base(body)
-		{
+        {
             JSONArray arr = (JSONArray)this.ReturnData;
 
-			foreach (JSONObject e in arr)
-			{
+            foreach (JSONObject e in arr)
+            {
                 IbRecord record = new IbRecord(e);
                 this.IbRecords.AddLast(record);
-			}
-		}
-	}
+            }
+        }
+    }
 }

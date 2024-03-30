@@ -122,7 +122,7 @@ namespace xAPI.Sync
         public event OnCandle CandleRecordReceived;
 
         #endregion
-        
+
         /// <summary>
         /// Dedicated streaming listener.
         /// </summary>
@@ -218,7 +218,7 @@ namespace xAPI.Sync
                 apiReadStream = new StreamReader(ns);
             }
 
-            Thread t = new Thread(delegate()
+            Thread t = new Thread(delegate ()
             {
                 while (Connected())
                 {
@@ -268,7 +268,7 @@ namespace xAPI.Sync
                 apiReadStream = new StreamReader(ns);
             }
 
-            Thread t = new Thread(delegate()
+            Thread t = new Thread(delegate ()
             {
                 while (running)
                 {
@@ -301,10 +301,10 @@ namespace xAPI.Sync
                 String message = ReadMessage();
 
                 if (message != null)
-                {        
+                {
                     JSONObject responseBody = (JSONObject)JSONObject.Parse(message);
                     string commandName = responseBody["command"].ToString();
-                        
+
                     if (commandName == "tickPrices")
                     {
                         StreamingTickRecord tickRecord = new StreamingTickRecord();
@@ -374,7 +374,8 @@ namespace xAPI.Sync
                             KeepAliveRecordReceived.Invoke(keepAliveRecord);
                         if (sl != null)
                             sl.ReceiveKeepAliveRecord(keepAliveRecord);
-                    } else if (commandName == "candle")
+                    }
+                    else if (commandName == "candle")
                     {
                         StreamingCandleRecord candleRecord = new StreamingCandleRecord();
                         candleRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
@@ -395,7 +396,7 @@ namespace xAPI.Sync
             }
         }
 
-        public void SubscribePrice(String symbol, long? minArrivalTime=null, long? maxLevel=null)
+        public void SubscribePrice(String symbol, long? minArrivalTime = null, long? maxLevel = null)
         {
             TickPricesSubscribe tickPricesSubscribe = new TickPricesSubscribe(symbol, streamSessionId, minArrivalTime, maxLevel);
             WriteMessage(tickPricesSubscribe.ToString());

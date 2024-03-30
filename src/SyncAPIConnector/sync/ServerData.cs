@@ -9,10 +9,10 @@ namespace xAPI.Sync
     public class ServerData
     {
         private static string XAPI_A = "xapi.xtb.com";
-        private static string XAPI_B = "xapi.xtb.com";		
+        private static string XAPI_B = "xapi.xtb.com";
 
-        private static int[] PORTS_REAL = {5112, 5113};
-        private static int[] PORTS_DEMO = {5124, 5125};
+        private static int[] PORTS_REAL = { 5112, 5113 };
+        private static int[] PORTS_DEMO = { 5124, 5125 };
 
         private static Dictionary<string, string> xapiList;
 
@@ -26,7 +26,7 @@ namespace xAPI.Sync
             xapiList = new Dictionary<string, string>();
             xapiList.Add("A", XAPI_A);
             xapiList.Add("B", XAPI_B);
-        }		
+        }
 
         /// <summary>
         /// Static method which receives map of production servers
@@ -54,13 +54,13 @@ namespace xAPI.Sync
         /// <returns></returns>
         private static Dictionary<string, Server> AddServers(Dictionary<string, Server> dict, int[] portsArray, string desc)
         {
-    	    if(xapiList == null)
-    	    {
-    		    SetUpList();
-    	    }
-    	
-    	    int mainPort = portsArray[0];
-    	    int streamingPort = portsArray[1];
+            if (xapiList == null)
+            {
+                SetUpList();
+            }
+
+            int mainPort = portsArray[0];
+            int streamingPort = portsArray[1];
 
             foreach (String xapiKey in xapiList.Keys)
             {
@@ -69,7 +69,7 @@ namespace xAPI.Sync
                 string dictDesc = "xServer " + desc + " " + xapiKey;
                 dict.Add(dictKey, new Server(address, mainPort, streamingPort, true, dictDesc));
             }
-    	    return dict;
+            return dict;
         }
     }
 }

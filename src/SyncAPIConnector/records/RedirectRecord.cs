@@ -10,7 +10,7 @@ namespace xAPI.Records
     {
         private int mainPort;
         private int streamingPort;
-	    private string address;
+        private string address;
 
         public void FieldsFromJSONObject(JSONObject value)
         {

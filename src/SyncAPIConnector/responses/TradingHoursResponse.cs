@@ -7,8 +7,8 @@ namespace xAPI.Responses
     using JSONArray = Newtonsoft.Json.Linq.JArray;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class TradingHoursResponse : BaseResponse
-	{
+    public class TradingHoursResponse : BaseResponse
+    {
         private LinkedList<TradingHoursRecord> tradingHoursRecords = (LinkedList<TradingHoursRecord>)new LinkedList<TradingHoursRecord>();
 
         public TradingHoursResponse(string body) : base(body)
@@ -29,5 +29,5 @@ namespace xAPI.Responses
                 return tradingHoursRecords;
             }
         }
-	}
+    }
 }

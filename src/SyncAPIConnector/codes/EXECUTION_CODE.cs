@@ -7,8 +7,8 @@ namespace xAPI.Codes
         public static readonly EXECUTION_CODE EXE_MARKET = new EXECUTION_CODE(2L);
 
         public EXECUTION_CODE(long code)
-            : base(code) 
-        { 
+            : base(code)
+        {
         }
     }
 }

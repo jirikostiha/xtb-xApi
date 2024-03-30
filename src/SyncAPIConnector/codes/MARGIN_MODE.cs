@@ -6,9 +6,9 @@
         public static readonly MARGIN_MODE CFD_LEVERAGED = new MARGIN_MODE(102L);
         public static readonly MARGIN_MODE CFD = new MARGIN_MODE(103L);
 
-        public MARGIN_MODE(long code) 
-            : base(code) 
-        { 
+        public MARGIN_MODE(long code)
+            : base(code)
+        {
         }
     }
 }

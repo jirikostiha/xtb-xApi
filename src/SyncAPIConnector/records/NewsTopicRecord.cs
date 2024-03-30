@@ -5,12 +5,12 @@ namespace xAPI.Records
     using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class NewsTopicRecord : BaseResponseRecord
-	{
-		private string body;
-		private long? bodylen;
-		private string key;
-		private long? time;
+    public class NewsTopicRecord : BaseResponseRecord
+    {
+        private string body;
+        private long? bodylen;
+        private string key;
+        private long? time;
         private string timeString;
         private string title;
 
@@ -18,47 +18,47 @@ namespace xAPI.Records
         {
         }
 
-		public virtual string Body
-		{
-			get
-			{
-				return body;
-			}
-		}
+        public virtual string Body
+        {
+            get
+            {
+                return body;
+            }
+        }
 
-		public virtual long? Bodylen
-		{
-			get
-			{
-				return bodylen;
-			}
-		}
-
-        [Obsolete("Field removed from API")]
-		public virtual string Category
-		{
-			get { return null; }
-		}
-
-		public virtual string Key
-		{
-			get
-			{
-				return key;
-			}
-		}
+        public virtual long? Bodylen
+        {
+            get
+            {
+                return bodylen;
+            }
+        }
 
         [Obsolete("Field removed from API")]
-		public virtual LinkedList<string> Keywords
-		{
-			get { return null; }
-		}
+        public virtual string Category
+        {
+            get { return null; }
+        }
+
+        public virtual string Key
+        {
+            get
+            {
+                return key;
+            }
+        }
 
         [Obsolete("Field removed from API")]
-		public virtual long? Priority
-		{
-			get { return null; }
-		}
+        public virtual LinkedList<string> Keywords
+        {
+            get { return null; }
+        }
+
+        [Obsolete("Field removed from API")]
+        public virtual long? Priority
+        {
+            get { return null; }
+        }
 
         [Obsolete("Field removed from API")]
         public virtual bool? Read
@@ -66,13 +66,13 @@ namespace xAPI.Records
             get { return null; }
         }
 
-		public virtual long? Time
-		{
-			get
-			{
-				return time;
-			}
-		}
+        public virtual long? Time
+        {
+            get
+            {
+                return time;
+            }
+        }
 
         public virtual string TimeString
         {

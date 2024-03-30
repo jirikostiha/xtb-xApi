@@ -25,7 +25,7 @@ namespace xAPI.Sync
         {
             get
             {
-                if(addresses == null)
+                if (addresses == null)
                 {
                     addresses = new List<ApiAddress>();
 

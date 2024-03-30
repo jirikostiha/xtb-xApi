@@ -29,10 +29,10 @@ namespace xAPI.Codes
 
         public static bool operator ==(BaseCode baseCode1, BaseCode baseCode2)
         {
-            if(ReferenceEquals(baseCode1, baseCode2))
+            if (ReferenceEquals(baseCode1, baseCode2))
                 return true;
 
-            if((object)baseCode1 == null || (object)baseCode2 == null)
+            if ((object)baseCode1 == null || (object)baseCode2 == null)
                 return false;
 
             return (baseCode1.Code == baseCode2.Code);

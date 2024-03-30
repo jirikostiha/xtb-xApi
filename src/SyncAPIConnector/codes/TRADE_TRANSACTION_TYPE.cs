@@ -7,9 +7,9 @@ namespace xAPI.Codes
         public static readonly TRADE_TRANSACTION_TYPE ORDER_MODIFY = new TRADE_TRANSACTION_TYPE(3L);
         public static readonly TRADE_TRANSACTION_TYPE ORDER_DELETE = new TRADE_TRANSACTION_TYPE(4L);
 
-        public TRADE_TRANSACTION_TYPE(long code) 
-            : base(code) 
-        { 
+        public TRADE_TRANSACTION_TYPE(long code)
+            : base(code)
+        {
         }
 
         public override string ToString()

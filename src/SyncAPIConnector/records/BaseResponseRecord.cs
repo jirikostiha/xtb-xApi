@@ -1,9 +1,9 @@
 namespace xAPI.Records
 {
-	using JSONObject = Newtonsoft.Json.Linq.JObject;
+    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public interface BaseResponseRecord
-	{
-		void FieldsFromJSONObject(JSONObject value);
-	}
+    public interface BaseResponseRecord
+    {
+        void FieldsFromJSONObject(JSONObject value);
+    }
 }

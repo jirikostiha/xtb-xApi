@@ -151,8 +151,8 @@ namespace xAPI.Sync
             }
 
             this.apiConnected = true;
-            
-            if(OnConnected != null)
+
+            if (OnConnected != null)
                 OnConnected.Invoke(this.server);
 
 
@@ -177,8 +177,8 @@ namespace xAPI.Sync
         /// <param name="port">Main port</param>
         /// <param name="secure">SSL enabled</param>
         [Obsolete("Use SyncAPIConnector(Server server) instead")]
-        private SyncAPIConnector(string address, int port, bool secure) : this(new Server(address, port, port+1, secure, ""))
-        {  
+        private SyncAPIConnector(string address, int port, bool secure) : this(new Server(address, port, port + 1, secure, ""))
+        {
         }
 
         /// <summary>
@@ -202,23 +202,23 @@ namespace xAPI.Sync
         /// <param name="cmd">Command to execute</param>
         /// <returns>Response from the server</returns>
 		public JSONObject ExecuteCommand(BaseCommand cmd)
-		{
-			try
-			{
-				return (JSONObject)JSONObject.Parse(this.ExecuteCommand(cmd.ToJSONString()));
-			}
-			catch (Exception ex)
-			{
-				throw new APICommunicationException("Problem with executing command: " + ex.Message);
-			}
-		}
-		
+        {
+            try
+            {
+                return (JSONObject)JSONObject.Parse(this.ExecuteCommand(cmd.ToJSONString()));
+            }
+            catch (Exception ex)
+            {
+                throw new APICommunicationException("Problem with executing command: " + ex.Message);
+            }
+        }
+
         /// <summary>
         /// Executes given command and receives response (withholding API inter-command timeout).
         /// </summary>
         /// <param name="message">Command to execute</param>
         /// <returns>Response from the server</returns>
-		public string ExecuteCommand(string message)
+        public string ExecuteCommand(string message)
         {
             lock (locker)
             {
@@ -244,7 +244,7 @@ namespace xAPI.Sync
                     throw new APICommunicationException("Server not responding");
                 }
 
-			    return response;
+                return response;
             }
         }
 

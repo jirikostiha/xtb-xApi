@@ -8,9 +8,9 @@
         public static readonly SWAP_ROLLOVER_TYPE THURSDAY = new SWAP_ROLLOVER_TYPE(3L);
         public static readonly SWAP_ROLLOVER_TYPE FRIDAY = new SWAP_ROLLOVER_TYPE(4L);
 
-        public SWAP_ROLLOVER_TYPE(long code) 
-            : base(code) 
-        { 
+        public SWAP_ROLLOVER_TYPE(long code)
+            : base(code)
+        {
         }
     }
 }

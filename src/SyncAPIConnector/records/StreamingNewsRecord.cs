@@ -5,15 +5,15 @@ namespace xAPI.Records
     using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class StreamingNewsRecord : BaseResponseRecord
-	{
+    public class StreamingNewsRecord : BaseResponseRecord
+    {
         public StreamingNewsRecord()
         {
         }
 
         public string Body
         {
-            get; 
+            get;
             set;
         }
 

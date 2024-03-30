@@ -39,32 +39,32 @@ namespace xAPI.Records
         {
             get { return current; }
         }
-        
+
         public string Forecast
         {
             get { return forecast; }
         }
-        
+
         public string Impact
         {
             get { return impact; }
         }
-        
+
         public string Period
         {
             get { return period; }
         }
-        
+
         public string Previous
         {
             get { return previous; }
         }
-        
+
         public long? Time
         {
             get { return time; }
         }
-        
+
         public string Title
         {
             get { return title; }

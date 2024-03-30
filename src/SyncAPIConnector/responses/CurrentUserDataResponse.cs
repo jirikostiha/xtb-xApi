@@ -3,8 +3,8 @@ namespace xAPI.Responses
     using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class CurrentUserDataResponse : BaseResponse
-	{
+    public class CurrentUserDataResponse : BaseResponse
+    {
         private string currency;
         private long? leverage;
         private double? leverageMultiplier;
@@ -15,8 +15,8 @@ namespace xAPI.Responses
 
         public CurrentUserDataResponse(string body)
             : base(body)
-		{
-			JSONObject ob = (JSONObject) this.ReturnData;
+        {
+            JSONObject ob = (JSONObject)this.ReturnData;
             this.currency = (string)ob["currency"];
             this.leverage = (long?)ob["leverage"];
             this.leverageMultiplier = (double?)ob["leverageMultiplier"];
@@ -24,7 +24,7 @@ namespace xAPI.Responses
             this.companyUnit = (int?)ob["companyUnit"];
             this.spreadType = (string)ob["spreadType"];
             this.ibAccount = (bool?)ob["ibAccount"];
-		}
+        }
 
         public virtual string Currency
         {
@@ -35,13 +35,13 @@ namespace xAPI.Responses
         }
 
         [Obsolete("Use LeverageMultiplier instead")]
-		public virtual long? Leverage
-		{
-			get
-			{
-				return leverage;
-			}
-		}
+        public virtual long? Leverage
+        {
+            get
+            {
+                return leverage;
+            }
+        }
 
         public virtual double? LeverageMultiplier
         {
@@ -82,6 +82,6 @@ namespace xAPI.Responses
                 return ibAccount;
             }
         }
-	}
+    }
 
 }

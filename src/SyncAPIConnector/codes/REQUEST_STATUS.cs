@@ -7,9 +7,9 @@ namespace xAPI.Codes
         public static readonly REQUEST_STATUS ACCEPTED = new REQUEST_STATUS(3L);
         public static readonly REQUEST_STATUS REJECTED = new REQUEST_STATUS(4L);
 
-        public REQUEST_STATUS(long code) 
-            : base(code) 
-        { 
+        public REQUEST_STATUS(long code)
+            : base(code)
+        {
         }
     }
 }

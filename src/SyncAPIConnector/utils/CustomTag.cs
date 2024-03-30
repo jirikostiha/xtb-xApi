@@ -24,6 +24,6 @@ namespace xAPI.Utils
                 return lastTag.ToString();
             }
         }
-    
+
     }
 }

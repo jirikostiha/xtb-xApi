@@ -14,7 +14,7 @@ namespace xAPI.Streaming
         private long? maxLevel;
         private string streamSessionId;
 
-        public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime=null, long? maxLevel=null)
+        public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime = null, long? maxLevel = null)
         {
             this.symbol = symbol;
             this.minArrivalTime = minArrivalTime;
@@ -28,7 +28,7 @@ namespace xAPI.Streaming
             result.Add("command", "getTickPrices");
             result.Add("symbol", symbol);
 
-            if(minArrivalTime.HasValue)
+            if (minArrivalTime.HasValue)
                 result.Add("minArrivalTime", minArrivalTime);
 
             if (maxLevel.HasValue)

@@ -3,10 +3,10 @@ using xAPI.Codes;
 
 namespace xAPI.Records
 {
-	using JSONObject = Newtonsoft.Json.Linq.JObject;
+    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-	public class TradeTransInfoRecord
-	{
+    public class TradeTransInfoRecord
+    {
         private TRADE_OPERATION_CODE cmd;
         private string customComment;
         private long? expiration;
@@ -58,21 +58,21 @@ namespace xAPI.Records
             this.customComment = comment;
         }
 
-		public virtual JSONObject toJSONObject()
-		{
-			JSONObject obj = new JSONObject();
+        public virtual JSONObject toJSONObject()
+        {
+            JSONObject obj = new JSONObject();
             obj.Add("cmd", (long)cmd.Code);
             obj.Add("type", (long)type.Code);
-			obj.Add("price", price);
-			obj.Add("sl", sl);
-			obj.Add("tp", tp);
-			obj.Add("symbol", symbol);
-			obj.Add("volume", volume);
+            obj.Add("price", price);
+            obj.Add("sl", sl);
+            obj.Add("tp", tp);
+            obj.Add("symbol", symbol);
+            obj.Add("volume", volume);
             obj.Add("order", order);
             obj.Add("customComment", customComment);
-			obj.Add("expiration", expiration);
-			return obj;
-		}
+            obj.Add("expiration", expiration);
+            return obj;
+        }
 
         public override string ToString()
         {
@@ -89,5 +89,5 @@ namespace xAPI.Records
                 expiration.ToString() + ", " +
                 "]";
         }
-	}
+    }
 }

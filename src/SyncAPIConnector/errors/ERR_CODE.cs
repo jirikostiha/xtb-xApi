@@ -1,7 +1,7 @@
 namespace xAPI.Errors
 {
-	public class ERR_CODE
-	{
+    public class ERR_CODE
+    {
         public static readonly ERR_CODE INVALID_PRICE = new ERR_CODE("BE001");
         public static readonly ERR_CODE INVALID_SL_TP = new ERR_CODE("BE002");
         public static readonly ERR_CODE INVALID_VOLUME = new ERR_CODE("BE003");
@@ -32,21 +32,21 @@ namespace xAPI.Errors
         public static readonly ERR_CODE INTERNAL_ERROR = new ERR_CODE("EX001");
         public static readonly ERR_CODE OTHER_ERROR = new ERR_CODE("BE099");
 
-		private string stringCode;
+        private string stringCode;
 
-		public ERR_CODE(string code)
-		{
-			this.stringCode = code;
-		}
+        public ERR_CODE(string code)
+        {
+            this.stringCode = code;
+        }
 
-		public virtual string StringValue
-		{
+        public virtual string StringValue
+        {
             get
             {
                 if (stringCode == null) return "";
                 return stringCode;
             }
-		}
+        }
 
         public static string getErrorDescription(string errorCode)
         {
@@ -88,5 +88,5 @@ namespace xAPI.Errors
 
             return "Unknown error";
         }
-	}
+    }
 }
