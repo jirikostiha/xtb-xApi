@@ -7,6 +7,7 @@ This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wra
 
 ## Changelog
 
+2.5.3 timeout handling, trading examples
 2.5.2 new csproj format, set dotnetstandard 2.0  
 2.5.1 cleaned linked binaries and set nuget dependencies
 
@@ -20,7 +21,7 @@ For example like this:
     <TargetFramework>net8</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SyncAPIConnect" Version="2.5.2" />
+    <PackageReference Include="SyncAPIConnect" Version="2.5.3" />
   </ItemGroup>
 </Project>
 ```
