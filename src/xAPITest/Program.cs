@@ -62,6 +62,8 @@ namespace xAPITest
             var us500Symbol = APICommandFactory.ExecuteSymbolCommand(connector, "US500");
             Console.WriteLine(us500Symbol.Symbol.Symbol + " ask: " + us500Symbol.Symbol.Ask + " bid: " + us500Symbol.Symbol.Bid);
 
+            Console.WriteLine("\n----Trading----");
+
             var us500TradeTransInfo = new TradeTransInfoRecord(
                 TRADE_OPERATION_CODE.BUY,
                 TRADE_TRANSACTION_TYPE.ORDER_OPEN,
@@ -76,14 +78,15 @@ namespace xAPITest
 
             // Warning: Opening trade. Make sure you have set up demo account!
             TradeTransactionResponse us500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
-            Console.WriteLine("Opened trade: " + us500TradeTransaction.Order);
+            Console.WriteLine($"Opened position. result order:{us500TradeTransaction.Order}");
 
             // get all open trades
             TradesResponse openTrades = APICommandFactory.ExecuteTradesCommand(connector, true, true);
-            Console.WriteLine("Open trades: ");
+            Console.WriteLine("Open positions: ");
             foreach (var tradeRecord in openTrades.TradeRecords)
             {
-                Console.WriteLine(" > " + tradeRecord.Order + " " + tradeRecord.Symbol + " open price: " + tradeRecord.Open_price + " profit: " + tradeRecord.Profit);
+                Console.WriteLine($" > o:{tradeRecord.Order}, o2:{tradeRecord.Order2}, pos:{tradeRecord.Position}, symbol:{tradeRecord.Symbol}, " +
+                    $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
             }
 
             TradeRecord us500trade = openTrades.TradeRecords.First(t => t.Symbol == "US500");
@@ -91,18 +94,38 @@ namespace xAPITest
             Thread.Sleep(500);
 
             // update trade transaction
+            us500TradeTransInfo.Order = us500trade.Order;
             us500TradeTransInfo.Tp = us500trade.Open_price + 200;
+            //us500TradeTransInfo.CustomComment = "my custom comment";
             TradeTransactionResponse updatedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
-            Console.WriteLine("Modified trade tp to " + us500TradeTransInfo.Tp + ", order: " + updatedUs500TradeTransaction.Order);
+            Console.WriteLine($"Modified position. order:{us500trade.Order} -> tp:{us500TradeTransInfo.Tp}, result order:{updatedUs500TradeTransaction.Order}");
 
             Thread.Sleep(1000);
 
+            TradesResponse openTrades2 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
+            Console.WriteLine("Open positions: ");
+            foreach (var tradeRecord in openTrades2.TradeRecords)
+            {
+                Console.WriteLine($" > o:{tradeRecord.Order}, o2:{tradeRecord.Order2}, pos:{tradeRecord.Position}, symbol:{tradeRecord.Symbol}, " +
+                    $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
+            }
+
             // close trade transaction
             us500TradeTransInfo.Type = TRADE_TRANSACTION_TYPE.ORDER_CLOSE;
-            us500TradeTransInfo.Order = us500trade.Order;
             us500TradeTransInfo.Price = us500Symbol.Symbol.Bid;
             TradeTransactionResponse closedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
-            Console.WriteLine("Closed trade " + closedUs500TradeTransaction.Order);
+            Console.WriteLine($"Closed position. order:{us500TradeTransInfo.Order}, result order:{closedUs500TradeTransaction.Order}");
+
+            TradesResponse openTrades3 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
+            if (openTrades3.TradeRecords.Count != 0)
+            {
+                Console.WriteLine("Open positions: ");
+                foreach (var tradeRecord in openTrades3.TradeRecords)
+                {
+                    Console.WriteLine($" > o:{tradeRecord.Order}, o2:{tradeRecord.Order2}, pos:{tradeRecord.Position}, symbol:{tradeRecord.Symbol}, " +
+                        $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
+                }
+            }
 
             Console.Read();
         }
