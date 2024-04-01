@@ -7,8 +7,8 @@ This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wra
 
 ## Changelog
 
-2.5.3 timeout handling, trading examples
-2.5.2 new csproj format, set dotnetstandard 2.0  
+2.5.3 timeout handling, trading examples  
+2.5.2 new csproj format, set netstandard2.0  
 2.5.1 cleaned linked binaries and set nuget dependencies
 
 ## Setup
