@@ -84,6 +84,14 @@ namespace xAPI.Responses
             }
         }
 
+        public virtual string ErrorCode
+        {
+            get
+            {
+                return errCode.StringValue;
+            }
+        }
+
         public string CustomTag
         {
             get
