@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
+    [DebuggerDisplay("order:{Order}, order2:{Order2}, profit:{Profit}")]
     public class StreamingProfitRecord : BaseResponseRecord
     {
         private long? order;

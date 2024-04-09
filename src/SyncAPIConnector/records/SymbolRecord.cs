@@ -3,7 +3,9 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using System;
     using xAPI.Codes;
+    using System.Diagnostics;
 
+    [DebuggerDisplay("'{Symbol}', '{CategoryName}', time:{TimeString}")]
     public class SymbolRecord : BaseResponseRecord
     {
         private double? ask;

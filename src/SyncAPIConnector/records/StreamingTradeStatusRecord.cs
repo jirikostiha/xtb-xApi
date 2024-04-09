@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using xAPI.Codes;
 
 namespace xAPI.Records
@@ -6,6 +7,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
+    [DebuggerDisplay("order:{Order}, price:{Price}")]
     public class StreamingTradeStatusRecord : BaseResponseRecord
     {
         private string customComment;

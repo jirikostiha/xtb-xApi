@@ -2,7 +2,9 @@ namespace xAPI.Responses
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using System;
+    using System.Diagnostics;
 
+    [DebuggerDisplay("status:{Status}, order:{Order}")]
     public class TradeTransactionResponse : BaseResponse
     {
         private long? order;

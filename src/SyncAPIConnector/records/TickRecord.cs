@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
+    [DebuggerDisplay("'{Symbol}', Ask:{Ask}")]
     public class TickRecord : BaseResponseRecord
     {
         private double? ask;

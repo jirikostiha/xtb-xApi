@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using xAPI.Records;
 
 namespace xAPI.Responses
@@ -7,6 +8,7 @@ namespace xAPI.Responses
     using JSONArray = Newtonsoft.Json.Linq.JArray;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("status:{Status}, count:{TradeRecords.Count}")]
     public class TradesResponse : BaseResponse
     {
         private LinkedList<TradeRecord> tradeRecords = (LinkedList<TradeRecord>)new LinkedList<TradeRecord>();

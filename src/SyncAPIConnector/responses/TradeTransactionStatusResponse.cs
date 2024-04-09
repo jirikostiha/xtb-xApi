@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using xAPI.Codes;
 
 namespace xAPI.Responses
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("status:{Status}, order:{Order}")]
     public class TradeTransactionStatusResponse : BaseResponse
     {
         private double? ask;

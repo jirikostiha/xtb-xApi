@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("'{Symbol}', order:{Order}")]
     public class TradeTransInfoRecord
     {
         private TRADE_OPERATION_CODE cmd;
