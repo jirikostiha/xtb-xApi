@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <NoWarn>CA1707</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
 
     <Product>Xtb xApi client</Product>
