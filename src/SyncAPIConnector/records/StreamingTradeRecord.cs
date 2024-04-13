@@ -8,7 +8,7 @@ namespace xAPI.Records
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("'{Symbol}', position:{Position}, order:{Order}, order2:{Order2}")]
-    public class StreamingTradeRecord : BaseResponseRecord
+    public class StreamingTradeRecord : BaseResponseRecord, ITradeRecord
     {
         private double? close_price;
         private long? close_time;
@@ -59,7 +59,7 @@ namespace xAPI.Records
             get { return comment; }
             set { comment = value; }
         }
-        public double? Commision
+        public double? Commission
         {
             get { return commision; }
             set { commision = value; }
@@ -144,10 +144,10 @@ namespace xAPI.Records
             get { return volume; }
             set { volume = value; }
         }
-        public int? Digits
+        public long? Digits
         {
             get { return digits; }
-            set { digits = value; }
+            set { digits = (int?)value; }
         }
 
         public void FieldsFromJSONObject(JSONObject value)
