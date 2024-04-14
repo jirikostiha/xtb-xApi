@@ -3,10 +3,12 @@
 [![Build](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml)
 [![Code Lint](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml)
 
-This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wrappers.html) with some improvements to make life easier.  
+This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wrappers.html) with some improvements to make life easier.
+It is based on xApi version 2.5.0.
 
 ## Changelog
 
+2.5.5 common interfaces for streaming and non-streaming records, code constants  
 2.5.4 codes to friendly string extensions  
 2.5.3 timeout handling, trading examples  
 2.5.2 new csproj format, set netstandard2.0  
@@ -22,7 +24,7 @@ For example like this:
     <TargetFramework>net8</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SyncAPIConnect" Version="2.5.4" />
+    <PackageReference Include="SyncAPIConnect" Version="2.5.5" />
   </ItemGroup>
 </Project>
 ```
