@@ -7,7 +7,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("'{Symbol}', order:{Order}")]
-    public class TradeTransInfoRecord
+    public record TradeTransInfoRecord
     {
         private TRADE_OPERATION_CODE cmd;
         private string customComment;

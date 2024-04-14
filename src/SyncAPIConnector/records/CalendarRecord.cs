@@ -2,7 +2,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class CalendarRecord : BaseResponseRecord
+    public record CalendarRecord : BaseResponseRecord
     {
         private string country;
         private string current;

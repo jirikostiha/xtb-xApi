@@ -8,7 +8,7 @@ namespace xAPI.Records
     using xAPI.Codes;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class IbRecord : BaseResponseRecord
+    public record IbRecord : BaseResponseRecord
     {
         /// <summary>
         /// IB close price or null if not allowed to view.

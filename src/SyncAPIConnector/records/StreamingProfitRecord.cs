@@ -7,7 +7,7 @@ namespace xAPI.Records
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("order:{Order}, order2:{Order2}, profit:{Profit}")]
-    public class StreamingProfitRecord : BaseResponseRecord
+    public record StreamingProfitRecord : BaseResponseRecord
     {
         private long? order;
         private long? order2;

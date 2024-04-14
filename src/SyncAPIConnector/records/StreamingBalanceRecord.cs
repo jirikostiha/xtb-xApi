@@ -7,7 +7,7 @@ namespace xAPI.Records
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("balance:{Balance}, margin:{Margin}, equity:{Equity}")]
-    public class StreamingBalanceRecord : BaseResponseRecord
+    public record StreamingBalanceRecord : BaseResponseRecord
     {
         private double? balance;
         private double? margin;

@@ -7,7 +7,7 @@ namespace xAPI.Records
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("'{Symbol}', Ask:{Ask}")]
-    public class TickRecord : BaseResponseRecord, ITickRecord
+    public record TickRecord : BaseResponseRecord, ITickRecord
     {
         private double? ask;
         private long? askVolume;

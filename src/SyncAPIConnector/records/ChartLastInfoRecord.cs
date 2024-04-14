@@ -4,7 +4,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class ChartLastInfoRecord
+    public record ChartLastInfoRecord
     {
         private string symbol;
         private PERIOD_CODE period;

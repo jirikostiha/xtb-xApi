@@ -4,7 +4,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class ChartRangeInfoRecord
+    public record ChartRangeInfoRecord
     {
 
         private string symbol;

@@ -6,7 +6,7 @@ namespace xAPI.Records
     using System.Diagnostics;
 
     [DebuggerDisplay("'{Symbol}', '{CategoryName}', time:{TimeString}")]
-    public class SymbolRecord : BaseResponseRecord
+    public record SymbolRecord : BaseResponseRecord
     {
         private double? ask;
         private double? bid;

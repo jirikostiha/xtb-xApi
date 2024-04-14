@@ -5,7 +5,7 @@ namespace xAPI.Records
     using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class StreamingCandleRecord : BaseResponseRecord
+    public record StreamingCandleRecord : BaseResponseRecord
     {
         public StreamingCandleRecord()
         {

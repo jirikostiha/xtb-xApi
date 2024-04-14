@@ -8,7 +8,7 @@ namespace xAPI.Records
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("order:{Order}, price:{Price}")]
-    public class StreamingTradeStatusRecord : BaseResponseRecord
+    public record StreamingTradeStatusRecord : BaseResponseRecord
     {
         private string customComment;
         private string message;

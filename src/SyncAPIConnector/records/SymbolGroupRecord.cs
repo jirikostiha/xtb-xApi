@@ -3,7 +3,7 @@ namespace xAPI.Records
     using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class SymbolGroupRecord : BaseResponseRecord
+    public record SymbolGroupRecord : BaseResponseRecord
     {
         private long? type;
         private string description;

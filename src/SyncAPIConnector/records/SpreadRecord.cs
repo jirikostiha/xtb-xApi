@@ -7,7 +7,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class SpreadRecord : BaseResponseRecord
+    public record SpreadRecord : BaseResponseRecord
     {
         private long? precision;
         private string symbol;

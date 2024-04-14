@@ -2,7 +2,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    public class RateInfoRecord : BaseResponseRecord
+    public record RateInfoRecord : BaseResponseRecord
     {
 
         private long? ctm;
