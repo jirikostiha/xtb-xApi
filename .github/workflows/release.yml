@@ -74,7 +74,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: ${{ github.ref_name }}
-          prerelease: true
+          prerelease: false
           draft: false
           generate_release_notes: true
           files: binaries.zip
