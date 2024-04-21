@@ -5,6 +5,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using JSONArray = Newtonsoft.Json.Linq.JArray;
+    using static xAPI.Sync.StreamingAPIConnector;
 
     [DebuggerDisplay("order:{Order}, order2:{Order2}, profit:{Profit}")]
     public record StreamingProfitRecord : BaseResponseRecord
@@ -47,6 +48,22 @@ namespace xAPI.Records
                 "profit=" + profit +
                 ", order=" + order +
                 '}';
+        }
+
+        public void UpdateBy(StreamingProfitRecord other)
+        {
+            order = other.order;
+            order2 = other.order2;
+            position = other.position;
+            profit = other.profit;
+        }
+
+        public void Reset()
+        {
+            order = null;
+            order2 = null;
+            position = null;
+            profit = null;
         }
     }
 }

@@ -205,5 +205,83 @@ namespace xAPI.Records
                 ", digits=" + digits +
                 '}';
         }
+
+        public void UpdateBy(ITradeRecord other)
+        {
+            close_price = other.Close_price;
+            close_time = other.Close_time;
+            closed = other.Closed;
+            cmd = other.Cmd;
+            comment = other.Comment;
+            commision = other.Commission;
+            customComment = other.CustomComment;
+            expiration = other.Expiration;
+            margin_rate = other.Margin_rate;
+            open_price = other.Open_price;
+            open_time = other.Open_time;
+            order = other.Order;
+            order2 = other.Order2;
+            position = other.Position;
+            profit = other.Profit;
+            sl = other.Sl;
+            storage = other.Storage;
+            symbol = other.Symbol;
+            tp = other.Tp;
+            volume = other.Volume;
+        }
+
+        public void UpdateBy(StreamingTradeRecord other)
+        {
+            close_price = other.close_price;
+            close_time = other.close_time;
+            closed = other.closed;
+            cmd = other.cmd;
+            comment = other.comment;
+            commision = other.commision;
+            customComment = other.customComment;
+            expiration = other.expiration;
+            margin_rate = other.margin_rate;
+            open_price = other.open_price;
+            open_time = other.open_time;
+            order = other.order;
+            order2 = other.order2;
+            position = other.position;
+            profit = other.profit;
+            sl = other.sl;
+            state = other.state;
+            storage = other.storage;
+            symbol = other.symbol;
+            tp = other.tp;
+            type = other.type;
+            volume = other.volume;
+            digits = other.digits;
+        }
+
+        public void Reset()
+        {
+            close_price = null;
+            close_time = null;
+            closed = null;
+            cmd = null;
+            comment = null;
+            commision = null;
+            customComment = null;
+            expiration = null;
+            margin_rate = null;
+            open_price = null;
+            open_time = null;
+            order = null;
+            order2 = null;
+            position = null;
+            profit = null;
+            sl = null;
+            state = null;
+            storage = null;
+            symbol = null;
+            tp = null;
+            type = null;
+            volume = null;
+            digits = null;
+        }
     }
 }

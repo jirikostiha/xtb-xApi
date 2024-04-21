@@ -68,5 +68,25 @@ namespace xAPI.Records
                  ", credit=" + Credit +
                 '}';
         }
+
+        public void UpdateBy(StreamingBalanceRecord other)
+        {
+            balance = other.balance;
+            margin = other.margin;
+            marginFree = other.marginFree;
+            marginLevel = other.marginLevel;
+            equity = other.equity;
+            credit = other.credit;
+        }
+
+        public void Reset()
+        {
+            balance = null;
+            margin = null;
+            marginFree = null;
+            marginLevel = null;
+            equity = null;
+            credit = null;
+        }
     }
 }
