@@ -1,4 +1,4 @@
-﻿namespace xAPI.Records
+﻿namespace xAPI
 {
     public interface ITickRecord
     {
