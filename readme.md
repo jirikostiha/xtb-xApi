@@ -1,5 +1,8 @@
 # SyncAPIConnect - Xtb xApi client  
 
+![GitHub repo size](https://img.shields.io/github/repo-size/jirikostiha/xtb-xApi)
+![GitHub code size](https://img.shields.io/github/languages/code-size/jirikostiha/xtb-xApi)
+![Nuget](https://img.shields.io/nuget/dt/SyncAPIConnect)  
 [![Build](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml)
 [![Code Lint](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml)
 
@@ -8,7 +11,7 @@ It is based on xApi version 2.5.0.
 
 ## Changelog
 
-2.5.6 records changed from classes to C# records
+2.5.6 records changed from classes to C# records  
 2.5.5 common interfaces for streaming and non-streaming records, code constants  
 2.5.4 codes to friendly string extensions  
 2.5.3 timeout handling, trading examples  
