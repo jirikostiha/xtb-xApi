@@ -37,6 +37,26 @@ namespace xAPI.Records
 
         public TimeSpan? ToT2 => ToT is null ? null : TimeSpan.FromMilliseconds(ToT.Value);
 
+        public bool? IsInTimeInterval(TimeSpan timeOfDay)
+        {
+            if (!FromT.HasValue || !ToT.HasValue)
+                return null;
+
+            TimeSpan fromTimeOfDay = TimeSpan.FromMilliseconds(FromT.Value);
+            TimeSpan toTimeOfDay = TimeSpan.FromMilliseconds(ToT.Value);
+
+            // Check if the timeOfDay falls between fromTime and toTime
+            if (fromTimeOfDay <= toTimeOfDay)
+            {
+                return timeOfDay >= fromTimeOfDay && timeOfDay <= toTimeOfDay;
+            }
+            else
+            {
+                // Crossing midnight
+                return timeOfDay >= fromTimeOfDay || timeOfDay <= toTimeOfDay;
+            }
+        }
+
         public void FieldsFromJSONObject(JSONObject value)
         {
             this.day = (long?)value["day"];

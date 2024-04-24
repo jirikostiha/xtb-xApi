@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace xAPI.Records
 {
@@ -33,6 +34,35 @@ namespace xAPI.Records
             {
                 return trading;
             }
+        }
+
+        public bool? IsInQuotesHours(DateTimeOffset time)
+        {
+            if (Quotes is null)
+                return null;
+
+            foreach (var hoursRecord in Quotes)
+            {
+                if (hoursRecord.Day == time.Day && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
+                    return true;
+            }
+
+            return false;
+        }
+
+
+        public bool? IsInTradingHours(DateTimeOffset time)
+        {
+            if (Trading is null)
+                return null;
+
+            foreach (var hoursRecord in Trading)
+            {
+                if (hoursRecord.Day == time.Day && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
+                    return true;
+            }
+
+            return false;
         }
 
         public void FieldsFromJSONObject(JSONObject value)
