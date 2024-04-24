@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace xAPI.Records
@@ -82,6 +83,8 @@ namespace xAPI.Records
             get { return quoteId; }
             set { quoteId = value; }
         }
+
+        public DateTimeOffset? Timestamp2 => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

@@ -248,6 +248,12 @@ namespace xAPI.Records
             }
         }
 
+        public DateTimeOffset? Open_time2 => Open_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Open_time.Value);
+
+        public DateTimeOffset? Close_time2 => Close_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Close_time.Value);
+
+        public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+
         public void FieldsFromJSONObject(JSONObject value)
         {
             this.close_price = (double?)value["close_price"];

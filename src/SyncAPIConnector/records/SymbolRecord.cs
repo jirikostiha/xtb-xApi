@@ -578,6 +578,10 @@ namespace xAPI.Records
             }
         }
 
+        DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+
+        DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+
         public void FieldsFromJSONObject(JSONObject value)
         {
             this.Ask = (double?)value["ask"];

@@ -1,4 +1,6 @@
-﻿namespace xAPI
+﻿using System;
+
+namespace xAPI
 {
     public interface ITickRecord
     {
@@ -13,6 +15,7 @@
         double? SpreadTable { get; }
         string Symbol { get; }
         long? Timestamp { get; }
+        DateTimeOffset? Timestamp2 { get; }
 
         string ToString();
     }

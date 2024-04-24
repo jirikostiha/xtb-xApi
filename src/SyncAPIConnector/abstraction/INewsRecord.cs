@@ -1,4 +1,6 @@
-﻿namespace xAPI
+﻿using System;
+
+namespace xAPI
 {
     public interface INewsRecord
     {
@@ -7,6 +9,8 @@
         string Key { get; }
 
         long? Time { get; }
+
+        DateTimeOffset? Time2 { get; }
 
         string Title { get; }
     }

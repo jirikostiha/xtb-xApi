@@ -65,6 +65,8 @@ namespace xAPI.Records
             set;
         }
 
+        public DateTimeOffset? StartTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
+
         public void FieldsFromJSONObject(JSONObject value)
         {
             Close = (double?)value["close"];

@@ -1,10 +1,14 @@
-﻿namespace xAPI
+﻿using System;
+
+namespace xAPI
 {
     public interface ITradeRecord
     {
         double? Close_price { get; }
 
         long? Close_time { get; }
+
+        DateTimeOffset? Close_time2 { get; }
 
         bool? Closed { get; }
 
@@ -20,11 +24,15 @@
 
         long? Expiration { get; }
 
+        DateTimeOffset? Expiration2 { get; }
+
         double? Margin_rate { get; }
 
         double? Open_price { get; }
 
         long? Open_time { get; }
+
+        DateTimeOffset? Open_time2 { get; }
 
         long? Order { get; }
 

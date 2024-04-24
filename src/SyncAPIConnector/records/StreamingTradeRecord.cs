@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using xAPI.Codes;
 
@@ -149,6 +150,12 @@ namespace xAPI.Records
             get { return digits; }
             set { digits = (int?)value; }
         }
+
+        public DateTimeOffset? Open_time2 => Open_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Open_time.Value);
+
+        public DateTimeOffset? Close_time2 => Close_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Close_time.Value);
+
+        public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

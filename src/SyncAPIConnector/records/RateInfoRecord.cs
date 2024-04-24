@@ -1,5 +1,6 @@
 namespace xAPI.Records
 {
+    using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public record RateInfoRecord : BaseResponseRecord
@@ -87,6 +88,8 @@ namespace xAPI.Records
                 this.vol = value;
             }
         }
+
+        public DateTimeOffset? StartTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

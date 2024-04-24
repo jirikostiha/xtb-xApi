@@ -1,5 +1,6 @@
 namespace xAPI.Records
 {
+    using System;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public record CalendarRecord : BaseResponseRecord
@@ -69,5 +70,7 @@ namespace xAPI.Records
         {
             get { return title; }
         }
+
+        public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
     }
 }

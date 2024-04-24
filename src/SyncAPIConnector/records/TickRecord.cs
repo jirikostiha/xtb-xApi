@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -112,6 +113,8 @@ namespace xAPI.Records
                 return timestamp;
             }
         }
+
+        public DateTimeOffset? Timestamp2 => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {
