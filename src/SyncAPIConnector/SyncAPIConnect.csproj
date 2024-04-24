@@ -8,20 +8,20 @@
     <NoWarn>CA1707</NoWarn>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
 
-    <Product>Xtb xApi client</Product>
+    <Product>SyncAPIConnect - xtb xApi</Product>
     <Copyright>Copyright © 2024 Jiri Kostiha</Copyright>
     <Company />
     <RepositoryUrl>https://github.com/jirikostiha/xtb-xApi</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
-    <Title>Xtb XApi</Title>
-    <Description>Xtb xApi fork with improvements.</Description>
-    <PackageTags>xapi; xtb; trading; markets; csharp</PackageTags>
+    <Title>SyncAPIConnect - xtb XApi</Title>
+    <Description>Xtb xApi fork with improvements to make life easier.</Description>
+    <PackageTags>xapi; xtb; trading; markets; xopenhub; csharp</PackageTags>
     <PackageProjectUrl>https://github.com/jirikostiha/xtb-xApi</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <SignAssembly>False</SignAssembly>
-    <Version>2.5.6</Version>
+    <Version>2.5.7</Version>
     <Authors>Jiri Kostiha</Authors>
   </PropertyGroup>
 

@@ -11,6 +11,7 @@ It is based on xApi version 2.5.0.
 
 ## Changelog
 
+2.5.7 time conversion to DateTimeOffset, time interval check, long short position extension  
 2.5.6 records changed from classes to C# records  
 2.5.5 common interfaces for streaming and non-streaming records, code constants  
 2.5.4 codes to friendly string extensions  
