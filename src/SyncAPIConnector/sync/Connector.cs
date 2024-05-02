@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using xAPI.Errors;
 
 namespace xAPI.Sync
@@ -72,7 +74,8 @@ namespace xAPI.Sync
         /// <summary>
         /// Lock object used to synchronize access to write socket operations.
         /// </summary>
-        private Object writeLocker = new Object();
+        //private Object writeLocker = new Object();
+        private readonly SemaphoreSlim writeLocker = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Creates new connector instance.
@@ -97,9 +100,10 @@ namespace xAPI.Sync
         /// <param name="message">Message to send</param>
         protected void WriteMessage(string message)
         {
-            lock (writeLocker)
+            writeLocker.Wait();
+            try
             {
-                if (this.Connected())
+                if (Connected())
                 {
                     try
                     {
@@ -120,6 +124,47 @@ namespace xAPI.Sync
 
                 if (OnMessageSended != null)
                     OnMessageSended.Invoke(message);
+            }
+            finally
+            {
+                writeLocker.Release();
+            }
+        }
+
+        /// <summary>
+        /// Writes raw message to the remote server.
+        /// </summary>
+        /// <param name="message">Message to send</param>
+        protected async Task WriteMessageAsync(string message)
+        {
+            await writeLocker.WaitAsync();
+            try
+            {
+                if (Connected())
+                {
+                    try
+                    {
+                        await apiWriteStream.WriteLineAsync(message).ConfigureAwait(false);
+                        await apiWriteStream.FlushAsync().ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        Disconnect();
+                        throw new APICommunicationException("Error while sending the data: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    Disconnect();
+                    throw new APICommunicationException("Error while sending the data (socket disconnected)");
+                }
+
+                if (OnMessageSended != null)
+                    OnMessageSended.Invoke(message);
+            }
+            finally
+            {
+                writeLocker.Release();
             }
         }
 
@@ -169,6 +214,54 @@ namespace xAPI.Sync
                 throw new APICommunicationException("Disconnected from server: " + ex.Message);
             }
         }
+
+        /// <summary>
+        /// Reads raw message from the remote server.
+        /// </summary>
+        /// <returns>Read message</returns>
+        protected async Task<string> ReadMessageAsync()
+        {
+            StringBuilder result = new StringBuilder();
+            char lastChar = ' ';
+
+            try
+            {
+                byte[] buffer = new byte[apiSocket.ReceiveBufferSize];
+
+                string line;
+                while ((line = await apiReadStream.ReadLineAsync().ConfigureAwait(false)) != null)
+                {
+                    result.Append(line);
+
+                    // Last line is always empty
+                    if (line == "" && lastChar == '}')
+                        break;
+
+                    if (line.Length != 0)
+                    {
+                        lastChar = line[line.Length - 1];
+                    }
+                }
+
+                if (line == null)
+                {
+                    Disconnect();
+                    throw new APICommunicationException("Disconnected from server");
+                }
+
+                if (OnMessageReceived != null)
+                    OnMessageReceived.Invoke(result.ToString());
+
+                return result.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Disconnect();
+                throw new APICommunicationException("Disconnected from server: " + ex.Message);
+            }
+        }
+
 
         /// <summary>
         /// Disconnects from the remote server.

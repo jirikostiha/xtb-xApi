@@ -5,22 +5,14 @@ using xAPI.Responses;
 using xAPI.Commands;
 using xAPI.Records;
 using xAPI.Codes;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace xAPITest
 {
-    class Program
+    public static class AsyncExample
     {
-        private static Server serverData = Servers.DEMO;
-        private static string userId = "10000";
-        private static string password = "password";
-
-        static void Main(string[] args)
+        public static async Task Run(Server serverData, string userId, string password)
         {
-            // async calls example
-            //AsyncExample.Run(serverData, userId, password).Wait();
-            //return;
-
             Console.WriteLine("Server address: " + serverData.Address + " port: " + serverData.MainPort + " streaming port: " + serverData.StreamingPort);
 
             // Connect to server
@@ -40,18 +32,18 @@ namespace xAPITest
             // Login to server
             Credentials credentials = new Credentials(userId, password, "", "YOUR APP NAME");
 
-            LoginResponse loginResponse = APICommandFactory.ExecuteLoginCommand(connector, credentials, true);
+            LoginResponse loginResponse = await APICommandFactory.ExecuteLoginCommandAsync(connector, credentials, true);
             Console.WriteLine("Logged in as: " + userId);
 
-            var pingResponse = APICommandFactory.ExecutePingCommand(connector, true);
+            var pingResponse = await APICommandFactory.ExecutePingCommandAsync(connector, true);
             Console.WriteLine("Ping status: " + pingResponse.Status);
 
             // Execute GetServerTime command
-            ServerTimeResponse serverTimeResponse = APICommandFactory.ExecuteServerTimeCommand(connector, true);
+            ServerTimeResponse serverTimeResponse = await APICommandFactory.ExecuteServerTimeCommandAsync(connector, true);
             Console.WriteLine("Server time: " + serverTimeResponse.TimeString);
 
             // Execute GetAllSymbols command
-            AllSymbolsResponse allSymbolsResponse = APICommandFactory.ExecuteAllSymbolsCommand(connector, true);
+            AllSymbolsResponse allSymbolsResponse = await APICommandFactory.ExecuteAllSymbolsCommandAsync(connector, true);
             Console.WriteLine("All symbols count: " + allSymbolsResponse.SymbolRecords.Count);
 
             // Print first 5 symbols
@@ -63,7 +55,7 @@ namespace xAPITest
 
             // get US500 info
             Console.WriteLine("Getting US500 symbol.");
-            var us500Symbol = APICommandFactory.ExecuteSymbolCommand(connector, "US500");
+            var us500Symbol = await APICommandFactory.ExecuteSymbolCommandAsync(connector, "US500");
             Console.WriteLine(us500Symbol.Symbol.Symbol + " ask: " + us500Symbol.Symbol.Ask + " bid: " + us500Symbol.Symbol.Bid);
 
             Console.WriteLine("\n----Trading----");
@@ -80,12 +72,16 @@ namespace xAPITest
                 null,
                 null);
 
+            await Task.Delay(500);
+
             // Warning: Opening trade. Make sure you have set up demo account!
-            TradeTransactionResponse us500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
+            TradeTransactionResponse us500TradeTransaction = await APICommandFactory.ExecuteTradeTransactionCommandAsync(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Opened position. result order:{us500TradeTransaction.Order}");
 
+            await Task.Delay(1000);
+
             // get all open trades
-            TradesResponse openTrades = APICommandFactory.ExecuteTradesCommand(connector, true, true);
+            TradesResponse openTrades = await APICommandFactory.ExecuteTradesCommandAsync(connector, true, true);
             Console.WriteLine("Open positions: ");
             foreach (var tradeRecord in openTrades.TradeRecords)
             {
@@ -95,18 +91,18 @@ namespace xAPITest
 
             TradeRecord us500trade = openTrades.TradeRecords.First(t => t.Symbol == "US500");
 
-            Thread.Sleep(500);
+            await Task.Delay(1000);
 
             // update trade transaction
             us500TradeTransInfo.Order = us500trade.Order;
             us500TradeTransInfo.Tp = us500trade.Open_price + 200;
             //us500TradeTransInfo.CustomComment = "my custom comment";
-            TradeTransactionResponse updatedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
+            TradeTransactionResponse updatedUs500TradeTransaction = await APICommandFactory.ExecuteTradeTransactionCommandAsync(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Modified position. order:{us500trade.Order} -> tp:{us500TradeTransInfo.Tp}, result order:{updatedUs500TradeTransaction.Order}");
 
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
 
-            TradesResponse openTrades2 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
+            TradesResponse openTrades2 = await APICommandFactory.ExecuteTradesCommandAsync(connector, true, true);
             Console.WriteLine("Open positions: ");
             foreach (var tradeRecord in openTrades2.TradeRecords)
             {
@@ -114,13 +110,17 @@ namespace xAPITest
                     $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
             }
 
+            await Task.Delay(1000);
+
             // close trade transaction
             us500TradeTransInfo.Type = TRADE_TRANSACTION_TYPE.ORDER_CLOSE;
             us500TradeTransInfo.Price = us500Symbol.Symbol.Bid;
-            TradeTransactionResponse closedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
+            TradeTransactionResponse closedUs500TradeTransaction = await APICommandFactory.ExecuteTradeTransactionCommandAsync(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Closed position. order:{us500TradeTransInfo.Order}, result order:{closedUs500TradeTransaction.Order}");
 
-            TradesResponse openTrades3 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
+            await Task.Delay(1000);
+
+            TradesResponse openTrades3 = await APICommandFactory.ExecuteTradesCommandAsync(connector, true, true);
             if (openTrades3.TradeRecords.Count != 0)
             {
                 Console.WriteLine("Open positions: ");
@@ -131,7 +131,7 @@ namespace xAPITest
                 }
             }
 
-            Console.WriteLine("Done.");
+            Console.WriteLine("Done");
             Console.Read();
         }
     }

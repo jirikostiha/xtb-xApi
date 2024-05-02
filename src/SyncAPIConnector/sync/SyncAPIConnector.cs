@@ -10,12 +10,12 @@ using System.Security.Cryptography.X509Certificates;
 using JSONObject = Newtonsoft.Json.Linq.JObject;
 using xAPI.Streaming;
 using System.Net;
-using System.Runtime.CompilerServices;
 using xAPI.Errors;
 using xAPI.Commands;
 using xAPI.Streaming;
 using xAPI.Utils;
 using SyncAPIConnect.Utils;
+using System.Threading.Tasks;
 
 namespace xAPI.Sync
 {
@@ -80,7 +80,8 @@ namespace xAPI.Sync
         /// <summary>
         /// Lock object used to synchronize access to read/write socket operations.
         /// </summary>
-        private Object locker = new Object();
+        //private Object locker = new Object();
+        private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Creates new SyncAPIConnector instance based on given Server data.
@@ -220,11 +221,29 @@ namespace xAPI.Sync
         /// <summary>
         /// Executes given command and receives response (withholding API inter-command timeout).
         /// </summary>
+        /// <param name="cmd">Command to execute</param>
+        /// <returns>Response from the server</returns>
+		public async Task<JSONObject> ExecuteCommandAsync(BaseCommand cmd)
+        {
+            try
+            {
+                return (JSONObject)JSONObject.Parse(await this.ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false));
+            }
+            catch (Exception ex)
+            {
+                throw new APICommunicationException("Problem with executing command: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Executes given command and receives response (withholding API inter-command timeout).
+        /// </summary>
         /// <param name="message">Command to execute</param>
         /// <returns>Response from the server</returns>
         public string ExecuteCommand(string message)
         {
-            lock (locker)
+            locker.Wait();
+            try
             {
                 long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
@@ -249,6 +268,50 @@ namespace xAPI.Sync
                 }
 
                 return response;
+            }
+            finally
+            {
+                locker.Release();
+            }
+        }
+
+        /// <summary>
+        /// Executes given command and receives response (withholding API inter-command timeout).
+        /// </summary>
+        /// <param name="message">Command to execute</param>
+        /// <returns>Response from the server</returns>
+		public async Task<string> ExecuteCommandAsync(string message)
+        {
+            await locker.WaitAsync();
+            try
+            {
+                long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+                long interval = currentTimestamp - lastCommandTimestamp;
+
+                // If interval between now and last command is less than minimum command time space - wait
+                if (interval < COMMAND_TIME_SPACE)
+                {
+                    await Task.Delay((int)(COMMAND_TIME_SPACE - interval));
+                }
+
+                await this.WriteMessageAsync(message).ConfigureAwait(false);
+
+                this.lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
+                string response = await this.ReadMessageAsync().ConfigureAwait(false);
+
+                if (response == null || response.Equals(""))
+                {
+                    Disconnect();
+                    throw new APICommunicationException("Server not responding");
+                }
+
+                return response;
+            }
+            finally
+            {
+                locker.Release();
             }
         }
 
