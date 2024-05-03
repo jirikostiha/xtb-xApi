@@ -30,7 +30,7 @@ For example like this:
     <TargetFramework>net8</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SyncAPIConnect" Version="2.5.5" />
+    <PackageReference Include="SyncAPIConnect" Version="2.5.X" />
   </ItemGroup>
 </Project>
 ```
