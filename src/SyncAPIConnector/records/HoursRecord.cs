@@ -17,6 +17,12 @@ namespace xAPI.Records
             }
         }
 
+        /// <summary>
+        /// Gets the value of <see cref="Day"/> converted to the corresponding <see cref="DayOfWeek"/>.
+        /// Returns <c>null</c> if <see cref="Day"/> is <c>null</c>.
+        /// </summary>
+        public DayOfWeek? DayOfWeek => day.HasValue ? ToDayOfWeek(day.Value) : null;
+
         public virtual long? FromT
         {
             get
@@ -68,5 +74,14 @@ namespace xAPI.Records
         {
             return "HoursRecord{" + "day=" + this.day + ", fromT=" + this.fromT + ", toT=" + this.toT + '}';
         }
+
+        /// <summary>
+        /// Converts a long representing a day (1 to 7) to the corresponding <see cref="DayOfWeek"/>.
+        /// </summary>
+        /// <param name="day">A long value representing the day, where 1 is Monday and 7 is Sunday.</param>
+        /// <returns>
+        /// The <see cref="DayOfWeek"/> corresponding to the provided day.
+        /// </returns>
+        public static DayOfWeek ToDayOfWeek(long day) => day == 7 ? System.DayOfWeek.Sunday : (DayOfWeek)day;
     }
 }
