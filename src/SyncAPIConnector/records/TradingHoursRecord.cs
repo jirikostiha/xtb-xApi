@@ -36,6 +36,15 @@ namespace xAPI.Records
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified time falls within the quote hours.
+        /// </summary>
+        /// <param name="time">The <see cref="DateTimeOffset"/> to check.</param>
+        /// <returns>
+        /// <c>true</c> if the specified time is within the quote hours;
+        /// <c>false</c> if it is not;
+        /// <c>null</c> if the Quotes collection is <c>null</c>.
+        /// </returns>
         public bool? IsInQuotesHours(DateTimeOffset time)
         {
             if (Quotes is null)
@@ -43,14 +52,23 @@ namespace xAPI.Records
 
             foreach (var hoursRecord in Quotes)
             {
-                if (hoursRecord.Day == time.Day && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
+                if (hoursRecord.DayOfWeek == time.DayOfWeek
+                    && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
                     return true;
             }
 
             return false;
         }
 
-
+        /// <summary>
+        /// Determines whether the specified time falls within the trading hours.
+        /// </summary>
+        /// <param name="time">The <see cref="DateTimeOffset"/> to check.</param>
+        /// <returns>
+        /// <c>true</c> if the specified time is within the trading hours;
+        /// <c>false</c> if it is not;
+        /// <c>null</c> if the Trading collection is <c>null</c>.
+        /// </returns>
         public bool? IsInTradingHours(DateTimeOffset time)
         {
             if (Trading is null)
@@ -58,7 +76,8 @@ namespace xAPI.Records
 
             foreach (var hoursRecord in Trading)
             {
-                if (hoursRecord.Day == time.Day && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
+                if (hoursRecord.DayOfWeek == time.DayOfWeek
+                    && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
                     return true;
             }
 
