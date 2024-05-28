@@ -582,6 +582,11 @@ namespace xAPI.Records
 
         public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
+        /// <summary>
+        /// Indicates if market is cfd stock market.
+        /// It is based on symbol name as xtb is using it to distinguish between stocks and cfd stocks.
+        /// </summary>
+        public bool IsCfdStock => Symbol.EndsWith("_4", StringComparison.InvariantCulture);
 
         public void FieldsFromJSONObject(JSONObject value)
         {
