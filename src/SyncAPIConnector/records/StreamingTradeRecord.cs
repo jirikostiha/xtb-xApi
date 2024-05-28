@@ -8,7 +8,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
-    [DebuggerDisplay("'{Symbol}', position:{Position}, order:{Order}, order2:{Order2}")]
+    [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
     public record StreamingTradeRecord : BaseResponseRecord, ITradeRecord
     {
         private double? close_price;

@@ -2,9 +2,10 @@ namespace xAPI.Records
 {
     using System;
     using System.Diagnostics;
+    using xAPI.Codes;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    [DebuggerDisplay("'{Symbol}', position:{Position}, order:{Order}, order2:{Order2}")]
+    [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}, profit:{Profit}, volume:{Volume}")]
     public record TradeRecord : BaseResponseRecord, ITradeRecord
     {
         private double? close_price;

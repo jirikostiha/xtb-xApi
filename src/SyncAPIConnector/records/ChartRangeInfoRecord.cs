@@ -1,12 +1,13 @@
+using System.Diagnostics;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("{symbol}")]
     public record ChartRangeInfoRecord
     {
-
         private string symbol;
         private PERIOD_CODE period;
         private long? start;

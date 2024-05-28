@@ -5,7 +5,7 @@ namespace xAPI.Records
     using xAPI.Codes;
     using System.Diagnostics;
 
-    [DebuggerDisplay("'{Symbol}', '{CategoryName}', time:{TimeString}")]
+    [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
     public record SymbolRecord : BaseResponseRecord
     {
         private double? ask;
@@ -578,9 +578,10 @@ namespace xAPI.Records
             }
         }
 
-        DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+        public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
-        DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+        public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+
 
         public void FieldsFromJSONObject(JSONObject value)
         {

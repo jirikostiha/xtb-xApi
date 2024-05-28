@@ -1,4 +1,6 @@
-﻿namespace xAPI.Codes
+﻿using System.Globalization;
+
+namespace xAPI.Codes
 {
     public class Side : BaseCode
     {
@@ -8,12 +10,12 @@
         /// <summary>
         /// Buy.
         /// </summary>
-        public static readonly Side BUY = new Side(BUY_CODE);
+        public static readonly Side BUY = new(BUY_CODE);
 
         /// <summary>
         /// Sell.
         /// </summary>
-        public static readonly Side SELL = new Side(SELL_CODE);
+        public static readonly Side SELL = new(SELL_CODE);
 
         public Side FromCode(int code)
         {
@@ -29,5 +31,14 @@
             : base(code)
         {
         }
+
+        /// <summary> Converts to human friendly string. </summary>
+        public string? ToFriendlyString() =>
+            Code switch
+            {
+                BUY_CODE => "buy",
+                SELL_CODE => "sell",
+                _ => Code.ToString(CultureInfo.InvariantCulture),
+            };
     }
 }

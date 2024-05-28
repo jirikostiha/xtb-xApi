@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("{symbol}")]
     public record ChartLastInfoRecord
     {
         private string symbol;

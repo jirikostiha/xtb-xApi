@@ -5,9 +5,11 @@ using System.Text;
 
 namespace xAPI.Records
 {
+    using System.Diagnostics;
     using xAPI.Codes;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("{Login}")]
     public record IbRecord : BaseResponseRecord
     {
         /// <summary>

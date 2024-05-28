@@ -1,8 +1,10 @@
 namespace xAPI.Records
 {
     using System;
+    using System.Diagnostics;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("{Country}, impact:{Impact}")]
     public record CalendarRecord : BaseResponseRecord
     {
         private string country;

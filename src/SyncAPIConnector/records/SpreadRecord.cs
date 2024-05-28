@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("{Symbol}, value:{Value}")]
     public record SpreadRecord : BaseResponseRecord
     {
         private long? precision;

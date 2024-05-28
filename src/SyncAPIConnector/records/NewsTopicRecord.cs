@@ -3,8 +3,10 @@ using System.Collections.Generic;
 namespace xAPI.Records
 {
     using System;
+    using System.Diagnostics;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("{Key}")]
     public record NewsTopicRecord : BaseResponseRecord, INewsRecord
     {
         private string body;

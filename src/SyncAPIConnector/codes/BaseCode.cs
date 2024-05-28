@@ -60,6 +60,12 @@ namespace xAPI.Codes
             return base.GetHashCode();
         }
 
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return code.ToString();
+        }
+
         [Obsolete("Use Code instead")]
         public long LongValue
         {

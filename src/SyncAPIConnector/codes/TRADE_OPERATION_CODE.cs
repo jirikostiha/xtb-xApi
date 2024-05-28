@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace xAPI.Codes
 {
     public class TRADE_OPERATION_CODE : BaseCode
@@ -10,22 +12,31 @@ namespace xAPI.Codes
         public const long SELL_STOP_CODE = 5;
         public const long BALANCE_CODE = 6;
 
-        public static readonly TRADE_OPERATION_CODE BUY = new TRADE_OPERATION_CODE(BUY_CODE);
-        public static readonly TRADE_OPERATION_CODE SELL = new TRADE_OPERATION_CODE(SELL_CODE);
-        public static readonly TRADE_OPERATION_CODE BUY_LIMIT = new TRADE_OPERATION_CODE(BUY_LIMIT_CODE);
-        public static readonly TRADE_OPERATION_CODE SELL_LIMIT = new TRADE_OPERATION_CODE(SELL_LIMIT_CODE);
-        public static readonly TRADE_OPERATION_CODE BUY_STOP = new TRADE_OPERATION_CODE(BUY_STOP_CODE);
-        public static readonly TRADE_OPERATION_CODE SELL_STOP = new TRADE_OPERATION_CODE(SELL_STOP_CODE);
-        public static readonly TRADE_OPERATION_CODE BALANCE = new TRADE_OPERATION_CODE(BALANCE_CODE);
+        public static readonly TRADE_OPERATION_CODE BUY = new(BUY_CODE);
+        public static readonly TRADE_OPERATION_CODE SELL = new(SELL_CODE);
+        public static readonly TRADE_OPERATION_CODE BUY_LIMIT = new(BUY_LIMIT_CODE);
+        public static readonly TRADE_OPERATION_CODE SELL_LIMIT = new(SELL_LIMIT_CODE);
+        public static readonly TRADE_OPERATION_CODE BUY_STOP = new(BUY_STOP_CODE);
+        public static readonly TRADE_OPERATION_CODE SELL_STOP = new(SELL_STOP_CODE);
+        public static readonly TRADE_OPERATION_CODE BALANCE = new(BALANCE_CODE);
 
         public TRADE_OPERATION_CODE(long code)
             : base(code)
         {
         }
 
-        public override string ToString()
-        {
-            return this.Code.ToString();
-        }
+        /// <summary> Converts to human friendly string. </summary>
+        public string? ToFriendlyString() =>
+             Code switch
+             {
+                 BUY_CODE => "buy",
+                 SELL_CODE => "sell",
+                 BUY_LIMIT_CODE => "buy limit",
+                 SELL_LIMIT_CODE => "sell limit",
+                 BUY_STOP_CODE => "buy stop",
+                 SELL_STOP_CODE => "sell stop",
+                 BALANCE_CODE => "balance",
+                 _ => Code.ToString(CultureInfo.InvariantCulture),
+             };
     }
 }

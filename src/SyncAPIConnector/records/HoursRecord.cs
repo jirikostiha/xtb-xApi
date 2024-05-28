@@ -1,8 +1,10 @@
 namespace xAPI.Records
 {
     using System;
+    using System.Diagnostics;
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
+    [DebuggerDisplay("day:{Day}, since:{FromT2}, until:{ToT2}")]
     public record HoursRecord : BaseResponseRecord
     {
         private long? day;

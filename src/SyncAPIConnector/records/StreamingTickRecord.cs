@@ -7,7 +7,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
-    [DebuggerDisplay("'{Symbol}', Ask:{Ask}")]
+    [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
     public record StreamingTickRecord : BaseResponseRecord, ITickRecord
     {
         private double? ask;
