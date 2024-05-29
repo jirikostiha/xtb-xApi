@@ -11,7 +11,7 @@ namespace xAPI.Records
         private double? close_price;
         private long? close_time;
         private bool? closed;
-        private long? cmd;
+        private TRADE_OPERATION_CODE cmd;
         private string comment;
         private double? commission;
         private double? commission_agent;
@@ -58,7 +58,7 @@ namespace xAPI.Records
             }
         }
 
-        public virtual long? Cmd
+        public virtual TRADE_OPERATION_CODE Cmd
         {
             get
             {
@@ -260,7 +260,7 @@ namespace xAPI.Records
             this.close_price = (double?)value["close_price"];
             this.close_time = (long?)value["close_time"];
             this.closed = (bool?)value["closed"];
-            this.cmd = (long?)value["cmd"];
+            this.cmd = new TRADE_OPERATION_CODE((long)value["cmd"]);
             this.comment = (string)value["comment"];
             this.commission = (double?)value["commission"];
             this.commission_agent = (double?)value["commission_agent"];

@@ -1,4 +1,5 @@
 ﻿using System;
+using xAPI.Codes;
 
 namespace xAPI
 {
@@ -12,7 +13,7 @@ namespace xAPI
 
         bool? Closed { get; }
 
-        long? Cmd { get; }
+        TRADE_OPERATION_CODE Cmd { get; }
 
         string Comment { get; }
 
