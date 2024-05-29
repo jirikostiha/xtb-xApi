@@ -11,6 +11,7 @@ The changes made are mostly additive except for a few necessary exceptions. It i
 
 ## Changelog
 
+2.5.10 cfd stock indication, various changes on records and codes  
 2.5.9 string constants, fix hours interval evaluation  
 2.5.8 async methods  
 2.5.7 time conversion to DateTimeOffset, time interval check, long short position extension  
