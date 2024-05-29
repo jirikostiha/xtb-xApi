@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xAPITest", "xAPITest\xAPITest.csproj", "{3F0B8C9E-EBFD-4A27-8080-D60418449217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "xAPITest", "xAPITest\xAPITest.csproj", "{3F0B8C9E-EBFD-4A27-8080-D60418449217}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncAPIConnect", "SyncAPIConnector\SyncAPIConnect.csproj", "{E6BC484B-A042-4CA6-9079-E91136D92207}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncAPIConnect", "SyncAPIConnector\SyncAPIConnect.csproj", "{E6BC484B-A042-4CA6-9079-E91136D92207}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{2D6B372D-4BBE-456D-B399-D07957698056}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,6 +18,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{825AB07F-13FE-4EB2-A216-2D69D60710C8}"
 	ProjectSection(SolutionItems) = preProject
 		..\readme.md = ..\readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{CACC852B-E3CC-4663-99D3-2E5A19D04F45}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
 	EndProjectSection
 EndProject
 Global
@@ -37,6 +42,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CACC852B-E3CC-4663-99D3-2E5A19D04F45} = {2D6B372D-4BBE-456D-B399-D07957698056}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCBF53F7-BA38-49D4-A679-3424CC0A4664}
