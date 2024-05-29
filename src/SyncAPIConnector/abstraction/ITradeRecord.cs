@@ -13,7 +13,9 @@ namespace xAPI
 
         bool? Closed { get; }
 
-        TRADE_OPERATION_CODE Cmd { get; }
+        long? Cmd { get; }
+
+        TRADE_OPERATION_CODE? Cmd2 { get; }
 
         string Comment { get; }
 
