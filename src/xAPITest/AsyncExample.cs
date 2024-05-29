@@ -95,7 +95,7 @@ namespace xAPITest
 
             // update trade transaction
             us500TradeTransInfo.Order = us500trade.Order;
-            us500TradeTransInfo.Tp = us500trade.Open_price + 200;
+            us500TradeTransInfo.Tp = us500trade.Open_price * 1.3;
             //us500TradeTransInfo.CustomComment = "my custom comment";
             TradeTransactionResponse updatedUs500TradeTransaction = await APICommandFactory.ExecuteTradeTransactionCommandAsync(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Modified position. order:{us500trade.Order} -> tp:{us500TradeTransInfo.Tp}, result order:{updatedUs500TradeTransaction.Order}");
@@ -110,7 +110,7 @@ namespace xAPITest
                     $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
             }
 
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             // close trade transaction
             us500TradeTransInfo.Type = TRADE_TRANSACTION_TYPE.ORDER_CLOSE;
@@ -118,7 +118,7 @@ namespace xAPITest
             TradeTransactionResponse closedUs500TradeTransaction = await APICommandFactory.ExecuteTradeTransactionCommandAsync(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Closed position. order:{us500TradeTransInfo.Order}, result order:{closedUs500TradeTransaction.Order}");
 
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             TradesResponse openTrades3 = await APICommandFactory.ExecuteTradesCommandAsync(connector, true, true);
             if (openTrades3.TradeRecords.Count != 0)

@@ -87,11 +87,11 @@ namespace xAPITest
 
             TradeRecord us500trade = openTrades.TradeRecords.First(t => t.Symbol == "US500");
 
-            Thread.Sleep(500);
+            Thread.Sleep(2000);
 
             // update trade transaction
             us500TradeTransInfo.Order = us500trade.Order;
-            us500TradeTransInfo.Tp = us500trade.Open_price + 200;
+            us500TradeTransInfo.Tp = us500trade.Open_price * 1.3;
             //us500TradeTransInfo.CustomComment = "my custom comment";
             TradeTransactionResponse updatedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Modified position. order:{us500trade.Order} -> tp:{us500TradeTransInfo.Tp}, result order:{updatedUs500TradeTransaction.Order}");
@@ -111,6 +111,8 @@ namespace xAPITest
             us500TradeTransInfo.Price = us500Symbol.Symbol.Bid;
             TradeTransactionResponse closedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
             Console.WriteLine($"Closed position. order:{us500TradeTransInfo.Order}, result order:{closedUs500TradeTransaction.Order}");
+
+            Thread.Sleep(2000);
 
             TradesResponse openTrades3 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
             if (openTrades3.TradeRecords.Count != 0)
