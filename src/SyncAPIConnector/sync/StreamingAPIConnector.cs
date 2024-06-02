@@ -126,7 +126,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Dedicated streaming listener.
         /// </summary>
-        private StreamingListener sl;
+        private IStreamingListener sl;
 
         /// <summary>
         /// Stream session id (given on login).
@@ -153,7 +153,7 @@ namespace xAPI.Sync
         /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
         /// </summary>
         /// <param name="server">Server data</param>
-        public StreamingAPIConnector(Server server, string streamSessionId, StreamingListener streamingListner)
+        public StreamingAPIConnector(Server server, string streamSessionId, IStreamingListener streamingListner)
         {
             this.server = server;
             this.streamSessionId = streamSessionId;
@@ -164,7 +164,7 @@ namespace xAPI.Sync
         /// Connect to the streaming using given streaming listener.
         /// </summary>
         /// <param name="streamingListener">Streaming listener</param>
-        public void Connect(StreamingListener streamingListener)
+        public void Connect(IStreamingListener streamingListener)
         {
             Connect(streamingListener, streamSessionId);
         }
@@ -182,7 +182,7 @@ namespace xAPI.Sync
         /// </summary>
         /// <param name="streamingListener">Streaming listener</param>
         /// <param name="streamSessionId">Stream session id</param>
-        public void Connect(StreamingListener streamingListener, string streamSessionId)
+        public void Connect(IStreamingListener streamingListener, string streamSessionId)
         {
             this.streamSessionId = streamSessionId;
 
@@ -247,7 +247,7 @@ namespace xAPI.Sync
         /// <param name="lr">Login response</param>
         /// <param name="secure">Secure</param>
         [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(StreamingListener sl, string ip, int port, LoginResponse lr, bool secure)
+        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr, bool secure)
         {
             this.running = true;
             this.sl = sl;
@@ -280,13 +280,13 @@ namespace xAPI.Sync
         }
 
         [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(StreamingListener sl, string ip, int port, LoginResponse lr)
+        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr)
             : this(sl, ip, port, lr, false)
         {
         }
 
         [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        public StreamingAPIConnector(StreamingListener sl, Server dt, LoginResponse lr)
+        public StreamingAPIConnector(IStreamingListener sl, Server dt, LoginResponse lr)
             : this(sl, dt.Address, dt.StreamingPort, lr, dt.Secure)
         {
         }

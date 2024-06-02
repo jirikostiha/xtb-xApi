@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.Json.Nodes;
 
 namespace xAPI.Streaming
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     sealed class TickPricesSubscribe
     {
-        private string symbol;
-        private long? minArrivalTime;
-        private long? maxLevel;
-        private string streamSessionId;
+        private readonly string symbol;
+        private readonly long? minArrivalTime;
+        private readonly long? maxLevel;
+        private readonly string streamSessionId;
 
         public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime = null, long? maxLevel = null)
         {
@@ -24,9 +20,11 @@ namespace xAPI.Streaming
 
         public override string ToString()
         {
-            JSONObject result = new JSONObject();
-            result.Add("command", "getTickPrices");
-            result.Add("symbol", symbol);
+            JsonObject result = new()
+            {
+                { "command", "getTickPrices" },
+                { "symbol", symbol }
+            };
 
             if (minArrivalTime.HasValue)
                 result.Add("minArrivalTime", minArrivalTime);
@@ -35,7 +33,7 @@ namespace xAPI.Streaming
                 result.Add("maxLevel", maxLevel);
 
             result.Add("streamSessionId", streamSessionId);
-            return result.ToString();
+            return result.ToJsonString();
         }
     }
 }

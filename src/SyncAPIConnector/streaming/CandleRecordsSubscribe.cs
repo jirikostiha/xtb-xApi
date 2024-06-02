@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.Json.Nodes;
 
 namespace xAPI.Streaming
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     sealed class CandleRecordsSubscribe
     {
-        private string symbol;
-        private string streamSessionId;
+        private readonly string symbol;
+        private readonly string streamSessionId;
 
         public CandleRecordsSubscribe(string symbol, string streamSessionId)
         {
@@ -20,11 +16,13 @@ namespace xAPI.Streaming
 
         public override string ToString()
         {
-            JSONObject result = new JSONObject();
-            result.Add("command", "getCandles");
-            result.Add("streamSessionId", streamSessionId);
-            result.Add("symbol", symbol);
-            return result.ToString();
+            JsonObject result = new()
+            {
+                { "command", "getCandles" },
+                { "streamSessionId", streamSessionId },
+                { "symbol", symbol }
+            };
+            return result.ToJsonString();
         }
     }
 }

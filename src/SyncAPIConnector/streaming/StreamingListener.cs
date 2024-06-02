@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using xAPI.Records;
+﻿using xAPI.Records;
 
 namespace xAPI.Streaming
 {
-    public interface StreamingListener
+    public interface IStreamingListener
     {
         void ReceiveTradeRecord(StreamingTradeRecord tradeRecord);
         void ReceiveTickRecord(StreamingTickRecord tickRecord);

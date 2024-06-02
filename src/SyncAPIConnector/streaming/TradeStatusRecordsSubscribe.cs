@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.Json.Nodes;
 
 namespace xAPI.Streaming
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     sealed class TradeStatusRecordsSubscribe
     {
-        private string streamSessionId;
+        private readonly string streamSessionId;
 
         public TradeStatusRecordsSubscribe(string streamSessionId)
         {
@@ -18,10 +14,12 @@ namespace xAPI.Streaming
 
         public override string ToString()
         {
-            JSONObject result = new JSONObject();
-            result.Add("command", "getTradeStatus");
-            result.Add("streamSessionId", streamSessionId);
-            return result.ToString();
+            JsonObject result = new()
+            {
+                { "command", "getTradeStatus" },
+                { "streamSessionId", streamSessionId }
+            };
+            return result.ToJsonString();
         }
     }
 }
