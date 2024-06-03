@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="\src\SyncAPIConnector\package_icon.png " alt="Icon" width="50"/>
+</p>
+
 # SyncAPIConnect - Xtb xApi client  
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/jirikostiha/xtb-xApi)
