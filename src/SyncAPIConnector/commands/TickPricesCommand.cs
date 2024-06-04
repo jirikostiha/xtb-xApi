@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class TickPricesCommand : BaseCommand
     {
-        public TickPricesCommand(JSONObject arguments, bool prettyPrint)
+        public TickPricesCommand(JsonObject arguments, bool prettyPrint)
             : base(arguments, prettyPrint)
         {
         }

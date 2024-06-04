@@ -1,6 +1,7 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Responses
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class MarginLevelResponse : BaseResponse
     {
@@ -14,7 +15,7 @@ namespace xAPI.Responses
 
         public MarginLevelResponse(string body) : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             this.balance = (double?)ob["balance"];
             this.equity = (double?)ob["equity"];
             this.currency = (string)ob["currency"];

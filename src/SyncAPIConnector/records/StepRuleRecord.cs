@@ -1,11 +1,8 @@
+using System.Collections.Generic;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using System;
-    using xAPI.Codes;
-    using System.Collections.Generic;
-
     public record StepRuleRecord : BaseResponseRecord
     {
         private int Id { get; set; }
@@ -16,7 +13,7 @@ namespace xAPI.Records
         {
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.Id = (int)value["id"];
             this.Name = (string)value["name"];
@@ -24,11 +21,11 @@ namespace xAPI.Records
             this.Steps = new LinkedList<StepRecord>();
             if (value["steps"] != null)
             {
-                JSONArray jsonarray = (JSONArray)value["steps"];
-                foreach (JSONObject i in jsonarray)
+                JsonArray jsonarray = value["steps"].AsArray();
+                foreach (JsonObject i in jsonarray)
                 {
                     StepRecord rec = new StepRecord();
-                    rec.FieldsFromJSONObject(i);
+                    rec.FieldsFromJsonObject(i);
                     this.Steps.AddLast(rec);
                 }
             }

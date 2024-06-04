@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("{Symbol}")]
     public record TradingHoursRecord : BaseResponseRecord
@@ -86,33 +85,33 @@ namespace xAPI.Records
             return false;
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
-            FieldsFromJSONObject(value, null);
+            FieldsFromJsonObject(value, null);
         }
 
-        public bool FieldsFromJSONObject(JSONObject value, string str)
+        public bool FieldsFromJsonObject(JsonObject value, string str)
         {
             this.symbol = (string)value["symbol"];
             quotes = new LinkedList<HoursRecord>();
             if (value["quotes"] != null)
             {
-                JSONArray jsonarray = (JSONArray)value["quotes"];
-                foreach (JSONObject i in jsonarray)
+                JsonArray jsonarray = value["quotes"].AsArray();
+                foreach (JsonObject i in jsonarray)
                 {
                     HoursRecord rec = new HoursRecord();
-                    rec.FieldsFromJSONObject(i);
+                    rec.FieldsFromJsonObject(i);
                     quotes.AddLast(rec);
                 }
             }
             trading = new LinkedList<HoursRecord>();
             if (value["trading"] != null)
             {
-                JSONArray jsonarray = (JSONArray)value["trading"];
-                foreach (JSONObject i in jsonarray)
+                JsonArray jsonarray = value["trading"].AsArray();
+                foreach (JsonObject i in jsonarray)
                 {
                     HoursRecord rec = new HoursRecord();
-                    rec.FieldsFromJSONObject(i);
+                    rec.FieldsFromJsonObject(i);
                     trading.AddLast(rec);
                 }
             }

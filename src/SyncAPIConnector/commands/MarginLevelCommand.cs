@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class MarginLevelCommand : BaseCommand
     {
-        public MarginLevelCommand(bool? prettyPrint) : base(new JSONObject(), prettyPrint)
+        public MarginLevelCommand(bool? prettyPrint) : base(new JsonObject(), prettyPrint)
         {
         }
 

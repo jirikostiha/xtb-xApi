@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+using xAPI.Codes;
 
 namespace xAPI.Records
 {
-    using System.Diagnostics;
-    using xAPI.Codes;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Login}")]
     public record IbRecord : BaseResponseRecord
     {
@@ -61,12 +57,12 @@ namespace xAPI.Records
         {
         }
 
-        public IbRecord(JSONObject value)
+        public IbRecord(JsonObject value)
         {
-            this.FieldsFromJSONObject(value);
+            this.FieldsFromJsonObject(value);
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.ClosePrice = (double)value["closePrice"];
             this.Login = (string)value["login"];

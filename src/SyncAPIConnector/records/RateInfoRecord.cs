@@ -1,8 +1,8 @@
+using System;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using System;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     public record RateInfoRecord : BaseResponseRecord
     {
 
@@ -91,7 +91,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? StartTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             {
                 this.Close = (double?)value["close"];

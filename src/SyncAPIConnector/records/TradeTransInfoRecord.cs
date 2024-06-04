@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
     public record TradeTransInfoRecord
@@ -62,19 +62,21 @@ namespace xAPI.Records
             this.customComment = comment;
         }
 
-        public virtual JSONObject toJSONObject()
+        public virtual JsonObject toJsonObject()
         {
-            JSONObject obj = new JSONObject();
-            obj.Add("cmd", (long)cmd.Code);
-            obj.Add("type", (long)type.Code);
-            obj.Add("price", price);
-            obj.Add("sl", sl);
-            obj.Add("tp", tp);
-            obj.Add("symbol", symbol);
-            obj.Add("volume", volume);
-            obj.Add("order", order);
-            obj.Add("customComment", customComment);
-            obj.Add("expiration", expiration);
+            JsonObject obj = new()
+            {
+                { "cmd", (long)cmd.Code },
+                { "type", (long)type.Code },
+                { "price", price },
+                { "sl", sl },
+                { "tp", tp },
+                { "symbol", symbol },
+                { "volume", volume },
+                { "order", order },
+                { "customComment", customComment },
+                { "expiration", expiration }
+            };
             return obj;
         }
 

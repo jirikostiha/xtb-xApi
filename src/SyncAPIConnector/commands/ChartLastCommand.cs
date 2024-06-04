@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class ChartLastCommand : BaseCommand
     {
-        public ChartLastCommand(JSONObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public ChartLastCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
         {
         }
 

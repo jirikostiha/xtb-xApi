@@ -1,12 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     public class ChartRangeResponse : BaseResponse
     {
         private long? digits;
@@ -14,13 +11,13 @@ namespace xAPI.Responses
 
         public ChartRangeResponse(string body) : base(body)
         {
-            JSONObject rd = (JSONObject)this.ReturnData;
+            JsonObject rd = this.ReturnData.AsObject();
             this.digits = (long?)rd["digits"];
-            JSONArray arr = (JSONArray)rd["rateInfos"];
-            foreach (JSONObject e in arr)
+            JsonArray arr = rd["rateInfos"].AsArray();
+            foreach (JsonObject e in arr)
             {
                 RateInfoRecord record = new RateInfoRecord();
-                record.FieldsFromJSONObject(e);
+                record.FieldsFromJsonObject(e);
                 this.rateInfos.AddLast(record);
             }
 

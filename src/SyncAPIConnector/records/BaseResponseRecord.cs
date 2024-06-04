@@ -1,9 +1,10 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public interface BaseResponseRecord
     {
-        void FieldsFromJSONObject(JSONObject value);
+        void FieldsFromJsonObject(JsonObject value);
     }
 }

@@ -1,13 +1,13 @@
+using System;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using System;
-
     public class AllSymbolGroupsCommand : BaseCommand
     {
         [Obsolete("Not available in API any more")]
         public AllSymbolGroupsCommand(bool? prettyPrint)
-            : base(new JSONObject(), prettyPrint)
+            : base(new JsonObject(), prettyPrint)
         {
         }
 

@@ -1,10 +1,10 @@
+using System;
+using xAPI.Codes;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using System;
-    using xAPI.Codes;
-    using System.Diagnostics;
-
     [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
     public record SymbolRecord : BaseResponseRecord
     {
@@ -588,7 +588,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.Ask = (double?)value["ask"];
             this.Bid = (double?)value["bid"];

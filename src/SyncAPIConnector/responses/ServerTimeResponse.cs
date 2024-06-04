@@ -1,6 +1,7 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Responses
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class ServerTimeResponse : BaseResponse
     {
@@ -9,7 +10,7 @@ namespace xAPI.Responses
 
         public ServerTimeResponse(string body) : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             this.time = (long?)ob["time"];
             this.timeString = (string)ob["timeString"];
         }

@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-
     [DebuggerDisplay("balance:{Balance}, margin:{Margin}, equity:{Equity}")]
     public record StreamingBalanceRecord : BaseResponseRecord
     {
@@ -47,7 +44,7 @@ namespace xAPI.Records
             set { credit = value; }
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             Balance = (double?)value["balance"];
             Margin = (double?)value["margin"];

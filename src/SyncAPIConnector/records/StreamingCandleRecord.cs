@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using System;
-    using System.Diagnostics;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
     public record StreamingCandleRecord : BaseResponseRecord
     {
@@ -69,7 +67,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? StartTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             Close = (double?)value["close"];
             Ctm = (long?)value["ctm"];

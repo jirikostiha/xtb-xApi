@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class SymbolCommand : BaseCommand
     {
-        public SymbolCommand(JSONObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public SymbolCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
         {
         }
 

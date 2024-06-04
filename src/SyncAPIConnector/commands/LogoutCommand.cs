@@ -1,16 +1,17 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class LogoutCommand : BaseCommand
     {
-        public LogoutCommand() : base(new JSONObject(), false)
+        public LogoutCommand() : base(new JsonObject(), false)
         {
         }
 
         public override string ToJSONString()
         {
-            JSONObject obj = new JSONObject();
+            JsonObject obj = new JsonObject();
             obj.Add("command", this.commandName);
             return obj.ToString();
         }

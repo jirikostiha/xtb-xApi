@@ -1,11 +1,12 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class StepRulesCommand : BaseCommand
     {
         public StepRulesCommand()
-            : base(new JSONObject(), false)
+            : base(new JsonObject(), false)
         {
         }
 

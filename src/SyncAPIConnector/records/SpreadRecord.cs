@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("{Symbol}, value:{Value}")]
     public record SpreadRecord : BaseResponseRecord
@@ -68,7 +64,7 @@ namespace xAPI.Records
             }
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.Symbol = (string)value["symbol"];
             this.Precision = (long?)value["precision"];

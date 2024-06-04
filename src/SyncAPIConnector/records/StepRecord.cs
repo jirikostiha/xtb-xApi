@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public record StepRecord : BaseResponseRecord
     {
@@ -16,7 +12,7 @@ namespace xAPI.Records
         {
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.FromValue = (double)value["fromValue"];
             this.Step = (double)value["step"];

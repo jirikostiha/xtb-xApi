@@ -1,9 +1,9 @@
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using xAPI.Codes;
 
 namespace xAPI.Responses
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("status:{Status}, order:{Order}")]
     public class TradeTransactionStatusResponse : BaseResponse
@@ -17,7 +17,7 @@ namespace xAPI.Responses
 
         public TradeTransactionStatusResponse(string body) : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             this.ask = (double?)ob["ask"];
             this.bid = (double?)ob["bid"];
             this.customComment = (string)ob["customComment"];

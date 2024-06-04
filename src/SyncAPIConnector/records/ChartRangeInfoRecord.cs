@@ -1,9 +1,9 @@
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("{symbol}")]
     public record ChartRangeInfoRecord
@@ -23,14 +23,16 @@ namespace xAPI.Records
             this.ticks = ticks;
         }
 
-        public virtual JSONObject toJSONObject()
+        public virtual JsonObject toJsonObject()
         {
-            JSONObject obj = new JSONObject();
-            obj.Add("symbol", symbol);
-            obj.Add("period", (long?)period.Code);
-            obj.Add("start", start);
-            obj.Add("end", end);
-            obj.Add("ticks", ticks);
+            JsonObject obj = new()
+            {
+                { "symbol", symbol },
+                { "period", (long?)period.Code },
+                { "start", start },
+                { "end", end },
+                { "ticks", ticks }
+            };
             return obj;
         }
     }

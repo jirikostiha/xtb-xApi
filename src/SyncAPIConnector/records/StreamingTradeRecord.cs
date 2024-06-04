@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-
     [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
     public record StreamingTradeRecord : BaseResponseRecord, ITradeRecord
     {
@@ -162,7 +159,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.close_price = (double?)value["close_price"];
             this.close_time = (long?)value["close_time"];

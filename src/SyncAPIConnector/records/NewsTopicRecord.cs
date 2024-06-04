@@ -1,11 +1,10 @@
 using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using System;
-    using System.Diagnostics;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Key}")]
     public record NewsTopicRecord : BaseResponseRecord, INewsRecord
     {
@@ -100,7 +99,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.body = (string)value["body"];
             this.bodylen = (long?)value["bodylen"];

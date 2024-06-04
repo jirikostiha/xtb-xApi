@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Text.Json.Nodes;
 using xAPI.Codes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-
     [DebuggerDisplay("o:{Order}, price:{Price}")]
     public record StreamingTradeStatusRecord : BaseResponseRecord
     {
@@ -42,7 +39,7 @@ namespace xAPI.Records
             set { requestStatus = value; }
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.customComment = (string)value["customComment"];
             this.message = (string)value["message"];

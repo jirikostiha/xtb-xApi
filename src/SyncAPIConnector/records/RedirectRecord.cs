@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using JSONObject = Newtonsoft.Json.Linq.JObject;
+﻿using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
@@ -12,7 +8,7 @@ namespace xAPI.Records
         private int streamingPort;
         private string address;
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.mainPort = (int)value["mainPort"];
             this.streamingPort = (int)value["streamingPort"];

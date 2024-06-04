@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class NewsResponse : BaseResponse
     {
@@ -13,11 +11,11 @@ namespace xAPI.Responses
 
         public NewsResponse(string body) : base(body)
         {
-            JSONArray arr = (JSONArray)this.ReturnData;
-            foreach (JSONObject e in arr)
+            JsonArray arr = this.ReturnData.AsArray();
+            foreach (JsonObject e in arr)
             {
                 NewsTopicRecord record = new NewsTopicRecord();
-                record.FieldsFromJSONObject(e);
+                record.FieldsFromJsonObject(e);
                 newsTopicRecords.AddLast(record);
             }
         }

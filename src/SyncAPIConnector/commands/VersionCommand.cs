@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class VersionCommand : BaseCommand
     {
-        public VersionCommand(JSONObject arguments, bool prettyPrint)
+        public VersionCommand(JsonObject arguments, bool prettyPrint)
             : base(arguments, prettyPrint)
         {
         }

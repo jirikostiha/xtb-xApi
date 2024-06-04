@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class ChartRangeCommand : BaseCommand
     {
-        public ChartRangeCommand(JSONObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public ChartRangeCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
         {
         }
 

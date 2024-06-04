@@ -1,27 +1,28 @@
 using System;
+using ERR_CODE = xAPI.Errors.ERR_CODE;
+using APIReplyParseException = xAPI.Errors.APIReplyParseException;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Responses
 {
-    using JSONAware = Newtonsoft.Json.Linq.JContainer;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using ERR_CODE = xAPI.Errors.ERR_CODE;
-    using APIReplyParseException = xAPI.Errors.APIReplyParseException;
-    using xAPI.Records;
-
     public class BaseResponse
     {
         private bool? status;
-        private string errorDescr;
+        private string? errorDescr;
         private ERR_CODE errCode;
-        private JSONAware returnData;
-        private string customTag;
+        private JsonNode? returnData;
+        private string? customTag;
 
         public BaseResponse(string body)
         {
-            JSONObject ob;
+            JsonNode? ob;
             try
             {
-                ob = (JSONObject)JSONObject.Parse(body);
+                if (body is null)
+                {
+                    throw new APIReplyParseException("JSON Parse exception: body is null");
+                }
+                ob = JsonNode.Parse(body);
 
             }
             catch (Exception x)
@@ -35,11 +36,15 @@ namespace xAPI.Responses
             }
             else
             {
+                if (true)
+                {
+                    Console.WriteLine(ob.ToString());
+                }
                 this.status = (bool?)ob["status"];
                 this.errCode = new ERR_CODE((string)ob["errorCode"]);
-                this.errorDescr = (string)ob["errorDescr"];
-                this.returnData = (JSONAware)ob["returnData"];
-                this.customTag = (string)ob["customTag"];
+                this.errorDescr = ob["errorDescr"]?.GetValue<string>();
+                this.returnData = ob["returnData"];
+                this.customTag = ob["customTag"]?.GetValue<string>();
 
                 if (this.status == null)
                 {
@@ -60,7 +65,7 @@ namespace xAPI.Responses
             }
         }
 
-        public virtual object ReturnData
+        public virtual JsonNode ReturnData
         {
             get
             {
@@ -102,11 +107,11 @@ namespace xAPI.Responses
 
         public string ToJSONString()
         {
-            JSONObject obj = new JSONObject();
+            JsonObject obj = new JsonObject();
             obj.Add("status", status);
 
             if (returnData != null)
-                obj.Add("returnData", returnData.ToString());
+                obj.Add("returnData", returnData.ToJsonString());
 
             if (errCode != null)
                 obj.Add("errorCode", errCode.StringValue);
