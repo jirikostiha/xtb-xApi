@@ -45,7 +45,7 @@ namespace xAPI.Records
 
         public TimeSpan? ToT2 => ToT is null ? null : TimeSpan.FromMilliseconds(ToT.Value);
 
-        public bool? IsInTimeInterval(TimeSpan timeOfDay)
+        public virtual bool? IsInTimeInterval(TimeSpan timeOfDay)
         {
             if (!FromT.HasValue || !ToT.HasValue)
                 return null;

@@ -47,7 +47,7 @@ namespace xAPI.Records
         /// <c>false</c> if it is not;
         /// <c>null</c> if the Quotes collection is <c>null</c>.
         /// </returns>
-        public bool? IsInQuotesHours(DateTimeOffset time)
+        public virtual bool? IsInQuotesHours(DateTimeOffset time)
         {
             if (Quotes is null)
                 return null;
@@ -71,7 +71,7 @@ namespace xAPI.Records
         /// <c>false</c> if it is not;
         /// <c>null</c> if the Trading collection is <c>null</c>.
         /// </returns>
-        public bool? IsInTradingHours(DateTimeOffset time)
+        public virtual bool? IsInTradingHours(DateTimeOffset time)
         {
             if (Trading is null)
                 return null;
