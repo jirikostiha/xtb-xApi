@@ -27,7 +27,7 @@ namespace xAPI.Commands
         {
             get
             {
-                return new string[] { };
+                return [];
             }
         }
     }

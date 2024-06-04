@@ -18,7 +18,7 @@ namespace xAPI.Commands
 
         public override string[] RequiredArguments
         {
-            get { return new string[] { }; }
+            get { return []; }
         }
     }
 
