@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SyncAPIConnect.Utils
 {
-    class ExecuteWithTimeLimit
+    sealed class ExecuteWithTimeLimit
     {
         public static bool Execute(TimeSpan timeSpan, Action codeBlock)
         {

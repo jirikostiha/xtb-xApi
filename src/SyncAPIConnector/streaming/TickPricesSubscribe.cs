@@ -7,7 +7,7 @@ namespace xAPI.Streaming
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    class TickPricesSubscribe
+    sealed class TickPricesSubscribe
     {
         private string symbol;
         private long? minArrivalTime;

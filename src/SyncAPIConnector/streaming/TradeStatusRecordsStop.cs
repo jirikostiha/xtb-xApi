@@ -7,7 +7,7 @@ namespace xAPI.Streaming
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    class TradeStatusRecordsStop
+    sealed class TradeStatusRecordsStop
     {
         public TradeStatusRecordsStop()
         {

@@ -7,7 +7,7 @@ namespace xAPI.Streaming
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    class CandleRecordsSubscribe
+    sealed class CandleRecordsSubscribe
     {
         private string symbol;
         private string streamSessionId;

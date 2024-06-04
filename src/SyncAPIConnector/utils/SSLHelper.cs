@@ -6,7 +6,7 @@ using System.Text;
 
 namespace xAPI.Utils
 {
-    class SSLHelper
+    sealed class SSLHelper
     {
         /// <summary>
         /// Validator that trusts all SSL certificates (all traffic is cyphered).

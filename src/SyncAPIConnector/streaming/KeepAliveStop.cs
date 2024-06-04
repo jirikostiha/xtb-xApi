@@ -7,7 +7,7 @@ namespace xAPI.Streaming
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    class KeepAliveStop
+    sealed class KeepAliveStop
     {
         public KeepAliveStop()
         {

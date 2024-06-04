@@ -3,7 +3,7 @@ using xAPI.Sync;
 
 namespace xAPITest
 {
-    class Program
+    sealed class Program
     {
         private static Server serverData = Servers.DEMO;
         private static string userId = "10000";

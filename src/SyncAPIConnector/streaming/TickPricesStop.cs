@@ -7,7 +7,7 @@ namespace xAPI.Streaming
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
-    class TickPricesStop
+    sealed class TickPricesStop
     {
         private string symbol;
 
