@@ -7,7 +7,7 @@ namespace xAPI.Utils
 {
     abstract class CustomTag
     {
-        private static int lastTag = 0;
+        private static int lastTag;
         private static int maxTag = 1000000;
 
         private static Object locker = new Object();

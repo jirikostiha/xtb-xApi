@@ -17,7 +17,7 @@ namespace xAPI.Commands
         /// <summary>
         /// Counts redirections.
         /// </summary>
-        private static int redirectCounter = 0;
+        private static int redirectCounter;
 
         #region Command creators
         public static LoginCommand CreateLoginCommand(string userId, string password, bool prettyPrint = false)

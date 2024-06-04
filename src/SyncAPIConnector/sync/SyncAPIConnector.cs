@@ -75,7 +75,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Last command timestamp (used to calculate interval between each command).
         /// </summary>
-        private long lastCommandTimestamp = 0;
+        private long lastCommandTimestamp;
 
         /// <summary>
         /// Lock object used to synchronize access to read/write socket operations.
