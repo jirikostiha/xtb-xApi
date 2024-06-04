@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="\src\SyncAPIConnector\package_icon.png " alt="Icon" width="50"/>
+  <img src="\src\SyncAPIConnector\package_icon.png " alt="SyncAPIConnect" width="50"/>
 </p>
 
 # SyncAPIConnect - Xtb xApi client  
@@ -15,6 +15,7 @@ The changes made are mostly additive except for a few necessary exceptions. It i
 
 ## Changelog
 
+2.5.11 fixed performance warnings  
 2.5.10 cfd stock indication, various changes on records and codes  
 2.5.9 string constants, fix hours interval evaluation  
 2.5.8 async methods  
