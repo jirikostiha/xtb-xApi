@@ -6,7 +6,6 @@ using xAPI.Codes;
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
     public record StreamingTradeRecord : BaseResponseRecord, ITradeRecord
@@ -156,11 +155,11 @@ namespace xAPI.Records
             set { digits = (int?)value; }
         }
 
-        public DateTimeOffset? Open_time2 => Open_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Open_time.Value);
+        public DateTimeOffset? OpenDateTime => Open_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Open_time.Value);
 
-        public DateTimeOffset? Close_time2 => Close_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Close_time.Value);
+        public DateTimeOffset? CloseDateTime => Close_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Close_time.Value);
 
-        public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+        public DateTimeOffset? ExpirationDateTime => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

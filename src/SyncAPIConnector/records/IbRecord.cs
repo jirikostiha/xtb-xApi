@@ -10,7 +10,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("{Login}")]
-    public record IbRecord : BaseResponseRecord
+    public record IbRecord : BaseResponseRecord, ISymbol
     {
         /// <summary>
         /// IB close price or null if not allowed to view.

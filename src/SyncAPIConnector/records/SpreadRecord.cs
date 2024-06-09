@@ -9,7 +9,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("{Symbol}, value:{Value}")]
-    public record SpreadRecord : BaseResponseRecord
+    public record SpreadRecord : BaseResponseRecord, ISymbol
     {
         private long? precision;
         private string symbol;

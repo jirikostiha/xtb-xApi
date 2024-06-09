@@ -5,7 +5,6 @@ using System.Diagnostics;
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
     public record StreamingTickRecord : BaseResponseRecord, ITickRecord
@@ -84,7 +83,7 @@ namespace xAPI.Records
             set { quoteId = value; }
         }
 
-        public DateTimeOffset? Timestamp2 => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
+        public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

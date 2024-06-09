@@ -4,7 +4,6 @@ using System.Diagnostics;
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("balance:{Balance}, margin:{Margin}, equity:{Equity}")]
     public record StreamingBalanceRecord : BaseResponseRecord

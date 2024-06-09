@@ -98,7 +98,7 @@ namespace xAPI.Records
             get { return title; }
         }
 
-        public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+        public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

@@ -3,13 +3,13 @@ using xAPI.Codes;
 
 namespace xAPI
 {
-    public interface ITradeRecord
+    public interface ITradeRecord : ISymbol, IPosition
     {
         double? Close_price { get; }
 
         long? Close_time { get; }
 
-        DateTimeOffset? Close_time2 { get; }
+        DateTimeOffset? CloseDateTime { get; }
 
         bool? Closed { get; }
 
@@ -26,8 +26,7 @@ namespace xAPI
         long? Digits { get; }
 
         long? Expiration { get; }
-
-        DateTimeOffset? Expiration2 { get; }
+        DateTimeOffset? ExpirationDateTime { get; }
 
         double? Margin_rate { get; }
 
@@ -35,7 +34,7 @@ namespace xAPI
 
         long? Open_time { get; }
 
-        DateTimeOffset? Open_time2 { get; }
+        DateTimeOffset? OpenDateTime { get; }
 
         long? Order { get; }
 
@@ -48,8 +47,6 @@ namespace xAPI
         double? Sl { get; }
 
         double? Storage { get; }
-
-        string Symbol { get; }
 
         double? Tp { get; }
 

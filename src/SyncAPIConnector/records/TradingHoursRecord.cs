@@ -8,7 +8,7 @@ namespace xAPI.Records
     using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("{Symbol}")]
-    public record TradingHoursRecord : BaseResponseRecord
+    public record TradingHoursRecord : BaseResponseRecord, ISymbol
     {
         private string symbol;
         private LinkedList<HoursRecord> quotes = (LinkedList<HoursRecord>)new LinkedList<HoursRecord>();

@@ -7,7 +7,7 @@ namespace xAPI.Records
     using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
-    public record StreamingCandleRecord : BaseResponseRecord
+    public record StreamingCandleRecord : BaseResponseRecord, ISymbol, ICandle
     {
         public StreamingCandleRecord()
         {
@@ -67,7 +67,9 @@ namespace xAPI.Records
             set;
         }
 
-        public DateTimeOffset? StartTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
+        public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
+
+        public double? Volume => Vol;
 
         public void FieldsFromJSONObject(JSONObject value)
         {

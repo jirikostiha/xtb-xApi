@@ -5,7 +5,6 @@ using xAPI.Codes;
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("o:{Order}, price:{Price}")]
     public record StreamingTradeStatusRecord : BaseResponseRecord

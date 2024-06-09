@@ -4,11 +4,9 @@ using System.Diagnostics;
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using static xAPI.Sync.StreamingAPIConnector;
 
     [DebuggerDisplay("o:{Order}, o2:{Order2}, profit:{Profit}")]
-    public record StreamingProfitRecord : BaseResponseRecord
+    public record StreamingProfitRecord : BaseResponseRecord, IPosition
     {
         private long? order;
         private long? order2;

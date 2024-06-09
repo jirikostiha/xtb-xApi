@@ -6,7 +6,7 @@ namespace xAPI.Records
     using System.Diagnostics;
 
     [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
-    public record SymbolRecord : BaseResponseRecord
+    public record SymbolRecord : BaseResponseRecord, ISymbol, ITick
     {
         private double? ask;
         private double? bid;
@@ -584,9 +584,9 @@ namespace xAPI.Records
         /// </summary>
         public virtual bool IsCfdStock => Symbol.EndsWith("_4", StringComparison.InvariantCulture);
 
-        public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+        public DateTimeOffset? ExpirationDateTime => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
-        public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+        public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {

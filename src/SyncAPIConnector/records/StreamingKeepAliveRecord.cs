@@ -5,7 +5,6 @@ using System.Diagnostics;
 namespace xAPI.Records
 {
     using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
 
     [DebuggerDisplay("{Timestamp2}")]
     public record StreamingKeepAliveRecord : BaseResponseRecord
@@ -16,7 +15,7 @@ namespace xAPI.Records
             set;
         }
 
-        public DateTimeOffset? Timestamp2 => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
+        public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
         public void FieldsFromJSONObject(JSONObject value)
         {
