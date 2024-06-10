@@ -14,62 +14,62 @@ namespace xAPI
 
         // Countries
         /// <summary>United States</summary>
-        public const string US = "US";
+        public const string US = Country.US;
 
         /// <summary>Sweden</summary>
-        public const string Sweden = "Sweden";
+        public const string Sweden = Country.Sweden;
 
         /// <summary>United Kingdom</summary>
-        public const string UK = "UK";
+        public const string UK = Country.UK;
 
         /// <summary>Spain</summary>
-        public const string Spain = "Spain";
+        public const string Spain = Country.Spain;
 
         /// <summary>Germany</summary>
-        public const string Germany = "Germany";
+        public const string Germany = Country.Germany;
 
         /// <summary>Poland</summary>
-        public const string Poland = "Poland";
+        public const string Poland = Country.Poland;
 
         /// <summary>France</summary>
-        public const string France = "France";
+        public const string France = Country.France;
 
         /// <summary>Belgium</summary>
-        public const string Belgium = "Belgium";
+        public const string Belgium = Country.Belgium;
 
         /// <summary>Finland</summary>
-        public const string Finland = "Finland";
+        public const string Finland = Country.Finland;
 
         /// <summary>Italy</summary>
-        public const string Italy = "Italy";
+        public const string Italy = Country.Italy;
 
         /// <summary>Denmark</summary>
-        public const string Denmark = "Denmark";
+        public const string Denmark = Country.Denmark;
 
         /// <summary>Netherlands</summary>
-        public const string Netherlands = "Netherlands";
+        public const string Netherlands = Country.Netherlands;
 
         /// <summary>Portugal</summary>
-        public const string Portugal = "Portugal";
+        public const string Portugal = Country.Portugal;
 
         /// <summary>Czech Republic</summary>
-        public const string CzechRep = "Czech Rep.";
+        public const string CzechRep = Country.CzechRep;
 
         /// <summary>Switzerland</summary>
-        public const string Switzerland = "Switzerland";
+        public const string Switzerland = Country.Switzerland;
 
         /// <summary>Norway</summary>
-        public const string Norway = "Norway";
+        public const string Norway = Country.Norway;
 
         // Regions
         /// <summary>Asia-Pacific</summary>
-        public const string AsiaPacific = "Asia-Pacific";
+        public const string AsiaPacific = Region.AsiaPacific;
 
         /// <summary>Europe</summary>
-        public const string Europe = "Europe";
+        public const string Europe = Region.Europe;
 
         /// <summary>Americas</summary>
-        public const string Americas = "Americas";
+        public const string Americas = Region.Americas;
 
         // Investment types
         /// <summary>Cryptocurrency</summary>
@@ -83,19 +83,19 @@ namespace xAPI
 
         // Commodities
         /// <summary>Precious Metals</summary>
-        public const string PreciousMetals = "Precious Metals";
+        public const string PreciousMetals = CommodityGroup.PreciousMetals;
 
         /// <summary>Agriculture</summary>
-        public const string Agriculture = "Agriculture";
+        public const string Agriculture = CommodityGroup.Agriculture;
 
         /// <summary>Energy</summary>
-        public const string Energy = "Energy";
+        public const string Energy = CommodityGroup.Energy;
 
         /// <summary>Industrial Metals</summary>
-        public const string IndustrialMetals = "Industrial Metals";
+        public const string IndustrialMetals = CommodityGroup.IndustrialMetals;
 
         /// <summary>Livestock</summary>
-        public const string Livestock = "Livestock";
+        public const string Livestock = CommodityGroup.Livestock;
 
         // Other
         /// <summary>Other</summary>
