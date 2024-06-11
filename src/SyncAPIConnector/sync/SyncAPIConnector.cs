@@ -12,7 +12,6 @@ using xAPI.Streaming;
 using System.Net;
 using xAPI.Errors;
 using xAPI.Commands;
-using xAPI.Streaming;
 using xAPI.Utils;
 using SyncAPIConnect.Utils;
 using System.Threading.Tasks;
@@ -361,5 +360,27 @@ namespace xAPI.Sync
             get; set;
         }
 
+        private bool _disposed;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    streamingConnector?.Dispose();
+                    locker.Dispose();
+                }
+
+                base.Dispose(disposing);
+
+                _disposed = true;
+            }
+        }
+
+        ~SyncAPIConnector()
+        {
+            Dispose(false);
+        }
     }
 }

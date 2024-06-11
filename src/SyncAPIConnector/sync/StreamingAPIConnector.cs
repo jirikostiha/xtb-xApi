@@ -16,7 +16,7 @@ using xAPI.Streaming;
 
 namespace xAPI.Sync
 {
-    public class StreamingAPIConnector : Connector, IDisposable
+    public class StreamingAPIConnector : Connector
     {
         #region Events
 
@@ -519,6 +519,23 @@ namespace xAPI.Sync
         {
             CandleRecordsStop candleRecordsStop = new CandleRecordsStop(symbol);
             WriteMessage(candleRecordsStop.ToString());
+        }
+
+        private bool _disposed;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                base.Dispose(disposing);
+
+                _disposed = true;
+            }
+        }
+
+        ~StreamingAPIConnector()
+        {
+            Dispose(false);
         }
     }
 }
