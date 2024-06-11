@@ -8,7 +8,7 @@ namespace xAPI.Responses
     [DebuggerDisplay("status:{Status}, count:{TradeRecords.Count}")]
     public class TradesResponse : BaseResponse
     {
-        private LinkedList<TradeRecord> tradeRecords = (LinkedList<TradeRecord>)new LinkedList<TradeRecord>();
+        private List<TradeRecord> tradeRecords = (List<TradeRecord>)new List<TradeRecord>();
 
         public TradesResponse(string body) : base(body)
         {
@@ -17,12 +17,12 @@ namespace xAPI.Responses
             {
                 TradeRecord record = new TradeRecord();
                 record.FieldsFromJsonObject(e);
-                tradeRecords.AddLast(record);
+                tradeRecords.Add(record);
             }
 
         }
 
-        public virtual LinkedList<TradeRecord> TradeRecords
+        public virtual List<TradeRecord> TradeRecords
         {
             get
             {
