@@ -36,12 +36,6 @@ namespace xAPI
 
         DateTimeOffset? OpenDateTime { get; }
 
-        long? Order { get; }
-
-        long? Order2 { get; }
-
-        long? Position { get; }
-
         double? Profit { get; }
 
         double? Sl { get; }
