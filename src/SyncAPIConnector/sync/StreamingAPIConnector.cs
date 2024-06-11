@@ -10,7 +10,7 @@ using xAPI.Records;
 using xAPI.Errors;
 using xAPI.Responses;
 using xAPI.Streaming;
-using System.Text.Json;
+
 using System.Text.Json.Nodes;
 
 namespace xAPI.Sync

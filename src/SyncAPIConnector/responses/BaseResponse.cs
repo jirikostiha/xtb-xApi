@@ -18,46 +18,51 @@ namespace xAPI.Responses
             JsonNode? ob;
             try
             {
-                if (body is null)
-                {
-                    throw new APIReplyParseException("JSON Parse exception: body is null");
-                }
                 ob = JsonNode.Parse(body);
-
+            }
+            catch (ArgumentNullException)
+            {
+                throw new APIReplyParseException("JSON Parse exception: body is null");
             }
             catch (Exception x)
             {
                 throw new APIReplyParseException("JSON Parse exception: " + body + "\n" + x.Message);
             }
 
-            if (ob == null)
+            if (ob is null)
             {
                 throw new APIReplyParseException("JSON Parse exception: " + body);
             }
             else
             {
-                if (true)
-                {
-                    Console.WriteLine(ob.ToString());
-                }
+#if DEBUG
+                // Console.WriteLine(ob.ToString());
+                Console.WriteLine(ob.ToJsonString());
+#endif
                 this.status = (bool?)ob["status"];
-                this.errCode = new ERR_CODE((string)ob["errorCode"]);
-                this.errorDescr = ob["errorDescr"]?.GetValue<string>();
-                this.returnData = ob["returnData"];
+                if (status == true)
+                {
+                    returnData = ob["returnData"];
+                }
+                else
+                {
+                    errCode = new ERR_CODE(ob["errorCode"]?.GetValue<string>());
+                    errorDescr = ob["errorDescr"]?.GetValue<string>();
+                }
                 this.customTag = ob["customTag"]?.GetValue<string>();
 
-                if (this.status == null)
+                if (this.status is null)
                 {
                     Console.Error.WriteLine(body);
                     throw new APIReplyParseException("JSON Parse error: " + "\"status\" is null!");
                 }
 
-                if ((this.status == null) || ((bool)!this.status))
+                if ((this.status is null) || ((bool)!this.status))
                 {
                     // If status is false check if redirect exists in given response
-                    if (ob["redirect"] == null)
+                    if (ob["redirect"] is null)
                     {
-                        if (this.errorDescr == null)
+                        if (this.errorDescr is null)
                             this.errorDescr = ERR_CODE.getErrorDescription(this.errCode.StringValue);
                         throw new APIErrorResponse(errCode, errorDescr, body);
                     }
@@ -110,16 +115,16 @@ namespace xAPI.Responses
             JsonObject obj = new JsonObject();
             obj.Add("status", status);
 
-            if (returnData != null)
+            if (returnData is not null)
                 obj.Add("returnData", returnData.ToJsonString());
 
-            if (errCode != null)
+            if (errCode is not null)
                 obj.Add("errorCode", errCode.StringValue);
 
-            if (errorDescr != null)
+            if (errorDescr is not null)
                 obj.Add("errorDescr", errorDescr);
 
-            if (customTag != null)
+            if (customTag is not null)
                 obj.Add("customTag", customTag);
 
             return obj.ToString();
