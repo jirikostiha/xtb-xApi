@@ -139,7 +139,7 @@ namespace xAPI.Sync
 
                 bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
                 {
-                    sl.AuthenticateAsClient(server.Address, new X509CertificateCollection(), System.Security.Authentication.SslProtocols.Default, false);
+                    sl.AuthenticateAsClient(server.Address, new X509CertificateCollection(), System.Security.Authentication.SslProtocols.None, false);
                 });
 
                 if (!authenticated)
