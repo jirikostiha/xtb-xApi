@@ -38,7 +38,7 @@ namespace xAPI.Sync
         public const long MAX_REDIRECTS = 3;
 
         /// <summary>
-        /// Maximum connection time (in milliseconds). After that the connection attempt is immidiately dropped.
+        /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
         /// </summary>
         private const int TIMEOUT = 5000;
         #endregion
