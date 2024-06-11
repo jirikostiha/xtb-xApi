@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace xAPI.Codes
 {
@@ -63,7 +64,7 @@ namespace xAPI.Codes
         /// <inheritdoc/>
         public override string ToString()
         {
-            return code.ToString();
+            return code.ToString(CultureInfo.InvariantCulture);
         }
 
         [Obsolete("Use Code instead")]

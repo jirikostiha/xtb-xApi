@@ -267,7 +267,7 @@ namespace xAPI.Sync
 
                 string response = this.ReadMessage();
 
-                if (response == null || response.Equals(""))
+                if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
                     throw new APICommunicationException("Server not responding");
@@ -307,7 +307,7 @@ namespace xAPI.Sync
 
                 string response = await this.ReadMessageAsync().ConfigureAwait(false);
 
-                if (response == null || response.Equals(""))
+                if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
                     throw new APICommunicationException("Server not responding");

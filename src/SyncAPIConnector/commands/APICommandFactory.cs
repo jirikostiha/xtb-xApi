@@ -6,6 +6,7 @@ using xAPI.Sync;
 using xAPI.Records;
 using xAPI.Responses;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace xAPI.Commands
 {
@@ -33,7 +34,7 @@ namespace xAPI.Commands
         [Obsolete("Up from 2.3.3 login is not a long, but string")]
         public static LoginCommand CreateLoginCommand(long? userId, string password, bool prettyPrint = false)
         {
-            return CreateLoginCommand(userId.Value.ToString(), password, prettyPrint);
+            return CreateLoginCommand(userId?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, password, prettyPrint);
         }
 
         public static LoginCommand CreateLoginCommand(Credentials credentials, bool prettyPrint = false)
@@ -357,7 +358,7 @@ namespace xAPI.Commands
         [Obsolete("Up from 2.3.3 login is not a long, but string")]
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, long userId, string password, bool prettyPrint = false)
         {
-            return ExecuteLoginCommand(connector, userId.ToString(), password, prettyPrint);
+            return ExecuteLoginCommand(connector, userId.ToString(CultureInfo.InvariantCulture), password, prettyPrint);
         }
 
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
