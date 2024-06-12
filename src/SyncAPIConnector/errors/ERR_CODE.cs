@@ -55,7 +55,7 @@ namespace xAPI.Errors
 
         public string getDescription()
         {
-            if (this.stringCode.Equals("")) return "";
+            if (string.IsNullOrEmpty(this.stringCode)) return string.Empty;
             if (this.stringCode.Equals(ERR_CODE.INVALID_PRICE.StringValue)) return "Invalid price.";
             if (this.stringCode.Equals(ERR_CODE.INVALID_SL_TP.StringValue)) return "Invalid SL/TP.";
             if (this.stringCode.Equals(ERR_CODE.INVALID_VOLUME.StringValue)) return "Invalid volume.";

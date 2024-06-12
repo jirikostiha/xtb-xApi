@@ -32,7 +32,7 @@ namespace xAPI.Sync
         public const long MAX_REDIRECTS = 3;
 
         /// <summary>
-        /// Maximum connection time (in milliseconds). After that the connection attempt is immidiately dropped.
+        /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
         /// </summary>
         private const int TIMEOUT = 5000;
         #endregion
@@ -78,12 +78,19 @@ namespace xAPI.Sync
         private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
 
         /// <summary>
+        /// Maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
+        /// </summary>
+        private readonly int _connectionTimeout;
+
+        /// <summary>
         /// Creates new SyncAPIConnector instance based on given Server data.
         /// </summary>
         /// <param name="server">Server data</param>
         /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
-        public SyncAPIConnector(Server server, bool lookForBackups = true)
+        /// <param name="connectionTimeout">Connection timeout</param>
+        public SyncAPIConnector(Server server, bool lookForBackups = true, int connectionTimeout = TIMEOUT)
         {
+            _connectionTimeout = connectionTimeout;
             Connect(server, lookForBackups);
         }
 
@@ -95,7 +102,7 @@ namespace xAPI.Sync
         private void Connect(Server server, bool lookForBackups = true)
         {
             this.server = server;
-            this.apiSocket = new System.Net.Sockets.TcpClient();
+            this.apiSocket = new TcpClient();
 
             bool connectionAttempted = false;
 
@@ -103,7 +110,7 @@ namespace xAPI.Sync
             {
                 // Try to connect asynchronously and wait for the result
                 IAsyncResult result = apiSocket.BeginConnect(this.server.Address, this.server.MainPort, null, null);
-                connectionAttempted = result.AsyncWaitHandle.WaitOne(TIMEOUT, true);
+                connectionAttempted = result.AsyncWaitHandle.WaitOne(_connectionTimeout, true);
 
                 // If connection attempt failed (timeout) or not connected
                 if (!connectionAttempted || !apiSocket.Connected)
@@ -133,7 +140,7 @@ namespace xAPI.Sync
 
                 bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
                 {
-                    sl.AuthenticateAsClient(server.Address, new X509CertificateCollection(), System.Security.Authentication.SslProtocols.Default, false);
+                    sl.AuthenticateAsClient(server.Address, new X509CertificateCollection(), System.Security.Authentication.SslProtocols.None, false);
                 });
 
                 if (!authenticated)
@@ -153,7 +160,6 @@ namespace xAPI.Sync
 
             if (OnConnected != null)
                 OnConnected.Invoke(this.server);
-
 
             this.streamingConnector = new StreamingAPIConnector(this.server);
         }
@@ -255,7 +261,7 @@ namespace xAPI.Sync
 
                 string response = this.ReadMessage();
 
-                if (response == null || response.Equals(""))
+                if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
                     throw new APICommunicationException("Server not responding");
@@ -295,7 +301,7 @@ namespace xAPI.Sync
 
                 string response = await this.ReadMessageAsync().ConfigureAwait(false);
 
-                if (response == null || response.Equals(""))
+                if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
                     throw new APICommunicationException("Server not responding");
@@ -349,5 +355,27 @@ namespace xAPI.Sync
             get; set;
         }
 
+        private bool _disposed;
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    streamingConnector?.Dispose();
+                    locker.Dispose();
+                }
+
+                base.Dispose(disposing);
+
+                _disposed = true;
+            }
+        }
+
+        ~SyncAPIConnector()
+        {
+            Dispose(false);
+        }
     }
 }

@@ -7,11 +7,12 @@ using xAPI.Records;
 using xAPI.Responses;
 using System.Threading.Tasks;
 using System.Text.Json.Nodes;
+using System.Globalization;
 
 namespace xAPI.Commands
 {
 
-    public class APICommandFactory
+    public static class APICommandFactory
     {
         /// <summary>
         /// Counts redirections.
@@ -32,7 +33,7 @@ namespace xAPI.Commands
         [Obsolete("Up from 2.3.3 login is not a long, but string")]
         public static LoginCommand CreateLoginCommand(long? userId, string password, bool prettyPrint = false)
         {
-            return CreateLoginCommand(userId.Value.ToString(), password, prettyPrint);
+            return CreateLoginCommand(userId?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, password, prettyPrint);
         }
 
         public static LoginCommand CreateLoginCommand(Credentials credentials, bool prettyPrint = false)
@@ -189,7 +190,7 @@ namespace xAPI.Commands
             return new StepRulesCommand();
         }
 
-        public static TickPricesCommand CreateTickPricesCommand(List<string> symbols, long? timestamp, bool prettyPrint = false)
+        public static TickPricesCommand CreateTickPricesCommand(string[] symbols, long? timestamp, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
             JsonArray arr = new JsonArray();
@@ -257,7 +258,7 @@ namespace xAPI.Commands
             return new TradesHistoryCommand(args, prettyPrint);
         }
 
-        public static TradingHoursCommand CreateTradingHoursCommand(List<string> symbols, bool prettyPrint = false)
+        public static TradingHoursCommand CreateTradingHoursCommand(string[] symbols, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
             JsonArray arr = new JsonArray();
@@ -356,7 +357,7 @@ namespace xAPI.Commands
         [Obsolete("Up from 2.3.3 login is not a long, but string")]
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, long userId, string password, bool prettyPrint = false)
         {
-            return ExecuteLoginCommand(connector, userId.ToString(), password, prettyPrint);
+            return ExecuteLoginCommand(connector, userId.ToString(CultureInfo.InvariantCulture), password, prettyPrint);
         }
 
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
@@ -534,12 +535,12 @@ namespace xAPI.Commands
             return new SymbolResponse(jsonObj.ToString());
         }
 
-        public static TickPricesResponse ExecuteTickPricesCommand(SyncAPIConnector connector, List<string> symbols, long? timestamp, bool prettyPrint = false)
+        public static TickPricesResponse ExecuteTickPricesCommand(SyncAPIConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
         {
             return new TickPricesResponse(connector.ExecuteCommand(CreateTickPricesCommand(symbols, timestamp, prettyPrint)).ToString());
         }
 
-        public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(SyncAPIConnector connector, List<string> symbols, long? timestamp, bool prettyPrint = false)
+        public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(SyncAPIConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTickPricesCommand(symbols, timestamp, prettyPrint)).ConfigureAwait(false);
             return new TickPricesResponse(jsonObj.ToString());
@@ -618,12 +619,12 @@ namespace xAPI.Commands
             return new TradesHistoryResponse(jsonObj.ToString());
         }
 
-        public static TradingHoursResponse ExecuteTradingHoursCommand(SyncAPIConnector connector, List<string> symbols, bool prettyPrint = false)
+        public static TradingHoursResponse ExecuteTradingHoursCommand(SyncAPIConnector connector, string[] symbols, bool prettyPrint = false)
         {
             return new TradingHoursResponse(connector.ExecuteCommand(CreateTradingHoursCommand(symbols, prettyPrint)).ToString());
         }
 
-        public static async Task<TradingHoursResponse> ExecuteTradingHoursCommandAsync(SyncAPIConnector connector, List<string> symbols, bool prettyPrint = false)
+        public static async Task<TradingHoursResponse> ExecuteTradingHoursCommandAsync(SyncAPIConnector connector, string[] symbols, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradingHoursCommand(symbols, prettyPrint)).ConfigureAwait(false);
             return new TradingHoursResponse(jsonObj.ToString());

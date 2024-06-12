@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("o:{Order}, o2:{Order2}, profit:{Profit}")]
-    public record StreamingProfitRecord : BaseResponseRecord
+    public record StreamingProfitRecord : BaseResponseRecord, IPosition
     {
         private long? order;
         private long? order2;

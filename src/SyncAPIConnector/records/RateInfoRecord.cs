@@ -3,9 +3,8 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    public record RateInfoRecord : BaseResponseRecord
+    public record RateInfoRecord : BaseResponseRecord, ICandle
     {
-
         private long? ctm;
         private double? open;
         private double? high;
@@ -89,7 +88,9 @@ namespace xAPI.Records
             }
         }
 
-        public DateTimeOffset? StartTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
+        public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
+
+        public double? Volume => Vol;
 
         public void FieldsFromJsonObject(JsonObject value)
         {

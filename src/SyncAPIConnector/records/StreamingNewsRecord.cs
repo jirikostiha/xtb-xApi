@@ -35,7 +35,7 @@ namespace xAPI.Records
             set;
         }
 
-        public DateTimeOffset? Time2 => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+        public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
         public void FieldsFromJsonObject(JsonObject value)
         {

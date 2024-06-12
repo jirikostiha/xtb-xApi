@@ -111,7 +111,7 @@ namespace xAPI.Records
             }
         }
 
-        public DateTimeOffset? Timestamp2 => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
+        public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
         public void FieldsFromJsonObject(JsonObject value)
         {

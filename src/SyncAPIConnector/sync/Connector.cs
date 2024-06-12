@@ -282,14 +282,33 @@ namespace xAPI.Sync
             this.apiConnected = false;
         }
 
-        /// <summary>
-        /// Diesposes the client.
-        /// </summary>
+        private bool _disposed;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    apiReadStream?.Dispose();
+                    apiWriteStream?.Dispose();
+                    apiSocket?.Dispose();
+                    writeLocker?.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
+
         public void Dispose()
         {
-            this.apiReadStream.Close();
-            this.apiWriteStream.Close();
-            this.apiSocket.Close();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~Connector()
+        {
+            Dispose(false);
         }
     }
 }

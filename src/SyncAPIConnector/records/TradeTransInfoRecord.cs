@@ -7,7 +7,7 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
-    public record TradeTransInfoRecord
+    public record TradeTransInfoRecord : ISymbol
     {
         private TRADE_OPERATION_CODE cmd;
         private string customComment;
@@ -31,7 +31,7 @@ namespace xAPI.Records
         public TRADE_TRANSACTION_TYPE Type { get { return type; } set { this.type = value; } }
         public double? Volume { get { return volume; } set { this.volume = value; } }
 
-        public DateTimeOffset? Expiration2 => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+        public DateTimeOffset? ExpirationDateTime => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
         public TradeTransInfoRecord(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration)
         {

@@ -2,21 +2,16 @@
 
 namespace xAPI
 {
-    public interface ITickRecord
+    public interface ITickRecord : ISymbol, ITick
     {
-        double? Ask { get; }
         long? AskVolume { get; }
-        double? Bid { get; }
-        long? BidVolume { get; }
-        double? High { get; }
-        long? Level { get; }
-        double? Low { get; }
-        double? SpreadRaw { get; }
-        double? SpreadTable { get; }
-        string Symbol { get; }
-        long? Timestamp { get; }
-        DateTimeOffset? Timestamp2 { get; }
 
-        string ToString();
+        long? BidVolume { get; }
+
+        long? Level { get; }
+
+        double? SpreadRaw { get; }
+
+        double? SpreadTable { get; }
     }
 }
