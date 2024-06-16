@@ -526,12 +526,6 @@ namespace xAPI.Commands
             return new ProfitCalculationResponse(jsonObj.ToString());
         }
 
-        [Obsolete("Command not available in API any more")]
-        public static AllSymbolGroupsResponse ExecuteSymbolGroupsCommand(SyncAPIConnector connector, bool prettyPrint = false)
-        {
-            return null;
-        }
-
         public static StepRulesResponse ExecuteStepRulesCommand(SyncAPIConnector connector, bool prettyPrint = false)
         {
             return new StepRulesResponse(connector.ExecuteCommand(CreateStepRulesCommand(prettyPrint)).ToString());

@@ -1,25 +1,21 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Responses
 {
-
     public class ConfirmRequotedResponse : BaseResponse
     {
-        private long? newRequestId;
+        public ConfirmRequotedResponse()
+            : base()
+        { }
 
-        public ConfirmRequotedResponse(string body) : base(body)
+        public ConfirmRequotedResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            this.newRequestId = (long?)ob["requestId"];
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            NewRequestId = (long?)ob["requestId"];
         }
 
-        public virtual long? NewRequestId
-        {
-            get
-            {
-                return newRequestId;
-            }
-        }
+        public long? NewRequestId { get; init; }
     }
-
 }

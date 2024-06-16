@@ -36,7 +36,7 @@ public abstract class ExampleBase
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
 
-            Console.WriteLine($"Error: {response.ErrorCode}, {response.ErrorDescr}");
+            Console.WriteLine($"Error: {response.ErrCode}, {response.ErrorDescr}");
         }
 
         Console.ForegroundColor = oc;

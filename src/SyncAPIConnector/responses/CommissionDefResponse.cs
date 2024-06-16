@@ -2,33 +2,24 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Responses
 {
-
     public class CommissionDefResponse : BaseResponse
     {
-        private double? commission;
-        private double? rateOfExchange;
+        public CommissionDefResponse()
+            : base()
+        { }
 
         public CommissionDefResponse(string body) : base(body)
         {
-            JsonObject rd = this.ReturnData.AsObject();
-            this.commission = (double?)rd["commission"];
-            this.rateOfExchange = (double?)rd["rateOfExchange"];
+            if (ReturnData is null)
+                return;
+
+            JsonObject rd = ReturnData.AsObject();
+            Commission = (double?)rd["commission"];
+            RateOfExchange = (double?)rd["rateOfExchange"];
         }
 
-        public virtual double? Commission
-        {
-            get
-            {
-                return commission;
-            }
-        }
+        public double? Commission { get; init; }
 
-        public virtual double? RateOfExchange
-        {
-            get
-            {
-                return rateOfExchange;
-            }
-        }
+        public double? RateOfExchange { get; init; }
     }
 }

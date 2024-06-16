@@ -1,26 +1,31 @@
 using System.Collections.Generic;
 using xAPI.Records;
 using System.Text.Json.Nodes;
+using System.Linq;
 
 namespace xAPI.Responses
 {
     public class IbsHistoryResponse : BaseResponse
     {
-        /// <summary>
-        /// IB records.
-        /// </summary>
-        public LinkedList<IbRecord> IbRecords { get; set; }
+        public IbsHistoryResponse()
+            : base()
+        { }
 
         public IbsHistoryResponse(string body)
             : base(body)
         {
-            JsonArray arr = this.ReturnData.AsArray();
+            if (ReturnData is null)
+                return;
 
-            foreach (JsonObject e in arr)
+            var arr = ReturnData.AsArray();
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                IbRecord record = new IbRecord(e);
-                this.IbRecords.AddLast(record);
+                IbRecord record = new IbRecord();
+                record.FieldsFromJsonObject(e);
+                IbRecords.AddLast(record);
             }
         }
+
+        public LinkedList<IbRecord> IbRecords { get; init; } = [];
     }
 }

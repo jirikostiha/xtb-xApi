@@ -1,29 +1,31 @@
 using System;
 using System.Diagnostics;
-using System.Text.Json.Nodes;
 
 namespace xAPI.Responses
 {
-    [DebuggerDisplay("status:{Status}, order:{Order}")]
+    [DebuggerDisplay("order:{Order}")]
     public class TradeTransactionResponse : BaseResponse
     {
-        private long? order;
+        public TradeTransactionResponse()
+            : base()
+        { }
 
-        public TradeTransactionResponse(string body) : base(body)
+        public TradeTransactionResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            this.order = (long?)ob["order"];
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            Order = (long?)ob["order"];
         }
 
         [Obsolete("Use Order instead")]
-        public virtual long? RequestId
+        public long? RequestId
         {
             get { return Order; }
         }
 
-        public long? Order
-        {
-            get { return order; }
-        }
+        public long? Order { get; init; }
     }
 }

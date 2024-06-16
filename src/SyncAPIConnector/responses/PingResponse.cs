@@ -1,16 +1,25 @@
-using System.Text.Json.Nodes;
+using System;
 
 namespace xAPI.Responses
 {
 
     public class PingResponse : BaseResponse
     {
-        private long? time;
-        private string timeString;
+        public PingResponse()
+            : base()
+        { }
 
-        public PingResponse(string body) : base(body)
+        public PingResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData?.AsObject();
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+
+            DateTime = (DateTimeOffset?)ob["todo"];
         }
+
+        public DateTimeOffset? DateTime { get; init; }
     }
 }

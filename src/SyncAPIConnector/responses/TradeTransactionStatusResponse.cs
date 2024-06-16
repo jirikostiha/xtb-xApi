@@ -1,96 +1,41 @@
 using System.Diagnostics;
-using System.Text.Json.Nodes;
 using xAPI.Codes;
 
 namespace xAPI.Responses
 {
-
-    [DebuggerDisplay("status:{Status}, order:{Order}")]
+    [DebuggerDisplay("order:{Order}")]
     public class TradeTransactionStatusResponse : BaseResponse
     {
-        private double? ask;
-        private double? bid;
-        private string customComment;
-        private string message;
-        private long? order;
-        private REQUEST_STATUS requestStatus;
+        public TradeTransactionStatusResponse()
+            : base()
+        { }
 
-        public TradeTransactionStatusResponse(string body) : base(body)
+        public TradeTransactionStatusResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            this.ask = (double?)ob["ask"];
-            this.bid = (double?)ob["bid"];
-            this.customComment = (string)ob["customComment"];
-            this.message = (string)ob["message"];
-            this.order = (long?)ob["order"];
-            this.requestStatus = new REQUEST_STATUS((long)ob["requestStatus"]);
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            Ask = (double?)ob["ask"];
+            Bid = (double?)ob["bid"];
+            CustomComment = (string?)ob["customComment"];
+            Message = (string?)ob["message"];
+            Order = (long?)ob["order"];
+            var requestStatusCode = (long?)ob["requestStatus"];
+            RequestStatus = requestStatusCode.HasValue ? new REQUEST_STATUS(requestStatusCode.Value) : null;
         }
 
-        public virtual double? Ask
-        {
-            get
-            {
-                return ask;
-            }
+        public double? Ask { get; init; }
 
-            set
-            {
-                this.ask = value;
-            }
-        }
+        public double? Bid { get; init; }
 
-        public virtual double? Bid
-        {
-            get
-            {
-                return bid;
-            }
-            set
-            {
-                this.bid = value;
-            }
-        }
+        public string? CustomComment { get; init; }
 
-        public virtual string CustomComment
-        {
-            get { return customComment; }
-            set { customComment = value; }
-        }
+        public string? Message { get; init; }
 
-        public virtual string Message
-        {
-            get
-            {
-                return message;
-            }
-            set
-            {
-                this.message = value;
-            }
-        }
+        public long? Order { get; init; }
 
-        public virtual long? Order
-        {
-            get
-            {
-                return order;
-            }
-            set
-            {
-                this.order = value;
-            }
-        }
-
-        public virtual REQUEST_STATUS RequestStatus
-        {
-            get
-            {
-                return requestStatus;
-            }
-            set
-            {
-                this.requestStatus = value;
-            }
-        }
+        public REQUEST_STATUS? RequestStatus { get; init; }
     }
 }

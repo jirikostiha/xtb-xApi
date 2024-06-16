@@ -1,32 +1,33 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
+using System.Diagnostics;
 
 namespace xAPI.Responses
 {
-
+    [DebuggerDisplay("trades:{TradeRecords.Count}")]
     public class TradesHistoryResponse : BaseResponse
     {
-        private LinkedList<TradeRecord> tradeRecords = (LinkedList<TradeRecord>)new LinkedList<TradeRecord>();
+        public TradesHistoryResponse()
+            : base()
+        { }
 
-        public TradesHistoryResponse(string body) : base(body)
+        public TradesHistoryResponse(string body)
+            : base(body)
         {
-            JsonArray arr = this.ReturnData.AsArray();
-            foreach (JsonObject e in arr)
+            if (ReturnData is null)
+                return;
+
+            var arr = ReturnData.AsArray();
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                TradeRecord record = new TradeRecord();
+                var record = new TradeRecord();
                 record.FieldsFromJsonObject(e);
-                tradeRecords.AddLast(record);
-            }
-
-        }
-
-        public virtual LinkedList<TradeRecord> TradeRecords
-        {
-            get
-            {
-                return tradeRecords;
+                TradeRecords.AddLast(record);
             }
         }
+
+        public LinkedList<TradeRecord> TradeRecords { get; init; } = [];
     }
 }

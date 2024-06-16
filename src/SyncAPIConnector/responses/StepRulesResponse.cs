@@ -1,33 +1,31 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
 
 namespace xAPI.Responses
 {
-
     public class StepRulesResponse : BaseResponse
     {
-        private LinkedList<StepRuleRecord> stepRulesRecords = (LinkedList<StepRuleRecord>)new LinkedList<StepRuleRecord>();
+        public StepRulesResponse()
+            : base()
+        { }
 
         public StepRulesResponse(string body)
             : base(body)
         {
-            JsonArray stepRulesRecords = this.ReturnData.AsArray();
-            foreach (JsonObject e in stepRulesRecords)
+            if (ReturnData is null)
+                return;
+
+            var arr = ReturnData.AsArray();
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                StepRuleRecord stepRulesRecord = new StepRuleRecord();
-                stepRulesRecord.FieldsFromJsonObject(e);
-                this.stepRulesRecords.AddLast(stepRulesRecord);
+                var record = new StepRuleRecord();
+                record.FieldsFromJsonObject(e);
+                StepRulesRecords.AddLast(record);
             }
         }
 
-        public virtual LinkedList<StepRuleRecord> StepRulesRecords
-        {
-            get
-            {
-                return stepRulesRecords;
-            }
-        }
+        public LinkedList<StepRuleRecord> StepRulesRecords { get; init; } = [];
     }
-
 }

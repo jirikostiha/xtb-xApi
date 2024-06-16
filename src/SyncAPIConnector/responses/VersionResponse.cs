@@ -1,21 +1,21 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Responses
 {
     public class VersionResponse : BaseResponse
     {
-        private string version;
+        public VersionResponse()
+            : base()
+        { }
 
         public VersionResponse(string body)
             : base(body)
         {
-            JsonObject returnData = (JsonObject)this.ReturnData;
-            this.version = (string)returnData["version"];
+            if (ReturnData is null)
+                return;
+
+            var returnData = ReturnData.AsObject();
+            Version = (string?)returnData["version"];
         }
 
-        public virtual string Version
-        {
-            get { return version; }
-        }
+        public string? Version { get; init; }
     }
 }

@@ -1,31 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
 
 namespace xAPI.Responses
 {
-
     public class AllSpreadsResponse : BaseResponse
     {
-        private LinkedList<SpreadRecord> spreadRecords = (LinkedList<SpreadRecord>)new LinkedList<SpreadRecord>();
+        public AllSpreadsResponse()
+            : base()
+        { }
 
         public AllSpreadsResponse(string body) : base(body)
         {
-            JsonArray symbolRecords = this.ReturnData.AsArray();
-            foreach (JsonObject e in symbolRecords)
+            if (ReturnData is null)
+                return;
+
+            var symbolRecords = ReturnData.AsArray();
+            foreach (JsonObject e in symbolRecords.OfType<JsonObject>())
             {
                 SpreadRecord spreadRecord = new SpreadRecord();
                 spreadRecord.FieldsFromJsonObject(e);
-                this.spreadRecords.AddLast(spreadRecord);
+                SpreadRecords.AddLast(spreadRecord);
             }
         }
 
-        public virtual LinkedList<SpreadRecord> SpreadRecords
-        {
-            get
-            {
-                return spreadRecords;
-            }
-        }
+        public LinkedList<SpreadRecord> SpreadRecords { get; init; } = [];
     }
 }

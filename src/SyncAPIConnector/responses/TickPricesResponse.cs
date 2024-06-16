@@ -1,31 +1,34 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
+using System.Diagnostics;
 
 namespace xAPI.Responses
 {
+    [DebuggerDisplay("ticks:{Ticks.Count}")]
     public class TickPricesResponse : BaseResponse
     {
-        private LinkedList<TickRecord> ticks = (LinkedList<TickRecord>)new LinkedList<TickRecord>();
+        public TickPricesResponse()
+            : base()
+        { }
 
-        public TickPricesResponse(string body) : base(body)
+        public TickPricesResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            JsonArray arr = ob["quotations"].AsArray();
-            foreach (JsonObject e in arr)
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            var arr = ob["quotations"]?.AsArray();
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                TickRecord record = new TickRecord();
+                var record = new TickRecord();
                 record.FieldsFromJsonObject(e);
-                ticks.AddLast(record);
+                Ticks.AddLast(record);
             }
         }
 
-        public virtual LinkedList<TickRecord> Ticks
-        {
-            get
-            {
-                return ticks;
-            }
-        }
+        public LinkedList<TickRecord>? Ticks { get; init; } = [];
     }
 }

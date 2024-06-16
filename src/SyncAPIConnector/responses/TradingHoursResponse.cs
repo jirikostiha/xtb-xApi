@@ -1,31 +1,31 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
 
 namespace xAPI.Responses
 {
-
     public class TradingHoursResponse : BaseResponse
     {
-        private LinkedList<TradingHoursRecord> tradingHoursRecords = (LinkedList<TradingHoursRecord>)new LinkedList<TradingHoursRecord>();
+        public TradingHoursResponse()
+            : base()
+        { }
 
-        public TradingHoursResponse(string body) : base(body)
+        public TradingHoursResponse(string body)
+            : base(body)
         {
-            JsonArray ob = this.ReturnData.AsArray();
-            foreach (JsonObject e in ob)
+            if (ReturnData is null)
+                return;
+
+            var arr = ReturnData.AsArray();
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                TradingHoursRecord record = new TradingHoursRecord();
+                var record = new TradingHoursRecord();
                 record.FieldsFromJsonObject(e);
-                tradingHoursRecords.AddLast(record);
+                TradingHoursRecords.AddLast(record);
             }
         }
 
-        public virtual LinkedList<TradingHoursRecord> TradingHoursRecords
-        {
-            get
-            {
-                return tradingHoursRecords;
-            }
-        }
+        public LinkedList<TradingHoursRecord> TradingHoursRecords { get; init; } = [];
     }
 }

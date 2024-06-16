@@ -3,35 +3,26 @@ using xAPI.Records;
 
 namespace xAPI.Responses
 {
-
     public class LoginResponse : BaseResponse
     {
-        private string streamSessionId;
-        private RedirectRecord redirectRecord;
-
         public LoginResponse(string body)
             : base(body)
         {
-            JsonNode ob = JsonNode.Parse(body);
-            this.streamSessionId = (string)ob["streamSessionId"];
+            if (ReturnData is null)
+                return;
 
-            JsonObject redirectJSON = ob["redirect"]?.AsObject();
+            var ob = ReturnData.AsObject();
+            StreamSessionId = (string?)ob["streamSessionId"];
 
-            if (redirectJSON != null)
+            if (ob["redirect"] is JsonObject redirectJSON)
             {
-                this.redirectRecord = new RedirectRecord();
-                this.redirectRecord.FieldsFromJsonObject(redirectJSON);
+                RedirectRecord = new RedirectRecord();
+                RedirectRecord.FieldsFromJsonObject(redirectJSON);
             }
         }
 
-        public virtual string StreamSessionId
-        {
-            get { return streamSessionId; }
-        }
+        public string? StreamSessionId { get; init; }
 
-        public virtual RedirectRecord RedirectRecord
-        {
-            get { return redirectRecord; }
-        }
+        public RedirectRecord? RedirectRecord { get; init; }
     }
 }

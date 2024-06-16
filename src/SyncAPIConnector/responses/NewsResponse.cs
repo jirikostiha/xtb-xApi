@@ -1,31 +1,31 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
 
 namespace xAPI.Responses
 {
-
     public class NewsResponse : BaseResponse
     {
-        private LinkedList<NewsTopicRecord> newsTopicRecords = (LinkedList<NewsTopicRecord>)new LinkedList<NewsTopicRecord>();
+        public NewsResponse()
+            : base()
+        { }
 
-        public NewsResponse(string body) : base(body)
+        public NewsResponse(string body)
+            : base(body)
         {
-            JsonArray arr = this.ReturnData.AsArray();
-            foreach (JsonObject e in arr)
+            if (ReturnData is null)
+                return;
+
+            var arr = ReturnData.AsArray();
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                NewsTopicRecord record = new NewsTopicRecord();
+                var record = new NewsTopicRecord();
                 record.FieldsFromJsonObject(e);
-                newsTopicRecords.AddLast(record);
+                NewsTopicRecords.AddLast(record);
             }
         }
 
-        public virtual LinkedList<NewsTopicRecord> NewsTopicRecords
-        {
-            get
-            {
-                return newsTopicRecords;
-            }
-        }
+        public LinkedList<NewsTopicRecord> NewsTopicRecords { get; init; } = [];
     }
 }

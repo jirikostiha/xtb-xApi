@@ -1,84 +1,39 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Responses
 {
-
     public class MarginLevelResponse : BaseResponse
     {
-        private double? balance;
-        private double? equity;
-        private double? margin;
-        private double? margin_free;
-        private double? margin_level;
-        private string currency;
-        private double? credit;
+        public MarginLevelResponse()
+            : base()
+        { }
 
-        public MarginLevelResponse(string body) : base(body)
+        public MarginLevelResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            this.balance = (double?)ob["balance"];
-            this.equity = (double?)ob["equity"];
-            this.currency = (string)ob["currency"];
-            this.margin = (double?)ob["margin"];
-            this.margin_free = (double?)ob["margin_free"];
-            this.margin_level = (double?)ob["margin_level"];
-            this.credit = (double?)ob["credit"];
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            Balance = (double?)ob["balance"];
+            Equity = (double?)ob["equity"];
+            Currency = (string?)ob["currency"];
+            Margin = (double?)ob["margin"];
+            MarginFree = (double?)ob["margin_free"];
+            MarginLevel = (double?)ob["margin_level"];
+            Credit = (double?)ob["credit"];
         }
 
-        public virtual double? Balance
-        {
-            get
-            {
-                return balance;
-            }
-        }
+        public double? Balance { get; init; }
 
-        public virtual double? Equity
-        {
-            get
-            {
-                return equity;
-            }
-        }
+        public double? Equity { get; init; }
 
-        public virtual double? Margin
-        {
-            get
-            {
-                return margin;
-            }
-        }
+        public string? Currency { get; init; }
 
-        public virtual double? Margin_free
-        {
-            get
-            {
-                return margin_free;
-            }
-        }
+        public double? Margin { get; init; }
 
-        public virtual double? Margin_level
-        {
-            get
-            {
-                return margin_level;
-            }
-        }
+        public double? MarginFree { get; init; }
 
-        public virtual string Currency
-        {
-            get
-            {
-                return currency;
-            }
-        }
+        public double? MarginLevel { get; init; }
 
-        public virtual double? Credit
-        {
-            get
-            {
-                return credit;
-            }
-        }
+        public double? Credit { get; init; }
     }
 }

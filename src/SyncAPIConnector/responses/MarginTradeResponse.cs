@@ -1,24 +1,21 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Responses
 {
-
     public class MarginTradeResponse : BaseResponse
     {
-        private double? margin;
+        public MarginTradeResponse()
+            : base()
+        { }
 
-        public MarginTradeResponse(string body) : base(body)
+        public MarginTradeResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            this.margin = (double?)ob["margin"];
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            Margin = (double?)ob["margin"];
         }
 
-        public virtual double? Margin
-        {
-            get
-            {
-                return margin;
-            }
-        }
+        public double? Margin { get; init; }
     }
 }

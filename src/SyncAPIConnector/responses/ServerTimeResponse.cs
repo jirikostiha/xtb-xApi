@@ -1,34 +1,24 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Responses
 {
-
     public class ServerTimeResponse : BaseResponse
     {
-        private long? time;
-        private string timeString;
+        public ServerTimeResponse()
+            : base()
+        { }
 
-        public ServerTimeResponse(string body) : base(body)
+        public ServerTimeResponse(string body)
+            : base(body)
         {
-            JsonObject ob = this.ReturnData.AsObject();
-            this.time = (long?)ob["time"];
-            this.timeString = (string)ob["timeString"];
+            if (ReturnData is null)
+                return;
+
+            var ob = ReturnData.AsObject();
+            Time = (long?)ob["time"];
+            TimeString = (string?)ob["timeString"];
         }
 
-        public virtual long? Time
-        {
-            get
-            {
-                return time;
-            }
-        }
+        public long? Time { get; init; }
 
-        public virtual string TimeString
-        {
-            get
-            {
-                return timeString;
-            }
-        }
+        public string? TimeString { get; init; }
     }
 }

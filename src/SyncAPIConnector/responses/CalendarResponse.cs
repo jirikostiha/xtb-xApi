@@ -1,29 +1,30 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using xAPI.Records;
+using System.Linq;
 
 namespace xAPI.Responses
 {
     public class CalendarResponse : BaseResponse
     {
-        private List<CalendarRecord> calendarRecords = new List<CalendarRecord>();
+        public CalendarResponse()
+            : base()
+        { }
 
         public CalendarResponse(string body)
             : base(body)
         {
-            JsonArray returnData = this.ReturnData.AsArray();
+            if (ReturnData is null)
+                return;
 
-            foreach (JsonObject e in returnData)
+            foreach (JsonObject e in ReturnData.AsArray().OfType<JsonObject>())
             {
-                CalendarRecord record = new CalendarRecord();
+                CalendarRecord record = new();
                 record.FieldsFromJsonObject(e);
-                this.calendarRecords.Add(record);
+                CalendarRecords.Add(record);
             }
         }
 
-        public List<CalendarRecord> CalendarRecords
-        {
-            get { return calendarRecords; }
-        }
+        public List<CalendarRecord> CalendarRecords { get; init; } = [];
     }
 }

@@ -162,7 +162,7 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecuteMarginLevelCommandAsync(_connector);
             Pass(response);
-            Detail(response?.Margin_level?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
