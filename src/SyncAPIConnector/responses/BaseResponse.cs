@@ -35,10 +35,6 @@ namespace xAPI.Responses
             }
             else
             {
-#if DEBUG
-                // Console.WriteLine(ob.ToString());
-                Console.WriteLine(ob.ToJsonString());
-#endif
                 this.status = (bool?)ob["status"];
                 if (status == true)
                 {
