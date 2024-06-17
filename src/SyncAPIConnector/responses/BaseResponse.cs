@@ -49,7 +49,6 @@ namespace xAPI.Responses
 
                 if (this.status is null)
                 {
-                    Console.Error.WriteLine(body);
                     throw new APIReplyParseException("JSON Parse error: " + "\"status\" is null!");
                 }
 
