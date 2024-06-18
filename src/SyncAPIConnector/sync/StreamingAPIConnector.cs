@@ -188,12 +188,12 @@ namespace xAPI.Sync
 
             if (this.streamSessionId == null)
             {
-                throw new APICommunicationException("please login first");
+                throw new APICommunicationException("No session exists. Please login first.");
             }
 
             if (Connected())
             {
-                throw new APICommunicationException("stream already connected");
+                throw new APICommunicationException("Stream already connected.");
             }
 
             this.sl = streamingListener;
@@ -387,12 +387,13 @@ namespace xAPI.Sync
                     }
                     else
                     {
-                        throw new APICommunicationException("Unknown streaming record received");
+                        throw new APICommunicationException($"Unknown streaming record received. command:'{commandName}'");
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw new APICommunicationException("Read streaming message failed.", ex);
             }
         }
 

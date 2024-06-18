@@ -383,7 +383,7 @@ namespace xAPI.Commands
             while (loginResponse.RedirectRecord != null)
             {
                 if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
-                    throw new APICommunicationException("too many redirects");
+                    throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
                 Server newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
                 connector.Redirect(newServer);
@@ -409,7 +409,7 @@ namespace xAPI.Commands
             while (loginResponse.RedirectRecord != null)
             {
                 if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
-                    throw new APICommunicationException("too many redirects");
+                    throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
                 Server newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
                 connector.Redirect(newServer);

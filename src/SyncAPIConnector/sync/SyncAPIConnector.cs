@@ -132,7 +132,7 @@ namespace xAPI.Sync
                     }
                     else
                     {
-                        throw new APICommunicationException("Cannot connect to: " + server.Address + ":" + server.MainPort);
+                        throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
                     }
                 }
             }
@@ -149,7 +149,7 @@ namespace xAPI.Sync
                 });
 
                 if (!authenticated)
-                    throw new APICommunicationException("Error during SSL handshaking (timed out?)");
+                    throw new APICommunicationException("Error during SSL handshaking (timed out?).");
 
                 apiWriteStream = new StreamWriter(sl);
                 apiReadStream = new StreamReader(sl);
@@ -177,7 +177,7 @@ namespace xAPI.Sync
             if (this.server != null)
                 Connect(this.server);
 
-            throw new APICommunicationException("No server to connect to");
+            throw new APICommunicationException("No server to connect to.");
         }
 
         /// <summary>
@@ -215,11 +215,12 @@ namespace xAPI.Sync
         {
             try
             {
-                return (JSONObject)JSONObject.Parse(this.ExecuteCommand(cmd.ToJSONString()));
+                var responseJson = this.ExecuteCommand(cmd.ToJSONString());
+                return (JSONObject)JSONObject.Parse(responseJson);
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException("Problem with executing command: " + ex.Message);
+                throw new APICommunicationException($"Problem with executing command:'{cmd.CommandName}'", ex);
             }
         }
 
@@ -232,11 +233,12 @@ namespace xAPI.Sync
         {
             try
             {
-                return (JSONObject)JSONObject.Parse(await this.ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false));
+                var responseJson = await this.ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false);
+                return (JSONObject)JSONObject.Parse(responseJson);
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException("Problem with executing command: " + ex.Message);
+                throw new APICommunicationException($"Problem with executing command:'{cmd.CommandName}'", ex);
             }
         }
 
@@ -269,7 +271,7 @@ namespace xAPI.Sync
                 if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
-                    throw new APICommunicationException("Server not responding");
+                    throw new APICommunicationException("Server not responding. Response has no value.");
                 }
 
                 return response;
@@ -309,7 +311,7 @@ namespace xAPI.Sync
                 if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
-                    throw new APICommunicationException("Server not responding");
+                    throw new APICommunicationException("Server not responding. Response has no value.");
                 }
 
                 return response;
