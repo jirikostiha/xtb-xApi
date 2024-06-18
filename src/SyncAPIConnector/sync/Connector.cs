@@ -179,8 +179,6 @@ namespace xAPI.Sync
 
             try
             {
-                byte[] buffer = new byte[apiSocket.ReceiveBufferSize];
-
                 string line;
                 while ((line = apiReadStream.ReadLine()) != null)
                 {
@@ -226,8 +224,6 @@ namespace xAPI.Sync
 
             try
             {
-                byte[] buffer = new byte[apiSocket.ReceiveBufferSize];
-
                 string line;
                 while ((line = await apiReadStream.ReadLineAsync().ConfigureAwait(false)) != null)
                 {
