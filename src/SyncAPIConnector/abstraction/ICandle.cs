@@ -9,7 +9,5 @@
         double? Open { get; }
 
         double? Close { get; }
-
-        public double? Volume { get; }
     }
 }
