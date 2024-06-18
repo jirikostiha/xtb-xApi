@@ -121,6 +121,11 @@ namespace xAPI.Sync
         /// </summary>
         public event OnCandle CandleRecordReceived;
 
+        /// <summary>
+        /// Event raised when read streamed message.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs> StreamingErrorOccurred;
+
         #endregion
 
         /// <summary>
@@ -393,7 +398,7 @@ namespace xAPI.Sync
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException("Read streaming message failed.", ex);
+                OnStreamingErrorOccurred(ex);
             }
         }
 
@@ -520,6 +525,18 @@ namespace xAPI.Sync
         {
             CandleRecordsStop candleRecordsStop = new CandleRecordsStop(symbol);
             WriteMessage(candleRecordsStop.ToString());
+        }
+
+        protected virtual void OnStreamingErrorOccurred(Exception ex)
+        {
+            var args = new ExceptionEventArgs(ex);
+            StreamingErrorOccurred?.Invoke(this, args);
+
+            if (!args.Handled)
+            {
+                // If the exception was not handled, rethrow it
+                throw new APICommunicationException("Read streaming message failed.", ex);
+            }
         }
 
         private bool _disposed;
