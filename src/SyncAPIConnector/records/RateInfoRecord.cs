@@ -4,7 +4,6 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     using System;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public record RateInfoRecord : BaseResponseRecord, ICandleRecord
     {
