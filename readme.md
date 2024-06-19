@@ -15,7 +15,8 @@ The changes made are mostly additive except for a few necessary exceptions. It i
 
 ## Changelog
 
-2.5.12 more interfaces of records, nanes of new members unification, various small changes  
+2.5.13 support custom handling of exceptions in streaming connector, enriched exceptions  
+2.5.12 more interfaces of records, names of new members unification, various small changes  
 2.5.11 fixed performance warnings  
 2.5.10 cfd stock indication, various changes on records and codes  
 2.5.9 string constants, fix hours interval evaluation  

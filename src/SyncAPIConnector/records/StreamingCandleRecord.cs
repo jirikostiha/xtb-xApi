@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
-    public record StreamingCandleRecord : BaseResponseRecord, ISymbol, ICandle
+    public record StreamingCandleRecord : BaseResponseRecord, ISymbol, ICandleRecord
     {
         public StreamingCandleRecord()
         {
@@ -67,9 +67,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
 
-        public double? Volume => Vol;
-
-        public void FieldsFromJsonObject(JsonObject value)
+        public void FieldsFromJSONObject(JSONObject value)
         {
             Close = (double?)value["close"];
             Ctm = (long?)value["ctm"];

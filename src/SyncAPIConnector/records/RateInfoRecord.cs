@@ -3,7 +3,10 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    public record RateInfoRecord : BaseResponseRecord, ICandle
+    using System;
+    using JSONObject = Newtonsoft.Json.Linq.JObject;
+
+    public record RateInfoRecord : BaseResponseRecord, ICandleRecord
     {
         private long? ctm;
         private double? open;
@@ -89,8 +92,6 @@ namespace xAPI.Records
         }
 
         public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
-
-        public double? Volume => Vol;
 
         public void FieldsFromJsonObject(JsonObject value)
         {

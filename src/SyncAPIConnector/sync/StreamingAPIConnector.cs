@@ -120,6 +120,11 @@ namespace xAPI.Sync
         /// </summary>
         public event OnCandle CandleRecordReceived;
 
+        /// <summary>
+        /// Event raised when read streamed message.
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs> StreamingErrorOccurred;
+
         #endregion
 
         /// <summary>
@@ -187,12 +192,12 @@ namespace xAPI.Sync
 
             if (this.streamSessionId == null)
             {
-                throw new APICommunicationException("please login first");
+                throw new APICommunicationException("No session exists. Please login first.");
             }
 
             if (Connected())
             {
-                throw new APICommunicationException("stream already connected");
+                throw new APICommunicationException("Stream already connected.");
             }
 
             this.sl = streamingListener;
@@ -386,12 +391,13 @@ namespace xAPI.Sync
                     }
                     else
                     {
-                        throw new APICommunicationException("Unknown streaming record received");
+                        throw new APICommunicationException($"Unknown streaming record received. command:'{commandName}'");
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                OnStreamingErrorOccurred(ex);
             }
         }
 
@@ -518,6 +524,18 @@ namespace xAPI.Sync
         {
             CandleRecordsStop candleRecordsStop = new CandleRecordsStop(symbol);
             WriteMessage(candleRecordsStop.ToString());
+        }
+
+        protected virtual void OnStreamingErrorOccurred(Exception ex)
+        {
+            var args = new ExceptionEventArgs(ex);
+            StreamingErrorOccurred?.Invoke(this, args);
+
+            if (!args.Handled)
+            {
+                // If the exception was not handled, rethrow it
+                throw new APICommunicationException("Read streaming message failed.", ex);
+            }
         }
 
         private bool _disposed;

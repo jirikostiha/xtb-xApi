@@ -24,14 +24,14 @@ namespace xAPI.Responses
             {
                 throw new APIReplyParseException("JSON Parse exception: body is null");
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                throw new APIReplyParseException("JSON Parse exception: " + body + "\n" + x.Message);
+                throw new APIReplyParseException($"Parsing json failed. message:'{body.Substring(0, 250)}'", ex);
             }
 
             if (ob is null)
             {
-                throw new APIReplyParseException("JSON Parse exception: " + body);
+                throw new APIReplyParseException($"Parsing json returned null object. message:'{body.Substring(0, 250)}'");
             }
             else
             {
@@ -49,7 +49,7 @@ namespace xAPI.Responses
 
                 if (this.status is null)
                 {
-                    throw new APIReplyParseException("JSON Parse error: " + "\"status\" is null!");
+                    throw new APIReplyParseException("Parsing json error. Status cannot be null.");
                 }
 
                 if ((this.status is null) || ((bool)!this.status))

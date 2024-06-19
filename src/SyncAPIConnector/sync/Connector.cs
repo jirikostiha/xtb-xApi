@@ -113,13 +113,13 @@ namespace xAPI.Sync
                     catch (IOException ex)
                     {
                         Disconnect();
-                        throw new APICommunicationException("Error while sending the data: " + ex.Message);
+                        throw new APICommunicationException($"Error while sending data:'{message.Substring(0, 250)}'", ex);
                     }
                 }
                 else
                 {
                     Disconnect();
-                    throw new APICommunicationException("Error while sending the data (socket disconnected)");
+                    throw new APICommunicationException("Error while sending data (socket disconnected).");
                 }
 
                 if (OnMessageSended != null)
@@ -150,13 +150,13 @@ namespace xAPI.Sync
                     catch (IOException ex)
                     {
                         Disconnect();
-                        throw new APICommunicationException("Error while sending the data: " + ex.Message);
+                        throw new APICommunicationException($"Error while sending data:'{message.Substring(0, 250)}'", ex);
                     }
                 }
                 else
                 {
                     Disconnect();
-                    throw new APICommunicationException("Error while sending the data (socket disconnected)");
+                    throw new APICommunicationException("Error while sending the data (socket disconnected).");
                 }
 
                 if (OnMessageSended != null)
@@ -179,8 +179,6 @@ namespace xAPI.Sync
 
             try
             {
-                byte[] buffer = new byte[apiSocket.ReceiveBufferSize];
-
                 string line;
                 while ((line = apiReadStream.ReadLine()) != null)
                 {
@@ -199,7 +197,7 @@ namespace xAPI.Sync
                 if (line == null)
                 {
                     Disconnect();
-                    throw new APICommunicationException("Disconnected from server");
+                    throw new APICommunicationException("Disconnected from server. No data in stream.");
                 }
 
                 if (OnMessageReceived != null)
@@ -211,7 +209,7 @@ namespace xAPI.Sync
             catch (Exception ex)
             {
                 Disconnect();
-                throw new APICommunicationException("Disconnected from server: " + ex.Message);
+                throw new APICommunicationException("Disconnected from server.", ex);
             }
         }
 
@@ -226,8 +224,6 @@ namespace xAPI.Sync
 
             try
             {
-                byte[] buffer = new byte[apiSocket.ReceiveBufferSize];
-
                 string line;
                 while ((line = await apiReadStream.ReadLineAsync().ConfigureAwait(false)) != null)
                 {
@@ -246,7 +242,7 @@ namespace xAPI.Sync
                 if (line == null)
                 {
                     Disconnect();
-                    throw new APICommunicationException("Disconnected from server");
+                    throw new APICommunicationException("Disconnected from server. No data in stream.");
                 }
 
                 if (OnMessageReceived != null)
@@ -258,7 +254,7 @@ namespace xAPI.Sync
             catch (Exception ex)
             {
                 Disconnect();
-                throw new APICommunicationException("Disconnected from server: " + ex.Message);
+                throw new APICommunicationException("Disconnected from server.", ex);
             }
         }
 

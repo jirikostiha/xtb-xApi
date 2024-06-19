@@ -64,11 +64,11 @@ namespace xAPI.Commands
         {
             if (commandName == null)
             {
-                throw new APICommandConstructionException("commandName cannot be null");
+                throw new APICommandConstructionException("CommandName cannot be null.");
             }
             if (arguments == null)
             {
-                throw new APICommandConstructionException("arguments cannot be null");
+                throw new APICommandConstructionException($"Arguments cannot be null. command:'{commandName}'");
             }
         }
     }

@@ -127,7 +127,7 @@ namespace xAPI.Sync
                     }
                     else
                     {
-                        throw new APICommunicationException("Cannot connect to: " + server.Address + ":" + server.MainPort);
+                        throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
                     }
                 }
             }
@@ -144,7 +144,7 @@ namespace xAPI.Sync
                 });
 
                 if (!authenticated)
-                    throw new APICommunicationException("Error during SSL handshaking (timed out?)");
+                    throw new APICommunicationException("Error during SSL handshaking (timed out?).");
 
                 apiWriteStream = new StreamWriter(sl);
                 apiReadStream = new StreamReader(sl);
@@ -172,7 +172,7 @@ namespace xAPI.Sync
             if (this.server != null)
                 Connect(this.server);
 
-            throw new APICommunicationException("No server to connect to");
+            throw new APICommunicationException("No server to connect to.");
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace xAPI.Sync
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException("Problem with executing command: " + ex.Message);
+                throw new APICommunicationException($"Problem with executing command:'{cmd.CommandName}'", ex);
             }
         }
 
@@ -231,7 +231,7 @@ namespace xAPI.Sync
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException("Problem with executing command: " + ex.Message);
+                throw new APICommunicationException($"Problem with executing command:'{cmd.CommandName}'", ex);
             }
         }
 
@@ -264,7 +264,7 @@ namespace xAPI.Sync
                 if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
-                    throw new APICommunicationException("Server not responding");
+                    throw new APICommunicationException("Server not responding. Response has no value.");
                 }
 
                 return response;
@@ -304,7 +304,7 @@ namespace xAPI.Sync
                 if (string.IsNullOrEmpty(response))
                 {
                     Disconnect();
-                    throw new APICommunicationException("Server not responding");
+                    throw new APICommunicationException("Server not responding. Response has no value.");
                 }
 
                 return response;
