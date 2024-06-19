@@ -1,6 +1,7 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Responses
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class ProfitCalculationResponse : BaseResponse
     {
@@ -8,7 +9,7 @@ namespace xAPI.Responses
 
         public ProfitCalculationResponse(string body) : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             this.profit = (double?)ob["profit"];
         }
 

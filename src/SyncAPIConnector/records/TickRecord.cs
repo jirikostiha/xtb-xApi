@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
     public record TickRecord : BaseResponseRecord, ITickRecord
     {
@@ -115,12 +113,12 @@ namespace xAPI.Records
 
         public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
-            FieldsFromJSONObject(value, null);
+            FieldsFromJsonObject(value, null);
         }
 
-        public bool FieldsFromJSONObject(JSONObject value, string str)
+        public bool FieldsFromJsonObject(JsonObject value, string str)
         {
             this.ask = (double?)value["ask"];
             this.askVolume = (long?)value["askVolume"];

@@ -1,8 +1,8 @@
+using System;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Responses
 {
-    using System;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     public class CurrentUserDataResponse : BaseResponse
     {
         private string currency;
@@ -16,7 +16,7 @@ namespace xAPI.Responses
         public CurrentUserDataResponse(string body)
             : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             this.currency = (string)ob["currency"];
             this.leverage = (long?)ob["leverage"];
             this.leverageMultiplier = (double?)ob["leverageMultiplier"];

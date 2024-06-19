@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class StepRulesResponse : BaseResponse
     {
@@ -14,11 +12,11 @@ namespace xAPI.Responses
         public StepRulesResponse(string body)
             : base(body)
         {
-            JSONArray stepRulesRecords = (JSONArray)this.ReturnData;
-            foreach (JSONObject e in stepRulesRecords)
+            JsonArray stepRulesRecords = this.ReturnData.AsArray();
+            foreach (JsonObject e in stepRulesRecords)
             {
                 StepRuleRecord stepRulesRecord = new StepRuleRecord();
-                stepRulesRecord.FieldsFromJSONObject(e);
+                stepRulesRecord.FieldsFromJsonObject(e);
                 this.stepRulesRecords.AddLast(stepRulesRecord);
             }
         }

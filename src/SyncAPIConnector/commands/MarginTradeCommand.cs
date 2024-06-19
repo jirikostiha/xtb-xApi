@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class MarginTradeCommand : BaseCommand
     {
-        public MarginTradeCommand(JSONObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public MarginTradeCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
         {
         }
 

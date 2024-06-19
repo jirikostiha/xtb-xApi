@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class TradeRecordsCommand : BaseCommand
     {
-        public TradeRecordsCommand(JSONObject arguments, bool prettyPrint)
+        public TradeRecordsCommand(JsonObject arguments, bool prettyPrint)
             : base(arguments, prettyPrint)
         {
         }

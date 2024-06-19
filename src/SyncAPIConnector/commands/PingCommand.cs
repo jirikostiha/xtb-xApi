@@ -1,11 +1,12 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class PingCommand : BaseCommand
     {
         public PingCommand(bool? prettyPrint)
-            : base(new JSONObject(), prettyPrint)
+            : base(new JsonObject(), prettyPrint)
         {
         }
 

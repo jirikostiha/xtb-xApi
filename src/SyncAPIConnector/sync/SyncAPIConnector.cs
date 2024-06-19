@@ -1,20 +1,15 @@
 using System;
-using System.Text;
 using System.Threading;
-using System.Runtime.Serialization.Json;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net.Security;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using JSONObject = Newtonsoft.Json.Linq.JObject;
-using xAPI.Streaming;
-using System.Net;
 using xAPI.Errors;
 using xAPI.Commands;
 using xAPI.Utils;
 using SyncAPIConnect.Utils;
 using System.Threading.Tasks;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Sync
 {
@@ -211,12 +206,11 @@ namespace xAPI.Sync
         /// </summary>
         /// <param name="cmd">Command to execute</param>
         /// <returns>Response from the server</returns>
-		public JSONObject ExecuteCommand(BaseCommand cmd)
+		public JsonObject ExecuteCommand(BaseCommand cmd)
         {
             try
             {
-                var responseJson = this.ExecuteCommand(cmd.ToJSONString());
-                return (JSONObject)JSONObject.Parse(responseJson);
+                return (JsonObject)JsonObject.Parse(this.ExecuteCommand(cmd.ToJSONString()));
             }
             catch (Exception ex)
             {
@@ -229,12 +223,11 @@ namespace xAPI.Sync
         /// </summary>
         /// <param name="cmd">Command to execute</param>
         /// <returns>Response from the server</returns>
-		public async Task<JSONObject> ExecuteCommandAsync(BaseCommand cmd)
+		public async Task<JsonObject> ExecuteCommandAsync(BaseCommand cmd)
         {
             try
             {
-                var responseJson = await this.ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false);
-                return (JSONObject)JSONObject.Parse(responseJson);
+                return (JsonObject)JsonObject.Parse(await this.ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false));
             }
             catch (Exception ex)
             {

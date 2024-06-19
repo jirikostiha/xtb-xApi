@@ -1,3 +1,6 @@
+using System;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
     using System;
@@ -90,7 +93,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             {
                 this.Close = (double?)value["close"];

@@ -1,21 +1,20 @@
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using xAPI.Errors;
 
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public abstract class BaseCommand
     {
         protected internal string commandName;
         protected internal bool? prettyPrint;
-        protected internal JSONObject arguments;
+        protected internal JsonObject arguments;
 
-        public BaseCommand(bool? prettyPrint) : this(new JSONObject(), prettyPrint)
+        public BaseCommand(bool? prettyPrint) : this(new JsonObject(), prettyPrint)
         {
         }
 
-        public BaseCommand(JSONObject arguments, bool? prettyPrint, string customTag = "")
+        public BaseCommand(JsonObject arguments, bool? prettyPrint, string customTag = "")
         {
             this.commandName = CommandName;
             this.arguments = arguments;
@@ -40,22 +39,24 @@ namespace xAPI.Commands
             SelfCheck();
             foreach (string argName in RequiredArguments)
             {
-                JToken tok;
-                if (!this.arguments.TryGetValue(argName, out tok))
+                if (!this.arguments.ContainsKey(argName))
                 {
                     throw new APICommandConstructionException("Arguments of [" + commandName + "] Command must contain \"" + argName + "\" field!");
                 }
+
             }
             return true;
         }
 
         public virtual string ToJSONString()
         {
-            JSONObject obj = new JSONObject();
-            obj.Add("command", commandName);
-            obj.Add("prettyPrint", prettyPrint);
-            obj.Add("arguments", arguments);
-            obj.Add("customTag", CustomTag);
+            JsonObject obj = new()
+            {
+                { "command", commandName },
+                { "prettyPrint", prettyPrint },
+                { "arguments", arguments },
+                { "customTag", CustomTag }
+            };
             return obj.ToString();
         }
 

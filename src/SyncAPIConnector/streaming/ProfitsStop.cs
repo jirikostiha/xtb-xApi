@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.Json.Nodes;
 
 namespace xAPI.Streaming
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     sealed class ProfitsStop
     {
@@ -15,9 +11,11 @@ namespace xAPI.Streaming
 
         public override string ToString()
         {
-            JSONObject result = new JSONObject();
-            result.Add("command", "stopProfits");
-            return result.ToString();
+            JsonObject result = new()
+            {
+                { "command", "stopProfits" }
+            };
+            return result.ToJsonString();
         }
     }
 }

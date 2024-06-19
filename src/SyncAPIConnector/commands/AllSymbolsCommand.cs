@@ -1,7 +1,5 @@
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     public class AllSymbolsCommand : BaseCommand
     {
         public AllSymbolsCommand(bool prettyPrint) : base(prettyPrint)

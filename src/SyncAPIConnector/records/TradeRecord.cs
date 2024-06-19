@@ -1,10 +1,10 @@
+using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+using xAPI.Codes;
+
 namespace xAPI.Records
 {
-    using System;
-    using System.Diagnostics;
-    using xAPI.Codes;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}, profit:{Profit}, volume:{Volume}")]
     public record TradeRecord : BaseResponseRecord, ITradeRecord
     {
@@ -264,7 +264,7 @@ namespace xAPI.Records
 
         public DateTimeOffset? ExpirationDateTime => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.close_price = (double?)value["close_price"];
             this.close_time = (long?)value["close_time"];
@@ -295,7 +295,7 @@ namespace xAPI.Records
         }
 
         [Obsolete("Method outdated")]
-        public bool FieldsFromJSONObject(JSONObject value, string str)
+        public bool FieldsFromJsonObject(JsonObject value, string str)
         {
             return false;
         }

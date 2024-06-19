@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     public class SpreadsResponse : BaseResponse
     {
         private LinkedList<SpreadRecord> spreadRecords = (LinkedList<SpreadRecord>)new LinkedList<SpreadRecord>();
@@ -16,11 +11,11 @@ namespace xAPI.Responses
         public SpreadsResponse(string body)
             : base(body)
         {
-            JSONArray symbolRecords = (JSONArray)this.ReturnData;
-            foreach (JSONObject e in symbolRecords)
+            JsonArray symbolRecords = this.ReturnData.AsArray();
+            foreach (JsonObject e in symbolRecords)
             {
                 SpreadRecord spreadRecord = new SpreadRecord();
-                spreadRecord.FieldsFromJSONObject(e);
+                spreadRecord.FieldsFromJsonObject(e);
                 this.spreadRecords.AddLast(spreadRecord);
             }
         }

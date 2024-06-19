@@ -2,17 +2,16 @@
 using System;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-using JSONObject = Newtonsoft.Json.Linq.JObject;
+
 using xAPI.Utils;
 using xAPI.Records;
 using xAPI.Errors;
 using xAPI.Responses;
 using xAPI.Streaming;
+
+using System.Text.Json.Nodes;
 
 namespace xAPI.Sync
 {
@@ -131,7 +130,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Dedicated streaming listener.
         /// </summary>
-        private StreamingListener sl;
+        private IStreamingListener sl;
 
         /// <summary>
         /// Stream session id (given on login).
@@ -158,7 +157,7 @@ namespace xAPI.Sync
         /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
         /// </summary>
         /// <param name="server">Server data</param>
-        public StreamingAPIConnector(Server server, string streamSessionId, StreamingListener streamingListner)
+        public StreamingAPIConnector(Server server, string streamSessionId, IStreamingListener streamingListner)
         {
             this.server = server;
             this.streamSessionId = streamSessionId;
@@ -169,7 +168,7 @@ namespace xAPI.Sync
         /// Connect to the streaming using given streaming listener.
         /// </summary>
         /// <param name="streamingListener">Streaming listener</param>
-        public void Connect(StreamingListener streamingListener)
+        public void Connect(IStreamingListener streamingListener)
         {
             Connect(streamingListener, streamSessionId);
         }
@@ -187,7 +186,7 @@ namespace xAPI.Sync
         /// </summary>
         /// <param name="streamingListener">Streaming listener</param>
         /// <param name="streamSessionId">Stream session id</param>
-        public void Connect(StreamingListener streamingListener, string streamSessionId)
+        public void Connect(IStreamingListener streamingListener, string streamSessionId)
         {
             this.streamSessionId = streamSessionId;
 
@@ -252,7 +251,7 @@ namespace xAPI.Sync
         /// <param name="lr">Login response</param>
         /// <param name="secure">Secure</param>
         [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(StreamingListener sl, string ip, int port, LoginResponse lr, bool secure)
+        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr, bool secure)
         {
             this.running = true;
             this.sl = sl;
@@ -285,13 +284,13 @@ namespace xAPI.Sync
         }
 
         [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(StreamingListener sl, string ip, int port, LoginResponse lr)
+        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr)
             : this(sl, ip, port, lr, false)
         {
         }
 
         [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        public StreamingAPIConnector(StreamingListener sl, Server dt, LoginResponse lr)
+        public StreamingAPIConnector(IStreamingListener sl, Server dt, LoginResponse lr)
             : this(sl, dt.Address, dt.StreamingPort, lr, dt.Secure)
         {
         }
@@ -307,13 +306,13 @@ namespace xAPI.Sync
 
                 if (message != null)
                 {
-                    JSONObject responseBody = (JSONObject)JSONObject.Parse(message);
+                    JsonNode responseBody = JsonNode.Parse(message);
                     string commandName = responseBody["command"].ToString();
 
                     if (commandName == "tickPrices")
                     {
                         StreamingTickRecord tickRecord = new StreamingTickRecord();
-                        tickRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (TickRecordReceived != null)
                             TickRecordReceived.Invoke(tickRecord);
@@ -323,7 +322,7 @@ namespace xAPI.Sync
                     else if (commandName == "trade")
                     {
                         StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
-                        tradeRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (TradeRecordReceived != null)
                             TradeRecordReceived.Invoke(tradeRecord);
@@ -333,7 +332,7 @@ namespace xAPI.Sync
                     else if (commandName == "balance")
                     {
                         StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
-                        balanceRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (BalanceRecordReceived != null)
                             BalanceRecordReceived.Invoke(balanceRecord);
@@ -343,7 +342,7 @@ namespace xAPI.Sync
                     else if (commandName == "tradeStatus")
                     {
                         StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
-                        tradeStatusRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (TradeStatusRecordReceived != null)
                             TradeStatusRecordReceived.Invoke(tradeStatusRecord);
@@ -353,7 +352,7 @@ namespace xAPI.Sync
                     else if (commandName == "profit")
                     {
                         StreamingProfitRecord profitRecord = new StreamingProfitRecord();
-                        profitRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (ProfitRecordReceived != null)
                             ProfitRecordReceived.Invoke(profitRecord);
@@ -363,7 +362,7 @@ namespace xAPI.Sync
                     else if (commandName == "news")
                     {
                         StreamingNewsRecord newsRecord = new StreamingNewsRecord();
-                        newsRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (NewsRecordReceived != null)
                             NewsRecordReceived.Invoke(newsRecord);
@@ -373,7 +372,7 @@ namespace xAPI.Sync
                     else if (commandName == "keepAlive")
                     {
                         StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
-                        keepAliveRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (KeepAliveRecordReceived != null)
                             KeepAliveRecordReceived.Invoke(keepAliveRecord);
@@ -383,7 +382,7 @@ namespace xAPI.Sync
                     else if (commandName == "candle")
                     {
                         StreamingCandleRecord candleRecord = new StreamingCandleRecord();
-                        candleRecord.FieldsFromJSONObject((JSONObject)responseBody["data"]);
+                        candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         if (CandleRecordReceived != null)
                             CandleRecordReceived.Invoke(candleRecord);

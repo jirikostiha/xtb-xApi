@@ -1,9 +1,9 @@
+using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Responses
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using System;
-    using System.Diagnostics;
-
     [DebuggerDisplay("status:{Status}, order:{Order}")]
     public class TradeTransactionResponse : BaseResponse
     {
@@ -11,7 +11,7 @@ namespace xAPI.Responses
 
         public TradeTransactionResponse(string body) : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             this.order = (long?)ob["order"];
         }
 

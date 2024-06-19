@@ -1,10 +1,11 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class NewsCommand : BaseCommand
     {
-        public NewsCommand(JSONObject body, bool prettyPrint)
+        public NewsCommand(JsonObject body, bool prettyPrint)
             : base(body, prettyPrint)
         {
         }

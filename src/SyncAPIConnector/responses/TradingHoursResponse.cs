@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class TradingHoursResponse : BaseResponse
     {
@@ -13,11 +11,11 @@ namespace xAPI.Responses
 
         public TradingHoursResponse(string body) : base(body)
         {
-            JSONArray ob = (JSONArray)this.ReturnData;
-            foreach (JSONObject e in ob)
+            JsonArray ob = this.ReturnData.AsArray();
+            foreach (JsonObject e in ob)
             {
                 TradingHoursRecord record = new TradingHoursRecord();
-                record.FieldsFromJSONObject(e);
+                record.FieldsFromJsonObject(e);
                 tradingHoursRecords.AddLast(record);
             }
         }

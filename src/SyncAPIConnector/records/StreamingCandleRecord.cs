@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using System;
-    using System.Diagnostics;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
     public record StreamingCandleRecord : BaseResponseRecord, ISymbol, ICandleRecord
     {

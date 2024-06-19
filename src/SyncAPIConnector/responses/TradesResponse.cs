@@ -1,31 +1,28 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONArray = Newtonsoft.Json.Linq.JArray;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("status:{Status}, count:{TradeRecords.Count}")]
     public class TradesResponse : BaseResponse
     {
-        private LinkedList<TradeRecord> tradeRecords = (LinkedList<TradeRecord>)new LinkedList<TradeRecord>();
+        private List<TradeRecord> tradeRecords = (List<TradeRecord>)new List<TradeRecord>();
 
         public TradesResponse(string body) : base(body)
         {
-            JSONArray arr = (JSONArray)this.ReturnData;
-            foreach (JSONObject e in arr)
+            JsonArray arr = this.ReturnData.AsArray();
+            foreach (JsonObject e in arr)
             {
                 TradeRecord record = new TradeRecord();
-                record.FieldsFromJSONObject(e);
-                tradeRecords.AddLast(record);
+                record.FieldsFromJsonObject(e);
+                tradeRecords.Add(record);
             }
 
         }
 
-        public virtual LinkedList<TradeRecord> TradeRecords
+        public virtual List<TradeRecord> TradeRecords
         {
             get
             {

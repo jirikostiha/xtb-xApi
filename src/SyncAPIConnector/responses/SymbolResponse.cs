@@ -1,8 +1,8 @@
+using System.Text.Json.Nodes;
 using xAPI.Records;
 
 namespace xAPI.Responses
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class SymbolResponse : BaseResponse
     {
@@ -10,9 +10,9 @@ namespace xAPI.Responses
 
         public SymbolResponse(string body) : base(body)
         {
-            JSONObject ob = (JSONObject)this.ReturnData;
+            JsonObject ob = this.ReturnData.AsObject();
             symbol = new SymbolRecord();
-            symbol.FieldsFromJSONObject(ob);
+            symbol.FieldsFromJsonObject(ob);
         }
 
         public virtual SymbolRecord Symbol

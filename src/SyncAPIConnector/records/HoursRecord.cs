@@ -1,9 +1,9 @@
+using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using System;
-    using System.Diagnostics;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("day:{Day}, since:{FromT2}, until:{ToT2}")]
     public record HoursRecord : BaseResponseRecord
     {
@@ -65,7 +65,7 @@ namespace xAPI.Records
             }
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.day = (long?)value["day"];
             this.fromT = (long?)value["fromT"];

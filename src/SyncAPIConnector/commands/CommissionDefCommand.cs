@@ -1,16 +1,17 @@
+using System.Text.Json.Nodes;
+
 namespace xAPI.Commands
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
 
     public class CommissionDefCommand : BaseCommand
     {
-        public CommissionDefCommand(JSONObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public CommissionDefCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
         {
         }
 
         public override string ToJSONString()
         {
-            JSONObject obj = new JSONObject();
+            JsonObject obj = new JsonObject();
             obj.Add("command", commandName);
             obj.Add("prettyPrint", prettyPrint);
             obj.Add("arguments", arguments);

@@ -1,58 +1,63 @@
 using System;
+using ERR_CODE = xAPI.Errors.ERR_CODE;
+using APIReplyParseException = xAPI.Errors.APIReplyParseException;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Responses
 {
-    using JSONAware = Newtonsoft.Json.Linq.JContainer;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-    using ERR_CODE = xAPI.Errors.ERR_CODE;
-    using APIReplyParseException = xAPI.Errors.APIReplyParseException;
-    using xAPI.Records;
-
     public class BaseResponse
     {
         private bool? status;
-        private string errorDescr;
+        private string? errorDescr;
         private ERR_CODE errCode;
-        private JSONAware returnData;
-        private string customTag;
+        private JsonNode? returnData;
+        private string? customTag;
 
         public BaseResponse(string body)
         {
-            JSONObject ob;
+            JsonNode? ob;
             try
             {
-                ob = (JSONObject)JSONObject.Parse(body);
-
+                ob = JsonNode.Parse(body);
+            }
+            catch (ArgumentNullException)
+            {
+                throw new APIReplyParseException("JSON Parse exception: body is null");
             }
             catch (Exception ex)
             {
                 throw new APIReplyParseException($"Parsing json failed. message:'{body.Substring(0, 250)}'", ex);
             }
 
-            if (ob == null)
+            if (ob is null)
             {
                 throw new APIReplyParseException($"Parsing json returned null object. message:'{body.Substring(0, 250)}'");
             }
             else
             {
                 this.status = (bool?)ob["status"];
-                this.errCode = new ERR_CODE((string)ob["errorCode"]);
-                this.errorDescr = (string)ob["errorDescr"];
-                this.returnData = (JSONAware)ob["returnData"];
-                this.customTag = (string)ob["customTag"];
-
-                if (this.status == null)
+                if (status == true)
                 {
-                    Console.Error.WriteLine(body);
+                    returnData = ob["returnData"];
+                }
+                else
+                {
+                    errCode = new ERR_CODE(ob["errorCode"]?.GetValue<string>());
+                    errorDescr = ob["errorDescr"]?.GetValue<string>();
+                }
+                this.customTag = ob["customTag"]?.GetValue<string>();
+
+                if (this.status is null)
+                {
                     throw new APIReplyParseException("Parsing json error. Status cannot be null.");
                 }
 
-                if ((this.status == null) || ((bool)!this.status))
+                if ((this.status is null) || ((bool)!this.status))
                 {
                     // If status is false check if redirect exists in given response
-                    if (ob["redirect"] == null)
+                    if (ob["redirect"] is null)
                     {
-                        if (this.errorDescr == null)
+                        if (this.errorDescr is null)
                             this.errorDescr = ERR_CODE.getErrorDescription(this.errCode.StringValue);
                         throw new APIErrorResponse(errCode, errorDescr, body);
                     }
@@ -60,7 +65,7 @@ namespace xAPI.Responses
             }
         }
 
-        public virtual object ReturnData
+        public virtual JsonNode ReturnData
         {
             get
             {
@@ -102,19 +107,19 @@ namespace xAPI.Responses
 
         public string ToJSONString()
         {
-            JSONObject obj = new JSONObject();
+            JsonObject obj = new JsonObject();
             obj.Add("status", status);
 
-            if (returnData != null)
-                obj.Add("returnData", returnData.ToString());
+            if (returnData is not null)
+                obj.Add("returnData", returnData.ToJsonString());
 
-            if (errCode != null)
+            if (errCode is not null)
                 obj.Add("errorCode", errCode.StringValue);
 
-            if (errorDescr != null)
+            if (errorDescr is not null)
                 obj.Add("errorDescr", errorDescr);
 
-            if (customTag != null)
+            if (customTag is not null)
                 obj.Add("customTag", customTag);
 
             return obj.ToString();

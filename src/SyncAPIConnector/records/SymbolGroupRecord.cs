@@ -1,8 +1,8 @@
+using System;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using System;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     public record SymbolGroupRecord : BaseResponseRecord
     {
         private long? type;
@@ -38,7 +38,7 @@ namespace xAPI.Records
             }
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.type = (long?)value["type"];
             this.description = (string)value["description"];

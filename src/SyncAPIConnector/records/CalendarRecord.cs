@@ -1,9 +1,9 @@
+using System;
+using System.Diagnostics;
+using System.Text.Json.Nodes;
+
 namespace xAPI.Records
 {
-    using System;
-    using System.Diagnostics;
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("{Country}, impact:{Impact}")]
     public record CalendarRecord : BaseResponseRecord
     {
@@ -16,7 +16,7 @@ namespace xAPI.Records
         private long? time;
         private string title;
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.country = (string)value["country"];
             this.current = (string)value["current"];
@@ -53,10 +53,7 @@ namespace xAPI.Records
             get { return impact; }
         }
 
-        public string Period
-        {
-            get { return period; }
-        }
+        public string Period => period;
 
         public string Previous
         {

@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    using JSONObject = Newtonsoft.Json.Linq.JObject;
-
     [DebuggerDisplay("o:{Order}, o2:{Order2}, profit:{Profit}")]
     public record StreamingProfitRecord : BaseResponseRecord, IPosition
     {
@@ -34,7 +32,7 @@ namespace xAPI.Records
             set { profit = value; }
         }
 
-        public void FieldsFromJSONObject(JSONObject value)
+        public void FieldsFromJsonObject(JsonObject value)
         {
             this.profit = (double?)value["profit"];
             this.order = (long?)value["order"];
