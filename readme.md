@@ -10,11 +10,13 @@
 [![Build](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml)
 [![Code Lint](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml)
 
-This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wrappers.html) with some improvements to make life easier.  
-The changes made are mostly additive except for a few necessary exceptions. It is based on xApi version 2.5.0.  
+This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wrappers.html) with some improvements to make life easier.
+It is based on xApi version 2.5.0.  
+In the beginning there were mostly additive changes with some necessary exceptions and now there are many improvements and changes in original code.  
 
 ## Changelog
 
+2.5.14 replaced Newtonsoft.Json by System.Text.Json (pkamphuis)  
 2.5.13 support custom handling of exceptions in streaming connector, enriched exceptions  
 2.5.12 more interfaces of records, names of new members unification, various small changes  
 2.5.11 fixed performance warnings  
