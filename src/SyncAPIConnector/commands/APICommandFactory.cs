@@ -122,7 +122,7 @@ namespace xAPI.Commands
             return new MarginLevelCommand(prettyPrint);
         }
 
-        public static MarginTradeCommand CreateMarginTradeCommand(string symbol, double? volume, bool prettyPrint)
+        public static MarginTradeCommand CreateMarginTradeCommand(string symbol, double? volume, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
             args.Add("symbol", symbol);
@@ -130,7 +130,7 @@ namespace xAPI.Commands
             return new MarginTradeCommand(args, prettyPrint);
         }
 
-        public static NewsCommand CreateNewsCommand(long? start, long? end, bool prettyPrint)
+        public static NewsCommand CreateNewsCommand(long? start, long? end, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
             args.Add("start", start);
@@ -460,12 +460,12 @@ namespace xAPI.Commands
             return new MarginLevelResponse(jsonObj.ToString());
         }
 
-        public static MarginTradeResponse ExecuteMarginTradeCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint)
+        public static MarginTradeResponse ExecuteMarginTradeCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             return new MarginTradeResponse(connector.ExecuteCommand(CreateMarginTradeCommand(symbol, volume, prettyPrint)).ToString());
         }
 
-        public static async Task<MarginTradeResponse> ExecuteMarginTradeCommandAsync(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint)
+        public static async Task<MarginTradeResponse> ExecuteMarginTradeCommandAsync(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateMarginTradeCommand(symbol, volume, prettyPrint));
             return new MarginTradeResponse(jsonObj.ToString());
