@@ -349,9 +349,21 @@ namespace xAPI.Commands
             return new CommissionDefResponse(connector.ExecuteCommand(CreateCommissionDefCommand(symbol, volume, prettyPrint)).ToString());
         }
 
+        public static async Task<CommissionDefResponse> ExecuteCommissionDefCommandAsync(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+        {
+            var jsonObj = await connector.ExecuteCommandAsync(CreateCommissionDefCommand(symbol, volume, prettyPrint));
+            return new CommissionDefResponse(jsonObj.ToString());
+        }
+
         public static IbsHistoryResponse ExecuteIbsHistoryCommand(SyncAPIConnector connector, long start, long end, bool prettyPrint = false)
         {
             return new IbsHistoryResponse(connector.ExecuteCommand(CreateGetIbsHistoryCommand(start, end, prettyPrint)).ToString());
+        }
+
+        public static async Task<IbsHistoryResponse> ExecuteIbsHistoryCommandAsync(SyncAPIConnector connector, long start, long end, bool prettyPrint = false)
+        {
+            var jsonObj = await connector.ExecuteCommandAsync(CreateGetIbsHistoryCommand(start, end, prettyPrint)).ConfigureAwait(false);
+            return new IbsHistoryResponse(jsonObj.ToString());
         }
 
         [Obsolete("Up from 2.3.3 login is not a long, but string")]
@@ -362,20 +374,20 @@ namespace xAPI.Commands
 
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
         {
-            Credentials credentials = new Credentials(userId, password);
+            var credentials = new Credentials(userId, password);
             return ExecuteLoginCommand(connector, credentials, prettyPrint);
         }
 
         public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
         {
-            Credentials credentials = new Credentials(userId, password);
+            var credentials = new Credentials(userId, password);
             return await ExecuteLoginCommandAsync(connector, credentials, prettyPrint).ConfigureAwait(false);
         }
 
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, Credentials credentials, bool prettyPrint = false)
         {
-            LoginCommand loginCommand = CreateLoginCommand(credentials, prettyPrint);
-            LoginResponse loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
+            var loginCommand = CreateLoginCommand(credentials, prettyPrint);
+            var loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
 
             redirectCounter = 0;
 
@@ -400,8 +412,9 @@ namespace xAPI.Commands
 
         public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, Credentials credentials, bool prettyPrint = false)
         {
-            LoginCommand loginCommand = CreateLoginCommand(credentials, prettyPrint);
-            LoginResponse loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
+            var loginCommand = CreateLoginCommand(credentials, prettyPrint);
+            var jsonObj = await connector.ExecuteCommandAsync(loginCommand).ConfigureAwait(false);
+            var loginResponse = new LoginResponse(jsonObj.ToString());
 
             redirectCounter = 0;
 
@@ -410,11 +423,11 @@ namespace xAPI.Commands
                 if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
                     throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
-                Server newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
+                var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
                 connector.Redirect(newServer);
                 redirectCounter++;
-                var jsonObj = await connector.ExecuteCommandAsync(loginCommand);
-                loginResponse = new LoginResponse(jsonObj.ToString());
+                var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand).ConfigureAwait(false);
+                loginResponse = new LoginResponse(jsonObj2.ToString());
             }
 
             if (loginResponse.StreamSessionId != null)
