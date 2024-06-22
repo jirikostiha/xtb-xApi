@@ -127,6 +127,8 @@ namespace xAPI.Sync
 
         #endregion
 
+        private Thread? _streamingReaderThread;
+
         /// <summary>
         /// Dedicated streaming listener.
         /// </summary>
@@ -199,15 +201,35 @@ namespace xAPI.Sync
                 apiReadStream = new StreamReader(ns);
             }
 
-            Thread t = new Thread(delegate ()
+            if (_streamingReaderThread is not null)
+            {
+                if (!_streamingReaderThread.IsAlive)
+                {
+                    _streamingReaderThread.Abort();
+                    _streamingReaderThread = null;
+                }
+            }
+
+            if (_streamingReaderThread is null)
+            {
+                CreateAndRunNewStreamingReaderThread();
+            }
+        }
+
+        private void CreateAndRunNewStreamingReaderThread()
+        {
+            _streamingReaderThread = new Thread(() =>
             {
                 while (Connected())
                 {
                     ReadStreamMessage();
                 }
-            });
+            })
+            {
+                Name = "Streaming reader",
+            };
 
-            t.Start();
+            _streamingReaderThread.Start();
         }
 
         /// <summary>
