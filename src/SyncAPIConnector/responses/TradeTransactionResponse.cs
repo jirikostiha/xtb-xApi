@@ -20,12 +20,6 @@ namespace xAPI.Responses
             Order = (long?)ob["order"];
         }
 
-        [Obsolete("Use Order instead")]
-        public long? RequestId
-        {
-            get { return Order; }
-        }
-
         public long? Order { get; init; }
     }
 }

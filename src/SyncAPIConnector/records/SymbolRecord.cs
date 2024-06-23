@@ -128,12 +128,6 @@ namespace xAPI.Records
             }
         }
 
-        [Obsolete("Use Precision instead")]
-        public virtual long? Digits
-        {
-            get { return Precision; }
-        }
-
         public string CurrencyProfit
         {
             get

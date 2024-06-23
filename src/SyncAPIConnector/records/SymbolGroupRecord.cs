@@ -9,11 +9,6 @@ namespace xAPI.Records
         private string description;
         private string name;
 
-        [Obsolete("Command getAllSymbolGroups is not available in API any more")]
-        public SymbolGroupRecord()
-        {
-        }
-
         public virtual long? Type
         {
             get

@@ -175,17 +175,6 @@ namespace xAPI.Sync
         }
 
         /// <summary>
-        /// Creates new SyncAPIConnector instance based on given data.
-        /// </summary>
-        /// <param name="address">Address</param>
-        /// <param name="port">Main port</param>
-        /// <param name="secure">SSL enabled</param>
-        [Obsolete("Use SyncAPIConnector(Server server) instead")]
-        private SyncAPIConnector(string address, int port, bool secure) : this(new Server(address, port, port + 1, secure, ""))
-        {
-        }
-
-        /// <summary>
         /// Redirects to the given server.
         /// </summary>
         /// <param name="server">Server data</param>
@@ -312,30 +301,6 @@ namespace xAPI.Sync
             {
                 locker.Release();
             }
-        }
-
-        /// <summary>
-        /// Connects to streaming.
-        /// </summary>
-        /// <returns>New instance of streaming connector</returns>
-        [Obsolete("Use Streaming.Connect() instead")]
-        public StreamingAPIConnector ConnectStreaming()
-        {
-            if (this.streamingConnector != null)
-                this.streamingConnector.Disconnect();
-
-            this.streamingConnector = new StreamingAPIConnector(this.server);
-            return this.streamingConnector;
-        }
-
-        /// <summary>
-        /// Disconnects streaming.
-        /// </summary>
-        [Obsolete("Use Streaming.Disconnect() instead")]
-        public void DisconnectStreaming()
-        {
-            if (this.streamingConnector != null)
-                this.streamingConnector.Disconnect();
         }
 
         /// <summary>

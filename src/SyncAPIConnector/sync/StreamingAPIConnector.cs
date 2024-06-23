@@ -141,12 +141,6 @@ namespace xAPI.Sync
         private string streamSessionId;
 
         /// <summary>
-        /// True if streaming is running
-        /// </summary>
-        [Obsolete("Used only in older method")]
-        private bool running = false;
-
-        /// <summary>
         /// Creates new StreamingAPIConnector instance based on given server data.
         /// </summary>
         /// <param name="server">Server data</param>
@@ -240,59 +234,6 @@ namespace xAPI.Sync
         {
             get { return this.streamSessionId; }
             set { this.streamSessionId = value; }
-        }
-
-        /// <summary>
-        /// Creates new StreamingAPIConnector object.
-        /// </summary>
-        /// <param name="sl">Streaming listener</param>
-        /// <param name="ip">IP address</param>
-        /// <param name="port">Streaming port</param>
-        /// <param name="lr">Login response</param>
-        /// <param name="secure">Secure</param>
-        [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr, bool secure)
-        {
-            this.running = true;
-            this.sl = sl;
-            this.streamSessionId = lr.StreamSessionId;
-            apiSocket = new System.Net.Sockets.TcpClient(ip, port);
-
-            if (secure)
-            {
-                SslStream ssl = new SslStream(apiSocket.GetStream());
-                ssl.AuthenticateAsClient(ip);
-                apiWriteStream = new StreamWriter(ssl);
-                apiReadStream = new StreamReader(ssl);
-            }
-            else
-            {
-                NetworkStream ns = apiSocket.GetStream();
-                apiWriteStream = new StreamWriter(ns);
-                apiReadStream = new StreamReader(ns);
-            }
-
-            Thread t = new Thread(delegate ()
-            {
-                while (running)
-                {
-                    ReadStreamMessage();
-                    Thread.Sleep(50);
-                }
-            });
-            t.Start();
-        }
-
-        [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr)
-            : this(sl, ip, port, lr, false)
-        {
-        }
-
-        [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        public StreamingAPIConnector(IStreamingListener sl, Server dt, LoginResponse lr)
-            : this(sl, dt.Address, dt.StreamingPort, lr, dt.Secure)
-        {
         }
 
         /// <summary>
@@ -443,19 +384,6 @@ namespace xAPI.Sync
         {
             BalanceRecordsStop balanceRecordsStop = new BalanceRecordsStop();
             WriteMessage(balanceRecordsStop.ToString());
-        }
-
-        [Obsolete("Use SubscribeTradeStatus instead")]
-        public void SubscribeReqStatus()
-        {
-            SubscribeTradeStatus();
-        }
-
-        [Obsolete("Use UnsubscribeTradeStatus instead")]
-        public void UnsubscribeReqStatus()
-        {
-            TradeStatusRecordsStop reqStatusRecordsStop = new TradeStatusRecordsStop();
-            WriteMessage(reqStatusRecordsStop.ToString());
         }
 
         public void SubscribeTradeStatus()
