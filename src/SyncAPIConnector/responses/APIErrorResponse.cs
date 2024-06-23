@@ -8,28 +8,29 @@ namespace xAPI.Responses
     {
         private ERR_CODE code;
         private string errDesc;
-        private string msg;
+        private string msgBody;
 
-        public APIErrorResponse(ERR_CODE code, string errDesc, string msg) : base(msg)
+        public APIErrorResponse(ERR_CODE code, string errDesc, string msgBody)
+            : base()
         {
             this.code = code;
             this.errDesc = errDesc;
-            this.msg = msg;
+            this.msgBody = msgBody;
         }
 
         public override string Message
         {
             get
             {
-                return "ERR_CODE = " + code.StringValue + " ERR_DESC = " + errDesc + "\n" + msg + "\n" + base.Message;
+                return $"ERR_CODE '{code.StringValue}' ERR_DESC '{errDesc}'\n{msgBody}";
             }
         }
 
-        public virtual string Msg
+        public virtual string MsgBody
         {
             get
             {
-                return msg;
+                return msgBody;
             }
         }
 
@@ -54,5 +55,4 @@ namespace xAPI.Responses
             return ErrorCode.StringValue + ": " + ErrorDescr;
         }
     }
-
 }

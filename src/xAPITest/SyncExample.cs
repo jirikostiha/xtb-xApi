@@ -1,132 +1,343 @@
 ﻿using System;
 using System.Linq;
 using xAPI.Sync;
-using xAPI.Responses;
 using xAPI.Commands;
-using xAPI.Records;
 using xAPI.Codes;
-using System.Threading;
+using System.Globalization;
 
-namespace xAPITest
+namespace xAPITest;
+
+public sealed class SyncExample : ExampleBase, IDisposable
 {
-    public class SyncExample
+    private readonly Server _server;
+    private readonly Credentials _credentials;
+    private SyncAPIConnector _connector;
+
+    public SyncExample(Server server, string user, string password)
     {
-        public static void Run(Server serverData, string userId, string password)
+        _server = server;
+        _credentials = new Credentials(user, password);
+    }
+
+    public void Run()
+    {
+        ConnectionStage();
+        AuthenticationStage();
+        AccountInfoStage();
+        MarketDataStage();
+        TradingStage();
+        TradingHistoryStage();
+        GlobalDataStage();
+    }
+
+    public void ConnectionStage()
+    {
+        Stage("Connection");
+
+        Action($"Establishing connection to '{_server.Address}:{_server.MainPort}'");
+        try
         {
-            Console.WriteLine("Server address: " + serverData.Address + " port: " + serverData.MainPort + " streaming port: " + serverData.StreamingPort);
-
-            // Connect to server
-            SyncAPIConnector connector = null;
-            try
-            {
-                connector = new SyncAPIConnector(serverData);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                Environment.Exit(1);
-            }
-
-            Console.WriteLine("Connected to the server");
-
-            // Login to server
-            Credentials credentials = new Credentials(userId, password, "", "YOUR APP NAME");
-
-            LoginResponse loginResponse = APICommandFactory.ExecuteLoginCommand(connector, credentials, true);
-            Console.WriteLine("Logged in as: " + userId);
-
-            var pingResponse = APICommandFactory.ExecutePingCommand(connector, true);
-            Console.WriteLine("Ping status: " + pingResponse.Status);
-
-            // Execute GetServerTime command
-            ServerTimeResponse serverTimeResponse = APICommandFactory.ExecuteServerTimeCommand(connector, true);
-            Console.WriteLine("Server time: " + serverTimeResponse.TimeString);
-
-            // Execute GetAllSymbols command
-            AllSymbolsResponse allSymbolsResponse = APICommandFactory.ExecuteAllSymbolsCommand(connector, true);
-            Console.WriteLine("All symbols count: " + allSymbolsResponse.SymbolRecords.Count);
-
-            // Print first 5 symbols
-            Console.WriteLine("First five symbols:");
-            foreach (SymbolRecord symbolRecord in allSymbolsResponse.SymbolRecords.Take(5))
-            {
-                Console.WriteLine(" > " + symbolRecord.Symbol + " ask: " + symbolRecord.Ask + " bid: " + symbolRecord.Bid);
-            }
-
-            // get US500 info
-            Console.WriteLine("Getting US500 symbol.");
-            var us500Symbol = APICommandFactory.ExecuteSymbolCommand(connector, "US500");
-            Console.WriteLine(us500Symbol.Symbol.Symbol + " ask: " + us500Symbol.Symbol.Ask + " bid: " + us500Symbol.Symbol.Bid);
-
-            Console.WriteLine("\n----Trading----");
-
-            var us500TradeTransInfo = new TradeTransInfoRecord(
-                TRADE_OPERATION_CODE.BUY,
-                TRADE_TRANSACTION_TYPE.ORDER_OPEN,
-                us500Symbol.Symbol.Ask,
-                null,
-                null,
-                us500Symbol.Symbol.Symbol,
-                0.1,
-                null,
-                null,
-                null);
-
-            // Warning: Opening trade. Make sure you have set up demo account!
-            TradeTransactionResponse us500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
-            Console.WriteLine($"Opened position. result order:{us500TradeTransaction.Order}");
-
-            // get all open trades
-            TradesResponse openTrades = APICommandFactory.ExecuteTradesCommand(connector, true, true);
-            Console.WriteLine("Open positions: ");
-            foreach (var tradeRecord in openTrades.TradeRecords)
-            {
-                Console.WriteLine($" > o:{tradeRecord.Order}, o2:{tradeRecord.Order2}, pos:{tradeRecord.Position}, symbol:{tradeRecord.Symbol}, " +
-                    $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
-            }
-
-            TradeRecord us500trade = openTrades.TradeRecords.First(t => t.Symbol == "US500");
-
-            Thread.Sleep(2000);
-
-            // update trade transaction
-            us500TradeTransInfo.Order = us500trade.Order;
-            us500TradeTransInfo.Tp = us500trade.Open_price * 1.3;
-            //us500TradeTransInfo.CustomComment = "my custom comment";
-            TradeTransactionResponse updatedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
-            Console.WriteLine($"Modified position. order:{us500trade.Order} -> tp:{us500TradeTransInfo.Tp}, result order:{updatedUs500TradeTransaction.Order}");
-
-            Thread.Sleep(2000);
-
-            TradesResponse openTrades2 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
-            Console.WriteLine("Open positions: ");
-            foreach (var tradeRecord in openTrades2.TradeRecords)
-            {
-                Console.WriteLine($" > o:{tradeRecord.Order}, o2:{tradeRecord.Order2}, pos:{tradeRecord.Position}, symbol:{tradeRecord.Symbol}, " +
-                    $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
-            }
-
-            // close trade transaction
-            us500TradeTransInfo.Type = TRADE_TRANSACTION_TYPE.ORDER_CLOSE;
-            us500TradeTransInfo.Price = us500Symbol.Symbol.Bid;
-            TradeTransactionResponse closedUs500TradeTransaction = APICommandFactory.ExecuteTradeTransactionCommand(connector, us500TradeTransInfo, true);
-            Console.WriteLine($"Closed position. order:{us500TradeTransInfo.Order}, result order:{closedUs500TradeTransaction.Order}");
-
-            Thread.Sleep(2000);
-
-            TradesResponse openTrades3 = APICommandFactory.ExecuteTradesCommand(connector, true, true);
-            if (openTrades3.TradeRecords.Count != 0)
-            {
-                Console.WriteLine("Open positions: ");
-                foreach (var tradeRecord in openTrades3.TradeRecords)
-                {
-                    Console.WriteLine($" > o:{tradeRecord.Order}, o2:{tradeRecord.Order2}, pos:{tradeRecord.Position}, symbol:{tradeRecord.Symbol}, " +
-                        $"open price:{tradeRecord.Open_price}, profit:{tradeRecord.Profit}, tp:{tradeRecord.Tp}");
-                }
-            }
-
-            Console.WriteLine("Done.");
-            Console.Read();
+            _connector = new SyncAPIConnector(_server);
+            Pass();
         }
+        catch (Exception ex)
+        {
+            Fail(ex, true);
+        }
+
+        Action("Ping");
+        try
+        {
+            var response = APICommandFactory.ExecutePingCommand(_connector);
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action("Getting version");
+        try
+        {
+            var response = APICommandFactory.ExecuteVersionCommand(_connector);
+            Pass(response);
+            Detail(response.Version);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void AuthenticationStage()
+    {
+        Stage("Authentication");
+
+        Action($"Logging in as '{_credentials.Login}'");
+        try
+        {
+            var response = APICommandFactory.ExecuteLoginCommand(_connector, _credentials);
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex, true);
+        }
+
+        Action("Getting server time");
+        try
+        {
+            var response = APICommandFactory.ExecuteServerTimeCommand(_connector);
+            Pass(response);
+            Detail(response.TimeString);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void AccountInfoStage()
+    {
+        Stage("Account information");
+
+        Action($"Getting user data");
+        try
+        {
+            var response = APICommandFactory.ExecuteCurrentUserDataCommand(_connector);
+            Pass(response);
+            Detail(response.Currency);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting margin level");
+        try
+        {
+            var response = APICommandFactory.ExecuteMarginLevelCommand(_connector);
+            Pass(response);
+            Detail(response?.Margin_level?.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting all symbols");
+        try
+        {
+            var response = APICommandFactory.ExecuteAllSymbolsCommand(_connector);
+            Pass(response);
+            Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting single symbol");
+        try
+        {
+            var response = APICommandFactory.ExecuteSymbolCommand(_connector, "US500");
+            Pass(response);
+            Detail(response?.Symbol?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting trading hours");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradingHoursCommand(_connector, ["US500"]);
+            Pass(response);
+            Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting tick prices");
+        try
+        {
+            var response = APICommandFactory.ExecuteTickPricesCommand(_connector, ["US500"],
+                TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds());
+            Pass(response);
+            Detail(response?.Ticks.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void MarketDataStage()
+    {
+        Stage("Market data");
+
+        Action($"Getting latest candles");
+        try
+        {
+            var response = APICommandFactory.ExecuteChartLastCommand(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds());
+            Pass(response);
+            Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting candles in interval");
+        try
+        {
+            var response = APICommandFactory.ExecuteChartRangeCommand(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+                TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
+                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                0);
+            Pass(response);
+            Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting commissions");
+        try
+        {
+            var response = APICommandFactory.ExecuteCommissionDefCommand(_connector, "US500", 1);
+            Pass(response);
+            Detail(response?.Commission?.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting margin calculation");
+        try
+        {
+            var response = APICommandFactory.ExecuteMarginTradeCommand(_connector, "US500", 1);
+            Pass(response);
+            Detail(response?.Margin?.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting profit calculation");
+        try
+        {
+            var response = APICommandFactory.ExecuteProfitCalculationCommand(_connector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
+            Pass(response);
+            Detail(response?.Profit?.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void TradingStage()
+    {
+        Stage("Trading");
+
+        Action($"Getting all trades");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradesCommand(_connector, false);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting opened only trades");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradesCommand(_connector, true);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting trades for orders");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradeRecordsCommand(_connector, []);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void TradingHistoryStage()
+    {
+        Stage("Trading history");
+
+        Action($"Getting passed trades");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradesHistoryCommand(_connector,
+                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                0);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void GlobalDataStage()
+    {
+        Stage("Global data");
+
+        Action($"Getting news");
+        try
+        {
+            var response = APICommandFactory.ExecuteNewsCommand(_connector,
+                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                0);
+            Pass(response);
+            Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Getting calendar events");
+        try
+        {
+            var response = APICommandFactory.ExecuteCalendarCommand(_connector);
+            Pass(response);
+            Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void Dispose()
+    {
+        _connector?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
