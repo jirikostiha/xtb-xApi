@@ -11,12 +11,12 @@ namespace xAPITest;
 public sealed class AsyncExample : ExampleBase
 {
     private readonly Credentials _credentials;
-    private readonly SyncAPIConnector _connector;
+    private readonly ApiConnector _apiConnector;
 
-    public AsyncExample(SyncAPIConnector connector, string user, string password)
+    public AsyncExample(ApiConnector connector, string user, string password)
     {
-        _connector = connector;
         _credentials = new Credentials(user, password);
+        _apiConnector = connector;
     }
 
     public async Task Run()
@@ -34,10 +34,10 @@ public sealed class AsyncExample : ExampleBase
     {
         Stage("Connection");
 
-        Action($"Establishing connection");
+        Action($"Establishing connection to '{_apiConnector.Connector.Endpoint}'");
         try
         {
-            _connector.Connect();
+            _apiConnector.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -70,7 +70,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Ping");
         try
         {
-            var response = await APICommandFactory.ExecutePingCommandAsync(_connector);
+            var response = await APICommandFactory.ExecutePingCommandAsync(_apiConnector);
             Pass(response);
         }
         catch (Exception ex)
@@ -81,7 +81,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Getting version");
         try
         {
-            var response = await APICommandFactory.ExecuteVersionCommandAsync(_connector);
+            var response = await APICommandFactory.ExecuteVersionCommandAsync(_apiConnector);
             Pass(response);
             Detail(response.Version);
         }
@@ -98,7 +98,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Logging in as '{_credentials.Login}'");
         try
         {
-            var response = await APICommandFactory.ExecuteLoginCommandAsync(_connector, _credentials);
+            var response = await APICommandFactory.ExecuteLoginCommandAsync(_apiConnector, _credentials);
             Pass(response);
         }
         catch (Exception ex)
@@ -131,7 +131,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Getting server time");
         try
         {
-            var response = await APICommandFactory.ExecuteServerTimeCommandAsync(_connector);
+            var response = await APICommandFactory.ExecuteServerTimeCommandAsync(_apiConnector);
             Pass(response);
             Detail(response.TimeString);
         }
@@ -148,7 +148,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting user data");
         try
         {
-            var response = await APICommandFactory.ExecuteCurrentUserDataCommandAsync(_connector);
+            var response = await APICommandFactory.ExecuteCurrentUserDataCommandAsync(_apiConnector);
             Pass(response);
             Detail(response.Currency);
         }
@@ -160,7 +160,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting margin level");
         try
         {
-            var response = await APICommandFactory.ExecuteMarginLevelCommandAsync(_connector);
+            var response = await APICommandFactory.ExecuteMarginLevelCommandAsync(_apiConnector);
             Pass(response);
             Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -172,7 +172,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting all symbols");
         try
         {
-            var response = await APICommandFactory.ExecuteAllSymbolsCommandAsync(_connector);
+            var response = await APICommandFactory.ExecuteAllSymbolsCommandAsync(_apiConnector);
             Pass(response);
             Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -184,7 +184,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting single symbol");
         try
         {
-            var response = await APICommandFactory.ExecuteSymbolCommandAsync(_connector, "US500");
+            var response = await APICommandFactory.ExecuteSymbolCommandAsync(_apiConnector, "US500");
             Pass(response);
             Detail(response?.Symbol?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -196,7 +196,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting trading hours");
         try
         {
-            var response = await APICommandFactory.ExecuteTradingHoursCommandAsync(_connector, ["US500"]);
+            var response = await APICommandFactory.ExecuteTradingHoursCommandAsync(_apiConnector, ["US500"]);
             Pass(response);
             Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -208,7 +208,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting tick prices");
         try
         {
-            var response = await APICommandFactory.ExecuteTickPricesCommandAsync(_connector, ["US500"],
+            var response = await APICommandFactory.ExecuteTickPricesCommandAsync(_apiConnector, ["US500"],
                 TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds());
             Pass(response);
             Detail(response?.Ticks.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -226,7 +226,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = await APICommandFactory.ExecuteChartLastCommandAsync(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartLastCommandAsync(_apiConnector, "US500", PERIOD_CODE.PERIOD_H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds());
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -239,7 +239,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(_apiConnector, "US500", PERIOD_CODE.PERIOD_H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0);
@@ -254,7 +254,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting commissions");
         try
         {
-            var response = await APICommandFactory.ExecuteCommissionDefCommandAsync(_connector, "US500", 1);
+            var response = await APICommandFactory.ExecuteCommissionDefCommandAsync(_apiConnector, "US500", 1);
             Pass(response);
             Detail(response?.Commission?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -266,7 +266,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting margin calculation");
         try
         {
-            var response = await APICommandFactory.ExecuteMarginTradeCommandAsync(_connector, "US500", 1);
+            var response = await APICommandFactory.ExecuteMarginTradeCommandAsync(_apiConnector, "US500", 1);
             Pass(response);
             Detail(response?.Margin?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -278,7 +278,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting profit calculation");
         try
         {
-            var response = await APICommandFactory.ExecuteProfitCalculationCommandAsync(_connector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
+            var response = await APICommandFactory.ExecuteProfitCalculationCommandAsync(_apiConnector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
             Pass(response);
             Detail(response?.Profit?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -295,7 +295,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting all trades");
         try
         {
-            var response = await APICommandFactory.ExecuteTradesCommandAsync(_connector, false);
+            var response = await APICommandFactory.ExecuteTradesCommandAsync(_apiConnector, false);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -307,7 +307,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting opened only trades");
         try
         {
-            var response = await APICommandFactory.ExecuteTradesCommandAsync(_connector, true);
+            var response = await APICommandFactory.ExecuteTradesCommandAsync(_apiConnector, true);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -319,7 +319,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting trades for orders");
         try
         {
-            var response = await APICommandFactory.ExecuteTradeRecordsCommandAsync(_connector, []);
+            var response = await APICommandFactory.ExecuteTradeRecordsCommandAsync(_apiConnector, []);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -336,7 +336,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting passed trades");
         try
         {
-            var response = await APICommandFactory.ExecuteTradesHistoryCommandAsync(_connector,
+            var response = await APICommandFactory.ExecuteTradesHistoryCommandAsync(_apiConnector,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0);
             Pass(response);
@@ -355,7 +355,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting news");
         try
         {
-            var response = await APICommandFactory.ExecuteNewsCommandAsync(_connector,
+            var response = await APICommandFactory.ExecuteNewsCommandAsync(_apiConnector,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0);
             Pass(response);
@@ -369,7 +369,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting calendar events");
         try
         {
-            var response = await APICommandFactory.ExecuteCalendarCommandAsync(_connector);
+            var response = await APICommandFactory.ExecuteCalendarCommandAsync(_apiConnector);
             Pass(response);
             Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }

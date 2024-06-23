@@ -1,5 +1,4 @@
-using System;
-using System.Windows.Input;
+﻿using System;
 using xAPI.Commands;
 using xAPI.Records;
 
@@ -22,9 +21,11 @@ namespace xAPI.Sync
         public BaseCommand Command { get; } = command;
     }
 
-    public class ServerEventArgs(Server server) : EventArgs
+    public class ServerEventArgs(string hostName, int port) : EventArgs
     {
-        public Server Server { get; } = server;
+        public string HostName { get; } = hostName;
+
+        public int Port { get; } = port;
     }
 
     public class TickReceivedEventArgs(StreamingTickRecord tickRecord) : EventArgs

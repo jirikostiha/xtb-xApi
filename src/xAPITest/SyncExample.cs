@@ -10,12 +10,12 @@ namespace xAPITest;
 public sealed class SyncExample : ExampleBase
 {
     private readonly Credentials _credentials;
-    private readonly SyncAPIConnector _connector;
+    private readonly ApiConnector _apiConnector;
 
-    public SyncExample(SyncAPIConnector connector, string user, string password)
+    public SyncExample(ApiConnector connector, string user, string password)
     {
-        _connector = connector;
         _credentials = new Credentials(user, password);
+        _apiConnector = connector;
     }
 
     public void Run()
@@ -33,10 +33,10 @@ public sealed class SyncExample : ExampleBase
     {
         Stage("Connection");
 
-        Action($"Establishing connection");
+        Action($"Establishing connection to '{_apiConnector.Connector.Endpoint}'");
         try
         {
-            _connector.Connect();
+            _apiConnector.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public sealed class SyncExample : ExampleBase
         Action("Ping");
         try
         {
-            var response = APICommandFactory.ExecutePingCommand(_connector);
+            var response = APICommandFactory.ExecutePingCommand(_apiConnector);
             Pass(response);
         }
         catch (Exception ex)
@@ -80,7 +80,7 @@ public sealed class SyncExample : ExampleBase
         Action("Getting version");
         try
         {
-            var response = APICommandFactory.ExecuteVersionCommand(_connector);
+            var response = APICommandFactory.ExecuteVersionCommand(_apiConnector);
             Pass(response);
             Detail(response.Version);
         }
@@ -97,7 +97,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Logging in as '{_credentials.Login}'");
         try
         {
-            var response = APICommandFactory.ExecuteLoginCommand(_connector, _credentials);
+            var response = APICommandFactory.ExecuteLoginCommand(_apiConnector, _credentials);
             Pass(response);
         }
         catch (Exception ex)
@@ -130,7 +130,7 @@ public sealed class SyncExample : ExampleBase
         Action("Getting server time");
         try
         {
-            var response = APICommandFactory.ExecuteServerTimeCommand(_connector);
+            var response = APICommandFactory.ExecuteServerTimeCommand(_apiConnector);
             Pass(response);
             Detail(response.TimeString);
         }
@@ -147,7 +147,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting user data");
         try
         {
-            var response = APICommandFactory.ExecuteCurrentUserDataCommand(_connector);
+            var response = APICommandFactory.ExecuteCurrentUserDataCommand(_apiConnector);
             Pass(response);
             Detail(response.Currency);
         }
@@ -159,7 +159,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting margin level");
         try
         {
-            var response = APICommandFactory.ExecuteMarginLevelCommand(_connector);
+            var response = APICommandFactory.ExecuteMarginLevelCommand(_apiConnector);
             Pass(response);
             Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -171,7 +171,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting all symbols");
         try
         {
-            var response = APICommandFactory.ExecuteAllSymbolsCommand(_connector);
+            var response = APICommandFactory.ExecuteAllSymbolsCommand(_apiConnector);
             Pass(response);
             Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -183,7 +183,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting single symbol");
         try
         {
-            var response = APICommandFactory.ExecuteSymbolCommand(_connector, "US500");
+            var response = APICommandFactory.ExecuteSymbolCommand(_apiConnector, "US500");
             Pass(response);
             Detail(response?.Symbol?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -195,7 +195,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting trading hours");
         try
         {
-            var response = APICommandFactory.ExecuteTradingHoursCommand(_connector, ["US500"]);
+            var response = APICommandFactory.ExecuteTradingHoursCommand(_apiConnector, ["US500"]);
             Pass(response);
             Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -207,7 +207,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting tick prices");
         try
         {
-            var response = APICommandFactory.ExecuteTickPricesCommand(_connector, ["US500"],
+            var response = APICommandFactory.ExecuteTickPricesCommand(_apiConnector, ["US500"],
                 TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds());
             Pass(response);
             Detail(response?.Ticks.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -225,7 +225,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = APICommandFactory.ExecuteChartLastCommand(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = APICommandFactory.ExecuteChartLastCommand(_apiConnector, "US500", PERIOD_CODE.PERIOD_H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds());
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -238,7 +238,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = APICommandFactory.ExecuteChartRangeCommand(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = APICommandFactory.ExecuteChartRangeCommand(_apiConnector, "US500", PERIOD_CODE.PERIOD_H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0);
@@ -253,7 +253,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting commissions");
         try
         {
-            var response = APICommandFactory.ExecuteCommissionDefCommand(_connector, "US500", 1);
+            var response = APICommandFactory.ExecuteCommissionDefCommand(_apiConnector, "US500", 1);
             Pass(response);
             Detail(response?.Commission?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -265,7 +265,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting margin calculation");
         try
         {
-            var response = APICommandFactory.ExecuteMarginTradeCommand(_connector, "US500", 1);
+            var response = APICommandFactory.ExecuteMarginTradeCommand(_apiConnector, "US500", 1);
             Pass(response);
             Detail(response?.Margin?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -277,7 +277,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting profit calculation");
         try
         {
-            var response = APICommandFactory.ExecuteProfitCalculationCommand(_connector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
+            var response = APICommandFactory.ExecuteProfitCalculationCommand(_apiConnector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
             Pass(response);
             Detail(response?.Profit?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -294,7 +294,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting all trades");
         try
         {
-            var response = APICommandFactory.ExecuteTradesCommand(_connector, false);
+            var response = APICommandFactory.ExecuteTradesCommand(_apiConnector, false);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -306,7 +306,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting opened only trades");
         try
         {
-            var response = APICommandFactory.ExecuteTradesCommand(_connector, true);
+            var response = APICommandFactory.ExecuteTradesCommand(_apiConnector, true);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -318,7 +318,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting trades for orders");
         try
         {
-            var response = APICommandFactory.ExecuteTradeRecordsCommand(_connector, []);
+            var response = APICommandFactory.ExecuteTradeRecordsCommand(_apiConnector, []);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -335,7 +335,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting passed trades");
         try
         {
-            var response = APICommandFactory.ExecuteTradesHistoryCommand(_connector,
+            var response = APICommandFactory.ExecuteTradesHistoryCommand(_apiConnector,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0);
             Pass(response);
@@ -354,7 +354,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting news");
         try
         {
-            var response = APICommandFactory.ExecuteNewsCommand(_connector,
+            var response = APICommandFactory.ExecuteNewsCommand(_apiConnector,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0);
             Pass(response);
@@ -368,7 +368,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting calendar events");
         try
         {
-            var response = APICommandFactory.ExecuteCalendarCommand(_connector);
+            var response = APICommandFactory.ExecuteCalendarCommand(_apiConnector);
             Pass(response);
             Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }

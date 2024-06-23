@@ -26,7 +26,7 @@ namespace xAPI.Commands
             args.Add("userId", userId);
             args.Add("password", password);
             args.Add("type", "dotNET");
-            args.Add("version", SyncAPIConnector.VERSION);
+            args.Add("version", ApiConnector.VERSION);
             return new LoginCommand(args, prettyPrint);
         }
 
@@ -44,7 +44,7 @@ namespace xAPI.Commands
                 response.Add("userId", credentials.Login);
                 response.Add("password", credentials.Password);
                 response.Add("type", "dotNET");
-                response.Add("version", SyncAPIConnector.VERSION);
+                response.Add("version", ApiConnector.VERSION);
 
                 if (credentials.AppId != null)
                 {
@@ -253,95 +253,95 @@ namespace xAPI.Commands
 
         #region Command executors
 
-        public static AllSymbolsResponse ExecuteAllSymbolsCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static AllSymbolsResponse ExecuteAllSymbolsCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new AllSymbolsResponse(connector.ExecuteCommand(CreateAllSymbolsCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<AllSymbolsResponse> ExecuteAllSymbolsCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<AllSymbolsResponse> ExecuteAllSymbolsCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateAllSymbolsCommand(prettyPrint)).ConfigureAwait(false);
             return new AllSymbolsResponse(jsonObj.ToString());
         }
 
-        public static CalendarResponse ExecuteCalendarCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static CalendarResponse ExecuteCalendarCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new CalendarResponse(connector.ExecuteCommand(CreateCalendarCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<CalendarResponse> ExecuteCalendarCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<CalendarResponse> ExecuteCalendarCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateCalendarCommand(prettyPrint)).ConfigureAwait(false);
             return new CalendarResponse(jsonObj.ToString());
         }
-        public static ChartLastResponse ExecuteChartLastCommand(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
+        public static ChartLastResponse ExecuteChartLastCommand(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
         {
             return new ChartLastResponse(connector.ExecuteCommand(CreateChartLastCommand(symbol, period, start, prettyPrint)).ToString());
         }
 
-        public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
+        public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateChartLastCommand(symbol, period, start, prettyPrint)).ConfigureAwait(false);
             return new ChartLastResponse(jsonObj.ToString());
         }
 
-        public static ChartLastResponse ExecuteChartLastCommand(SyncAPIConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
+        public static ChartLastResponse ExecuteChartLastCommand(ApiConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
         {
             return new ChartLastResponse(connector.ExecuteCommand(CreateChartLastCommand(info, prettyPrint)).ToString());
         }
 
-        public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(SyncAPIConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
+        public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(ApiConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateChartLastCommand(info, prettyPrint)).ConfigureAwait(false);
             return new ChartLastResponse(jsonObj.ToString());
         }
 
-        public static ChartRangeResponse ExecuteChartRangeCommand(SyncAPIConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
+        public static ChartRangeResponse ExecuteChartRangeCommand(ApiConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
         {
             return new ChartRangeResponse(connector.ExecuteCommand(CreateChartRangeCommand(info, prettyPrint)).ToString());
         }
 
-        public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(SyncAPIConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
+        public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(ApiConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateChartRangeCommand(info, prettyPrint)).ConfigureAwait(false);
             return new ChartRangeResponse(jsonObj.ToString());
         }
 
-        public static ChartRangeResponse ExecuteChartRangeCommand(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
+        public static ChartRangeResponse ExecuteChartRangeCommand(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
         {
             return new ChartRangeResponse(connector.ExecuteCommand(CreateChartRangeCommand(symbol, period, start, end, ticks, prettyPrint)).ToString());
         }
 
-        public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
+        public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateChartRangeCommand(symbol, period, start, end, ticks, prettyPrint)).ConfigureAwait(false);
             return new ChartRangeResponse(jsonObj.ToString());
         }
 
-        public static CommissionDefResponse ExecuteCommissionDefCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+        public static CommissionDefResponse ExecuteCommissionDefCommand(ApiConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             return new CommissionDefResponse(connector.ExecuteCommand(CreateCommissionDefCommand(symbol, volume, prettyPrint)).ToString());
         }
 
-        public static async Task<CommissionDefResponse> ExecuteCommissionDefCommandAsync(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+        public static async Task<CommissionDefResponse> ExecuteCommissionDefCommandAsync(ApiConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateCommissionDefCommand(symbol, volume, prettyPrint));
             return new CommissionDefResponse(jsonObj.ToString());
         }
 
-        public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
+        public static LoginResponse ExecuteLoginCommand(ApiConnector connector, string userId, string password, bool prettyPrint = false)
         {
             var credentials = new Credentials(userId, password);
             return ExecuteLoginCommand(connector, credentials, prettyPrint);
         }
 
-        public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
+        public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, string userId, string password, bool prettyPrint = false)
         {
             var credentials = new Credentials(userId, password);
             return await ExecuteLoginCommandAsync(connector, credentials, prettyPrint).ConfigureAwait(false);
         }
 
-        public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, Credentials credentials, bool prettyPrint = false)
+        public static LoginResponse ExecuteLoginCommand(ApiConnector connector, Credentials credentials, bool prettyPrint = false)
         {
             var loginCommand = CreateLoginCommand(credentials, prettyPrint);
             var loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
@@ -350,7 +350,7 @@ namespace xAPI.Commands
 
             while (loginResponse.RedirectRecord != null)
             {
-                if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
+                if (redirectCounter >= ApiConnector.MAX_REDIRECTS)
                     throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
                 Server newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
@@ -367,7 +367,7 @@ namespace xAPI.Commands
             return loginResponse;
         }
 
-        public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, Credentials credentials, bool prettyPrint = false)
+        public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, Credentials credentials, bool prettyPrint = false)
         {
             var loginCommand = CreateLoginCommand(credentials, prettyPrint);
             var jsonObj = await connector.ExecuteCommandAsync(loginCommand).ConfigureAwait(false);
@@ -377,7 +377,7 @@ namespace xAPI.Commands
 
             while (loginResponse.RedirectRecord != null)
             {
-                if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
+                if (redirectCounter >= ApiConnector.MAX_REDIRECTS)
                     throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
                 var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
@@ -395,205 +395,206 @@ namespace xAPI.Commands
             return loginResponse;
         }
 
-        public static LogoutResponse ExecuteLogoutCommand(SyncAPIConnector connector)
+        public static LogoutResponse ExecuteLogoutCommand(ApiConnector connector)
         {
             return new LogoutResponse(connector.ExecuteCommand(CreateLogoutCommand()).ToString());
         }
 
-        public static async Task<LogoutResponse> ExecuteLogoutCommandAsync(SyncAPIConnector connector)
+        public static async Task<LogoutResponse> ExecuteLogoutCommandAsync(ApiConnector connector)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateLogoutCommand()).ConfigureAwait(false);
             return new LogoutResponse(jsonObj.ToString());
         }
 
-        public static MarginLevelResponse ExecuteMarginLevelCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static MarginLevelResponse ExecuteMarginLevelCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new MarginLevelResponse(connector.ExecuteCommand(CreateMarginLevelCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<MarginLevelResponse> ExecuteMarginLevelCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<MarginLevelResponse> ExecuteMarginLevelCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateMarginLevelCommand(prettyPrint)).ConfigureAwait(false);
             return new MarginLevelResponse(jsonObj.ToString());
         }
 
-        public static MarginTradeResponse ExecuteMarginTradeCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+        public static MarginTradeResponse ExecuteMarginTradeCommand(ApiConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             return new MarginTradeResponse(connector.ExecuteCommand(CreateMarginTradeCommand(symbol, volume, prettyPrint)).ToString());
         }
 
-        public static async Task<MarginTradeResponse> ExecuteMarginTradeCommandAsync(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+        public static async Task<MarginTradeResponse> ExecuteMarginTradeCommandAsync(ApiConnector connector, string symbol, double? volume, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateMarginTradeCommand(symbol, volume, prettyPrint));
             return new MarginTradeResponse(jsonObj.ToString());
         }
 
-        public static NewsResponse ExecuteNewsCommand(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
+        public static NewsResponse ExecuteNewsCommand(ApiConnector connector, long? start, long? end, bool prettyPrint = false)
         {
             return new NewsResponse(connector.ExecuteCommand(CreateNewsCommand(start, end, prettyPrint)).ToString());
         }
 
-        public static async Task<NewsResponse> ExecuteNewsCommandAsync(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
+        public static async Task<NewsResponse> ExecuteNewsCommandAsync(ApiConnector connector, long? start, long? end, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateNewsCommand(start, end, prettyPrint)).ConfigureAwait(false);
             return new NewsResponse(jsonObj.ToString());
         }
 
-        public static ServerTimeResponse ExecuteServerTimeCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static ServerTimeResponse ExecuteServerTimeCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new ServerTimeResponse(connector.ExecuteCommand(CreateServerTimeCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<ServerTimeResponse> ExecuteServerTimeCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<ServerTimeResponse> ExecuteServerTimeCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateServerTimeCommand(prettyPrint)).ConfigureAwait(false);
             return new ServerTimeResponse(jsonObj.ToString());
         }
 
-        public static CurrentUserDataResponse ExecuteCurrentUserDataCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static CurrentUserDataResponse ExecuteCurrentUserDataCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new CurrentUserDataResponse(connector.ExecuteCommand(CreateCurrentUserDataCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<CurrentUserDataResponse> ExecuteCurrentUserDataCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<CurrentUserDataResponse> ExecuteCurrentUserDataCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateCurrentUserDataCommand(prettyPrint)).ConfigureAwait(false);
             return new CurrentUserDataResponse(jsonObj.ToString());
         }
 
-        public static PingResponse ExecutePingCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static PingResponse ExecutePingCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new PingResponse(connector.ExecuteCommand(CreatePingCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<PingResponse> ExecutePingCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<PingResponse> ExecutePingCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreatePingCommand(prettyPrint)).ConfigureAwait(false);
             return new PingResponse(jsonObj.ToString());
         }
 
-        public static ProfitCalculationResponse ExecuteProfitCalculationCommand(SyncAPIConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
+        public static ProfitCalculationResponse ExecuteProfitCalculationCommand(ApiConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
         {
             return new ProfitCalculationResponse(connector.ExecuteCommand(CreateProfitCalculationCommand(symbol, volume, cmd, openPrice, closePrice, prettyPrint)).ToString());
         }
 
-        public static async Task<ProfitCalculationResponse> ExecuteProfitCalculationCommandAsync(SyncAPIConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
+        public static async Task<ProfitCalculationResponse> ExecuteProfitCalculationCommandAsync(ApiConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateProfitCalculationCommand(symbol, volume, cmd, openPrice, closePrice, prettyPrint)).ConfigureAwait(false);
             return new ProfitCalculationResponse(jsonObj.ToString());
         }
 
-        public static StepRulesResponse ExecuteStepRulesCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static StepRulesResponse ExecuteStepRulesCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new StepRulesResponse(connector.ExecuteCommand(CreateStepRulesCommand(prettyPrint)).ToString());
         }
 
-        public static SymbolResponse ExecuteSymbolCommand(SyncAPIConnector connector, string symbol, bool prettyPrint = false)
+        public static SymbolResponse ExecuteSymbolCommand(ApiConnector connector, string symbol, bool prettyPrint = false)
         {
             return new SymbolResponse(connector.ExecuteCommand(CreateSymbolCommand(symbol, prettyPrint)).ToString());
         }
 
-        public static async Task<SymbolResponse> ExecuteSymbolCommandAsync(SyncAPIConnector connector, string symbol, bool prettyPrint = false)
+        public static async Task<SymbolResponse> ExecuteSymbolCommandAsync(ApiConnector connector, string symbol, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateSymbolCommand(symbol, prettyPrint)).ConfigureAwait(false);
             return new SymbolResponse(jsonObj.ToString());
         }
 
-        public static TickPricesResponse ExecuteTickPricesCommand(SyncAPIConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
+        public static TickPricesResponse ExecuteTickPricesCommand(ApiConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
         {
             return new TickPricesResponse(connector.ExecuteCommand(CreateTickPricesCommand(symbols, timestamp, prettyPrint)).ToString());
         }
 
-        public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(SyncAPIConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
+        public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(ApiConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTickPricesCommand(symbols, timestamp, prettyPrint)).ConfigureAwait(false);
             return new TickPricesResponse(jsonObj.ToString());
         }
 
-        public static TradeRecordsResponse ExecuteTradeRecordsCommand(SyncAPIConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
+        public static TradeRecordsResponse ExecuteTradeRecordsCommand(ApiConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
         {
             return new TradeRecordsResponse(connector.ExecuteCommand(CreateTradeRecordsCommand(orders, prettyPrint)).ToString());
         }
 
-        public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(SyncAPIConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
+        public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(ApiConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradeRecordsCommand(orders, prettyPrint)).ConfigureAwait(false);
             return new TradeRecordsResponse(jsonObj.ToString());
         }
 
-        public static TradeTransactionResponse ExecuteTradeTransactionCommand(SyncAPIConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
+        public static TradeTransactionResponse ExecuteTradeTransactionCommand(ApiConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
         {
             return new TradeTransactionResponse(connector.ExecuteCommand(CreateTradeTransactionCommand(tradeTransInfo, prettyPrint)).ToString());
         }
 
-        public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(SyncAPIConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
+        public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(ApiConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradeTransactionCommand(tradeTransInfo, prettyPrint)).ConfigureAwait(false);
             return new TradeTransactionResponse(jsonObj.ToString());
         }
 
-        public static TradeTransactionResponse ExecuteTradeTransactionCommand(SyncAPIConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
+        //public static TradeTransactionResponse ExecuteTradeTransactionCommand(ApiConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? ie_deviation, long? order, string comment, long? expiration, bool prettyPrint = false)
+        public static TradeTransactionResponse ExecuteTradeTransactionCommand(ApiConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
         {
             return new TradeTransactionResponse(connector.ExecuteCommand(CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration, prettyPrint)).ToString());
         }
 
-        public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(SyncAPIConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
+        public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(ApiConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration, prettyPrint))
                 .ConfigureAwait(false);
             return new TradeTransactionResponse(jsonObj.ToString());
         }
 
-        public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(SyncAPIConnector connector, long? order, bool prettyPrint = false)
+        public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(ApiConnector connector, long? order, bool prettyPrint = false)
         {
             return new TradeTransactionStatusResponse(connector.ExecuteCommand(CreateTradeTransactionStatusCommand(order, prettyPrint)).ToString());
         }
 
-        public static async Task<TradeTransactionStatusResponse> ExecuteTradeTransactionStatusCommandAsync(SyncAPIConnector connector, long? order, bool prettyPrint = false)
+        public static async Task<TradeTransactionStatusResponse> ExecuteTradeTransactionStatusCommandAsync(ApiConnector connector, long? order, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradeTransactionStatusCommand(order, prettyPrint)).ConfigureAwait(false);
             return new TradeTransactionStatusResponse(jsonObj.ToString());
         }
 
-        public static TradesResponse ExecuteTradesCommand(SyncAPIConnector connector, bool openedOnly, bool prettyPrint = false)
+        public static TradesResponse ExecuteTradesCommand(ApiConnector connector, bool openedOnly, bool prettyPrint = false)
         {
             return new TradesResponse(connector.ExecuteCommand(CreateTradesCommand(openedOnly, prettyPrint)).ToString());
         }
 
-        public static async Task<TradesResponse> ExecuteTradesCommandAsync(SyncAPIConnector connector, bool openedOnly, bool prettyPrint = false)
+        public static async Task<TradesResponse> ExecuteTradesCommandAsync(ApiConnector connector, bool openedOnly, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradesCommand(openedOnly, prettyPrint)).ConfigureAwait(false);
             return new TradesResponse(jsonObj.ToString());
         }
 
-        public static TradesHistoryResponse ExecuteTradesHistoryCommand(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
+        public static TradesHistoryResponse ExecuteTradesHistoryCommand(ApiConnector connector, long? start, long? end, bool prettyPrint = false)
         {
             return new TradesHistoryResponse(connector.ExecuteCommand(CreateTradesHistoryCommand(start, end, prettyPrint)).ToString());
         }
 
-        public static async Task<TradesHistoryResponse> ExecuteTradesHistoryCommandAsync(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
+        public static async Task<TradesHistoryResponse> ExecuteTradesHistoryCommandAsync(ApiConnector connector, long? start, long? end, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradesHistoryCommand(start, end, prettyPrint)).ConfigureAwait(false);
             return new TradesHistoryResponse(jsonObj.ToString());
         }
 
-        public static TradingHoursResponse ExecuteTradingHoursCommand(SyncAPIConnector connector, string[] symbols, bool prettyPrint = false)
+        public static TradingHoursResponse ExecuteTradingHoursCommand(ApiConnector connector, string[] symbols, bool prettyPrint = false)
         {
             return new TradingHoursResponse(connector.ExecuteCommand(CreateTradingHoursCommand(symbols, prettyPrint)).ToString());
         }
 
-        public static async Task<TradingHoursResponse> ExecuteTradingHoursCommandAsync(SyncAPIConnector connector, string[] symbols, bool prettyPrint = false)
+        public static async Task<TradingHoursResponse> ExecuteTradingHoursCommandAsync(ApiConnector connector, string[] symbols, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradingHoursCommand(symbols, prettyPrint)).ConfigureAwait(false);
             return new TradingHoursResponse(jsonObj.ToString());
         }
 
-        public static VersionResponse ExecuteVersionCommand(SyncAPIConnector connector, bool prettyPrint = false)
+        public static VersionResponse ExecuteVersionCommand(ApiConnector connector, bool prettyPrint = false)
         {
             return new VersionResponse(connector.ExecuteCommand(CreateVersionCommand(prettyPrint)).ToString());
         }
 
-        public static async Task<VersionResponse> ExecuteVersionCommandAsync(SyncAPIConnector connector, bool prettyPrint = false)
+        public static async Task<VersionResponse> ExecuteVersionCommandAsync(ApiConnector connector, bool prettyPrint = false)
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateVersionCommand(prettyPrint)).ConfigureAwait(false);
             return new VersionResponse(jsonObj.ToString());

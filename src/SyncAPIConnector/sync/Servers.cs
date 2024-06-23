@@ -117,7 +117,7 @@ namespace xAPI.Sync
             {
                 return null;
             }
-            return new Server(address.Address, server.MainPort, server.StreamingPort, server.Secure, address.Name);
+            return new Server(address.Address, server.MainPort, server.StreamingPort, server.IsSecure, address.Name);
         }
 
         /// <summary>

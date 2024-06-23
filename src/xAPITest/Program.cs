@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Net;
 using xAPI.Sync;
 
 namespace xAPITest
 {
-    sealed class Program
+    static class Program
     {
         private static Server _server = Servers.DEMO;
         private static string _userId = "10000";
@@ -11,18 +12,18 @@ namespace xAPITest
 
         static void Main(string[] args)
         {
-            using (var syncConnector = new SyncAPIConnector(_server))
+            using (var tcpConn = new TcpConnector(new IPEndPoint(1,1)))
             {
                 Console.WriteLine("----Sync test---");
-                var syncExample = new SyncExample(syncConnector, _userId, _password);
+                var syncExample = new SyncExample(new ApiConnector(tcpConn, null), userId, password));
                 syncExample.Run();
             }
 
-            using (var syncConnector = new SyncAPIConnector(_server))
+            using (var tcpConn = new TcpConnector(new IPEndPoint(1, 1)))
             {
                 Console.WriteLine();
                 Console.WriteLine("----Async test---");
-                var asyncExample = new AsyncExample(syncConnector, _userId, _password);
+                var asyncExample = new AsyncExample(new ApiConnector(tcpConn, null), userId, password));
                 asyncExample.Run().GetAwaiter().GetResult();
             }
 

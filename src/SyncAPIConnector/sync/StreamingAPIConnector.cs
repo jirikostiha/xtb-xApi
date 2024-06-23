@@ -1,26 +1,29 @@
-﻿using System.IO;
+﻿// Ignore Spelling: Unsubscribe
+
 using System;
-using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
-using System.Net.Security;
-
-using xAPI.Utils;
 using xAPI.Records;
 using xAPI.Errors;
-using xAPI.Responses;
 using xAPI.Streaming;
-
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace xAPI.Sync
 {
-    public class StreamingAPIConnector : Connector
+    public class StreamingApiConnector
     {
-        #region Events
+        private Thread? _streamingReaderThread;
 
-        /// <summary>
+        private readonly IStreamingListener? _streamingListener;
+
+        public StreamingApiConnector(IConnector connector, IStreamingListener? streamingListener = null)
+        {
+            Connector = connector;
+            _streamingListener = streamingListener;
+        }
+
+        #region Events
         /// Event raised when a connection is established.
         /// </summary>
         public event EventHandler<ServerEventArgs>? Connected;
@@ -69,76 +72,14 @@ namespace xAPI.Sync
         /// Event raised when read streamed message.
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? StreamingErrorOccurred;
-
         #endregion
 
-        private Thread? _streamingReaderThread;
+        public IConnector Connector { get; private set; }
 
-        /// <summary>
-        /// Dedicated streaming listener.
-        /// </summary>
-        private IStreamingListener sl;
+        public bool IsConnected => Connector.IsConnected;
 
-        /// <summary>
-        /// Stream session id (given on login).
-        /// </summary>
-        private string streamSessionId;
-
-        /// <summary>
-        /// Creates new StreamingAPIConnector instance based on given server data.
-        /// </summary>
-        /// <param name="server">Server data</param>
-        public StreamingAPIConnector(Server server)
+        public StreamingApiConnector(Server server, string streamSessionId, IStreamingListener? streamingListner = null)
         {
-            this.server = server;
-            this.apiConnected = false;
-        }
-
-        /// <summary>
-        /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
-        /// </summary>
-        /// <param name="server">Server data</param>
-        public StreamingAPIConnector(Server server, string streamSessionId, IStreamingListener? streamingListner = null)
-        {
-            this.server = server;
-            this.streamSessionId = streamSessionId;
-            this.sl = streamingListner;
-        }
-
-        /// <summary>
-        /// Connect to the streaming.
-        /// </summary>
-        public void Connect()
-        {
-            if (this.streamSessionId == null)
-            {
-                throw new APICommunicationException("No session exists. Please login first.");
-            }
-
-            if (IsConnected())
-            {
-                throw new APICommunicationException("Stream already connected.");
-            }
-
-            this.apiSocket = new TcpClient(server.Address, server.StreamingPort);
-            this.apiConnected = true;
-
-            Connected?.Invoke(this, new(server));
-
-            if (server.Secure)
-            {
-                SslStream ssl = new SslStream(apiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
-                ssl.AuthenticateAsClient(server.Address);
-                apiWriteStream = new StreamWriter(ssl);
-                apiReadStream = new StreamReader(ssl);
-            }
-            else
-            {
-                NetworkStream ns = apiSocket.GetStream();
-                apiWriteStream = new StreamWriter(ns);
-                apiReadStream = new StreamReader(ns);
-            }
-
             if (_streamingReaderThread is not null)
             {
                 if (!_streamingReaderThread.IsAlive)
@@ -158,10 +99,7 @@ namespace xAPI.Sync
         {
             _streamingReaderThread = new Thread(async () =>
             {
-                while (IsConnected())
-                {
-                    await ReadStreamMessage();
-                }
+                await ReadStreamMessage();
             })
             {
                 Name = "Streaming reader",
@@ -171,15 +109,18 @@ namespace xAPI.Sync
         }
 
         /// <summary>
-        /// Stream session id (member of login response). Should be set after the successful login.
+        /// Determines if user is logged in.
         /// </summary>
-        public string StreamSessionId
-        {
-            get { return this.streamSessionId; }
-            set { this.streamSessionId = value; }
-        }
-
-        /// <summary>
+        public bool IsLoggedIn => !string.IsNullOrEmpty(StreamSessionId);
+    {
+            if (IsConnected)
+                return false;
+            var connected = Connector.Connect();
+        //todo
+        Thread t = new(() =>
+                while (IsConnected)
+        t.Start();
+            return true;
         /// Reads stream message.
         /// </summary>
         private async Task ReadStreamMessage()
@@ -190,22 +131,28 @@ namespace xAPI.Sync
 
                 if (message != null)
                 {
-                    JsonNode responseBody = JsonNode.Parse(message);
-                    string commandName = responseBody["command"].ToString();
+                    var jsonBody = JsonNode.Parse(message, default);
+                    if (jsonBody is null)
+                    {
+                        throw new APICommunicationException("Parsed json body is null.");
+                    }
+
+                    var commandName = jsonBody["command"]?.ToString();
 
                     if (commandName == "tickPrices")
                     {
-                        StreamingTickRecord tickRecord = new StreamingTickRecord();
-                        tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingTickRecord tickRecord = new();
+                        tickRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         TickReceived?.Invoke(this, new(tickRecord));
+                        _streamingListener?.ReceiveTickRecord(tickRecord);
                         if (sl != null)
                             await sl.ReceiveTickRecordAsync(tickRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "trade")
                     {
-                        StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
-                        tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingTradeRecord tradeRecord = new();
+                        tradeRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         TradeReceived?.Invoke(this, new(tradeRecord));
                         if (sl != null)
@@ -213,57 +160,62 @@ namespace xAPI.Sync
                     }
                     else if (commandName == "balance")
                     {
-                        StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
-                        balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingBalanceRecord balanceRecord = new();
+                        balanceRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         BalanceReceived?.Invoke(this, new(balanceRecord));
-                        if (sl != null)
-                            await sl.ReceiveBalanceRecordAsync(balanceRecord);
+                        BalanceReceived?.Invoke(this, new(balanceRecord));
+                        _streamingListener?.ReceiveBalanceRecord(balanceRecord);
+                        await sl.ReceiveBalanceRecordAsync(balanceRecord);
                     }
                     else if (commandName == "tradeStatus")
                     {
-                        StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
-                        tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingTradeStatusRecord tradeStatusRecord = new();
+                        tradeStatusRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
-                        if (sl != null)
-                            await sl.ReceiveTradeStatusRecordAsync(tradeStatusRecord);
+                        TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
+                        await sl.ReceiveTradeStatusRecordAsync(tradeStatusRecord);
+                        _streamingListener?.ReceiveTradeStatusRecord(tradeStatusRecord);
                     }
                     else if (commandName == "profit")
                     {
-                        StreamingProfitRecord profitRecord = new StreamingProfitRecord();
-                        profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingProfitRecord profitRecord = new();
+                        profitRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         ProfitReceived?.Invoke(this, new(profitRecord));
-                        if (sl != null)
-                            await sl.ReceiveProfitRecordAsync(profitRecord);
+                        ProfitReceived?.Invoke(this, new(profitRecord));
+                        await sl.ReceiveProfitRecordAsync(profitRecord);
+                        _streamingListener?.ReceiveProfitRecord(profitRecord);
                     }
                     else if (commandName == "news")
                     {
-                        StreamingNewsRecord newsRecord = new StreamingNewsRecord();
-                        newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingNewsRecord newsRecord = new();
+                        newsRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         NewsReceived?.Invoke(this, new(newsRecord));
-                        if (sl != null)
-                            await sl.ReceiveNewsRecordAsync(newsRecord);
+                        _streamingListener?.ReceiveNewsRecord(newsRecord);
+                        await sl.ReceiveNewsRecordAsync(newsRecord);
                     }
                     else if (commandName == "keepAlive")
                     {
-                        StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
-                        keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingKeepAliveRecord keepAliveRecord = new();
+                        keepAliveRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
-                        if (sl != null)
-                            await sl.ReceiveKeepAliveRecordAsync(keepAliveRecord);
+                        KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
+                        await sl.ReceiveKeepAliveRecordAsync(keepAliveRecord);
+                        _streamingListener?.ReceiveKeepAliveRecord(keepAliveRecord);
                     }
                     else if (commandName == "candle")
                     {
-                        StreamingCandleRecord candleRecord = new StreamingCandleRecord();
-                        candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                        StreamingCandleRecord candleRecord = new();
+                        candleRecord.FieldsFromJsonObject(jsonBody["data"].AsObject());
 
                         CandleReceived?.Invoke(this, new(candleRecord));
-                        if (sl != null)
-                            await sl.ReceiveCandleRecordAsync(candleRecord);
+                        CandleReceived?.Invoke(this, new(candleRecord));
+                        await sl.ReceiveCandleRecordAsync(candleRecord);
+                        _streamingListener?.ReceiveCandleRecord(candleRecord);
                     }
                     else
                     {
@@ -277,29 +229,29 @@ namespace xAPI.Sync
             }
         }
 
-        public void SubscribePrice(String symbol, long? minArrivalTime = null, long? maxLevel = null)
+        public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
         {
-            TickPricesSubscribe tickPricesSubscribe = new TickPricesSubscribe(symbol, streamSessionId, minArrivalTime, maxLevel);
-            WriteMessage(tickPricesSubscribe.ToString());
+            TickPricesSubscribe tickPricesSubscribe = new(symbol, StreamSessionId, minArrivalTime, maxLevel);
+            Connector.WriteMessage(tickPricesSubscribe.ToString());
         }
 
-        public void UnsubscribePrice(String symbol)
+        public void UnsubscribePrice(string symbol)
         {
-            TickPricesStop tickPricesStop = new TickPricesStop(symbol);
-            WriteMessage(tickPricesStop.ToString());
+            TickPricesStop tickPricesStop = new(symbol);
+            Connector.WriteMessage(tickPricesStop.ToString());
         }
 
-        public void SubscribePrices(IEnumerable<String> symbols)
+        public void SubscribePrices(IEnumerable<string> symbols)
         {
-            foreach (String symbol in symbols)
+            foreach (string symbol in symbols)
             {
                 SubscribePrice(symbol);
             }
         }
 
-        public void UnsubscribePrices(LinkedList<String> symbols)
+        public void UnsubscribePrices(LinkedList<string> symbols)
         {
-            foreach (String symbol in symbols)
+            foreach (string symbol in symbols)
             {
                 UnsubscribePrice(symbol);
             }
@@ -307,86 +259,87 @@ namespace xAPI.Sync
 
         public void SubscribeTrades()
         {
-            TradeRecordsSubscribe tradeRecordsSubscribe = new TradeRecordsSubscribe(streamSessionId);
-            WriteMessage(tradeRecordsSubscribe.ToString());
+            //check if loggedin
+
+            TradeRecordsSubscribe tradeRecordsSubscribe = new(StreamSessionId);
+            Connector.WriteMessage(tradeRecordsSubscribe.ToString());
         }
 
         public void UnsubscribeTrades()
         {
-            TradeRecordsStop tradeRecordsStop = new TradeRecordsStop();
-            WriteMessage(tradeRecordsStop.ToString());
+            TradeRecordsStop tradeRecordsStop = new();
+            Connector.WriteMessage(tradeRecordsStop.ToString());
         }
 
         public void SubscribeBalance()
         {
-            BalanceRecordsSubscribe balanceRecordsSubscribe = new BalanceRecordsSubscribe(streamSessionId);
-            WriteMessage(balanceRecordsSubscribe.ToString());
+            BalanceRecordsSubscribe balanceRecordsSubscribe = new(StreamSessionId);
+            Connector.WriteMessage(balanceRecordsSubscribe.ToString());
         }
 
         public void UnsubscribeBalance()
         {
-            BalanceRecordsStop balanceRecordsStop = new BalanceRecordsStop();
-            WriteMessage(balanceRecordsStop.ToString());
+            BalanceRecordsStop balanceRecordsStop = new();
+            Connector.WriteMessage(balanceRecordsStop.ToString());
         }
-
         public void SubscribeTradeStatus()
         {
-            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(streamSessionId);
-            WriteMessage(tradeStatusRecordsSubscribe.ToString());
+            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(StreamSessionId);
+            Connector.WriteMessage(tradeStatusRecordsSubscribe.ToString());
         }
 
         public void UnsubscribeTradeStatus()
         {
-            TradeStatusRecordsStop tradeStatusRecordsStop = new TradeStatusRecordsStop();
-            WriteMessage(tradeStatusRecordsStop.ToString());
+            TradeStatusRecordsStop tradeStatusRecordsStop = new();
+            Connector.WriteMessage(tradeStatusRecordsStop.ToString());
         }
 
         public void SubscribeProfits()
         {
-            ProfitsSubscribe profitsSubscribe = new ProfitsSubscribe(streamSessionId);
-            WriteMessage(profitsSubscribe.ToString());
+            ProfitsSubscribe profitsSubscribe = new(StreamSessionId);
+            Connector.WriteMessage(profitsSubscribe.ToString());
         }
 
         public void UnsubscribeProfits()
         {
-            ProfitsStop profitsStop = new ProfitsStop();
-            WriteMessage(profitsStop.ToString());
+            ProfitsStop profitsStop = new();
+            Connector.WriteMessage(profitsStop.ToString());
         }
 
         public void SubscribeNews()
         {
-            NewsSubscribe newsSubscribe = new NewsSubscribe(streamSessionId);
-            WriteMessage(newsSubscribe.ToString());
+            NewsSubscribe newsSubscribe = new(StreamSessionId);
+            Connector.WriteMessage(newsSubscribe.ToString());
         }
 
         public void UnsubscribeNews()
         {
-            NewsStop newsStop = new NewsStop();
-            WriteMessage(newsStop.ToString());
+            NewsStop newsStop = new();
+            Connector.WriteMessage(newsStop.ToString());
         }
 
         public void SubscribeKeepAlive()
         {
-            KeepAliveSubscribe keepAliveSubscribe = new KeepAliveSubscribe(streamSessionId);
-            WriteMessage(keepAliveSubscribe.ToString());
+            KeepAliveSubscribe keepAliveSubscribe = new(StreamSessionId);
+            Connector.WriteMessage(keepAliveSubscribe.ToString());
         }
 
         public void UnsubscribeKeepAlive()
         {
-            KeepAliveStop keepAliveStop = new KeepAliveStop();
-            WriteMessage(keepAliveStop.ToString());
+            KeepAliveStop keepAliveStop = new();
+            Connector.WriteMessage(keepAliveStop.ToString());
         }
 
-        public void SubscribeCandles(String symbol)
+        public void SubscribeCandles(string symbol)
         {
-            CandleRecordsSubscribe candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, streamSessionId);
-            WriteMessage(candleRecordsSubscribe.ToString());
+            CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, StreamSessionId);
+            Connector.WriteMessage(candleRecordsSubscribe.ToString());
         }
 
-        public void UnsubscribeCandles(String symbol)
+        public void UnsubscribeCandles(string symbol)
         {
-            CandleRecordsStop candleRecordsStop = new CandleRecordsStop(symbol);
-            WriteMessage(candleRecordsStop.ToString());
+            CandleRecordsStop candleRecordsStop = new(symbol);
+            Connector.WriteMessage(candleRecordsStop.ToString());
         }
 
         protected virtual void OnStreamingErrorOccurred(Exception ex)
@@ -399,23 +352,6 @@ namespace xAPI.Sync
                 // If the exception was not handled, rethrow it
                 throw new APICommunicationException("Read streaming message failed.", ex);
             }
-        }
-
-        private bool _disposed;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                base.Dispose(disposing);
-
-                _disposed = true;
-            }
-        }
-
-        ~StreamingAPIConnector()
-        {
-            Dispose(false);
         }
     }
 }
