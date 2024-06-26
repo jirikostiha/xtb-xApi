@@ -1,24 +1,21 @@
 ﻿using System.Text.Json.Nodes;
-
 namespace xAPI.Streaming
 {
 
-    sealed class BalanceRecordsSubscribe
+    internal sealed class BalanceRecordsSubscribe : SubscribeBase
     {
-        private readonly string streamSessionId;
-
         public BalanceRecordsSubscribe(string streamSessionId)
+            : base(streamSessionId)
         {
-            this.streamSessionId = streamSessionId;
         }
 
         public override string ToString()
         {
             JsonObject result = new()
             {
-                { "command", "getBalance" },
-                { "streamSessionId", streamSessionId }
+                { "streamSessionId", StreamSessionId }
             };
+
             return result.ToJsonString();
         }
     }

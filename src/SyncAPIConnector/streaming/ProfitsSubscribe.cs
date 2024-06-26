@@ -2,14 +2,11 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class ProfitsSubscribe
+    internal sealed class ProfitsSubscribe : SubscribeBase
     {
-        private readonly string streamSessionId;
-
         public ProfitsSubscribe(string streamSessionId)
+            : base(streamSessionId)
         {
-            this.streamSessionId = streamSessionId;
         }
 
         public override string ToString()
@@ -17,8 +14,9 @@ namespace xAPI.Streaming
             JsonObject result = new()
             {
                 { "command", "getProfits" },
-                { "streamSessionId", streamSessionId }
+                { "streamSessionId", StreamSessionId }
             };
+
             return result.ToJsonString();
         }
     }

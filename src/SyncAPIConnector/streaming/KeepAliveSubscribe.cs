@@ -2,14 +2,11 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class KeepAliveSubscribe
+    internal sealed class KeepAliveSubscribe : SubscribeBase
     {
-        private readonly string streamSessionId;
-
         public KeepAliveSubscribe(string streamSessionId)
+            : base(streamSessionId)
         {
-            this.streamSessionId = streamSessionId;
         }
 
         public override string ToString()
@@ -17,8 +14,9 @@ namespace xAPI.Streaming
             JsonObject result = new()
             {
                 { "command", "getKeepAlive" },
-                { "streamSessionId", streamSessionId }
+                { "streamSessionId", StreamSessionId }
             };
+
             return result.ToJsonString();
         }
     }

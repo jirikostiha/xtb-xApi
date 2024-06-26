@@ -2,19 +2,15 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class ProfitsStop
+    internal sealed class ProfitsStop
     {
-        public ProfitsStop()
-        {
-        }
-
         public override string ToString()
         {
             JsonObject result = new()
             {
                 { "command", "stopProfits" }
             };
+
             return result.ToJsonString();
         }
     }

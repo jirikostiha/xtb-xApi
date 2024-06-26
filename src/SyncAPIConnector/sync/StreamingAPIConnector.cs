@@ -497,6 +497,7 @@ namespace xAPI.Sync
         public void SubscribeKeepAlive()
         {
             KeepAliveSubscribe keepAliveSubscribe = new KeepAliveSubscribe(streamSessionId);
+
             WriteMessage(keepAliveSubscribe.ToString());
         }
 
