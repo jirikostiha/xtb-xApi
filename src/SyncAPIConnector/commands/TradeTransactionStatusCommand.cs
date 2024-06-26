@@ -7,7 +7,6 @@ namespace xAPI.Commands
         public const string Name = "tradeTransactionStatus";
 
         public static readonly string[] RequiredArgs = ["orders"];
-
         public TradeTransactionStatusCommand(JsonObject arguments, bool prettyPrint)
             : base(arguments, prettyPrint)
         {
