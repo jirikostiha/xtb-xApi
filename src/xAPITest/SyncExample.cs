@@ -7,15 +7,14 @@ using System.Globalization;
 
 namespace xAPITest;
 
-public sealed class SyncExample : ExampleBase, IDisposable
+public sealed class SyncExample : ExampleBase
 {
-    private readonly Server _server;
     private readonly Credentials _credentials;
-    private SyncAPIConnector _connector;
+    private readonly SyncAPIConnector _connector;
 
-    public SyncExample(Server server, string user, string password)
+    public SyncExample(SyncAPIConnector connector, string user, string password)
     {
-        _server = server;
+        _connector = connector;
         _credentials = new Credentials(user, password);
     }
 
@@ -34,10 +33,32 @@ public sealed class SyncExample : ExampleBase, IDisposable
     {
         Stage("Connection");
 
-        Action($"Establishing connection to '{_server.Address}:{_server.MainPort}'");
+        Action($"Establishing connection");
         try
         {
-            _connector = new SyncAPIConnector(_server);
+            _connector.Connect();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex, true);
+        }
+
+        Action($"Dropping connection");
+        try
+        {
+            _connector.Disconnect();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Reestablishing connection");
+        try
+        {
+            _connector.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -74,6 +95,28 @@ public sealed class SyncExample : ExampleBase, IDisposable
         Stage("Authentication");
 
         Action($"Logging in as '{_credentials.Login}'");
+        try
+        {
+            var response = APICommandFactory.ExecuteLoginCommand(_connector, _credentials);
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex, true);
+        }
+
+        Action($"Logging out");
+        try
+        {
+            var response = APICommandFactory.ExecuteLogoutCommand(_connector);
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Logging in again as '{_credentials.Login}'");
         try
         {
             var response = APICommandFactory.ExecuteLoginCommand(_connector, _credentials);
@@ -333,11 +376,5 @@ public sealed class SyncExample : ExampleBase, IDisposable
         {
             Fail(ex);
         }
-    }
-
-    public void Dispose()
-    {
-        _connector?.Dispose();
-        GC.SuppressFinalize(this);
     }
 }

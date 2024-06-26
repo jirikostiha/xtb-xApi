@@ -86,12 +86,10 @@ namespace xAPI.Sync
         /// Creates new SyncAPIConnector instance based on given Server data.
         /// </summary>
         /// <param name="server">Server data</param>
-        /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
         /// <param name="connectionTimeout">Connection timeout</param>
-        public SyncAPIConnector(Server server, bool lookForBackups = true, int connectionTimeout = TIMEOUT)
+        public SyncAPIConnector(Server server, int connectionTimeout = TIMEOUT)
         {
             _connectionTimeout = connectionTimeout;
-            Connect(server, lookForBackups);
         }
 
         /// <summary>
@@ -162,6 +160,7 @@ namespace xAPI.Sync
                 OnConnected.Invoke(this.server);
 
             this.streamingConnector = new StreamingAPIConnector(this.server);
+            this.streamingConnector.Connect();
         }
 
         /// <summary>

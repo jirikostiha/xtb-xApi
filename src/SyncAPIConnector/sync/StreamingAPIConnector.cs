@@ -157,20 +157,11 @@ namespace xAPI.Sync
         /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
         /// </summary>
         /// <param name="server">Server data</param>
-        public StreamingAPIConnector(Server server, string streamSessionId, IStreamingListener streamingListner)
+        public StreamingAPIConnector(Server server, string streamSessionId, IStreamingListener? streamingListner = null)
         {
             this.server = server;
             this.streamSessionId = streamSessionId;
-            Connect(streamingListner, streamSessionId);
-        }
-
-        /// <summary>
-        /// Connect to the streaming using given streaming listener.
-        /// </summary>
-        /// <param name="streamingListener">Streaming listener</param>
-        public void Connect(IStreamingListener streamingListener)
-        {
-            Connect(streamingListener, streamSessionId);
+            this.sl = streamingListner;
         }
 
         /// <summary>
@@ -178,18 +169,6 @@ namespace xAPI.Sync
         /// </summary>
         public void Connect()
         {
-            Connect(null, streamSessionId);
-        }
-
-        /// <summary>
-        /// Connect to the streaming using given streaming listener.
-        /// </summary>
-        /// <param name="streamingListener">Streaming listener</param>
-        /// <param name="streamSessionId">Stream session id</param>
-        public void Connect(IStreamingListener streamingListener, string streamSessionId)
-        {
-            this.streamSessionId = streamSessionId;
-
             if (this.streamSessionId == null)
             {
                 throw new APICommunicationException("No session exists. Please login first.");
@@ -199,8 +178,6 @@ namespace xAPI.Sync
             {
                 throw new APICommunicationException("Stream already connected.");
             }
-
-            this.sl = streamingListener;
 
             this.apiSocket = new TcpClient(server.Address, server.StreamingPort);
             this.apiConnected = true;
