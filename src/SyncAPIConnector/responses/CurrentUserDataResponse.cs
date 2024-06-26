@@ -1,4 +1,3 @@
-
 namespace xAPI.Responses
 {
     public class CurrentUserDataResponse : BaseResponse

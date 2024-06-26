@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
-using xAPI.Codes;
-using xAPI.Errors;
-using xAPI.Sync;
-using xAPI.Records;
-using xAPI.Responses;
-using System.Threading.Tasks;
 using System.Text.Json.Nodes;
 using System.Threading;
+using System.Threading.Tasks;
+using xAPI.Codes;
+using xAPI.Errors;
+using xAPI.Records;
+using xAPI.Responses;
+using xAPI.Sync;
 
 namespace xAPI.Commands
 {
@@ -19,6 +18,7 @@ namespace xAPI.Commands
         private static int redirectCounter;
 
         #region Command creators
+
         public static LoginCommand CreateLoginCommand(string userId, string password, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
@@ -77,7 +77,6 @@ namespace xAPI.Commands
             JsonObject args = new JsonObject();
             args.Add("info", info.toJsonObject());
             return new ChartRangeCommand(args, prettyPrint);
-
         }
 
         public static ChartRangeCommand CreateChartRangeCommand(string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
@@ -202,9 +201,11 @@ namespace xAPI.Commands
             args.Add("symbols", arr);
             return new TradingHoursCommand(args, prettyPrint);
         }
-        #endregion
+
+        #endregion Command creators
 
         #region Command executors
+
         public static AllSymbolsResponse ExecuteAllSymbolsCommand(SyncAPIConnector connector, bool prettyPrint = false)
         {
             var commnad = new AllSymbolsCommand();
@@ -360,7 +361,6 @@ namespace xAPI.Commands
 
             return new LoginResponse(jsonObj.ToString());
         }
-
 
         public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, Credentials credentials, CancellationToken cancellationToken = default)
         {
@@ -693,6 +693,7 @@ namespace xAPI.Commands
 
             return new VersionResponse(jsonObj.ToString());
         }
-        #endregion
+
+        #endregion Command executors
     }
 }

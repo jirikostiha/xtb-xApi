@@ -2,24 +2,23 @@
 
 namespace xAPI.Streaming
 {
-    internal sealed class CandleRecordsSubscribe
+    internal sealed class CandleRecordsSubscribe : SubscribeBase
     {
-        private readonly string symbol;
-        private readonly string streamSessionId;
-
         public CandleRecordsSubscribe(string symbol, string streamSessionId)
+            : base(streamSessionId)
         {
-            this.streamSessionId = streamSessionId;
-            this.symbol = symbol;
+            Symbol = symbol;
         }
+
+        public string Symbol { get; }
 
         public override string ToString()
         {
             JsonObject result = new()
             {
                 { "command", "getCandles" },
-                { "streamSessionId", streamSessionId },
-                { "symbol", symbol }
+                { "streamSessionId", StreamSessionId },
+                { "symbol", Symbol }
             };
             return result.ToJsonString();
         }

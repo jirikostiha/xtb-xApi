@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
-using xAPI.Sync;
-using xAPI.Commands;
-using xAPI.Codes;
 using System.Globalization;
+using System.Linq;
+using xAPI.Codes;
+using xAPI.Commands;
+using xAPI.Sync;
 
 namespace xAPITest;
 
@@ -72,6 +72,7 @@ public sealed class SyncExample : ExampleBase
         {
             var response = APICommandFactory.ExecutePingCommand(_connector);
             Pass(response);
+            Detail(response.DateTime.ToString());
         }
         catch (Exception ex)
         {

@@ -1,7 +1,7 @@
 using System;
-using xAPI.Codes;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
+using xAPI.Codes;
 
 namespace xAPI.Records
 {

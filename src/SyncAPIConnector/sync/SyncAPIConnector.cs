@@ -1,21 +1,22 @@
-using System;
-using System.Threading;
-using System.Net.Sockets;
-using System.Net.Security;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using xAPI.Errors;
-using xAPI.Commands;
-using xAPI.Utils;
 using SyncAPIConnect.Utils;
-using System.Threading.Tasks;
+using System;
+using System.IO;
+using System.Net.Security;
+using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Nodes;
+using System.Threading;
+using System.Threading.Tasks;
+using xAPI.Commands;
+using xAPI.Errors;
+using xAPI.Utils;
 
 namespace xAPI.Sync
 {
     public class SyncAPIConnector : Connector
     {
         #region Settings
+
         /// <summary>
         /// Wrappers version.
         /// </summary>
@@ -35,9 +36,11 @@ namespace xAPI.Sync
         /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
         /// </summary>
         private const int TIMEOUT = 5000;
-        #endregion
+
+        #endregion Settings
 
         #region Events
+
         /// <summary>
         /// Event raised when a connection is established.
         /// </summary>
@@ -52,7 +55,8 @@ namespace xAPI.Sync
         /// Event raised when a command is being executed.
         /// </summary>
         public event EventHandler<CommandEventArgs>? CommandExecuting;
-        #endregion
+
+        #endregion Events
 
         /// <summary>
         /// Streaming API connector.

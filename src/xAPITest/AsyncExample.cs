@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
-using xAPI.Sync;
-using xAPI.Commands;
-using xAPI.Codes;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using xAPI.Codes;
+using xAPI.Commands;
+using xAPI.Sync;
 
 namespace xAPITest;
 
@@ -73,6 +73,7 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecutePingCommandAsync(_connector);
             Pass(response);
+            Detail(response.DateTime.ToString());
         }
         catch (Exception ex)
         {

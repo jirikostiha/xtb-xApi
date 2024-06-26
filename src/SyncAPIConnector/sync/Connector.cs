@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -29,7 +27,7 @@ namespace xAPI.Sync
         /// </summary>
         public event EventHandler? Disconnected;
 
-        #endregion
+        #endregion Events
 
         /// <summary>
         /// Socket that handles the connection.
@@ -67,7 +65,6 @@ namespace xAPI.Sync
         /// </summary>
         public Connector()
         {
-
         }
 
         /// <summary>
@@ -187,7 +184,6 @@ namespace xAPI.Sync
                 MessageReceived?.Invoke(this, new(result.ToString()));
 
                 return result.ToString();
-
             }
             catch (Exception ex)
             {
@@ -231,7 +227,6 @@ namespace xAPI.Sync
                 MessageReceived?.Invoke(this, new(result.ToString()));
 
                 return result.ToString();
-
             }
             catch (Exception ex)
             {
@@ -239,7 +234,6 @@ namespace xAPI.Sync
                 throw new APICommunicationException("Disconnected from server.", ex);
             }
         }
-
 
         /// <summary>
         /// Disconnects from the remote server.

@@ -2,7 +2,6 @@ using System;
 
 namespace xAPI.Responses
 {
-
     public class PingResponse : BaseResponse
     {
         public PingResponse()

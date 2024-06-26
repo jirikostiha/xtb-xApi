@@ -2,22 +2,18 @@
 
 namespace xAPI.Streaming
 {
-    internal sealed class TickPricesStop
+    internal sealed class TickPricesStop(string symbol)
     {
-        private readonly string symbol;
-
-        public TickPricesStop(string symbol)
-        {
-            this.symbol = symbol;
-        }
+        public string Symbol { get; } = symbol;
 
         public override string ToString()
         {
             JsonObject result = new()
             {
                 { "command", "stopTickPrices" },
-                { "symbol", symbol }
+                { "symbol", Symbol }
             };
+
             return result.ToJsonString();
         }
     }

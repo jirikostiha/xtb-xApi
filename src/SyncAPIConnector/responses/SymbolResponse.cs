@@ -1,11 +1,4 @@
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using System;
-using xAPI.Codes;
 using xAPI.Records;
-using System.Linq;
-using System.Text.Json.Nodes;
-using System.Net.Http.Headers;
 
 namespace xAPI.Responses
 {

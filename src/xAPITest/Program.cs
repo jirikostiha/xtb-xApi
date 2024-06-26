@@ -3,13 +3,13 @@ using xAPI.Sync;
 
 namespace xAPITest
 {
-    sealed class Program
+    internal sealed class Program
     {
         private static Server _server = Servers.DEMO;
         private static string _userId = "16401086";
         private static string _password = "8Ddddddd";
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             using (var syncConnector = new SyncAPIConnector(_server))
             {
