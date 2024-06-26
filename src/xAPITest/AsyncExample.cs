@@ -73,7 +73,6 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecutePingCommandAsync(_connector);
             Pass(response);
-            Detail(response.DateTime.ToString());
         }
         catch (Exception ex)
         {

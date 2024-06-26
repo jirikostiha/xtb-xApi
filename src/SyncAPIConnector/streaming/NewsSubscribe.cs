@@ -2,18 +2,22 @@
 
 namespace xAPI.Streaming
 {
-    internal sealed class NewsSubscribe : SubscribeBase
+    internal sealed class NewsSubscribe : SubscribeCommandBase
     {
+        public const string Name = "getNews";
+
         public NewsSubscribe(string streamSessionId)
             : base(streamSessionId)
         {
         }
 
+        public override string CommandName => Name;
+
         public override string ToString()
         {
             JsonObject result = new()
             {
-                { "command", "getNews" },
+                { "command", CommandName },
                 { "streamSessionId", StreamSessionId }
             };
 

@@ -19,7 +19,7 @@ namespace xAPI.Responses
             var symbolRecords = ReturnData.AsArray();
             foreach (JsonObject e in symbolRecords.OfType<JsonObject>())
             {
-                SpreadRecord spreadRecord = new SpreadRecord();
+                var spreadRecord = new SpreadRecord();
                 spreadRecord.FieldsFromJsonObject(e);
                 SpreadRecords.AddLast(spreadRecord);
             }

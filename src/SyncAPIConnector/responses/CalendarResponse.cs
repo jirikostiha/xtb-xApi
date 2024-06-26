@@ -19,7 +19,7 @@ namespace xAPI.Responses
 
             foreach (JsonObject e in ReturnData.AsArray().OfType<JsonObject>())
             {
-                CalendarRecord record = new();
+                var record = new CalendarRecord();
                 record.FieldsFromJsonObject(e);
                 CalendarRecords.Add(record);
             }

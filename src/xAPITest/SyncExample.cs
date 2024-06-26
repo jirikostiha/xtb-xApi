@@ -72,7 +72,6 @@ public sealed class SyncExample : ExampleBase
         {
             var response = APICommandFactory.ExecutePingCommand(_connector);
             Pass(response);
-            Detail(response.DateTime.ToString());
         }
         catch (Exception ex)
         {

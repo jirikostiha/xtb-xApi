@@ -22,6 +22,7 @@ namespace xAPI.Responses
         }
 
         public string? Currency { get; init; }
+
         public double? LeverageMultiplier { get; init; }
 
         public string? Group { get; init; }

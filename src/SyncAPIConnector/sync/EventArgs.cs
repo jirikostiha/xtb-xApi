@@ -16,9 +16,9 @@ namespace xAPI.Sync
         public string Message { get; } = message;
     }
 
-    public class CommandEventArgs(BaseCommand command) : EventArgs
+    public class CommandEventArgs(ICommand command) : EventArgs
     {
-        public BaseCommand Command { get; } = command;
+        public ICommand Command { get; } = command;
     }
 
     public class ServerEventArgs(Server server) : EventArgs

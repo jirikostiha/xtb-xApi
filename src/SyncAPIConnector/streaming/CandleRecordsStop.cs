@@ -3,15 +3,13 @@ using xAPI.Commands;
 
 namespace xAPI.Streaming
 {
-    public sealed class CandleRecordsStop(string symbol) : ICommand
+    internal sealed class CandleRecordsStop(string symbol) : ICommand
     {
         public const string Name = "stopCandles";
 
         public static readonly string[] RequiredArgs = ["symbol"];
 
         public string CommandName => Name;
-
-        public string[] RequiredArguments => [];
 
         public string Symbol { get; } = symbol;
 

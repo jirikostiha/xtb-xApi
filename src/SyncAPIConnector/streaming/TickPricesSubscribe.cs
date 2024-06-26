@@ -2,8 +2,10 @@
 
 namespace xAPI.Streaming
 {
-    internal sealed class TickPricesSubscribe : SubscribeBase
+    internal sealed class TickPricesSubscribe : SubscribeCommandBase
     {
+        public const string Name = "getTickPrices";
+
         public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime = null, long? maxLevel = null)
             : base(streamSessionId)
         {
@@ -11,6 +13,8 @@ namespace xAPI.Streaming
             MinArrivalTime = minArrivalTime;
             MaxLevel = maxLevel;
         }
+
+        public override string CommandName => Name;
 
         public string Symbol { get; }
 
@@ -22,8 +26,9 @@ namespace xAPI.Streaming
         {
             JsonObject result = new()
             {
-                { "command", "getTickPrices" },
-                { "symbol", Symbol }
+                { "command", CommandName },
+                { "symbol", Symbol },
+                { "streamSessionId", StreamSessionId }
             };
 
             if (MinArrivalTime.HasValue)
@@ -31,8 +36,6 @@ namespace xAPI.Streaming
 
             if (MaxLevel.HasValue)
                 result.Add("maxLevel", MaxLevel);
-
-            result.Add("streamSessionId", StreamSessionId);
 
             return result.ToJsonString();
         }

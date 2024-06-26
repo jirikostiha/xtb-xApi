@@ -1,3 +1,5 @@
+using System;
+
 namespace xAPI.Responses
 {
     public class ServerTimeResponse : BaseResponse
@@ -13,11 +15,12 @@ namespace xAPI.Responses
                 return;
 
             var ob = ReturnData.AsObject();
-            Time = (long?)ob["time"];
+            var time = (long?)ob["time"];
+            Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
             TimeString = (string?)ob["timeString"];
         }
 
-        public long? Time { get; init; }
+        public DateTimeOffset? Time { get; init; }
 
         public string? TimeString { get; init; }
     }
