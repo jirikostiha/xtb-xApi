@@ -12,6 +12,7 @@ using xAPI.Responses;
 using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 
 namespace xAPI.Sync
 {
@@ -218,11 +219,11 @@ namespace xAPI.Sync
 
         private void CreateAndRunNewStreamingReaderThread()
         {
-            _streamingReaderThread = new Thread(() =>
+            _streamingReaderThread = new Thread(async () =>
             {
                 while (Connected())
                 {
-                    ReadStreamMessage();
+                    await ReadStreamMessage();
                 }
             })
             {
@@ -297,11 +298,11 @@ namespace xAPI.Sync
         /// <summary>
         /// Reads stream message.
         /// </summary>
-        private void ReadStreamMessage()
+        private async Task ReadStreamMessage()
         {
             try
             {
-                String message = ReadMessage();
+                var message = await ReadMessageAsync().ConfigureAwait(false);
 
                 if (message != null)
                 {
@@ -313,80 +314,72 @@ namespace xAPI.Sync
                         StreamingTickRecord tickRecord = new StreamingTickRecord();
                         tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (TickRecordReceived != null)
-                            TickRecordReceived.Invoke(tickRecord);
+                        TickRecordReceived?.Invoke(tickRecord);
                         if (sl != null)
-                            sl.ReceiveTickRecord(tickRecord);
+                            await sl.ReceiveTickRecordAsync(tickRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "trade")
                     {
                         StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
                         tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (TradeRecordReceived != null)
-                            TradeRecordReceived.Invoke(tradeRecord);
+                        TradeRecordReceived?.Invoke(tradeRecord);
                         if (sl != null)
-                            sl.ReceiveTradeRecord(tradeRecord);
+                            await sl.ReceiveTradeRecordAsync(tradeRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "balance")
                     {
                         StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
                         balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (BalanceRecordReceived != null)
-                            BalanceRecordReceived.Invoke(balanceRecord);
+                        BalanceRecordReceived?.Invoke(balanceRecord);
                         if (sl != null)
-                            sl.ReceiveBalanceRecord(balanceRecord);
+                            await sl.ReceiveBalanceRecordAsync(balanceRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "tradeStatus")
                     {
                         StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
                         tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (TradeStatusRecordReceived != null)
-                            TradeStatusRecordReceived.Invoke(tradeStatusRecord);
+                        TradeStatusRecordReceived?.Invoke(tradeStatusRecord);
                         if (sl != null)
-                            sl.ReceiveTradeStatusRecord(tradeStatusRecord);
+                            await sl.ReceiveTradeStatusRecordAsync(tradeStatusRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "profit")
                     {
                         StreamingProfitRecord profitRecord = new StreamingProfitRecord();
                         profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (ProfitRecordReceived != null)
-                            ProfitRecordReceived.Invoke(profitRecord);
+                        ProfitRecordReceived?.Invoke(profitRecord);
                         if (sl != null)
-                            sl.ReceiveProfitRecord(profitRecord);
+                            await sl.ReceiveProfitRecordAsync(profitRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "news")
                     {
                         StreamingNewsRecord newsRecord = new StreamingNewsRecord();
                         newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (NewsRecordReceived != null)
-                            NewsRecordReceived.Invoke(newsRecord);
+                        NewsRecordReceived?.Invoke(newsRecord);
                         if (sl != null)
-                            sl.ReceiveNewsRecord(newsRecord);
+                            await sl.ReceiveNewsRecordAsync(newsRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "keepAlive")
                     {
                         StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
                         keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (KeepAliveRecordReceived != null)
-                            KeepAliveRecordReceived.Invoke(keepAliveRecord);
+                        KeepAliveRecordReceived?.Invoke(keepAliveRecord);
                         if (sl != null)
-                            sl.ReceiveKeepAliveRecord(keepAliveRecord);
+                            await sl.ReceiveKeepAliveRecordAsync(keepAliveRecord).ConfigureAwait(false);
                     }
                     else if (commandName == "candle")
                     {
                         StreamingCandleRecord candleRecord = new StreamingCandleRecord();
                         candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        if (CandleRecordReceived != null)
-                            CandleRecordReceived.Invoke(candleRecord);
+                        CandleRecordReceived?.Invoke(candleRecord);
                         if (sl != null)
-                            sl.ReceiveCandleRecord(candleRecord);
+                            await sl.ReceiveCandleRecordAsync(candleRecord).ConfigureAwait(false);
                     }
                     else
                     {
