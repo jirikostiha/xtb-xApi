@@ -148,14 +148,6 @@ namespace xAPI.Commands
             return new CurrentUserDataCommand(prettyPrint);
         }
 
-        public static IbsHistoryCommand CreateGetIbsHistoryCommand(long start, long end, bool prettyPrint = false)
-        {
-            JsonObject args = new JsonObject();
-            args.Add("start", start);
-            args.Add("end", end);
-            return new IbsHistoryCommand(args, prettyPrint);
-        }
-
         public static PingCommand CreatePingCommand(bool prettyPrint = false)
         {
             return new PingCommand(prettyPrint);
@@ -170,12 +162,6 @@ namespace xAPI.Commands
             args.Add("openPrice", openPrice);
             args.Add("closePrice", closePrice);
             return new ProfitCalculationCommand(args, prettyPrint);
-        }
-
-        [Obsolete("Command not available in API any more")]
-        public static AllSymbolGroupsCommand CreateSymbolGroupsCommand(bool prettyPrint = false)
-        {
-            return null;
         }
 
         public static SymbolCommand CreateSymbolCommand(string symbol, bool prettyPrint = false)
@@ -353,17 +339,6 @@ namespace xAPI.Commands
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateCommissionDefCommand(symbol, volume, prettyPrint));
             return new CommissionDefResponse(jsonObj.ToString());
-        }
-
-        public static IbsHistoryResponse ExecuteIbsHistoryCommand(SyncAPIConnector connector, long start, long end, bool prettyPrint = false)
-        {
-            return new IbsHistoryResponse(connector.ExecuteCommand(CreateGetIbsHistoryCommand(start, end, prettyPrint)).ToString());
-        }
-
-        public static async Task<IbsHistoryResponse> ExecuteIbsHistoryCommandAsync(SyncAPIConnector connector, long start, long end, bool prettyPrint = false)
-        {
-            var jsonObj = await connector.ExecuteCommandAsync(CreateGetIbsHistoryCommand(start, end, prettyPrint)).ConfigureAwait(false);
-            return new IbsHistoryResponse(jsonObj.ToString());
         }
 
         [Obsolete("Up from 2.3.3 login is not a long, but string")]

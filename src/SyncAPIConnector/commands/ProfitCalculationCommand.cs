@@ -2,28 +2,19 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Commands
 {
-
     public class ProfitCalculationCommand : BaseCommand
     {
+        public const string Name = "getProfitCalculation";
 
-        public ProfitCalculationCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public static readonly string[] RequiredArgs = ["cmd", "symbol", "volume", "openPrice", "closePrice"];
+
+        public ProfitCalculationCommand(JsonObject arguments, bool prettyPrint)
+            : base(arguments, prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getProfitCalculation";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return new string[] { "cmd", "symbol", "volume", "openPrice", "closePrice" };
-            }
-        }
+        public override string[] RequiredArguments => RequiredArgs;
     }
 }

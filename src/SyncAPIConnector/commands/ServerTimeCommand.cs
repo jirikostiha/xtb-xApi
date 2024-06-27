@@ -2,27 +2,17 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Commands
 {
-
     public class ServerTimeCommand : BaseCommand
     {
-        public ServerTimeCommand(bool? prettyPrint) : base(new JsonObject(), prettyPrint)
+        public const string Name = "getServerTime";
+
+        public ServerTimeCommand(bool? prettyPrint)
+            : base([], prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getServerTime";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

@@ -3,25 +3,22 @@ using xAPI.Errors;
 
 namespace xAPI.Commands
 {
-
-    public abstract class BaseCommand
+    public abstract class BaseCommand : ICommand
     {
-        protected internal string commandName;
-        protected internal bool? prettyPrint;
-        protected internal JsonObject arguments;
+        protected internal bool? PrettyPrint { get; set; }
 
-        public BaseCommand(bool? prettyPrint) : this(new JsonObject(), prettyPrint)
+        protected BaseCommand(bool? prettyPrint)
+            : this([], prettyPrint)
         {
         }
 
-        public BaseCommand(JsonObject arguments, bool? prettyPrint, string customTag = "")
+        protected BaseCommand(JsonObject arguments, bool? prettyPrint, string customTag = "")
         {
-            this.commandName = CommandName;
-            this.arguments = arguments;
-            this.prettyPrint = prettyPrint;
+            Arguments = arguments;
+            PrettyPrint = prettyPrint;
 
             if (customTag == "")
-                customTag = xAPI.Utils.CustomTag.Next();
+                customTag = Utils.CustomTag.Next();
 
             CustomTag = customTag;
 
@@ -29,6 +26,8 @@ namespace xAPI.Commands
         }
 
         public abstract string CommandName { get; }
+
+        public JsonObject Arguments { get; protected set; }
 
         public string CustomTag { get; set; }
 
@@ -39,12 +38,12 @@ namespace xAPI.Commands
             SelfCheck();
             foreach (string argName in RequiredArguments)
             {
-                if (!this.arguments.ContainsKey(argName))
+                if (!Arguments.ContainsKey(argName))
                 {
-                    throw new APICommandConstructionException("Arguments of [" + commandName + "] Command must contain \"" + argName + "\" field!");
+                    throw new APICommandConstructionException("Arguments of [" + CommandName + "] Command must contain \"" + argName + "\" field!");
                 }
-
             }
+
             return true;
         }
 
@@ -52,23 +51,25 @@ namespace xAPI.Commands
         {
             JsonObject obj = new()
             {
-                { "command", commandName },
-                { "prettyPrint", prettyPrint },
-                { "arguments", arguments },
+                { "command", CommandName },
+                { "prettyPrint", PrettyPrint },
+                { "arguments", Arguments },
                 { "customTag", CustomTag }
             };
+
             return obj.ToString();
         }
 
         private void SelfCheck()
         {
-            if (commandName == null)
+            if (CommandName == null)
             {
                 throw new APICommandConstructionException("CommandName cannot be null.");
             }
-            if (arguments == null)
+
+            if (Arguments == null)
             {
-                throw new APICommandConstructionException($"Arguments cannot be null. command:'{commandName}'");
+                throw new APICommandConstructionException($"Arguments cannot be null. command:'{CommandName}'");
             }
         }
     }

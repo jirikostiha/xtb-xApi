@@ -2,7 +2,6 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Commands
 {
-
     public class StepRulesCommand : BaseCommand
     {
         public StepRulesCommand()
@@ -10,20 +9,8 @@ namespace xAPI.Commands
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getStepRules";
-            }
-        }
+        public override string CommandName => "getStepRules";
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

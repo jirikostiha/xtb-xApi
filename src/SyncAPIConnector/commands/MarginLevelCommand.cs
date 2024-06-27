@@ -1,28 +1,16 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Commands
 {
-
     public class MarginLevelCommand : BaseCommand
     {
-        public MarginLevelCommand(bool? prettyPrint) : base(new JsonObject(), prettyPrint)
+        public const string Name = "getMarginLevel";
+
+        public MarginLevelCommand(bool? prettyPrint)
+            : base([], prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getMarginLevel";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

@@ -2,34 +2,27 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Commands
 {
-
     public class LogoutCommand : BaseCommand
     {
-        public LogoutCommand() : base(new JsonObject(), false)
+        public const string Name = "logout";
+
+        public LogoutCommand()
+            : base([], false)
         {
         }
 
         public override string ToJSONString()
         {
-            JsonObject obj = new JsonObject();
-            obj.Add("command", this.commandName);
+            JsonObject obj = new()
+            {
+                { "command", CommandName }
+            };
+
             return obj.ToString();
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "logout";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

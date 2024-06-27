@@ -1,28 +1,17 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Commands
 {
 
     public class CurrentUserDataCommand : BaseCommand
     {
-        public CurrentUserDataCommand(bool prettyPrint) : base(new JsonObject(), prettyPrint)
+        public const string Name = "getCurrentUserData";
+
+        public CurrentUserDataCommand(bool prettyPrint)
+            : base([], prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getCurrentUserData";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

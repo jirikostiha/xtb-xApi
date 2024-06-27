@@ -1,28 +1,16 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Commands
 {
     public class CalendarCommand : BaseCommand
     {
+        public const string Name = "getCalendar";
+
         public CalendarCommand(bool prettyPrint)
-            : base(new JsonObject(), prettyPrint)
+            : base([], prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getCalendar";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

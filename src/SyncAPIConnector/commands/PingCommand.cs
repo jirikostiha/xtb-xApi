@@ -1,29 +1,16 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Commands
 {
-
     public class PingCommand : BaseCommand
     {
+        public const string Name = "ping";
+
         public PingCommand(bool? prettyPrint)
-            : base(new JsonObject(), prettyPrint)
+            : base([], prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "ping";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return [];
-            }
-        }
+        public override string[] RequiredArguments => [];
     }
 }

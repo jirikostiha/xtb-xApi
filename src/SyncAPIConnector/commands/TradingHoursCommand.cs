@@ -2,27 +2,19 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Commands
 {
-
     public class TradingHoursCommand : BaseCommand
     {
-        public TradingHoursCommand(JsonObject arguments, bool prettyPrint) : base(arguments, prettyPrint)
+        public const string Name = "getTradingHours";
+
+        public static readonly string[] RequiredArgs = ["symbols"];
+
+        public TradingHoursCommand(JsonObject arguments, bool prettyPrint)
+            : base(arguments, prettyPrint)
         {
         }
 
-        public override string CommandName
-        {
-            get
-            {
-                return "getTradingHours";
-            }
-        }
+        public override string CommandName => Name;
 
-        public override string[] RequiredArguments
-        {
-            get
-            {
-                return new string[] { "symbols" };
-            }
-        }
+        public override string[] RequiredArguments => RequiredArgs;
     }
 }
