@@ -5,70 +5,35 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Country}, impact:{Impact}")]
-    public record CalendarRecord : BaseResponseRecord
+    public record CalendarRecord : IBaseResponseRecord
     {
-        private string country;
-        private string current;
-        private string forecast;
-        private string impact;
-        private string period;
-        private string previous;
-        private long? time;
-        private string title;
-
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.country = (string)value["country"];
-            this.current = (string)value["current"];
-            this.forecast = (string)value["forecast"];
-            this.impact = (string)value["impact"];
-            this.period = (string)value["period"];
-            this.previous = (string)value["previous"];
-            this.time = (long?)value["time"];
-            this.title = (string)value["title"];
+            Country = (string?)value["country"];
+            Current = (string?)value["current"];
+            Forecast = (string?)value["forecast"];
+            Impact = (string?)value["impact"];
+            Period = (string?)value["period"];
+            Previous = (string?)value["previous"];
+            Time = (long?)value["time"];
+            Title = (string?)value["title"];
         }
 
-        public override string ToString()
-        {
-            return "CalendarRecord[" + "country=" + this.country + ", current=" + this.current + ", forecast=" + this.forecast + ", impact=" + this.impact + ", period=" + this.period + ", previous=" + this.previous + ", time=" + this.time + ", title=" + this.title + "]";
-        }
+        public string? Country { get; set; }
 
-        public string Country
-        {
-            get { return country; }
-        }
+        public string? Current { get; set; }
 
-        public string Current
-        {
-            get { return current; }
-        }
+        public string? Forecast { get; set; }
 
-        public string Forecast
-        {
-            get { return forecast; }
-        }
+        public string? Impact { get; set; }
 
-        public string Impact
-        {
-            get { return impact; }
-        }
+        public string? Period { get; set; }
 
-        public string Period => period;
+        public string? Previous { get; set; }
 
-        public string Previous
-        {
-            get { return previous; }
-        }
+        public long? Time { get; set; }
 
-        public long? Time
-        {
-            get { return time; }
-        }
-
-        public string Title
-        {
-            get { return title; }
-        }
+        public string? Title { get; set; }
 
         public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
     }

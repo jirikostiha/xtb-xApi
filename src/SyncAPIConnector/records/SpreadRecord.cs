@@ -5,71 +5,22 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}, value:{Value}")]
-    public record SpreadRecord : BaseResponseRecord, ISymbol
+    public record SpreadRecord : IBaseResponseRecord, ISymbol
     {
-        private long? precision;
-        private string symbol;
-        private long? value;
-        private long? quoteId;
+        public long? Precision { get; set; }
 
-        public SpreadRecord()
-        {
-        }
+        public string? Symbol { get; set; }
 
-        public virtual long? Precision
-        {
-            get
-            {
-                return precision;
-            }
-            set
-            {
-                this.precision = value;
-            }
-        }
+        public long? Value { get; set; }
 
-        public virtual string Symbol
-        {
-            get
-            {
-                return symbol;
-            }
-            set
-            {
-                this.symbol = value;
-            }
-        }
-
-        public virtual long? QuoteId
-        {
-            get
-            {
-                return quoteId;
-            }
-            set
-            {
-                quoteId = value;
-            }
-        }
-
-        public virtual long? Value
-        {
-            get
-            {
-                return this.value;
-            }
-            set
-            {
-                this.value = value;
-            }
-        }
+        public long? QuoteId { get; set; }
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.Symbol = (string)value["symbol"];
-            this.Precision = (long?)value["precision"];
-            this.Value = (long?)value["value"];
-            this.QuoteId = (long?)value["quoteId"];
+            Symbol = (string?)value["symbol"];
+            Precision = (long?)value["precision"];
+            Value = (long?)value["value"];
+            QuoteId = (long?)value["quoteId"];
         }
     }
 }

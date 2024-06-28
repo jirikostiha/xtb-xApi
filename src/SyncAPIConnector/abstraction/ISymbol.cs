@@ -2,6 +2,6 @@
 {
     public interface ISymbol
     {
-        string Symbol { get; }
+        string? Symbol { get; }
     }
 }

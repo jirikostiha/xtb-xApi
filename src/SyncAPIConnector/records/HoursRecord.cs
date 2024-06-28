@@ -5,47 +5,25 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("day:{Day}, since:{FromT2}, until:{ToT2}")]
-    public record HoursRecord : BaseResponseRecord
+    public record HoursRecord : IBaseResponseRecord
     {
-        private long? day;
-        private long? fromT;
-        private long? toT;
-
-        public virtual long? Day
-        {
-            get
-            {
-                return day;
-            }
-        }
+        public long? Day { get; set; }
 
         /// <summary>
         /// Gets the value of <see cref="Day"/> converted to the corresponding <see cref="DayOfWeek"/>.
         /// Returns <c>null</c> if <see cref="Day"/> is <c>null</c>.
         /// </summary>
-        public DayOfWeek? DayOfWeek => day.HasValue ? ToDayOfWeek(day.Value) : null;
+        public DayOfWeek? DayOfWeek => Day.HasValue ? ToDayOfWeek(Day.Value) : null;
 
-        public virtual long? FromT
-        {
-            get
-            {
-                return fromT;
-            }
-        }
+        public long? FromT { get; set; }
 
-        public virtual long? ToT
-        {
-            get
-            {
-                return toT;
-            }
-        }
+        public long? ToT { get; set; }
 
         public TimeSpan? FromT2 => FromT is null ? null : TimeSpan.FromMilliseconds(FromT.Value);
 
         public TimeSpan? ToT2 => ToT is null ? null : TimeSpan.FromMilliseconds(ToT.Value);
 
-        public virtual bool? IsInTimeInterval(TimeSpan timeOfDay)
+        public bool? IsInTimeInterval(TimeSpan timeOfDay)
         {
             if (!FromT.HasValue || !ToT.HasValue)
                 return null;
@@ -67,14 +45,9 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.day = (long?)value["day"];
-            this.fromT = (long?)value["fromT"];
-            this.toT = (long?)value["toT"];
-        }
-
-        public override string ToString()
-        {
-            return "HoursRecord{" + "day=" + this.day + ", fromT=" + this.fromT + ", toT=" + this.toT + '}';
+            Day = (long?)value["day"];
+            FromT = (long?)value["fromT"];
+            ToT = (long?)value["toT"];
         }
 
         /// <summary>

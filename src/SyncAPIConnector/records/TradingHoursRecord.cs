@@ -7,35 +7,13 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}")]
-    public record TradingHoursRecord : BaseResponseRecord, ISymbol
+    public record TradingHoursRecord : IBaseResponseRecord, ISymbol
     {
-        private string symbol;
-        private LinkedList<HoursRecord> quotes = (LinkedList<HoursRecord>)new LinkedList<HoursRecord>();
-        private LinkedList<HoursRecord> trading = (LinkedList<HoursRecord>)new LinkedList<HoursRecord>();
+        public LinkedList<HoursRecord> Quotes { get; set; } = [];
 
-        public virtual string Symbol
-        {
-            get
-            {
-                return symbol;
-            }
-        }
+        public LinkedList<HoursRecord> Trading { get; set; } = [];
 
-        public virtual LinkedList<HoursRecord> Quotes
-        {
-            get
-            {
-                return quotes;
-            }
-        }
-
-        public virtual LinkedList<HoursRecord> Trading
-        {
-            get
-            {
-                return trading;
-            }
-        }
+        public string? Symbol { get; set; }
 
         /// <summary>
         /// Determines whether the specified time falls within the quote hours.
@@ -92,8 +70,8 @@ namespace xAPI.Records
 
         public bool FieldsFromJsonObject(JsonObject value, string str)
         {
-            this.symbol = (string)value["symbol"];
-            quotes = new LinkedList<HoursRecord>();
+            Symbol = (string?)value["symbol"];
+            Quotes = new LinkedList<HoursRecord>();
             if (value["quotes"] != null)
             {
                 JsonArray jsonarray = value["quotes"].AsArray();
@@ -101,10 +79,10 @@ namespace xAPI.Records
                 {
                     HoursRecord rec = new HoursRecord();
                     rec.FieldsFromJsonObject(i);
-                    quotes.AddLast(rec);
+                    Quotes.AddLast(rec);
                 }
             }
-            trading = new LinkedList<HoursRecord>();
+            Trading = new LinkedList<HoursRecord>();
             if (value["trading"] != null)
             {
                 JsonArray jsonarray = value["trading"].AsArray();
@@ -112,16 +90,13 @@ namespace xAPI.Records
                 {
                     HoursRecord rec = new HoursRecord();
                     rec.FieldsFromJsonObject(i);
-                    trading.AddLast(rec);
+                    Trading.AddLast(rec);
                 }
             }
-            if ((symbol == null) || (quotes.Count == 0) || (trading.Count == 0)) return false;
-            return true;
-        }
+            if ((Symbol == null) || (Quotes.Count == 0) || (Trading.Count == 0))
+                return false;
 
-        public override string ToString()
-        {
-            return "TradingHoursRecord{" + "symbol=" + symbol + ", quotes=" + quotes.ToString() + ", trading=" + trading.ToString() + '}';
+            return true;
         }
     }
 }

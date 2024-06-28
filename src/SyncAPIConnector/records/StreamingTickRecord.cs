@@ -6,116 +6,48 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
-    public record StreamingTickRecord : BaseResponseRecord, ITickRecord
+    public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
     {
-        private double? ask;
-        private double? bid;
-        private long? askVolume;
-        private long? bidVolume;
-        private double? high;
-        private double? low;
-        private string symbol;
-        private double? spreadRaw;
-        private double? spreadTable;
-        private long? timestamp;
-        private long? level;
-        private long? quoteId;
+        public double? Ask { get; set; }
 
-        public double? Ask
-        {
-            get { return ask; }
-            set { ask = value; }
-        }
-        public double? Bid
-        {
-            get { return bid; }
-            set { bid = value; }
-        }
-        public long? AskVolume
-        {
-            get { return askVolume; }
-            set { askVolume = value; }
-        }
-        public long? BidVolume
-        {
-            get { return bidVolume; }
-            set { bidVolume = value; }
-        }
-        public double? High
-        {
-            get { return high; }
-            set { high = value; }
-        }
-        public double? Low
-        {
-            get { return low; }
-            set { low = value; }
-        }
-        public string Symbol
-        {
-            get { return symbol; }
-            set { symbol = value; }
-        }
-        public double? SpreadRaw
-        {
-            get { return spreadRaw; }
-            set { spreadRaw = value; }
-        }
-        public double? SpreadTable
-        {
-            get { return spreadTable; }
-            set { spreadTable = value; }
-        }
-        public long? Timestamp
-        {
-            get { return timestamp; }
-            set { timestamp = value; }
-        }
-        public long? Level
-        {
-            get { return level; }
-            set { level = value; }
-        }
-        public long? QuoteId
-        {
-            get { return quoteId; }
-            set { quoteId = value; }
-        }
+        public double? Bid { get; set; }
+
+        public long? AskVolume { get; set; }
+
+        public long? BidVolume { get; set; }
+
+        public double? High { get; set; }
+
+        public double? Low { get; set; }
+
+        public string Symbol { get; set; }
+
+        public double? SpreadRaw { get; set; }
+
+        public double? SpreadTable { get; set; }
+
+        public long? Timestamp { get; set; }
+
+        public long? Level { get; set; }
+
+        public long? QuoteId { get; set; }
 
         public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.ask = (double?)value["ask"];
-            this.bid = (double?)value["bid"];
-            this.askVolume = (long?)value["askVolume"];
-            this.bidVolume = (long?)value["bidVolume"];
-            this.high = (double?)value["high"];
-            this.low = (double?)value["low"];
-            this.symbol = (string)value["symbol"];
-            this.timestamp = (long?)value["timestamp"];
-            this.level = (long?)value["level"];
-            this.quoteId = (long?)value["quoteId"];
-            this.spreadRaw = (double?)value["spreadRaw"];
-            this.spreadTable = (double?)value["spreadTable"];
-        }
-
-        public override string ToString()
-        {
-            return "StreamingTickRecord{" +
-                "ask=" + ask +
-                ", bid=" + bid +
-                ", askVolume=" + askVolume +
-                ", bidVolume=" + bidVolume +
-                ", high=" + high +
-                ", low=" + low +
-                ", symbol=" + symbol +
-                ", timestamp=" + timestamp +
-                ", level=" + level +
-                ", quoteId=" + quoteId +
-                ", spreadRaw=" + spreadRaw +
-                ", spreadTable=" + spreadTable +
-                '}';
+            this.Ask = (double?)value["ask"];
+            this.Bid = (double?)value["bid"];
+            this.AskVolume = (long?)value["askVolume"];
+            this.BidVolume = (long?)value["bidVolume"];
+            this.High = (double?)value["high"];
+            this.Low = (double?)value["low"];
+            this.Symbol = (string)value["symbol"];
+            this.Timestamp = (long?)value["timestamp"];
+            this.Level = (long?)value["level"];
+            this.QuoteId = (long?)value["quoteId"];
+            this.SpreadRaw = (double?)value["spreadRaw"];
+            this.SpreadTable = (double?)value["spreadTable"];
         }
     }
 }

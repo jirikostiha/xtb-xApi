@@ -182,7 +182,7 @@ namespace xAPI.Sync
             if (OnConnected != null)
                 OnConnected.Invoke(this.server);
 
-            if (server.Secure)
+            if (server.IsSecure)
             {
                 SslStream ssl = new SslStream(apiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
                 ssl.AuthenticateAsClient(server.Address);

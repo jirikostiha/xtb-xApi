@@ -5,113 +5,21 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
-    public record TickRecord : BaseResponseRecord, ITickRecord
+    public record TickRecord : IBaseResponseRecord, ITickRecord
     {
-        private double? ask;
-        private long? askVolume;
-        private double? bid;
-        private long? bidVolume;
-        private double? high;
-        private long? level;
-        private double? low;
-        private double? spreadRaw;
-        private double? spreadTable;
-        private string symbol;
-        private long? timestamp;
-
-        public TickRecord()
-        {
-        }
-
-        public virtual double? Ask
-        {
-            get
-            {
-                return ask;
-            }
-        }
-
-        public virtual long? AskVolume
-        {
-            get
-            {
-                return askVolume;
-            }
-        }
-
-        public virtual double? Bid
-        {
-            get
-            {
-                return bid;
-            }
-        }
-
-        public virtual long? BidVolume
-        {
-            get
-            {
-                return bidVolume;
-            }
-        }
-
-        public virtual double? High
-        {
-            get
-            {
-                return high;
-            }
-        }
-
-        public virtual long? Level
-        {
-            get
-            {
-                return level;
-            }
-        }
-
-        public virtual double? Low
-        {
-            get
-            {
-                return low;
-            }
-        }
-
-        public virtual double? SpreadRaw
-        {
-            get
-            {
-                return spreadRaw;
-            }
-        }
-
-        public virtual double? SpreadTable
-        {
-            get
-            {
-                return spreadTable;
-            }
-        }
-
-        public virtual string Symbol
-        {
-            get
-            {
-                return symbol;
-            }
-        }
-
-        public virtual long? Timestamp
-        {
-            get
-            {
-                return timestamp;
-            }
-        }
-
         public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
+
+        public double? Ask { get; set; }
+        public long? AskVolume { get; set; }
+        public double? Bid { get; set; }
+        public long? BidVolume { get; set; }
+        public double? High { get; set; }
+        public long? Level { get; set; }
+        public double? Low { get; set; }
+        public double? SpreadRaw { get; set; }
+        public double? SpreadTable { get; set; }
+        public string Symbol { get; set; }
+        public long? Timestamp { get; set; }
 
         public void FieldsFromJsonObject(JsonObject value)
         {
@@ -120,25 +28,20 @@ namespace xAPI.Records
 
         public bool FieldsFromJsonObject(JsonObject value, string str)
         {
-            this.ask = (double?)value["ask"];
-            this.askVolume = (long?)value["askVolume"];
-            this.bid = (double?)value["bid"];
-            this.bidVolume = (long?)value["bidVolume"];
-            this.high = (double?)value["high"];
-            this.level = (long?)value["level"];
-            this.low = (double?)value["low"];
-            this.spreadRaw = (double?)value["spreadRaw"];
-            this.spreadTable = (double?)value["spreadTable"];
-            this.symbol = (string)value["symbol"];
-            this.timestamp = (long?)value["timestamp"];
+            this.Ask = (double?)value["ask"];
+            this.AskVolume = (long?)value["askVolume"];
+            this.Bid = (double?)value["bid"];
+            this.BidVolume = (long?)value["bidVolume"];
+            this.High = (double?)value["high"];
+            this.Level = (long?)value["level"];
+            this.Low = (double?)value["low"];
+            this.SpreadRaw = (double?)value["spreadRaw"];
+            this.SpreadTable = (double?)value["spreadTable"];
+            this.Symbol = (string)value["symbol"];
+            this.Timestamp = (long?)value["timestamp"];
 
-            if ((ask == null) || (bid == null) || (symbol == null) || (timestamp == null)) return false;
+            if ((Ask == null) || (Bid == null) || (Symbol == null) || (Timestamp == null)) return false;
             return true;
-        }
-
-        public override string ToString()
-        {
-            return "TickRecord{" + "ask=" + ask + ", bid=" + bid + ", askVolume=" + askVolume + ", bidVolume=" + bidVolume + ", high=" + high + ", low=" + low + ", symbol=" + symbol + ", timestamp=" + timestamp + ", level=" + level + ", spreadRaw=" + spreadRaw + ", spreadTable=" + spreadTable + '}';
         }
     }
 }

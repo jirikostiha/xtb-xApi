@@ -5,35 +5,15 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Key}")]
-    public record StreamingNewsRecord : BaseResponseRecord, INewsRecord
+    public record StreamingNewsRecord : IBaseResponseRecord, INewsRecord
     {
-        public StreamingNewsRecord()
-        {
-        }
+        public string Body { get; set; }
 
-        public string Body
-        {
-            get;
-            set;
-        }
+        public string Key { get; set; }
 
-        public string Key
-        {
-            get;
-            set;
-        }
+        public long? Time { get; set; }
 
-        public long? Time
-        {
-            get;
-            set;
-        }
-
-        public string Title
-        {
-            get;
-            set;
-        }
+        public string Title { get; set; }
 
         public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 

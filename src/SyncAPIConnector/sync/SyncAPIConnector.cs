@@ -130,7 +130,7 @@ namespace xAPI.Sync
                 }
             }
 
-            if (server.Secure)
+            if (server.IsSecure)
             {
                 SslStream sl = new SslStream(apiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
 

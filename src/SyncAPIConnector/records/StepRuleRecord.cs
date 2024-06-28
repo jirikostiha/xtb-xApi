@@ -3,22 +3,20 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    public record StepRuleRecord : BaseResponseRecord
+    public record StepRuleRecord : IBaseResponseRecord
     {
-        private int Id { get; set; }
-        private string Name { get; set; }
-        private LinkedList<StepRecord> Steps { get; set; }
+        public int? Id { get; set; }
 
-        public StepRuleRecord()
-        {
-        }
+        public string? Name { get; set; }
+
+        public LinkedList<StepRecord> Steps { get; set; } = [];
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.Id = (int)value["id"];
-            this.Name = (string)value["name"];
+            Id = (int?)value["id"];
+            Name = (string?)value["name"];
 
-            this.Steps = new LinkedList<StepRecord>();
+            Steps = new LinkedList<StepRecord>();
             if (value["steps"] != null)
             {
                 JsonArray jsonarray = value["steps"].AsArray();
@@ -26,7 +24,7 @@ namespace xAPI.Records
                 {
                     StepRecord rec = new StepRecord();
                     rec.FieldsFromJsonObject(i);
-                    this.Steps.AddLast(rec);
+                    Steps.AddLast(rec);
                 }
             }
         }

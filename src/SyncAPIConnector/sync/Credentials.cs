@@ -1,75 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace xAPI.Sync
 {
-    public class Credentials
+    public record Credentials
     {
-        private string login;
-        private string password;
-        private string appId;
-        private string appName;
-
         public Credentials(string login, string password)
         {
-            this.login = login;
-            this.password = password;
+            Login = login;
+            Password = password;
         }
 
         public Credentials(string login, string password, string appId, string appName)
+            :this(login, password)
         {
-            this.login = login;
-            this.password = password;
-            this.appId = appId;
-            this.appName = appName;
+            AppId = appId;
+            AppName = appName;
         }
 
-        public string Login
-        {
-            get
-            {
-                return login;
-            }
-        }
+        public string Login { get; }
 
-        public string Password
-        {
-            get
-            {
-                return password;
-            }
-        }
+        public string Password { get; }
 
-        public string AppId
-        {
-            get
-            {
-                return appId;
-            }
-            set
-            {
-                appId = value;
-            }
-        }
+        public string? AppId { get; set; }
 
-        public string AppName
-        {
-            get
-            {
-                return appName;
-            }
-            set
-            {
-                appName = value;
-            }
-        }
-
-        public override string ToString()
-        {
-            return "Credentials [login=" + Login + ", password=" + Password + "]";
-        }
+        public string? AppName { get; set; }
     }
 }

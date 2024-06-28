@@ -4,29 +4,31 @@ using xAPI.Codes;
 
 namespace xAPI.Records
 {
-
-    [DebuggerDisplay("{symbol}")]
+    [DebuggerDisplay("{Symbol}")]
     public record ChartLastInfoRecord
     {
-        private string symbol;
-        private PERIOD_CODE period;
-        private long? start;
-
         public ChartLastInfoRecord(string symbol, PERIOD_CODE period, long? start)
         {
-            this.symbol = symbol;
-            this.period = period;
-            this.start = start;
+            Symbol = symbol;
+            Period = period;
+            Start = start;
         }
 
-        public virtual JsonObject toJsonObject()
+        public string Symbol { get; init; }
+
+        public PERIOD_CODE Period { get; init; }
+
+        public long? Start { get; init; }
+
+        public virtual JsonObject ToJsonObject()
         {
             JsonObject obj = new()
             {
-                { "symbol", symbol },
-                { "period", (long?)period.Code },
-                { "start", start }
+                { "symbol", Symbol },
+                { "period", (long?)Period.Code },
+                { "start", Start }
             };
+
             return obj;
         }
     }

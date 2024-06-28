@@ -2,20 +2,16 @@
 
 namespace xAPI.Records
 {
-
-    public record StepRecord : BaseResponseRecord
+    public record StepRecord : IBaseResponseRecord
     {
-        private double FromValue;
-        private double Step;
+        public double? FromValue { get; set; }
 
-        public StepRecord()
-        {
-        }
+        public double? Step { get; set; }
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.FromValue = (double)value["fromValue"];
-            this.Step = (double)value["step"];
+            FromValue = (double?)value["fromValue"];
+            Step = (double?)value["step"];
         }
     }
 }

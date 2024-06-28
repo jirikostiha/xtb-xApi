@@ -5,8 +5,8 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
 
-    [DebuggerDisplay("{Timestamp2}")]
-    public record StreamingKeepAliveRecord : BaseResponseRecord
+    [DebuggerDisplay("{DateTime}")]
+    public record StreamingKeepAliveRecord : IBaseResponseRecord
     {
         public long? Timestamp
         {
@@ -19,13 +19,6 @@ namespace xAPI.Records
         public void FieldsFromJsonObject(JsonObject value)
         {
             this.Timestamp = (long?)value["timestamp"];
-        }
-
-        public override string ToString()
-        {
-            return "StreamingKeepAliveRecord{" +
-                "timestamp=" + Timestamp +
-                '}';
         }
     }
 }

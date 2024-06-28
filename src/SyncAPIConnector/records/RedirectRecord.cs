@@ -2,40 +2,27 @@
 
 namespace xAPI.Records
 {
-    public record RedirectRecord : BaseResponseRecord
+    public record RedirectRecord : IBaseResponseRecord
     {
-        private int mainPort;
-        private int streamingPort;
-        private string address;
+        public int MainPort { get; set; }
+
+        public int StreamingPort { get; set; }
+
+        public string? Address { get; set; }
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.mainPort = (int)value["mainPort"];
-            this.streamingPort = (int)value["streamingPort"];
-            this.address = (string)value["address"];
-        }
-
-        public int MainPort
-        {
-            get { return this.mainPort; }
-        }
-
-        public int StreamingPort
-        {
-            get { return this.streamingPort; }
-        }
-
-        public string Address
-        {
-            get { return this.address; }
+            MainPort = (int)value["mainPort"];
+            StreamingPort = (int)value["streamingPort"];
+            Address = (string?)value["address"];
         }
 
         public override string ToString()
         {
             return "RedirectRecord [" +
-                "mainPort=" + this.mainPort +
-                ", streamingPort=" + this.streamingPort +
-                ", address=" + this.address + "]";
+                "mainPort=" + this.MainPort +
+                ", streamingPort=" + this.StreamingPort +
+                ", address=" + this.Address + "]";
         }
     }
 }

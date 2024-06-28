@@ -72,14 +72,14 @@ namespace xAPI.Commands
         public static ChartLastCommand CreateChartLastCommand(string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
-            args.Add("info", (new ChartLastInfoRecord(symbol, period, start)).toJsonObject());
+            args.Add("info", (new ChartLastInfoRecord(symbol, period, start)).ToJsonObject());
             return new ChartLastCommand(args, prettyPrint);
         }
 
         public static ChartLastCommand CreateChartLastCommand(ChartLastInfoRecord info, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
-            args.Add("info", info.toJsonObject());
+            args.Add("info", info.ToJsonObject());
             return new ChartLastCommand(args, prettyPrint);
         }
 

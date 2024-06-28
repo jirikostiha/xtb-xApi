@@ -6,77 +6,30 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Key}")]
-    public record NewsTopicRecord : BaseResponseRecord, INewsRecord
+    public record NewsTopicRecord : IBaseResponseRecord, INewsRecord
     {
-        private string body;
-        private long? bodylen;
-        private string key;
-        private long? time;
-        private string timeString;
-        private string title;
+        public string? Body { get; set; }
 
-        public NewsTopicRecord()
-        {
-        }
+        public long? Bodylen { get; set; }
 
-        public virtual string Body
-        {
-            get
-            {
-                return body;
-            }
-        }
+        public string? Key { get; set; }
 
-        public virtual long? Bodylen
-        {
-            get
-            {
-                return bodylen;
-            }
-        }
+        public long? Time { get; set; }
 
-        public virtual string Key
-        {
-            get
-            {
-                return key;
-            }
-        }
+        public string? TimeString { get; set; }
 
-        public virtual long? Time
-        {
-            get
-            {
-                return time;
-            }
-        }
-
-        public virtual string TimeString
-        {
-            get
-            {
-                return timeString;
-            }
-        }
-
-        public virtual string Title
-        {
-            get
-            {
-                return title;
-            }
-        }
+        public string? Title { get; set; }
 
         public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.body = (string)value["body"];
-            this.bodylen = (long?)value["bodylen"];
-            this.key = (string)value["key"];
-            this.time = (long?)value["time"];
-            this.timeString = (string)value["timeString"];
-            this.title = (string)value["title"];
+            Body = (string?)value["body"];
+            Bodylen = (long?)value["bodylen"];
+            Key = (string?)value["key"];
+            Time = (long?)value["time"];
+            TimeString = (string?)value["timeString"];
+            Title = (string?)value["title"];
         }
     }
 }

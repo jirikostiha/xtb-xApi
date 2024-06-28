@@ -9,76 +9,58 @@ namespace xAPI.Records
     [DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
     public record TradeTransInfoRecord : ISymbol
     {
-        private TRADE_OPERATION_CODE cmd;
-        private string customComment;
-        private long? expiration;
-        private long? order;
-        private double? price;
-        private double? sl;
-        private string symbol;
-        private double? tp;
-        private TRADE_TRANSACTION_TYPE type;
-        private double? volume;
+        public TRADE_OPERATION_CODE Cmd { get; init; }
 
-        public TRADE_OPERATION_CODE Cmd { get { return cmd; } set { this.cmd = value; } }
-        public string CustomComment { get { return customComment; } set { this.customComment = value; } }
-        public long? Expiration { get { return expiration; } set { this.expiration = value; } }
-        public long? Order { get { return order; } set { this.order = value; } }
-        public double? Price { get { return price; } set { this.price = value; } }
-        public double? Sl { get { return sl; } set { this.sl = value; } }
-        public string Symbol { get { return symbol; } set { this.symbol = value; } }
-        public double? Tp { get { return tp; } set { this.tp = value; } }
-        public TRADE_TRANSACTION_TYPE Type { get { return type; } set { this.type = value; } }
-        public double? Volume { get { return volume; } set { this.volume = value; } }
+        public string CustomComment { get; init; }
+
+        public long? Expiration { get; init; }
+
+        public long? Order { get; init; }
+
+        public double? Price { get; init; }
+
+        public double? Sl { get; init; }
+
+        public string Symbol { get; init; }
+
+        public double? Tp { get; init; }
+
+        public TRADE_TRANSACTION_TYPE Type { get; init; }
+
+        public double? Volume { get; init; }
 
         public DateTimeOffset? ExpirationDateTime => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
 
         public TradeTransInfoRecord(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration)
         {
-            this.cmd = cmd;
-            this.type = type;
-            this.price = price;
-            this.sl = sl;
-            this.tp = tp;
-            this.symbol = symbol;
-            this.volume = volume;
-            this.order = order;
-            this.customComment = customComment;
-            this.expiration = expiration;
+            this.Cmd = cmd;
+            this.Type = type;
+            this.Price = price;
+            this.Sl = sl;
+            this.Tp = tp;
+            this.Symbol = symbol;
+            this.Volume = volume;
+            this.Order = order;
+            this.CustomComment = customComment;
+            this.Expiration = expiration;
         }
 
         public virtual JsonObject toJsonObject()
         {
             JsonObject obj = new()
             {
-                { "cmd", (long)cmd.Code },
-                { "type", (long)type.Code },
-                { "price", price },
-                { "sl", sl },
-                { "tp", tp },
-                { "symbol", symbol },
-                { "volume", volume },
-                { "order", order },
-                { "customComment", customComment },
-                { "expiration", expiration }
+                { "cmd", (long)Cmd.Code },
+                { "type", (long)Type.Code },
+                { "price", Price },
+                { "sl", Sl },
+                { "tp", Tp },
+                { "symbol", Symbol },
+                { "volume", Volume },
+                { "order", Order },
+                { "customComment", CustomComment },
+                { "expiration", Expiration }
             };
             return obj;
-        }
-
-        public override string ToString()
-        {
-            return "TradeTransInfo [" +
-                cmd.ToString() + ", " +
-                type.ToString() + ", " +
-                price.ToString() + ", " +
-                sl.ToString() + ", " +
-                tp.ToString() + ", " +
-                symbol.ToString() + ", " +
-                volume.ToString() +
-                order.ToString() + ", " +
-                customComment.ToString() + ", " +
-                expiration.ToString() + ", " +
-                "]";
         }
     }
 }

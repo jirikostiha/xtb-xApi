@@ -6,239 +6,59 @@ using xAPI.Codes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}, profit:{Profit}, volume:{Volume}")]
-    public record TradeRecord : BaseResponseRecord, ITradeRecord
+    public record TradeRecord : IBaseResponseRecord, ITradeRecord
     {
-        private double? close_price;
-        private long? close_time;
-        private bool? closed;
-        private long? cmd;
-        private TRADE_OPERATION_CODE? cmd2;
-        private string comment;
-        private double? commission;
-        private double? commission_agent;
-        private string customComment;
-        private long? digits;
-        private long? expiration;
-        private string expirationString;
-        private double? margin_rate;
-        private double? open_price;
-        private long? open_time;
-        private long? order;
-        private long? order2;
-        private long? position;
-        private double? profit;
-        private double? sl;
-        private double? storage;
-        private string symbol;
-        private long? timestamp;
-        private double? tp;
-        private long? value_date;
-        private double? volume;
+        public double? Close_price { get; set; }
 
-        public virtual double? Close_price
-        {
-            get
-            {
-                return close_price;
-            }
-        }
+        public long? Close_time { get; set; }
 
-        public virtual long? Close_time
-        {
-            get
-            {
-                return close_time;
-            }
-        }
+        public bool? Closed { get; set; }
 
-        public virtual bool? Closed
-        {
-            get
-            {
-                return closed;
-            }
-        }
+        public long? Cmd { get; set; }
 
-        public virtual long? Cmd
-        {
-            get
-            {
-                return cmd;
-            }
-        }
+        public string? Comment { get; set; }
 
-        public virtual TRADE_OPERATION_CODE? Cmd2
-        {
-            get
-            {
-                return cmd2;
-            }
-        }
+        public double? Commission { get; set; }
 
-        public virtual string Comment
-        {
-            get
-            {
-                return comment;
-            }
-        }
+        public double? Commission_agent { get; set; }
 
-        public virtual double? Commission
-        {
-            get
-            {
-                return commission;
-            }
-        }
+        public string? CustomComment { get; set; }
 
-        public virtual double? Commission_agent
-        {
-            get
-            {
-                return commission_agent;
-            }
-        }
+        public long? Digits { get; set; }
 
-        public virtual string CustomComment
-        {
-            get { return customComment; }
-        }
+        public long? Expiration { get; set; }
 
-        public virtual long? Digits
-        {
-            get
-            {
-                return digits;
-            }
-        }
+        public string? ExpirationString { get; set; }
 
-        public virtual long? Expiration
-        {
-            get
-            {
-                return expiration;
-            }
-        }
+        public double? Margin_rate { get; set; }
 
-        public virtual string ExpirationString
-        {
-            get
-            {
-                return expirationString;
-            }
-        }
+        public double? Open_price { get; set; }
 
-        public virtual double? Margin_rate
-        {
-            get
-            {
-                return margin_rate;
-            }
-        }
+        public long? Open_time { get; set; }
 
-        public virtual double? Open_price
-        {
-            get
-            {
-                return open_price;
-            }
-        }
+        public long? Order { get; set; }
 
-        public virtual long? Open_time
-        {
-            get
-            {
-                return open_time;
-            }
-        }
+        public long? Order2 { get; set; }
 
-        public virtual long? Order
-        {
-            get
-            {
-                return order;
-            }
-        }
+        public long? Position { get; set; }
 
-        public virtual long? Order2
-        {
-            get
-            {
-                return order2;
-            }
-        }
+        public double? Profit { get; set; }
 
-        public virtual long? Position
-        {
-            get
-            {
-                return position;
-            }
-        }
+        public double? Sl { get; set; }
 
-        public virtual double? Profit
-        {
-            get
-            {
-                return profit;
-            }
-        }
+        public double? Storage { get; set; }
 
-        public virtual double? Sl
-        {
-            get
-            {
-                return sl;
-            }
-        }
+        public string? Symbol { get; set; }
 
-        public virtual double? Storage
-        {
-            get
-            {
-                return storage;
-            }
-        }
+        public long? Timestamp { get; set; }
 
-        public virtual string Symbol
-        {
-            get
-            {
-                return symbol;
-            }
-        }
+        public double? Tp { get; set; }
 
-        public virtual long? Timestamp
-        {
-            get
-            {
-                return timestamp;
-            }
-        }
+        public long? Value_date { get; set; }
 
-        public virtual double? Tp
-        {
-            get
-            {
-                return tp;
-            }
-        }
+        public double? Volume { get; set; }
 
-        public virtual long? Value_date
-        {
-            get
-            {
-                return value_date;
-            }
-        }
-
-        public virtual double? Volume
-        {
-            get
-            {
-                return volume;
-            }
-        }
+        public TRADE_OPERATION_CODE? Cmd2 { get; set; }
 
         public DateTimeOffset? OpenDateTime => Open_time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Open_time.Value);
 
@@ -248,37 +68,32 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.close_price = (double?)value["close_price"];
-            this.close_time = (long?)value["close_time"];
-            this.closed = (bool?)value["closed"];
-            this.cmd = (long?)value["cmd"];
-            this.cmd2 = value["cmd"] is not null ? new TRADE_OPERATION_CODE((long)value["cmd"]) : null;
-            this.comment = (string)value["comment"];
-            this.commission = (double?)value["commission"];
-            this.commission_agent = (double?)value["commission_agent"];
-            this.customComment = (string)value["customComment"];
-            this.digits = (long?)value["digits"];
-            this.expiration = (long?)value["expiration"];
-            this.expirationString = (string)value["expirationString"];
-            this.margin_rate = (double?)value["margin_rate"];
-            this.open_price = (double?)value["open_price"];
-            this.open_time = (long?)value["open_time"];
-            this.order = (long?)value["order"];
-            this.order2 = (long?)value["order2"];
-            this.position = (long?)value["position"];
-            this.profit = (double?)value["profit"];
-            this.sl = (double?)value["sl"];
-            this.storage = (double?)value["storage"];
-            this.symbol = (string)value["symbol"];
-            this.timestamp = (long?)value["timestamp"];
-            this.tp = (double?)value["tp"];
-            this.value_date = (long?)value["value_date"];
-            this.volume = (double?)value["volume"];
-        }
-
-        public override string ToString()
-        {
-            return "TradeRecord{" + "close_price=" + close_price + ", close_time=" + close_time + ", closed=" + closed + ", cmd=" + cmd + ", comment=" + comment + ", commission=" + commission + ", commission_agent=" + commission_agent + ", customComment=" + customComment + ", digits=" + digits + ", expiration=" + expiration + ", expirationString=" + expirationString + ", margin_rate=" + margin_rate + ", open_price=" + open_price + ", open_time=" + open_time + ", order=" + order + ", order2=" + Order2 + ", position=" + Position + ", profit=" + profit + ", sl=" + sl + ", storage=" + storage + ", symbol=" + symbol + ", timestamp=" + timestamp + ", tp=" + tp + ", value_date=" + value_date + ", volume=" + volume + '}';
+            Close_price = (double?)value["close_price"];
+            Close_time = (long?)value["close_time"];
+            Closed = (bool?)value["closed"];
+            Cmd = (long?)value["cmd"];
+            Cmd2 = value["cmd"] is not null ? new TRADE_OPERATION_CODE((long)value["cmd"]) : null;
+            Comment = (string?)value["comment"];
+            Commission = (double?)value["commission"];
+            Commission_agent = (double?)value["commission_agent"];
+            CustomComment = (string?)value["customComment"];
+            Digits = (long?)value["digits"];
+            Expiration = (long?)value["expiration"];
+            ExpirationString = (string?)value["expirationString"];
+            Margin_rate = (double?)value["margin_rate"];
+            Open_price = (double?)value["open_price"];
+            Open_time = (long?)value["open_time"];
+            Order = (long?)value["order"];
+            Order2 = (long?)value["order2"];
+            Position = (long?)value["position"];
+            Profit = (double?)value["profit"];
+            Sl = (double?)value["sl"];
+            Storage = (double?)value["storage"];
+            Symbol = (string?)value["symbol"];
+            Timestamp = (long?)value["timestamp"];
+            Tp = (double?)value["tp"];
+            Value_date = (long?)value["value_date"];
+            Volume = (double?)value["volume"];
         }
     }
 }

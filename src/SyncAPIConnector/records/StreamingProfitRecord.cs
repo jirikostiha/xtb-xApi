@@ -4,62 +4,36 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("o:{Order}, o2:{Order2}, profit:{Profit}")]
-    public record StreamingProfitRecord : BaseResponseRecord, IPosition
+    public record StreamingProfitRecord : IBaseResponseRecord, IPosition
     {
-        private long? order;
-        private long? order2;
-        private long? position;
-        private double? profit;
+        public long? Order { get; set; }
 
-        public long? Order
-        {
-            get { return order; }
-            set { order = value; }
-        }
-        public long? Order2
-        {
-            get { return order2; }
-            set { order2 = value; }
-        }
-        public long? Position
-        {
-            get { return position; }
-            set { position = value; }
-        }
-        public double? Profit
-        {
-            get { return profit; }
-            set { profit = value; }
-        }
+        public long? Order2 { get; set; }
+
+        public long? Position { get; set; }
+
+        public double? Profit { get; set; }
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.profit = (double?)value["profit"];
-            this.order = (long?)value["order"];
-        }
-
-        public override string ToString()
-        {
-            return "StreamingProfitRecord{" +
-                "profit=" + profit +
-                ", order=" + order +
-                '}';
+            this.Profit = (double?)value["profit"];
+            this.Order = (long?)value["order"];
         }
 
         public void UpdateBy(StreamingProfitRecord other)
         {
-            order = other.order;
-            order2 = other.order2;
-            position = other.position;
-            profit = other.profit;
+            Order = other.Order;
+            Order2 = other.Order2;
+            Position = other.Position;
+            Profit = other.Profit;
         }
 
         public void Reset()
         {
-            order = null;
-            order2 = null;
-            position = null;
-            profit = null;
+            Order = null;
+            Order2 = null;
+            Position = null;
+            Profit = null;
         }
     }
 }
