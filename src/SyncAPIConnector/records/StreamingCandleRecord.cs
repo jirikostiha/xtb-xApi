@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
-    public record StreamingCandleRecord : BaseResponseRecord, ISymbol, ICandleRecord
+    public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecord
     {
         public StreamingCandleRecord()
         {

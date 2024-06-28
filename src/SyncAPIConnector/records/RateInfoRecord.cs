@@ -5,7 +5,7 @@ namespace xAPI.Records
 {
     using System;
 
-    public record RateInfoRecord : BaseResponseRecord, ICandleRecord
+    public record RateInfoRecord : IBaseResponseRecord, ICandleRecord
     {
         private long? ctm;
         private double? open;

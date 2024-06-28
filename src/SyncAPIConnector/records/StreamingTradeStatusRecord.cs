@@ -5,7 +5,7 @@ using xAPI.Codes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("o:{Order}, price:{Price}")]
-    public record StreamingTradeStatusRecord : BaseResponseRecord
+    public record StreamingTradeStatusRecord : IBaseResponseRecord
     {
         private string customComment;
         private string message;

@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-    public record StepRuleRecord : BaseResponseRecord
+    public record StepRuleRecord : IBaseResponseRecord
     {
         private int Id { get; set; }
         private string Name { get; set; }

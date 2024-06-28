@@ -6,7 +6,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Key}")]
-    public record NewsTopicRecord : BaseResponseRecord, INewsRecord
+    public record NewsTopicRecord : IBaseResponseRecord, INewsRecord
     {
         private string body;
         private long? bodylen;

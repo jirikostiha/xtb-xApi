@@ -6,7 +6,7 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
-    public record StreamingTickRecord : BaseResponseRecord, ITickRecord
+    public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
     {
         private double? ask;
         private double? bid;

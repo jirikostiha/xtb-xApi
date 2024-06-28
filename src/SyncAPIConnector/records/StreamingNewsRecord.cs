@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Key}")]
-    public record StreamingNewsRecord : BaseResponseRecord, INewsRecord
+    public record StreamingNewsRecord : IBaseResponseRecord, INewsRecord
     {
         public StreamingNewsRecord()
         {

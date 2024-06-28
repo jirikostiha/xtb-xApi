@@ -7,7 +7,7 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}")]
-    public record TradingHoursRecord : BaseResponseRecord, ISymbol
+    public record TradingHoursRecord : IBaseResponseRecord, ISymbol
     {
         private string symbol;
         private LinkedList<HoursRecord> quotes = (LinkedList<HoursRecord>)new LinkedList<HoursRecord>();

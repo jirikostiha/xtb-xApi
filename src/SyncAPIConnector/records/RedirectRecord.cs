@@ -2,7 +2,7 @@
 
 namespace xAPI.Records
 {
-    public record RedirectRecord : BaseResponseRecord
+    public record RedirectRecord : IBaseResponseRecord
     {
         private int mainPort;
         private int streamingPort;

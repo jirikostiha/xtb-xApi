@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
-    public record TickRecord : BaseResponseRecord, ITickRecord
+    public record TickRecord : IBaseResponseRecord, ITickRecord
     {
         private double? ask;
         private long? askVolume;

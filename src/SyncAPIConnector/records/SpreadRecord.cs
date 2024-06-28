@@ -5,7 +5,7 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Symbol}, value:{Value}")]
-    public record SpreadRecord : BaseResponseRecord, ISymbol
+    public record SpreadRecord : IBaseResponseRecord, ISymbol
     {
         private long? precision;
         private string symbol;

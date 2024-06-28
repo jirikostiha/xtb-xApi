@@ -188,7 +188,7 @@ namespace xAPI.Sync
             if (OnConnected != null)
                 OnConnected.Invoke(this.server);
 
-            if (server.Secure)
+            if (server.IsSecure)
             {
                 SslStream ssl = new SslStream(apiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
                 ssl.AuthenticateAsClient(server.Address);
@@ -281,18 +281,6 @@ namespace xAPI.Sync
                 }
             });
             t.Start();
-        }
-
-        [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        private StreamingAPIConnector(IStreamingListener sl, string ip, int port, LoginResponse lr)
-            : this(sl, ip, port, lr, false)
-        {
-        }
-
-        [Obsolete("Use StreamingAPIConnector(Server server) instead")]
-        public StreamingAPIConnector(IStreamingListener sl, Server dt, LoginResponse lr)
-            : this(sl, dt.Address, dt.StreamingPort, lr, dt.Secure)
-        {
         }
 
         /// <summary>

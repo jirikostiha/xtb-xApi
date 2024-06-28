@@ -6,7 +6,7 @@ using xAPI.Codes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}, profit:{Profit}, volume:{Volume}")]
-    public record TradeRecord : BaseResponseRecord, ITradeRecord
+    public record TradeRecord : IBaseResponseRecord, ITradeRecord
     {
         private double? close_price;
         private long? close_time;

@@ -6,7 +6,7 @@ namespace xAPI.Records
 {
 
     [DebuggerDisplay("{Timestamp2}")]
-    public record StreamingKeepAliveRecord : BaseResponseRecord
+    public record StreamingKeepAliveRecord : IBaseResponseRecord
     {
         public long? Timestamp
         {

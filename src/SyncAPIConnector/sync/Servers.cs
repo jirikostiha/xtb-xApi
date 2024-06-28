@@ -40,24 +40,12 @@ namespace xAPI.Sync
         /// <summary>
         /// xAPI Demo Server.
         /// </summary>
-        public static Server DEMO
-        {
-            get
-            {
-                return DEMO_SERVERS[0];
-            }
-        }
+        public static Server DEMO => DEMO_SERVERS[0];
 
         /// <summary>
         /// xAPI Real Server.
         /// </summary>
-        public static Server REAL
-        {
-            get
-            {
-                return REAL_SERVERS[0];
-            }
-        }
+        public static Server REAL => REAL_SERVERS[0];
 
         /// <summary>
         /// List of all demo servers.
@@ -117,7 +105,7 @@ namespace xAPI.Sync
             {
                 return null;
             }
-            return new Server(address.Address, server.MainPort, server.StreamingPort, server.Secure, address.Name);
+            return new Server(address.Address, server.MainPort, server.StreamingPort, server.IsSecure, address.Name);
         }
 
         /// <summary>

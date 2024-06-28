@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("balance:{Balance}, margin:{Margin}, equity:{Equity}")]
-    public record StreamingBalanceRecord : BaseResponseRecord
+    public record StreamingBalanceRecord : IBaseResponseRecord
     {
         private double? balance;
         private double? margin;

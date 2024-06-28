@@ -6,7 +6,7 @@ using xAPI.Codes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Login}")]
-    public record IbRecord : BaseResponseRecord, ISymbol
+    public record IbRecord : IBaseResponseRecord, ISymbol
     {
         /// <summary>
         /// IB close price or null if not allowed to view.

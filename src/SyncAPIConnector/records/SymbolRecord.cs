@@ -6,7 +6,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records
 {
     [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
-    public record SymbolRecord : BaseResponseRecord, ISymbol, ITick
+    public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
     {
         private double? ask;
         private double? bid;
