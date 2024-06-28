@@ -13,37 +13,22 @@ namespace xAPI.Sync
     public class Connector : IDisposable
     {
         #region Events
-        /// <summary>
-        /// Delegate called on message arrival from the server.
-        /// </summary>
-        /// <param name="response">Received response</param>
-        public delegate void OnReceiveMessageCallback(string response);
 
         /// <summary>
-        /// Event raised when message is received.
+        /// Event raised when a message is received.
         /// </summary>
-        public event OnReceiveMessageCallback OnMessageReceived;
+        public event EventHandler<MessageEventArgs>? MessageReceived;
 
         /// <summary>
-        /// Delegate called on message send to the server.
+        /// Event raised when a message is sent.
         /// </summary>
-        /// <param name="command">Command sent</param>
-        public delegate void OnSendMessageCallback(string message);
+        public event EventHandler<MessageEventArgs>? MessageSent;
 
         /// <summary>
-        /// Event raised when message is sended.
+        /// Event raised when the client disconnects from the server.
         /// </summary>
-        public event OnSendMessageCallback OnMessageSended;
+        public event EventHandler? Disconnected;
 
-        /// <summary>
-        /// Delegate called on client disconnection from the server.
-        /// </summary>
-        public delegate void OnDisconnectCallback();
-
-        /// <summary>
-        /// Event raised when client disconnects from server.
-        /// </summary>
-        public event OnDisconnectCallback OnDisconnected;
         #endregion
 
         /// <summary>
@@ -89,7 +74,7 @@ namespace xAPI.Sync
         /// Checks if socket is connected to the remote server.
         /// </summary>
         /// <returns>True if socket is connected, otherwise false</returns>
-        public bool Connected()
+        public bool IsConnected()
         {
             return this.apiConnected;
         }
@@ -103,7 +88,7 @@ namespace xAPI.Sync
             writeLocker.Wait();
             try
             {
-                if (Connected())
+                if (IsConnected())
                 {
                     try
                     {
@@ -122,8 +107,7 @@ namespace xAPI.Sync
                     throw new APICommunicationException("Error while sending data (socket disconnected).");
                 }
 
-                if (OnMessageSended != null)
-                    OnMessageSended.Invoke(message);
+                MessageSent?.Invoke(this, new(message));
             }
             finally
             {
@@ -140,7 +124,7 @@ namespace xAPI.Sync
             await writeLocker.WaitAsync();
             try
             {
-                if (Connected())
+                if (IsConnected())
                 {
                     try
                     {
@@ -159,8 +143,7 @@ namespace xAPI.Sync
                     throw new APICommunicationException("Error while sending the data (socket disconnected).");
                 }
 
-                if (OnMessageSended != null)
-                    OnMessageSended.Invoke(message);
+                MessageSent?.Invoke(this, new(message));
             }
             finally
             {
@@ -200,8 +183,7 @@ namespace xAPI.Sync
                     throw new APICommunicationException("Disconnected from server. No data in stream.");
                 }
 
-                if (OnMessageReceived != null)
-                    OnMessageReceived.Invoke(result.ToString());
+                MessageReceived?.Invoke(this, new(result.ToString()));
 
                 return result.ToString();
 
@@ -245,8 +227,7 @@ namespace xAPI.Sync
                     throw new APICommunicationException("Disconnected from server. No data in stream.");
                 }
 
-                if (OnMessageReceived != null)
-                    OnMessageReceived.Invoke(result.ToString());
+                MessageReceived?.Invoke(this, new(result.ToString()));
 
                 return result.ToString();
 
@@ -265,14 +246,13 @@ namespace xAPI.Sync
         /// <param name="silent">If true then no event will be trigered (used in redirect process)</param>
         public void Disconnect(bool silent = false)
         {
-            if (Connected())
+            if (IsConnected())
             {
                 apiReadStream.Close();
                 apiWriteStream.Close();
                 apiSocket.Close();
 
-                if (!silent && OnDisconnected != null)
-                    OnDisconnected.Invoke();
+                Disconnected?.Invoke(this, EventArgs.Empty);
             }
 
             this.apiConnected = false;
