@@ -10,7 +10,7 @@ namespace xAPI.Sync
         }
 
         public Credentials(string login, string password, string appId, string appName)
-            :this(login, password)
+            : this(login, password)
         {
             AppId = appId;
             AppName = appName;
