@@ -334,29 +334,29 @@ namespace xAPI.Sync
             }
         }
 
-        public void SubscribePrice(String symbol, long? minArrivalTime = null, long? maxLevel = null)
+        public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
         {
-            TickPricesSubscribe tickPricesSubscribe = new TickPricesSubscribe(symbol, streamSessionId, minArrivalTime, maxLevel);
+            TickPricesSubscribe tickPricesSubscribe = new(symbol, streamSessionId, minArrivalTime, maxLevel);
             WriteMessage(tickPricesSubscribe.ToString());
         }
 
-        public void UnsubscribePrice(String symbol)
+        public void UnsubscribePrice(string symbol)
         {
-            TickPricesStop tickPricesStop = new TickPricesStop(symbol);
+            TickPricesStop tickPricesStop = new(symbol);
             WriteMessage(tickPricesStop.ToString());
         }
 
-        public void SubscribePrices(IEnumerable<String> symbols)
+        public void SubscribePrices(string[] symbols)
         {
-            foreach (String symbol in symbols)
+            foreach (string symbol in symbols)
             {
                 SubscribePrice(symbol);
             }
         }
 
-        public void UnsubscribePrices(LinkedList<String> symbols)
+        public void UnsubscribePrices(string[] symbols)
         {
-            foreach (String symbol in symbols)
+            foreach (string symbol in symbols)
             {
                 UnsubscribePrice(symbol);
             }
@@ -364,85 +364,85 @@ namespace xAPI.Sync
 
         public void SubscribeTrades()
         {
-            TradeRecordsSubscribe tradeRecordsSubscribe = new TradeRecordsSubscribe(streamSessionId);
+            TradeRecordsSubscribe tradeRecordsSubscribe = new(streamSessionId);
             WriteMessage(tradeRecordsSubscribe.ToString());
         }
 
         public void UnsubscribeTrades()
         {
-            TradeRecordsStop tradeRecordsStop = new TradeRecordsStop();
+            TradeRecordsStop tradeRecordsStop = new();
             WriteMessage(tradeRecordsStop.ToString());
         }
 
         public void SubscribeBalance()
         {
-            BalanceRecordsSubscribe balanceRecordsSubscribe = new BalanceRecordsSubscribe(streamSessionId);
+            BalanceRecordsSubscribe balanceRecordsSubscribe = new(streamSessionId);
             WriteMessage(balanceRecordsSubscribe.ToString());
         }
 
         public void UnsubscribeBalance()
         {
-            BalanceRecordsStop balanceRecordsStop = new BalanceRecordsStop();
+            BalanceRecordsStop balanceRecordsStop = new();
             WriteMessage(balanceRecordsStop.ToString());
         }
 
         public void SubscribeTradeStatus()
         {
-            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(streamSessionId);
+            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(streamSessionId);
             WriteMessage(tradeStatusRecordsSubscribe.ToString());
         }
 
         public void UnsubscribeTradeStatus()
         {
-            TradeStatusRecordsStop tradeStatusRecordsStop = new TradeStatusRecordsStop();
+            TradeStatusRecordsStop tradeStatusRecordsStop = new();
             WriteMessage(tradeStatusRecordsStop.ToString());
         }
 
         public void SubscribeProfits()
         {
-            ProfitsSubscribe profitsSubscribe = new ProfitsSubscribe(streamSessionId);
+            ProfitsSubscribe profitsSubscribe = new(streamSessionId);
             WriteMessage(profitsSubscribe.ToString());
         }
 
         public void UnsubscribeProfits()
         {
-            ProfitsStop profitsStop = new ProfitsStop();
+            ProfitsStop profitsStop = new();
             WriteMessage(profitsStop.ToString());
         }
 
         public void SubscribeNews()
         {
-            NewsSubscribe newsSubscribe = new NewsSubscribe(streamSessionId);
+            NewsSubscribe newsSubscribe = new(streamSessionId);
             WriteMessage(newsSubscribe.ToString());
         }
 
         public void UnsubscribeNews()
         {
-            NewsStop newsStop = new NewsStop();
+            NewsStop newsStop = new();
             WriteMessage(newsStop.ToString());
         }
 
         public void SubscribeKeepAlive()
         {
-            KeepAliveSubscribe keepAliveSubscribe = new KeepAliveSubscribe(streamSessionId);
+            KeepAliveSubscribe keepAliveSubscribe = new(streamSessionId);
             WriteMessage(keepAliveSubscribe.ToString());
         }
 
         public void UnsubscribeKeepAlive()
         {
-            KeepAliveStop keepAliveStop = new KeepAliveStop();
+            KeepAliveStop keepAliveStop = new();
             WriteMessage(keepAliveStop.ToString());
         }
 
-        public void SubscribeCandles(String symbol)
+        public void SubscribeCandles(string symbol)
         {
-            CandleRecordsSubscribe candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, streamSessionId);
+            CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, streamSessionId);
             WriteMessage(candleRecordsSubscribe.ToString());
         }
 
-        public void UnsubscribeCandles(String symbol)
+        public void UnsubscribeCandles(string symbol)
         {
-            CandleRecordsStop candleRecordsStop = new CandleRecordsStop(symbol);
+            CandleRecordsStop candleRecordsStop = new(symbol);
             WriteMessage(candleRecordsStop.ToString());
         }
 

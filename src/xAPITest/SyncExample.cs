@@ -27,6 +27,7 @@ public sealed class SyncExample : ExampleBase
         TradingStage();
         TradingHistoryStage();
         GlobalDataStage();
+        StreamingSubscriptionStage();
     }
 
     public void ConnectionStage()
@@ -371,6 +372,209 @@ public sealed class SyncExample : ExampleBase
             var response = APICommandFactory.ExecuteCalendarCommand(_connector);
             Pass(response);
             Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void StreamingSubscriptionStage()
+    {
+        Stage("Streaming subscriptions");
+
+        Action($"Subscribe keep alive");
+        try
+        {
+            _connector.Streaming.SubscribeKeepAlive();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe keep alive");
+        try
+        {
+            _connector.Streaming.UnsubscribeKeepAlive();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe balance");
+        try
+        {
+            _connector.Streaming.SubscribeBalance();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe balance");
+        try
+        {
+            _connector.Streaming.UnsubscribeBalance();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe news");
+        try
+        {
+            _connector.Streaming.SubscribeNews();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe news");
+        try
+        {
+            _connector.Streaming.UnsubscribeNews();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe profits");
+        try
+        {
+            _connector.Streaming.SubscribeProfits();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe profits");
+        try
+        {
+            _connector.Streaming.UnsubscribeProfits();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe trades");
+        try
+        {
+            _connector.Streaming.SubscribeTrades();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe trades");
+        try
+        {
+            _connector.Streaming.UnsubscribeTrades();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe trade status");
+        try
+        {
+            _connector.Streaming.SubscribeTradeStatus();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe trade status");
+        try
+        {
+            _connector.Streaming.UnsubscribeTradeStatus();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe candles");
+        try
+        {
+            _connector.Streaming.SubscribeCandles("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe candles");
+        try
+        {
+            _connector.Streaming.UnsubscribeCandles("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe price");
+        try
+        {
+            _connector.Streaming.SubscribePrice("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe price");
+        try
+        {
+            _connector.Streaming.UnsubscribePrice("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe prices");
+        try
+        {
+            _connector.Streaming.SubscribePrices(["US500"]);
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe prices");
+        try
+        {
+            _connector.Streaming.UnsubscribePrices(["US500"]);
+            Pass();
         }
         catch (Exception ex)
         {
