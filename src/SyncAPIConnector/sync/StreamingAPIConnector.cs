@@ -446,6 +446,118 @@ namespace xAPI.Sync
             WriteMessage(candleRecordsStop.ToString());
         }
 
+        public async Task SubscribePriceAsync(string symbol, long? minArrivalTime = null, long? maxLevel = null)
+        {
+            TickPricesSubscribe tickPricesSubscribe = new(symbol, streamSessionId, minArrivalTime, maxLevel);
+            await WriteMessageAsync(tickPricesSubscribe.ToString());
+        }
+
+        public async Task UnsubscribePriceAsync(string symbol)
+        {
+            TickPricesStop tickPricesStop = new(symbol);
+            await WriteMessageAsync(tickPricesStop.ToString());
+        }
+
+        public async Task SubscribePricesAsync(string[] symbols)
+        {
+            foreach (string symbol in symbols)
+            {
+                await SubscribePriceAsync(symbol);
+            }
+        }
+
+        public async Task UnsubscribePricesAsync(string[] symbols)
+        {
+            foreach (string symbol in symbols)
+            {
+                await UnsubscribePriceAsync(symbol);
+            }
+        }
+
+        public async Task SubscribeTradesAsync()
+        {
+            TradeRecordsSubscribe tradeRecordsSubscribe = new(streamSessionId);
+            await WriteMessageAsync(tradeRecordsSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeTradesAsync()
+        {
+            TradeRecordsStop tradeRecordsStop = new();
+            await WriteMessageAsync(tradeRecordsStop.ToString());
+        }
+
+        public async Task SubscribeBalanceAsync()
+        {
+            BalanceRecordsSubscribe balanceRecordsSubscribe = new(streamSessionId);
+            await WriteMessageAsync(balanceRecordsSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeBalanceAsync()
+        {
+            BalanceRecordsStop balanceRecordsStop = new();
+            await WriteMessageAsync(balanceRecordsStop.ToString());
+        }
+
+        public async Task SubscribeTradeStatusAsync()
+        {
+            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(streamSessionId);
+            await WriteMessageAsync(tradeStatusRecordsSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeTradeStatusAsync()
+        {
+            TradeStatusRecordsStop tradeStatusRecordsStop = new();
+            await WriteMessageAsync(tradeStatusRecordsStop.ToString());
+        }
+
+        public async Task SubscribeProfitsAsync()
+        {
+            ProfitsSubscribe profitsSubscribe = new(streamSessionId);
+            await WriteMessageAsync(profitsSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeProfitsAsync()
+        {
+            ProfitsStop profitsStop = new();
+            await WriteMessageAsync(profitsStop.ToString());
+        }
+
+        public async Task SubscribeNewsAsync()
+        {
+            NewsSubscribe newsSubscribe = new(streamSessionId);
+            await WriteMessageAsync(newsSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeNewsAsync()
+        {
+            NewsStop newsStop = new();
+            await WriteMessageAsync(newsStop.ToString());
+        }
+
+        public async Task SubscribeKeepAliveAsync()
+        {
+            KeepAliveSubscribe keepAliveSubscribe = new(streamSessionId);
+            await WriteMessageAsync(keepAliveSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeKeepAliveAsync()
+        {
+            KeepAliveStop keepAliveStop = new();
+            await WriteMessageAsync(keepAliveStop.ToString());
+        }
+
+        public async Task SubscribeCandlesAsync(string symbol)
+        {
+            CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, streamSessionId);
+            await WriteMessageAsync(candleRecordsSubscribe.ToString());
+        }
+
+        public async Task UnsubscribeCandlesAsync(string symbol)
+        {
+            CandleRecordsStop candleRecordsStop = new(symbol);
+            await WriteMessageAsync(candleRecordsStop.ToString());
+        }
+
         protected virtual void OnStreamingErrorOccurred(Exception ex)
         {
             var args = new ExceptionEventArgs(ex);
