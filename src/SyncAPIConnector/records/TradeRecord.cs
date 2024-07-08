@@ -128,12 +128,6 @@ namespace xAPI.Records
             }
         }
 
-        [Obsolete]
-        public virtual long? Login
-        {
-            get { return null; }
-        }
-
         public virtual double? Margin_rate
         {
             get
@@ -198,12 +192,6 @@ namespace xAPI.Records
             }
         }
 
-        [Obsolete("Not used any more")]
-        public virtual long? Spread
-        {
-            get { return null; }
-        }
-
         public virtual double? Storage
         {
             get
@@ -218,12 +206,6 @@ namespace xAPI.Records
             {
                 return symbol;
             }
-        }
-
-        [Obsolete("Not used any more")]
-        public virtual double? Taxes
-        {
-            get { return null; }
         }
 
         public virtual long? Timestamp
@@ -292,12 +274,6 @@ namespace xAPI.Records
             this.tp = (double?)value["tp"];
             this.value_date = (long?)value["value_date"];
             this.volume = (double?)value["volume"];
-        }
-
-        [Obsolete("Method outdated")]
-        public bool FieldsFromJsonObject(JsonObject value, string str)
-        {
-            return false;
         }
 
         public override string ToString()

@@ -30,12 +30,6 @@ namespace xAPI.Commands
             return new LoginCommand(args, prettyPrint);
         }
 
-        [Obsolete("Up from 2.3.3 login is not a long, but string")]
-        public static LoginCommand CreateLoginCommand(long? userId, string password, bool prettyPrint = false)
-        {
-            return CreateLoginCommand(userId?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, password, prettyPrint);
-        }
-
         public static LoginCommand CreateLoginCommand(Credentials credentials, bool prettyPrint = false)
         {
             JsonObject jsonObj = CreateLoginJsonObject(credentials);
@@ -216,12 +210,6 @@ namespace xAPI.Commands
             return new TradeTransactionCommand(args, prettyPrint);
         }
 
-        [Obsolete("Method outdated. ie_deviation and comment are not available any more")]
-        public static TradeTransactionCommand CreateTradeTransactionCommand(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? ie_deviation, long? order, string comment, long? expiration, bool prettyPrint = false)
-        {
-            return CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, "", expiration);
-        }
-
         public static TradeTransactionStatusCommand CreateTradeTransactionStatusCommand(long? order, bool prettyPrint = false)
         {
             JsonObject args = new JsonObject();
@@ -339,12 +327,6 @@ namespace xAPI.Commands
         {
             var jsonObj = await connector.ExecuteCommandAsync(CreateCommissionDefCommand(symbol, volume, prettyPrint));
             return new CommissionDefResponse(jsonObj.ToString());
-        }
-
-        [Obsolete("Up from 2.3.3 login is not a long, but string")]
-        public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, long userId, string password, bool prettyPrint = false)
-        {
-            return ExecuteLoginCommand(connector, userId.ToString(CultureInfo.InvariantCulture), password, prettyPrint);
         }
 
         public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
@@ -560,12 +542,6 @@ namespace xAPI.Commands
             var jsonObj = await connector.ExecuteCommandAsync(CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration, prettyPrint))
                 .ConfigureAwait(false);
             return new TradeTransactionResponse(jsonObj.ToString());
-        }
-
-        [Obsolete("Method outdated. ie_deviation is not available any more")]
-        public static TradeTransactionResponse ExecuteTradeTransactionCommand(SyncAPIConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? ie_deviation, long? order, string comment, long? expiration, bool prettyPrint = false)
-        {
-            return new TradeTransactionResponse(connector.ExecuteCommand(CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, "", expiration, prettyPrint)).ToString());
         }
 
         public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(SyncAPIConnector connector, long? order, bool prettyPrint = false)

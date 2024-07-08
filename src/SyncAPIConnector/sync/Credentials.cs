@@ -13,15 +13,6 @@ namespace xAPI.Sync
         private string appId;
         private string appName;
 
-        [Obsolete("Up from 2.3.3 login is not a long, but string")]
-        public Credentials(long login, string password, string appId = "", string appName = "")
-        {
-            this.login = login.ToString(CultureInfo.InvariantCulture);
-            this.password = password;
-            this.appId = appId;
-            this.appName = appName;
-        }
-
         public Credentials(string login, string password)
         {
             this.login = login;

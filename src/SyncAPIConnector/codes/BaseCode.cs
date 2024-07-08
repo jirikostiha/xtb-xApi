@@ -66,18 +66,5 @@ namespace xAPI.Codes
         {
             return code.ToString(CultureInfo.InvariantCulture);
         }
-
-        [Obsolete("Use Code instead")]
-        public long LongValue
-        {
-            get { return code; }
-            set { this.code = value; }
-        }
-
-        [Obsolete("Use Code instead")]
-        public long longValue()
-        {
-            return code;
-        }
     }
 }

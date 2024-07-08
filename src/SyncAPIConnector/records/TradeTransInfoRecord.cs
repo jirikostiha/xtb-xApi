@@ -47,21 +47,6 @@ namespace xAPI.Records
             this.expiration = expiration;
         }
 
-        [Obsolete("Fields ie_devation and comment are not used anymore. Use another constructor instead.")]
-        public TradeTransInfoRecord(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? ie_deviation, long? order, string comment, long? expiration)
-        {
-            this.cmd = cmd;
-            this.type = type;
-            this.price = price;
-            this.sl = sl;
-            this.tp = tp;
-            this.symbol = symbol;
-            this.volume = volume;
-            this.order = order;
-            this.expiration = expiration;
-            this.customComment = comment;
-        }
-
         public virtual JsonObject toJsonObject()
         {
             JsonObject obj = new()

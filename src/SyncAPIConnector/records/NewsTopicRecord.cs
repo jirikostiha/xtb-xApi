@@ -35,36 +35,12 @@ namespace xAPI.Records
             }
         }
 
-        [Obsolete("Field removed from API")]
-        public virtual string Category
-        {
-            get { return null; }
-        }
-
         public virtual string Key
         {
             get
             {
                 return key;
             }
-        }
-
-        [Obsolete("Field removed from API")]
-        public virtual LinkedList<string> Keywords
-        {
-            get { return null; }
-        }
-
-        [Obsolete("Field removed from API")]
-        public virtual long? Priority
-        {
-            get { return null; }
-        }
-
-        [Obsolete("Field removed from API")]
-        public virtual bool? Read
-        {
-            get { return null; }
         }
 
         public virtual long? Time
@@ -89,12 +65,6 @@ namespace xAPI.Records
             {
                 return title;
             }
-        }
-
-        [Obsolete("Use Title instead")]
-        public virtual string Topic
-        {
-            get { return title; }
         }
 
         public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
