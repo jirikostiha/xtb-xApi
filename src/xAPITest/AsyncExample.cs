@@ -28,6 +28,7 @@ public sealed class AsyncExample : ExampleBase
         await TradingStage();
         await TradingHistoryStage();
         await GlobalDataStage();
+        await StreamingSubscriptionStage();
     }
 
     public async Task ConnectionStage()
@@ -372,6 +373,209 @@ public sealed class AsyncExample : ExampleBase
             var response = await APICommandFactory.ExecuteCalendarCommandAsync(_connector);
             Pass(response);
             Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public async Task StreamingSubscriptionStage()
+    {
+        Stage("Streaming subscriptions");
+
+        Action($"Subscribe keep alive");
+        try
+        {
+            await _connector.Streaming.SubscribeKeepAliveAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe keep alive");
+        try
+        {
+            await _connector.Streaming.UnsubscribeKeepAliveAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe balance");
+        try
+        {
+            await _connector.Streaming.SubscribeBalanceAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe balance");
+        try
+        {
+            await _connector.Streaming.UnsubscribeBalanceAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe news");
+        try
+        {
+            await _connector.Streaming.SubscribeNewsAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe news");
+        try
+        {
+            await _connector.Streaming.UnsubscribeNewsAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe profits");
+        try
+        {
+            await _connector.Streaming.SubscribeProfitsAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe profits");
+        try
+        {
+            await _connector.Streaming.UnsubscribeProfitsAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe trades");
+        try
+        {
+            await _connector.Streaming.SubscribeTradesAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe trades");
+        try
+        {
+            await _connector.Streaming.UnsubscribeTradesAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe trade status");
+        try
+        {
+            await _connector.Streaming.SubscribeTradeStatusAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe trade status");
+        try
+        {
+            await _connector.Streaming.UnsubscribeTradeStatusAsync();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe candles");
+        try
+        {
+            await _connector.Streaming.SubscribeCandlesAsync("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe candles");
+        try
+        {
+            await _connector.Streaming.UnsubscribeCandlesAsync("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe price");
+        try
+        {
+            await _connector.Streaming.SubscribePriceAsync("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe price");
+        try
+        {
+            await _connector.Streaming.UnsubscribePriceAsync("US500");
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Subscribe prices");
+        try
+        {
+            await _connector.Streaming.SubscribePricesAsync(["US500"]);
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        Action($"Unsubscribe prices");
+        try
+        {
+            await _connector.Streaming.UnsubscribePricesAsync(["US500"]);
+            Pass();
         }
         catch (Exception ex)
         {
