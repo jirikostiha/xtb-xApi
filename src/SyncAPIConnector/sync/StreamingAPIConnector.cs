@@ -21,110 +21,54 @@ namespace xAPI.Sync
         #region Events
 
         /// <summary>
-        /// Delegate called on connection establish.
+        /// Event raised when a connection is established.
         /// </summary>
-        /// <param name="server">Server that the connection was made to</param>
-        public delegate void OnConnectedCallback(Server server);
+        public event EventHandler<ServerEventArgs>? Connected;
 
         /// <summary>
-        /// Event raised when connection is established.
+        /// Event raised when a tick record is received.
         /// </summary>
-        public event OnConnectedCallback OnConnected;
-
-        //public delegate void OnReceiveRe
+        public event EventHandler<TickReceivedEventArgs>? TickReceived;
 
         /// <summary>
-        /// Delegate called on tick record arrival.
+        /// Event raised when a trade record is received.
         /// </summary>
-        /// <param name="tickRecord">Received tick record</param>
-        public delegate void OnTick(StreamingTickRecord tickRecord);
+        public event EventHandler<TradeReceivedEventArgs>? TradeReceived;
 
         /// <summary>
-        /// Event raised when tick is received.
+        /// Event raised when a balance record is received.
         /// </summary>
-        public event OnTick TickRecordReceived;
+        public event EventHandler<BalanceReceivedEventArgs>? BalanceReceived;
 
         /// <summary>
-        /// Delegate called on trade record arrival.
+        /// Event raised when a trade status record is received.
         /// </summary>
-        /// <param name="tradeRecord">Received trade record</param>
-        public delegate void OnTrade(StreamingTradeRecord tradeRecord);
+        public event EventHandler<TradeStatusReceivedEventArgs>? TradeStatusReceived;
 
         /// <summary>
-        /// Event raised when trade record is received.
+        /// Event raised when a profit record is received.
         /// </summary>
-        public event OnTrade TradeRecordReceived;
+        public event EventHandler<ProfitReceivedEventArgs>? ProfitReceived;
 
         /// <summary>
-        /// Delegate called on balance record arrival.
+        /// Event raised when a news record is received.
         /// </summary>
-        /// <param name="balanceRecord">Received balance record</param>
-        public delegate void OnBalance(StreamingBalanceRecord balanceRecord);
+        public event EventHandler<NewsReceivedEventArgs>? NewsReceived;
 
         /// <summary>
-        /// Event raised when balance record is received.
+        /// Event raised when a keep alive record is received.
         /// </summary>
-        public event OnBalance BalanceRecordReceived;
+        public event EventHandler<KeepAliveReceivedEventArgs>? KeepAliveReceived;
 
         /// <summary>
-        /// Delegate called on trade status record arrival.
+        /// Event raised when a candle record is received.
         /// </summary>
-        /// <param name="tradeStatusRecord">Received trade status record</param>
-        public delegate void OnTradeStatus(StreamingTradeStatusRecord tradeStatusRecord);
-
-        /// <summary>
-        /// Event raised when trade status record is received.
-        /// </summary>
-        public event OnTradeStatus TradeStatusRecordReceived;
-
-        /// <summary>
-        /// Delegate called on profit record arrival.
-        /// </summary>
-        /// <param name="profitRecord">Received profit record</param>
-        public delegate void OnProfit(StreamingProfitRecord profitRecord);
-
-        /// <summary>
-        /// Event raised when profit record is received.
-        /// </summary>
-        public event OnProfit ProfitRecordReceived;
-
-        /// <summary>
-        /// Delegate called on news record arrival.
-        /// </summary>
-        /// <param name="newsRecord">Received news record</param>
-        public delegate void OnNews(StreamingNewsRecord newsRecord);
-
-        /// <summary>
-        /// Event raised when news record is received.
-        /// </summary>
-        public event OnNews NewsRecordReceived;
-
-        /// <summary>
-        /// Delegate called on keep alive record arrival.
-        /// </summary>
-        /// <param name="keepAliveRecord">Received keep alive record</param>
-        public delegate void OnKeepAlive(StreamingKeepAliveRecord keepAliveRecord);
-
-        /// <summary>
-        /// Event raised when keep alive record is received.
-        /// </summary>
-        public event OnKeepAlive KeepAliveRecordReceived;
-
-        /// <summary>
-        /// Delegate called on candle record arrival.
-        /// </summary>
-        /// <param name="candleRecord">Received candle record</param>
-        public delegate void OnCandle(StreamingCandleRecord candleRecord);
-
-        /// <summary>
-        /// Event raised when candle record is received.
-        /// </summary>
-        public event OnCandle CandleRecordReceived;
+        public event EventHandler<CandleReceivedEventArgs>? CandleReceived;
 
         /// <summary>
         /// Event raised when read streamed message.
         /// </summary>
-        public event EventHandler<ExceptionEventArgs> StreamingErrorOccurred;
+        public event EventHandler<ExceptionEventArgs>? StreamingErrorOccurred;
 
         #endregion
 
@@ -171,7 +115,7 @@ namespace xAPI.Sync
                 throw new APICommunicationException("No session exists. Please login first.");
             }
 
-            if (Connected())
+            if (IsConnected())
             {
                 throw new APICommunicationException("Stream already connected.");
             }
@@ -179,8 +123,7 @@ namespace xAPI.Sync
             this.apiSocket = new TcpClient(server.Address, server.StreamingPort);
             this.apiConnected = true;
 
-            if (OnConnected != null)
-                OnConnected.Invoke(this.server);
+            Connected?.Invoke(this, new(server));
 
             if (server.IsSecure)
             {
@@ -215,7 +158,7 @@ namespace xAPI.Sync
         {
             _streamingReaderThread = new Thread(async () =>
             {
-                while (Connected())
+                while (IsConnected())
                 {
                     await ReadStreamMessageAsync(CancellationToken.None);
                 }
@@ -255,7 +198,7 @@ namespace xAPI.Sync
                         StreamingTickRecord tickRecord = new StreamingTickRecord();
                         tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        TickRecordReceived?.Invoke(tickRecord);
+                        TickReceived?.Invoke(this, new(tickRecord));
                         if (sl != null)
                             await sl.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -264,7 +207,7 @@ namespace xAPI.Sync
                         StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
                         tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        TradeRecordReceived?.Invoke(tradeRecord);
+                        TradeReceived?.Invoke(this, new(tradeRecord));
                         if (sl != null)
                             await sl.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -273,7 +216,7 @@ namespace xAPI.Sync
                         StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
                         balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        BalanceRecordReceived?.Invoke(balanceRecord);
+                        BalanceReceived?.Invoke(this, new(balanceRecord));
                         if (sl != null)
                             await sl.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -282,7 +225,7 @@ namespace xAPI.Sync
                         StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
                         tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        TradeStatusRecordReceived?.Invoke(tradeStatusRecord);
+                        TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
                         if (sl != null)
                             await sl.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -291,7 +234,7 @@ namespace xAPI.Sync
                         StreamingProfitRecord profitRecord = new StreamingProfitRecord();
                         profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        ProfitRecordReceived?.Invoke(profitRecord);
+                        ProfitReceived?.Invoke(this, new(profitRecord));
                         if (sl != null)
                             await sl.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -300,7 +243,7 @@ namespace xAPI.Sync
                         StreamingNewsRecord newsRecord = new StreamingNewsRecord();
                         newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        NewsRecordReceived?.Invoke(newsRecord);
+                        NewsReceived?.Invoke(this, new(newsRecord));
                         if (sl != null)
                             await sl.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -309,7 +252,7 @@ namespace xAPI.Sync
                         StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
                         keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        KeepAliveRecordReceived?.Invoke(keepAliveRecord);
+                        KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
                         if (sl != null)
                             await sl.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
                     }
@@ -318,7 +261,7 @@ namespace xAPI.Sync
                         StreamingCandleRecord candleRecord = new StreamingCandleRecord();
                         candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                        CandleRecordReceived?.Invoke(candleRecord);
+                        CandleReceived?.Invoke(this, new(candleRecord));
                         if (sl != null)
                             await sl.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
                     }

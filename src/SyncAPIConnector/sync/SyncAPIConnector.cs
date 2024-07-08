@@ -39,26 +39,19 @@ namespace xAPI.Sync
 
         #region Events
         /// <summary>
-        /// Delegate called on connection establish.
+        /// Event raised when a connection is established.
         /// </summary>
-        /// <param name="server">Server that the connection was made to</param>
-        public delegate void OnConnectedCallback(Server server);
+        public event EventHandler<ServerEventArgs>? Connected;
 
         /// <summary>
-        /// Event raised when connection is established.
+        /// Event raised when a connection is redirected.
         /// </summary>
-        public event OnConnectedCallback OnConnected;
+        public event EventHandler<ServerEventArgs>? Redirected;
 
         /// <summary>
-        /// Delegate called on connection redirect.
+        /// Event raised when a command is being executed.
         /// </summary>
-        /// <param name="server">Server that the connection was made to</param>
-        public delegate void OnRedirectedCallback(Server server);
-
-        /// <summary>
-        /// Event raised when connection is redirected.
-        /// </summary>
-        public event OnRedirectedCallback OnRedirected;
+        public event EventHandler<CommandEventArgs>? CommandExecuting;
         #endregion
 
         /// <summary>
@@ -157,8 +150,7 @@ namespace xAPI.Sync
 
             this.apiConnected = true;
 
-            if (OnConnected != null)
-                OnConnected.Invoke(this.server);
+            Connected?.Invoke(this, new(server));
 
             this.streamingConnector = new StreamingAPIConnector(this.server);
         }
@@ -184,8 +176,7 @@ namespace xAPI.Sync
         /// <param name="server">Server data</param>
         public void Redirect(Server server)
         {
-            if (OnRedirected != null)
-                OnRedirected.Invoke(server);
+            Redirected?.Invoke(this, new(server));
 
             if (this.apiConnected)
                 Disconnect(true);
@@ -196,37 +187,49 @@ namespace xAPI.Sync
         /// <summary>
         /// Executes given command and receives response (withholding API inter-command timeout).
         /// </summary>
-        /// <param name="cmd">Command to execute</param>
+        /// <param name="command">Command to execute</param>
         /// <returns>Response from the server</returns>
-		public JsonObject ExecuteCommand(BaseCommand cmd)
+		public JsonObject ExecuteCommand(BaseCommand command)
         {
             try
             {
-                var response = ExecuteCommand(cmd.ToJSONString());
-                return (JsonObject)JsonNode.Parse(response);
+                var request = command.ToJSONString();
+
+                CommandExecuting?.Invoke(this, new(command));
+                var response = ExecuteCommand(request);
+
+                var parsedResponse = JsonNode.Parse(response).AsObject();
+
+                return parsedResponse;
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException($"Problem with executing command:'{cmd.CommandName}'", ex);
+                throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
             }
         }
 
         /// <summary>
         /// Executes given command and receives response (withholding API inter-command timeout).
         /// </summary>
-        /// <param name="cmd">Command to execute</param>
+        /// <param name="command">Command to execute</param>
         /// <param name="cancellationToken">Token to cancel operation.</param>
         /// <returns>Response from the server</returns>
-        public async Task<JsonObject> ExecuteCommandAsync(BaseCommand cmd, CancellationToken cancellationToken = default)
+        public async Task<JsonObject> ExecuteCommandAsync(BaseCommand command, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false);
-                return (JsonObject)JsonNode.Parse(response);
+                var request = command.ToJSONString();
+
+                CommandExecuting?.Invoke(this, new(command));
+                var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
+
+                var parsedResponse = JsonNode.Parse(response).AsObject();
+
+                return parsedResponse;
             }
             catch (Exception ex)
             {
-                throw new APICommunicationException($"Problem with executing command:'{cmd.CommandName}'", ex);
+                throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
             }
         }
 
