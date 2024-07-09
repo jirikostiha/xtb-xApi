@@ -202,7 +202,8 @@ namespace xAPI.Sync
         {
             try
             {
-                return (JsonObject)JsonObject.Parse(this.ExecuteCommand(cmd.ToJSONString()));
+                var response = ExecuteCommand(cmd.ToJSONString());
+                return (JsonObject)JsonNode.Parse(response);
             }
             catch (Exception ex)
             {
@@ -219,7 +220,8 @@ namespace xAPI.Sync
         {
             try
             {
-                return (JsonObject)JsonObject.Parse(await this.ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false));
+                var response = await ExecuteCommandAsync(cmd.ToJSONString()).ConfigureAwait(false);
+                return (JsonObject)JsonNode.Parse(response);
             }
             catch (Exception ex)
             {
@@ -247,11 +249,11 @@ namespace xAPI.Sync
                     Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
                 }
 
-                this.WriteMessage(message);
+                WriteMessage(message);
 
                 this.lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-                string response = this.ReadMessage();
+                string response = ReadMessage();
 
                 if (string.IsNullOrEmpty(response))
                 {
@@ -287,11 +289,11 @@ namespace xAPI.Sync
                     await Task.Delay((int)(COMMAND_TIME_SPACE - interval));
                 }
 
-                await this.WriteMessageAsync(message).ConfigureAwait(false);
+                await WriteMessageAsync(message).ConfigureAwait(false);
 
                 this.lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-                string response = await this.ReadMessageAsync().ConfigureAwait(false);
+                string response = await ReadMessageAsync().ConfigureAwait(false);
 
                 if (string.IsNullOrEmpty(response))
                 {

@@ -6,8 +6,8 @@ namespace xAPI.Commands
     {
         public const string Name = "getVersion";
 
-        public VersionCommand(JsonObject arguments, bool prettyPrint)
-            : base(arguments, prettyPrint)
+        public VersionCommand()
+            : base()
         {
         }
 

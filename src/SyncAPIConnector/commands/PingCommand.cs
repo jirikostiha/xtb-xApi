@@ -4,8 +4,8 @@ namespace xAPI.Commands
     {
         public const string Name = "ping";
 
-        public PingCommand(bool? prettyPrint)
-            : base([], prettyPrint)
+        public PingCommand()
+            : base([], false)
         {
         }
 

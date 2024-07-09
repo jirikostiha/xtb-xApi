@@ -4,7 +4,7 @@ namespace xAPI.Commands
     {
         public const string Name = "getAllSymbols";
 
-        public AllSymbolsCommand(bool prettyPrint)
+        public AllSymbolsCommand(bool prettyPrint = false)
             : base(prettyPrint)
         {
         }

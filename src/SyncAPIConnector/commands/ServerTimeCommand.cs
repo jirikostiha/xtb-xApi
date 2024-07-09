@@ -6,8 +6,8 @@ namespace xAPI.Commands
     {
         public const string Name = "getServerTime";
 
-        public ServerTimeCommand(bool? prettyPrint)
-            : base([], prettyPrint)
+        public ServerTimeCommand()
+            : base([], false)
         {
         }
 

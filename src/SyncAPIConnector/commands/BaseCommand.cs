@@ -7,12 +7,12 @@ namespace xAPI.Commands
     {
         protected internal bool? PrettyPrint { get; set; }
 
-        protected BaseCommand(bool? prettyPrint)
+        protected BaseCommand(bool? prettyPrint = null)
             : this([], prettyPrint)
         {
         }
 
-        protected BaseCommand(JsonObject arguments, bool? prettyPrint, string customTag = "")
+        protected BaseCommand(JsonObject arguments, bool? prettyPrint = null, string customTag = "")
         {
             Arguments = arguments;
             PrettyPrint = prettyPrint;
