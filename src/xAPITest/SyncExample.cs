@@ -100,6 +100,7 @@ public sealed class SyncExample : ExampleBase
         {
             var response = APICommandFactory.ExecuteLoginCommand(_connector, _credentials);
             Pass(response);
+            Detail(response.StreamSessionId);
         }
         catch (Exception ex)
         {
@@ -120,8 +121,10 @@ public sealed class SyncExample : ExampleBase
         Action($"Logging in again as '{_credentials.Login}'");
         try
         {
+            _connector.Connect();
             var response = APICommandFactory.ExecuteLoginCommand(_connector, _credentials);
             Pass(response);
+            Detail(response.StreamSessionId);
         }
         catch (Exception ex)
         {
@@ -382,6 +385,17 @@ public sealed class SyncExample : ExampleBase
     public void StreamingSubscriptionStage()
     {
         Stage("Streaming subscriptions");
+
+        Action($"Connecting to streaming");
+        try
+        {
+            _connector.Streaming.Connect();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
 
         Action($"Subscribe keep alive");
         try

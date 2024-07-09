@@ -8,10 +8,7 @@ namespace xAPI.Responses
         public LoginResponse(string body)
             : base(body)
         {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
+            var ob = JsonNode.Parse(body);
             StreamSessionId = (string?)ob["streamSessionId"];
 
             if (ob["redirect"] is JsonObject redirectJSON)

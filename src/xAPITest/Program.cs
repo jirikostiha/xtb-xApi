@@ -6,8 +6,8 @@ namespace xAPITest
     sealed class Program
     {
         private static Server _server = Servers.DEMO;
-        private static string _userId = "10000";
-        private static string _password = "password";
+        private static string _userId = "16401086";
+        private static string _password = "8Ddddddd";
 
         static void Main(string[] args)
         {

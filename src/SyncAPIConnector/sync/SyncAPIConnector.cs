@@ -89,6 +89,7 @@ namespace xAPI.Sync
         /// <param name="connectionTimeout">Connection timeout</param>
         public SyncAPIConnector(Server server, int connectionTimeout = TIMEOUT)
         {
+            this.server = server;
             _connectionTimeout = connectionTimeout;
         }
 
@@ -160,7 +161,6 @@ namespace xAPI.Sync
                 OnConnected.Invoke(this.server);
 
             this.streamingConnector = new StreamingAPIConnector(this.server);
-            this.streamingConnector.Connect();
         }
 
         /// <summary>
@@ -169,9 +169,13 @@ namespace xAPI.Sync
         public void Connect()
         {
             if (this.server != null)
+            {
                 Connect(this.server);
-
-            throw new APICommunicationException("No server to connect to.");
+            }
+            else
+            {
+                throw new APICommunicationException("No server to connect to.");
+            }
         }
 
         /// <summary>

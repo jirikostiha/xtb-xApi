@@ -217,7 +217,7 @@ namespace xAPI.Sync
             {
                 while (Connected())
                 {
-                    await ReadStreamMessage();
+                    await ReadStreamMessageAsync();
                 }
             })
             {
@@ -239,7 +239,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Reads stream message.
         /// </summary>
-        private async Task ReadStreamMessage()
+        private async Task ReadStreamMessageAsync()
         {
             try
             {
@@ -328,12 +328,20 @@ namespace xAPI.Sync
                     }
                 }
             }
+            catch (APICommunicationException ex) when (ex.InnerException.InnerException is SocketException se)
+            {
+                if (se.ErrorCode != (int)SocketError.OperationAborted)
+                {
+                    throw;
+                }
+            }
             catch (Exception ex)
             {
                 OnStreamingErrorOccurred(ex);
             }
         }
 
+        #region subscribe, unsubscribe
         public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
         {
             TickPricesSubscribe tickPricesSubscribe = new(symbol, streamSessionId, minArrivalTime, maxLevel);
@@ -557,6 +565,7 @@ namespace xAPI.Sync
             CandleRecordsStop candleRecordsStop = new(symbol);
             await WriteMessageAsync(candleRecordsStop.ToString());
         }
+        #endregion
 
         protected virtual void OnStreamingErrorOccurred(Exception ex)
         {
@@ -577,6 +586,7 @@ namespace xAPI.Sync
             if (!_disposed)
             {
                 base.Dispose(disposing);
+                streamSessionId = null!;
 
                 _disposed = true;
             }

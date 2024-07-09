@@ -101,6 +101,7 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecuteLoginCommandAsync(_connector, _credentials);
             Pass(response);
+            Detail(response.StreamSessionId);
         }
         catch (Exception ex)
         {
@@ -121,8 +122,10 @@ public sealed class AsyncExample : ExampleBase
         Action($"Logging in again as '{_credentials.Login}'");
         try
         {
+            _connector.Connect();
             var response = await APICommandFactory.ExecuteLoginCommandAsync(_connector, _credentials);
             Pass(response);
+            Detail(response.StreamSessionId);
         }
         catch (Exception ex)
         {
@@ -383,6 +386,17 @@ public sealed class AsyncExample : ExampleBase
     public async Task StreamingSubscriptionStage()
     {
         Stage("Streaming subscriptions");
+
+        Action($"Connecting to streaming");
+        try
+        {
+            _connector.Streaming.Connect();
+            Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
 
         Action($"Subscribe keep alive");
         try

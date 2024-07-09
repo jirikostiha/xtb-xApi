@@ -262,7 +262,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Disconnects from the remote server.
         /// </summary>
-        /// <param name="silent">If true then no event will be trigered (used in redirect process)</param>
+        /// <param name="silent">If true then no event will be triggered (used in redirect process)</param>
         public void Disconnect(bool silent = false)
         {
             if (Connected())
