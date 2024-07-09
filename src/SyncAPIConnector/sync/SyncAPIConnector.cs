@@ -69,7 +69,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Last command timestamp (used to calculate interval between each command).
         /// </summary>
-        private long lastCommandTimestamp;
+        private long _lastCommandTimestamp;
 
         /// <summary>
         /// Lock object used to synchronize access to read/write socket operations.
@@ -215,8 +215,9 @@ namespace xAPI.Sync
         /// Executes given command and receives response (withholding API inter-command timeout).
         /// </summary>
         /// <param name="cmd">Command to execute</param>
+        /// <param name="cancellationToken">Token to cancel operation.</param>
         /// <returns>Response from the server</returns>
-		public async Task<JsonObject> ExecuteCommandAsync(BaseCommand cmd)
+        public async Task<JsonObject> ExecuteCommandAsync(BaseCommand cmd, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -241,7 +242,7 @@ namespace xAPI.Sync
             {
                 long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-                long interval = currentTimestamp - lastCommandTimestamp;
+                long interval = currentTimestamp - _lastCommandTimestamp;
 
                 // If interval between now and last command is less than minimum command time space - wait
                 if (interval < COMMAND_TIME_SPACE)
@@ -251,7 +252,7 @@ namespace xAPI.Sync
 
                 WriteMessage(message);
 
-                this.lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
                 string response = ReadMessage();
 
@@ -273,25 +274,26 @@ namespace xAPI.Sync
         /// Executes given command and receives response (withholding API inter-command timeout).
         /// </summary>
         /// <param name="message">Command to execute</param>
+        /// <param name="cancellationToken">Token to cancel operation.</param>
         /// <returns>Response from the server</returns>
-		public async Task<string> ExecuteCommandAsync(string message)
+        internal async Task<string> ExecuteCommandAsync(string message, CancellationToken cancellationToken = default)
         {
-            await locker.WaitAsync();
+            await locker.WaitAsync(cancellationToken);
             try
             {
                 long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-                long interval = currentTimestamp - lastCommandTimestamp;
+                long interval = currentTimestamp - _lastCommandTimestamp;
 
                 // If interval between now and last command is less than minimum command time space - wait
                 if (interval < COMMAND_TIME_SPACE)
                 {
-                    await Task.Delay((int)(COMMAND_TIME_SPACE - interval));
+                    await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
                 }
 
-                await WriteMessageAsync(message).ConfigureAwait(false);
+                await WriteMessageAsync(message, cancellationToken).ConfigureAwait(false);
 
-                this.lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+                _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
                 string response = await ReadMessageAsync().ConfigureAwait(false);
 
@@ -314,7 +316,7 @@ namespace xAPI.Sync
         /// </summary>
         public StreamingAPIConnector Streaming
         {
-            get { return this.streamingConnector; }
+            get { return streamingConnector; }
         }
 
         /// <summary>

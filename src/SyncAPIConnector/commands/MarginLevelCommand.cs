@@ -4,7 +4,7 @@ namespace xAPI.Commands
     {
         public const string Name = "getMarginLevel";
 
-        public MarginLevelCommand(bool? prettyPrint)
+        public MarginLevelCommand(bool? prettyPrint = false)
             : base([], prettyPrint)
         {
         }

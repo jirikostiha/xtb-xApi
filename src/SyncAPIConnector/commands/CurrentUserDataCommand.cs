@@ -5,7 +5,7 @@ namespace xAPI.Commands
     {
         public const string Name = "getCurrentUserData";
 
-        public CurrentUserDataCommand(bool prettyPrint)
+        public CurrentUserDataCommand(bool prettyPrint = false)
             : base([], prettyPrint)
         {
         }

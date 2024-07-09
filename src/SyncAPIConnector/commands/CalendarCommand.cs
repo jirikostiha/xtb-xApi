@@ -4,7 +4,7 @@ namespace xAPI.Commands
     {
         public const string Name = "getCalendar";
 
-        public CalendarCommand(bool prettyPrint)
+        public CalendarCommand(bool prettyPrint = false)
             : base([], prettyPrint)
         {
         }

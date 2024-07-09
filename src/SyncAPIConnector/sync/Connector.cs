@@ -135,9 +135,10 @@ namespace xAPI.Sync
         /// Writes raw message to the remote server.
         /// </summary>
         /// <param name="message">Message to send</param>
-        protected async Task WriteMessageAsync(string message)
+        /// <param name="cancellationToken">Cancellation token to cancel the operation</param>
+        protected async Task WriteMessageAsync(string message, CancellationToken cancellationToken = default)
         {
-            await writeLocker.WaitAsync();
+            await writeLocker.WaitAsync(cancellationToken);
             try
             {
                 if (Connected())
@@ -174,7 +175,7 @@ namespace xAPI.Sync
         /// <returns>Read message</returns>
         protected string ReadMessage()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             char lastChar = ' ';
 
             try
@@ -219,7 +220,7 @@ namespace xAPI.Sync
         /// <returns>Read message</returns>
         protected async Task<string> ReadMessageAsync()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
             char lastChar = ' ';
 
             try
@@ -275,7 +276,7 @@ namespace xAPI.Sync
                     OnDisconnected.Invoke();
             }
 
-            this.apiConnected = false;
+            apiConnected = false;
         }
 
         private bool _disposed;
