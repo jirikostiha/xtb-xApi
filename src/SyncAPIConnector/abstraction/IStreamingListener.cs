@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using xAPI.Records;
 
-namespace xAPI.Streaming;
+namespace xAPI;
 
 public interface IStreamingListener
 {

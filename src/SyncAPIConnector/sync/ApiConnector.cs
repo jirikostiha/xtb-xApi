@@ -12,7 +12,7 @@ using xAPI.Utils;
 
 namespace xAPI.Sync;
 
-public class SyncAPIConnector : Connector
+public class ApiConnector : Connector
 {
     #region Settings
 
@@ -24,7 +24,7 @@ public class SyncAPIConnector : Connector
     /// <summary>
     /// Delay between each command to the server.
     /// </summary>
-		private const long COMMAND_TIME_SPACE = 200;
+    private const long COMMAND_TIME_SPACE = 200;
 
     /// <summary>
     /// Maximum number of redirects (to avoid redirection loops).
@@ -60,7 +60,7 @@ public class SyncAPIConnector : Connector
     /// <summary>
     /// Streaming API connector.
     /// </summary>
-    private StreamingAPIConnector _streamingConnector;
+    private StreamingApiConnector _streamingConnector;
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -82,7 +82,7 @@ public class SyncAPIConnector : Connector
     /// </summary>
     /// <param name="server">Server data</param>
     /// <param name="connectionTimeout">Connection timeout</param>
-    public SyncAPIConnector(Server server, int connectionTimeout = TIMEOUT)
+    public ApiConnector(Server server, int connectionTimeout = TIMEOUT)
     {
         Server = server;
         _connectionTimeout = connectionTimeout;
@@ -154,7 +154,7 @@ public class SyncAPIConnector : Connector
 
         Connected?.Invoke(this, new(server));
 
-        _streamingConnector = new StreamingAPIConnector(Server);
+        _streamingConnector = new StreamingApiConnector(Server);
     }
 
     /// <summary>
@@ -319,7 +319,7 @@ public class SyncAPIConnector : Connector
     /// <summary>
     /// Streaming connector.
     /// </summary>
-    public StreamingAPIConnector Streaming
+    public StreamingApiConnector Streaming
     {
         get { return _streamingConnector; }
     }
@@ -350,7 +350,7 @@ public class SyncAPIConnector : Connector
         }
     }
 
-    ~SyncAPIConnector()
+    ~ApiConnector()
     {
         Dispose(false);
     }

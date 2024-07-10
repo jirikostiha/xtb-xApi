@@ -12,9 +12,9 @@ namespace xAPITest;
 public sealed class AsyncExample : ExampleBase
 {
     private readonly Credentials _credentials;
-    private readonly SyncAPIConnector _connector;
+    private readonly ApiConnector _connector;
 
-    public AsyncExample(SyncAPIConnector connector, string user, string password)
+    public AsyncExample(ApiConnector connector, string user, string password)
     {
         _connector = connector;
         _credentials = new Credentials(user, password);

@@ -1,4 +1,4 @@
-namespace xAPI.Commands;
+namespace xAPI;
 
 public interface ICommand
 {

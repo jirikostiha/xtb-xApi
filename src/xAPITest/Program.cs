@@ -11,14 +11,14 @@ namespace xAPITest
 
         private static void Main(string[] args)
         {
-            using (var syncConnector = new SyncAPIConnector(_server))
+            using (var syncConnector = new ApiConnector(_server))
             {
                 Console.WriteLine("----Sync test---");
                 var syncExample = new SyncExample(syncConnector, _userId, _password);
                 syncExample.Run();
             }
 
-            using (var syncConnector = new SyncAPIConnector(_server))
+            using (var syncConnector = new ApiConnector(_server))
             {
                 Console.WriteLine();
                 Console.WriteLine("----Async test---");

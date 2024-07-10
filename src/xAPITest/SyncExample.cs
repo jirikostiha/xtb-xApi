@@ -11,9 +11,9 @@ namespace xAPITest;
 public sealed class SyncExample : ExampleBase
 {
     private readonly Credentials _credentials;
-    private readonly SyncAPIConnector _connector;
+    private readonly ApiConnector _connector;
 
-    public SyncExample(SyncAPIConnector connector, string user, string password)
+    public SyncExample(ApiConnector connector, string user, string password)
     {
         _connector = connector;
         _credentials = new Credentials(user, password);

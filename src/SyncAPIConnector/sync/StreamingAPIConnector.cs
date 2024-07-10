@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace xAPI.Sync;
 
-public class StreamingAPIConnector : Connector
+public class StreamingApiConnector : Connector
 {
     #region Events
 
@@ -81,7 +81,7 @@ public class StreamingAPIConnector : Connector
     /// Creates new StreamingAPIConnector instance based on given server data.
     /// </summary>
     /// <param name="server">Server data</param>
-    public StreamingAPIConnector(Server server)
+    public StreamingApiConnector(Server server)
     {
         Server = server;
         apiConnected = false;
@@ -92,7 +92,7 @@ public class StreamingAPIConnector : Connector
     /// </summary>
     /// <param name="server">Server data</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingAPIConnector(Server server, IStreamingListener streamingListener)
+    public StreamingApiConnector(Server server, IStreamingListener streamingListener)
         : this(server)
     {
         _streamingListener = streamingListener;
@@ -517,7 +517,7 @@ public class StreamingAPIConnector : Connector
         }
     }
 
-    ~StreamingAPIConnector()
+    ~StreamingApiConnector()
     {
         Dispose(false);
     }

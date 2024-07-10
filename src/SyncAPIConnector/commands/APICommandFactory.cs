@@ -25,7 +25,7 @@ public static class APICommandFactory
         args.Add("userId", userId);
         args.Add("password", password);
         args.Add("type", "dotNET");
-        args.Add("version", SyncAPIConnector.VERSION);
+        args.Add("version", ApiConnector.VERSION);
         return new LoginCommand(args, prettyPrint);
     }
 
@@ -43,7 +43,7 @@ public static class APICommandFactory
             response.Add("userId", credentials.Login);
             response.Add("password", credentials.Password);
             response.Add("type", "dotNET");
-            response.Add("version", SyncAPIConnector.VERSION);
+            response.Add("version", ApiConnector.VERSION);
 
             if (credentials.AppId != null)
             {
@@ -206,7 +206,7 @@ public static class APICommandFactory
 
     #region Command executors
 
-    public static AllSymbolsResponse ExecuteAllSymbolsCommand(SyncAPIConnector connector, bool prettyPrint = false)
+    public static AllSymbolsResponse ExecuteAllSymbolsCommand(ApiConnector connector, bool prettyPrint = false)
     {
         var commnad = new AllSymbolsCommand();
         var jsonObj = connector.ExecuteCommand(commnad);
@@ -214,7 +214,7 @@ public static class APICommandFactory
         return new AllSymbolsResponse(jsonObj.ToString());
     }
 
-    public static async Task<AllSymbolsResponse> ExecuteAllSymbolsCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<AllSymbolsResponse> ExecuteAllSymbolsCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var commnad = new AllSymbolsCommand();
         var jsonObj = await connector.ExecuteCommandAsync(commnad, cancellationToken).ConfigureAwait(false);
@@ -222,7 +222,7 @@ public static class APICommandFactory
         return new AllSymbolsResponse(jsonObj.ToString());
     }
 
-    public static CalendarResponse ExecuteCalendarCommand(SyncAPIConnector connector, bool prettyPrint = false)
+    public static CalendarResponse ExecuteCalendarCommand(ApiConnector connector, bool prettyPrint = false)
     {
         var command = new CalendarCommand(prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -230,7 +230,7 @@ public static class APICommandFactory
         return new CalendarResponse(jsonObj.ToString());
     }
 
-    public static async Task<CalendarResponse> ExecuteCalendarCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<CalendarResponse> ExecuteCalendarCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new CalendarCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -238,7 +238,7 @@ public static class APICommandFactory
         return new CalendarResponse(jsonObj.ToString());
     }
 
-    public static ChartLastResponse ExecuteChartLastCommand(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
+    public static ChartLastResponse ExecuteChartLastCommand(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
     {
         var command = CreateChartLastCommand(symbol, period, start, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -246,7 +246,7 @@ public static class APICommandFactory
         return new ChartLastResponse(jsonObj.ToString());
     }
 
-    public static ChartLastResponse ExecuteChartLastCommand(SyncAPIConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
+    public static ChartLastResponse ExecuteChartLastCommand(ApiConnector connector, ChartLastInfoRecord info, bool prettyPrint = false)
     {
         var command = CreateChartLastCommand(info, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -254,7 +254,7 @@ public static class APICommandFactory
         return new ChartLastResponse(jsonObj.ToString());
     }
 
-    public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, CancellationToken cancellationToken = default)
+    public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, CancellationToken cancellationToken = default)
     {
         var command = CreateChartLastCommand(symbol, period, start);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -262,7 +262,7 @@ public static class APICommandFactory
         return new ChartLastResponse(jsonObj.ToString());
     }
 
-    public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(SyncAPIConnector connector, ChartLastInfoRecord info, CancellationToken cancellationToken = default)
+    public static async Task<ChartLastResponse> ExecuteChartLastCommandAsync(ApiConnector connector, ChartLastInfoRecord info, CancellationToken cancellationToken = default)
     {
         var command = CreateChartLastCommand(info);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -270,7 +270,7 @@ public static class APICommandFactory
         return new ChartLastResponse(jsonObj.ToString());
     }
 
-    public static ChartRangeResponse ExecuteChartRangeCommand(SyncAPIConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
+    public static ChartRangeResponse ExecuteChartRangeCommand(ApiConnector connector, ChartRangeInfoRecord info, bool prettyPrint = false)
     {
         var command = CreateChartRangeCommand(info, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -278,7 +278,7 @@ public static class APICommandFactory
         return new ChartRangeResponse(jsonObj.ToString());
     }
 
-    public static ChartRangeResponse ExecuteChartRangeCommand(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
+    public static ChartRangeResponse ExecuteChartRangeCommand(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
     {
         var command = CreateChartRangeCommand(symbol, period, start, end, ticks, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -286,7 +286,7 @@ public static class APICommandFactory
         return new ChartRangeResponse(jsonObj.ToString());
     }
 
-    public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(SyncAPIConnector connector, ChartRangeInfoRecord info, CancellationToken cancellationToken = default)
+    public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(ApiConnector connector, ChartRangeInfoRecord info, CancellationToken cancellationToken = default)
     {
         var command = CreateChartRangeCommand(info);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -294,7 +294,7 @@ public static class APICommandFactory
         return new ChartRangeResponse(jsonObj.ToString());
     }
 
-    public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(SyncAPIConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, CancellationToken cancellationToken = default)
+    public static async Task<ChartRangeResponse> ExecuteChartRangeCommandAsync(ApiConnector connector, string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, CancellationToken cancellationToken = default)
     {
         var command = CreateChartRangeCommand(symbol, period, start, end, ticks);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -302,7 +302,7 @@ public static class APICommandFactory
         return new ChartRangeResponse(jsonObj.ToString());
     }
 
-    public static CommissionDefResponse ExecuteCommissionDefCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+    public static CommissionDefResponse ExecuteCommissionDefCommand(ApiConnector connector, string symbol, double? volume, bool prettyPrint = false)
     {
         var command = CreateCommissionDefCommand(symbol, volume, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -310,7 +310,7 @@ public static class APICommandFactory
         return new CommissionDefResponse(jsonObj.ToString());
     }
 
-    public static async Task<CommissionDefResponse> ExecuteCommissionDefCommandAsync(SyncAPIConnector connector, string symbol, double? volume, CancellationToken cancellationToken = default)
+    public static async Task<CommissionDefResponse> ExecuteCommissionDefCommandAsync(ApiConnector connector, string symbol, double? volume, CancellationToken cancellationToken = default)
     {
         var command = CreateCommissionDefCommand(symbol, volume);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -318,7 +318,7 @@ public static class APICommandFactory
         return new CommissionDefResponse(jsonObj.ToString());
     }
 
-    public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, string userId, string password, bool prettyPrint = false)
+    public static LoginResponse ExecuteLoginCommand(ApiConnector connector, string userId, string password, bool prettyPrint = false)
     {
         var credentials = new Credentials(userId, password);
         var command = CreateLoginCommand(credentials, prettyPrint);
@@ -327,7 +327,7 @@ public static class APICommandFactory
         return new LoginResponse(jsonObj.ToString());
     }
 
-    public static LoginResponse ExecuteLoginCommand(SyncAPIConnector connector, Credentials credentials, bool prettyPrint = false)
+    public static LoginResponse ExecuteLoginCommand(ApiConnector connector, Credentials credentials, bool prettyPrint = false)
     {
         var loginCommand = CreateLoginCommand(credentials, prettyPrint);
         var loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
@@ -336,7 +336,7 @@ public static class APICommandFactory
 
         while (loginResponse.RedirectRecord != null)
         {
-            if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
+            if (redirectCounter >= ApiConnector.MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
             var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
@@ -353,7 +353,7 @@ public static class APICommandFactory
         return loginResponse;
     }
 
-    public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, string userId, string password, CancellationToken cancellationToken = default)
+    public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, string userId, string password, CancellationToken cancellationToken = default)
     {
         var credentials = new Credentials(userId, password);
         var command = CreateLoginCommand(credentials);
@@ -362,7 +362,7 @@ public static class APICommandFactory
         return new LoginResponse(jsonObj.ToString());
     }
 
-    public static async Task<LoginResponse> ExecuteLoginCommandAsync(SyncAPIConnector connector, Credentials credentials, CancellationToken cancellationToken = default)
+    public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, Credentials credentials, CancellationToken cancellationToken = default)
     {
         var loginCommand = CreateLoginCommand(credentials);
         var jsonObj = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
@@ -372,7 +372,7 @@ public static class APICommandFactory
 
         while (loginResponse.RedirectRecord != null)
         {
-            if (redirectCounter >= SyncAPIConnector.MAX_REDIRECTS)
+            if (redirectCounter >= ApiConnector.MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
             var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
@@ -390,7 +390,7 @@ public static class APICommandFactory
         return loginResponse;
     }
 
-    public static LogoutResponse ExecuteLogoutCommand(SyncAPIConnector connector)
+    public static LogoutResponse ExecuteLogoutCommand(ApiConnector connector)
     {
         var command = new LogoutCommand();
         var jsonObj = connector.ExecuteCommand(command);
@@ -398,7 +398,7 @@ public static class APICommandFactory
         return new LogoutResponse(jsonObj.ToString());
     }
 
-    public static async Task<LogoutResponse> ExecuteLogoutCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<LogoutResponse> ExecuteLogoutCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new LogoutCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -406,7 +406,7 @@ public static class APICommandFactory
         return new LogoutResponse(jsonObj.ToString());
     }
 
-    public static MarginLevelResponse ExecuteMarginLevelCommand(SyncAPIConnector connector, bool prettyPrint = false)
+    public static MarginLevelResponse ExecuteMarginLevelCommand(ApiConnector connector, bool prettyPrint = false)
     {
         var command = new MarginLevelCommand(prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -414,7 +414,7 @@ public static class APICommandFactory
         return new MarginLevelResponse(jsonObj.ToString());
     }
 
-    public static async Task<MarginLevelResponse> ExecuteMarginLevelCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<MarginLevelResponse> ExecuteMarginLevelCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new MarginLevelCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -422,7 +422,7 @@ public static class APICommandFactory
         return new MarginLevelResponse(jsonObj.ToString());
     }
 
-    public static MarginTradeResponse ExecuteMarginTradeCommand(SyncAPIConnector connector, string symbol, double? volume, bool prettyPrint = false)
+    public static MarginTradeResponse ExecuteMarginTradeCommand(ApiConnector connector, string symbol, double? volume, bool prettyPrint = false)
     {
         var command = CreateMarginTradeCommand(symbol, volume, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -430,7 +430,7 @@ public static class APICommandFactory
         return new MarginTradeResponse(jsonObj.ToString());
     }
 
-    public static async Task<MarginTradeResponse> ExecuteMarginTradeCommandAsync(SyncAPIConnector connector, string symbol, double? volume, CancellationToken cancellationToken = default)
+    public static async Task<MarginTradeResponse> ExecuteMarginTradeCommandAsync(ApiConnector connector, string symbol, double? volume, CancellationToken cancellationToken = default)
     {
         var command = CreateMarginTradeCommand(symbol, volume);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -438,7 +438,7 @@ public static class APICommandFactory
         return new MarginTradeResponse(jsonObj.ToString());
     }
 
-    public static NewsResponse ExecuteNewsCommand(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
+    public static NewsResponse ExecuteNewsCommand(ApiConnector connector, long? start, long? end, bool prettyPrint = false)
     {
         var command = CreateNewsCommand(start, end, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -446,7 +446,7 @@ public static class APICommandFactory
         return new NewsResponse(jsonObj.ToString());
     }
 
-    public static async Task<NewsResponse> ExecuteNewsCommandAsync(SyncAPIConnector connector, long? start, long? end, CancellationToken cancellationToken = default)
+    public static async Task<NewsResponse> ExecuteNewsCommandAsync(ApiConnector connector, long? start, long? end, CancellationToken cancellationToken = default)
     {
         var command = CreateNewsCommand(start, end);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -454,7 +454,7 @@ public static class APICommandFactory
         return new NewsResponse(jsonObj.ToString());
     }
 
-    public static ServerTimeResponse ExecuteServerTimeCommand(SyncAPIConnector connector)
+    public static ServerTimeResponse ExecuteServerTimeCommand(ApiConnector connector)
     {
         var command = new ServerTimeCommand();
         var jsonObj = connector.ExecuteCommand(command);
@@ -462,7 +462,7 @@ public static class APICommandFactory
         return new ServerTimeResponse(jsonObj.ToString());
     }
 
-    public static async Task<ServerTimeResponse> ExecuteServerTimeCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<ServerTimeResponse> ExecuteServerTimeCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new ServerTimeCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -470,7 +470,7 @@ public static class APICommandFactory
         return new ServerTimeResponse(jsonObj.ToString());
     }
 
-    public static CurrentUserDataResponse ExecuteCurrentUserDataCommand(SyncAPIConnector connector, bool prettyPrint = false)
+    public static CurrentUserDataResponse ExecuteCurrentUserDataCommand(ApiConnector connector, bool prettyPrint = false)
     {
         var command = new CurrentUserDataCommand(prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -478,7 +478,7 @@ public static class APICommandFactory
         return new CurrentUserDataResponse(jsonObj.ToString());
     }
 
-    public static async Task<CurrentUserDataResponse> ExecuteCurrentUserDataCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<CurrentUserDataResponse> ExecuteCurrentUserDataCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new CurrentUserDataCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -486,7 +486,7 @@ public static class APICommandFactory
         return new CurrentUserDataResponse(jsonObj.ToString());
     }
 
-    public static PingResponse ExecutePingCommand(SyncAPIConnector connector)
+    public static PingResponse ExecutePingCommand(ApiConnector connector)
     {
         var command = new PingCommand();
         var jsonObj = connector.ExecuteCommand(command);
@@ -494,7 +494,7 @@ public static class APICommandFactory
         return new PingResponse(jsonObj.ToString());
     }
 
-    public static async Task<PingResponse> ExecutePingCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<PingResponse> ExecutePingCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new PingCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -502,7 +502,7 @@ public static class APICommandFactory
         return new PingResponse(jsonObj.ToString());
     }
 
-    public static ProfitCalculationResponse ExecuteProfitCalculationCommand(SyncAPIConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
+    public static ProfitCalculationResponse ExecuteProfitCalculationCommand(ApiConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
     {
         var command = CreateProfitCalculationCommand(symbol, volume, cmd, openPrice, closePrice, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -510,7 +510,7 @@ public static class APICommandFactory
         return new ProfitCalculationResponse(jsonObj.ToString());
     }
 
-    public static async Task<ProfitCalculationResponse> ExecuteProfitCalculationCommandAsync(SyncAPIConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, CancellationToken cancellationToken = default)
+    public static async Task<ProfitCalculationResponse> ExecuteProfitCalculationCommandAsync(ApiConnector connector, string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, CancellationToken cancellationToken = default)
     {
         var command = CreateProfitCalculationCommand(symbol, volume, cmd, openPrice, closePrice);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -518,7 +518,7 @@ public static class APICommandFactory
         return new ProfitCalculationResponse(jsonObj.ToString());
     }
 
-    public static StepRulesResponse ExecuteStepRulesCommand(SyncAPIConnector connector, bool prettyPrint = false)
+    public static StepRulesResponse ExecuteStepRulesCommand(ApiConnector connector, bool prettyPrint = false)
     {
         var command = new StepRulesCommand();
         var jsonObj = connector.ExecuteCommand(command);
@@ -526,7 +526,7 @@ public static class APICommandFactory
         return new StepRulesResponse(jsonObj.ToString());
     }
 
-    public static async Task<StepRulesResponse> ExecuteStepRulesCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<StepRulesResponse> ExecuteStepRulesCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new StepRulesCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -534,7 +534,7 @@ public static class APICommandFactory
         return new StepRulesResponse(jsonObj.ToString());
     }
 
-    public static SymbolResponse ExecuteSymbolCommand(SyncAPIConnector connector, string symbol, bool prettyPrint = false)
+    public static SymbolResponse ExecuteSymbolCommand(ApiConnector connector, string symbol, bool prettyPrint = false)
     {
         var command = CreateSymbolCommand(symbol, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -542,7 +542,7 @@ public static class APICommandFactory
         return new SymbolResponse(jsonObj.ToString());
     }
 
-    public static async Task<SymbolResponse> ExecuteSymbolCommandAsync(SyncAPIConnector connector, string symbol, CancellationToken cancellationToken = default)
+    public static async Task<SymbolResponse> ExecuteSymbolCommandAsync(ApiConnector connector, string symbol, CancellationToken cancellationToken = default)
     {
         var command = CreateSymbolCommand(symbol);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -550,7 +550,7 @@ public static class APICommandFactory
         return new SymbolResponse(jsonObj.ToString());
     }
 
-    public static TickPricesResponse ExecuteTickPricesCommand(SyncAPIConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
+    public static TickPricesResponse ExecuteTickPricesCommand(ApiConnector connector, string[] symbols, long? timestamp, bool prettyPrint = false)
     {
         var command = CreateTickPricesCommand(symbols, timestamp, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -558,7 +558,7 @@ public static class APICommandFactory
         return new TickPricesResponse(jsonObj.ToString());
     }
 
-    public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(SyncAPIConnector connector, string[] symbols, long? timestamp, CancellationToken cancellationToken = default)
+    public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(ApiConnector connector, string[] symbols, long? timestamp, CancellationToken cancellationToken = default)
     {
         var command = CreateTickPricesCommand(symbols, timestamp);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -566,7 +566,7 @@ public static class APICommandFactory
         return new TickPricesResponse(jsonObj.ToString());
     }
 
-    public static TradeRecordsResponse ExecuteTradeRecordsCommand(SyncAPIConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
+    public static TradeRecordsResponse ExecuteTradeRecordsCommand(ApiConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
     {
         var command = CreateTradeRecordsCommand(orders, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -574,7 +574,7 @@ public static class APICommandFactory
         return new TradeRecordsResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(SyncAPIConnector connector, LinkedList<long?> orders, CancellationToken cancellationToken = default)
+    public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(ApiConnector connector, LinkedList<long?> orders, CancellationToken cancellationToken = default)
     {
         var command = CreateTradeRecordsCommand(orders);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -582,7 +582,7 @@ public static class APICommandFactory
         return new TradeRecordsResponse(jsonObj.ToString());
     }
 
-    public static TradeTransactionResponse ExecuteTradeTransactionCommand(SyncAPIConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
+    public static TradeTransactionResponse ExecuteTradeTransactionCommand(ApiConnector connector, TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
     {
         var command = CreateTradeTransactionCommand(tradeTransInfo, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -590,7 +590,7 @@ public static class APICommandFactory
         return new TradeTransactionResponse(jsonObj.ToString());
     }
 
-    public static TradeTransactionResponse ExecuteTradeTransactionCommand(SyncAPIConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
+    public static TradeTransactionResponse ExecuteTradeTransactionCommand(ApiConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
     {
         var command = CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -598,7 +598,7 @@ public static class APICommandFactory
         return new TradeTransactionResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(SyncAPIConnector connector, TradeTransInfoRecord tradeTransInfo, CancellationToken cancellationToken = default)
+    public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(ApiConnector connector, TradeTransInfoRecord tradeTransInfo, CancellationToken cancellationToken = default)
     {
         var command = CreateTradeTransactionCommand(tradeTransInfo);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -606,7 +606,7 @@ public static class APICommandFactory
         return new TradeTransactionResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(SyncAPIConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, CancellationToken cancellationToken = default)
+    public static async Task<TradeTransactionResponse> ExecuteTradeTransactionCommandAsync(ApiConnector connector, TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, CancellationToken cancellationToken = default)
     {
         var command = CreateTradeTransactionCommand(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -614,7 +614,7 @@ public static class APICommandFactory
         return new TradeTransactionResponse(jsonObj.ToString());
     }
 
-    public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(SyncAPIConnector connector, long? order, bool prettyPrint = false)
+    public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(ApiConnector connector, long? order, bool prettyPrint = false)
     {
         var command = CreateTradeTransactionStatusCommand(order, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -622,7 +622,7 @@ public static class APICommandFactory
         return new TradeTransactionStatusResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradeTransactionStatusResponse> ExecuteTradeTransactionStatusCommandAsync(SyncAPIConnector connector, long? order, CancellationToken cancellationToken = default)
+    public static async Task<TradeTransactionStatusResponse> ExecuteTradeTransactionStatusCommandAsync(ApiConnector connector, long? order, CancellationToken cancellationToken = default)
     {
         var command = CreateTradeTransactionStatusCommand(order);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -630,7 +630,7 @@ public static class APICommandFactory
         return new TradeTransactionStatusResponse(jsonObj.ToString());
     }
 
-    public static TradesResponse ExecuteTradesCommand(SyncAPIConnector connector, bool openedOnly, bool prettyPrint = false)
+    public static TradesResponse ExecuteTradesCommand(ApiConnector connector, bool openedOnly, bool prettyPrint = false)
     {
         var command = CreateTradesCommand(openedOnly, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -638,7 +638,7 @@ public static class APICommandFactory
         return new TradesResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradesResponse> ExecuteTradesCommandAsync(SyncAPIConnector connector, bool openedOnly, CancellationToken cancellationToken = default)
+    public static async Task<TradesResponse> ExecuteTradesCommandAsync(ApiConnector connector, bool openedOnly, CancellationToken cancellationToken = default)
     {
         var command = CreateTradesCommand(openedOnly);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -646,7 +646,7 @@ public static class APICommandFactory
         return new TradesResponse(jsonObj.ToString());
     }
 
-    public static TradesHistoryResponse ExecuteTradesHistoryCommand(SyncAPIConnector connector, long? start, long? end, bool prettyPrint = false)
+    public static TradesHistoryResponse ExecuteTradesHistoryCommand(ApiConnector connector, long? start, long? end, bool prettyPrint = false)
     {
         var command = CreateTradesHistoryCommand(start, end, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -654,7 +654,7 @@ public static class APICommandFactory
         return new TradesHistoryResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradesHistoryResponse> ExecuteTradesHistoryCommandAsync(SyncAPIConnector connector, long? start, long? end, CancellationToken cancellationToken = default)
+    public static async Task<TradesHistoryResponse> ExecuteTradesHistoryCommandAsync(ApiConnector connector, long? start, long? end, CancellationToken cancellationToken = default)
     {
         var command = CreateTradesHistoryCommand(start, end);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -662,7 +662,7 @@ public static class APICommandFactory
         return new TradesHistoryResponse(jsonObj.ToString());
     }
 
-    public static TradingHoursResponse ExecuteTradingHoursCommand(SyncAPIConnector connector, string[] symbols, bool prettyPrint = false)
+    public static TradingHoursResponse ExecuteTradingHoursCommand(ApiConnector connector, string[] symbols, bool prettyPrint = false)
     {
         var command = CreateTradingHoursCommand(symbols, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -670,7 +670,7 @@ public static class APICommandFactory
         return new TradingHoursResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradingHoursResponse> ExecuteTradingHoursCommandAsync(SyncAPIConnector connector, string[] symbols, CancellationToken cancellationToken = default)
+    public static async Task<TradingHoursResponse> ExecuteTradingHoursCommandAsync(ApiConnector connector, string[] symbols, CancellationToken cancellationToken = default)
     {
         var command = CreateTradingHoursCommand(symbols);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
@@ -678,7 +678,7 @@ public static class APICommandFactory
         return new TradingHoursResponse(jsonObj.ToString());
     }
 
-    public static VersionResponse ExecuteVersionCommand(SyncAPIConnector connector)
+    public static VersionResponse ExecuteVersionCommand(ApiConnector connector)
     {
         var command = new VersionCommand();
         var jsonObj = connector.ExecuteCommand(command);
@@ -686,7 +686,7 @@ public static class APICommandFactory
         return new VersionResponse(jsonObj.ToString());
     }
 
-    public static async Task<VersionResponse> ExecuteVersionCommandAsync(SyncAPIConnector connector, CancellationToken cancellationToken = default)
+    public static async Task<VersionResponse> ExecuteVersionCommandAsync(ApiConnector connector, CancellationToken cancellationToken = default)
     {
         var command = new VersionCommand();
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
