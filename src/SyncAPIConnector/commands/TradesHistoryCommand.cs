@@ -1,20 +1,19 @@
 using System.Text.Json.Nodes;
 
-namespace xAPI.Commands
+namespace xAPI.Commands;
+
+public class TradesHistoryCommand : BaseCommand
 {
-    public class TradesHistoryCommand : BaseCommand
+    public const string Name = "getTradesHistory";
+
+    public static readonly string[] RequiredArgs = ["start", "end"];
+
+    public TradesHistoryCommand(JsonObject arguments, bool prettyPrint)
+        : base(arguments, prettyPrint)
     {
-        public const string Name = "getTradesHistory";
-
-        public static readonly string[] RequiredArgs = ["start", "end"];
-
-        public TradesHistoryCommand(JsonObject arguments, bool prettyPrint)
-            : base(arguments, prettyPrint)
-        {
-        }
-
-        public override string CommandName => Name;
-
-        public override string[] RequiredArguments => RequiredArgs;
     }
+
+    public override string CommandName => Name;
+
+    public override string[] RequiredArguments => RequiredArgs;
 }

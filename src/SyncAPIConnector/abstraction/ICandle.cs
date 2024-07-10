@@ -1,13 +1,12 @@
-﻿namespace xAPI
+﻿namespace xAPI;
+
+public interface ICandle
 {
-    public interface ICandle
-    {
-        double? High { get; }
+    double? High { get; }
 
-        double? Low { get; }
+    double? Low { get; }
 
-        double? Open { get; }
+    double? Open { get; }
 
-        double? Close { get; }
-    }
+    double? Close { get; }
 }

@@ -1,31 +1,30 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records
+namespace xAPI.Records;
+
+public record StepRuleRecord : IBaseResponseRecord
 {
-    public record StepRuleRecord : IBaseResponseRecord
+    public int? Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public LinkedList<StepRecord> Steps { get; set; } = [];
+
+    public void FieldsFromJsonObject(JsonObject value)
     {
-        public int? Id { get; set; }
+        Id = (int?)value["id"];
+        Name = (string?)value["name"];
 
-        public string? Name { get; set; }
-
-        public LinkedList<StepRecord> Steps { get; set; } = [];
-
-        public void FieldsFromJsonObject(JsonObject value)
+        Steps = new LinkedList<StepRecord>();
+        if (value["steps"] != null)
         {
-            Id = (int?)value["id"];
-            Name = (string?)value["name"];
-
-            Steps = new LinkedList<StepRecord>();
-            if (value["steps"] != null)
+            JsonArray jsonarray = value["steps"].AsArray();
+            foreach (JsonObject i in jsonarray)
             {
-                JsonArray jsonarray = value["steps"].AsArray();
-                foreach (JsonObject i in jsonarray)
-                {
-                    StepRecord rec = new StepRecord();
-                    rec.FieldsFromJsonObject(i);
-                    Steps.AddLast(rec);
-                }
+                StepRecord rec = new StepRecord();
+                rec.FieldsFromJsonObject(i);
+                Steps.AddLast(rec);
             }
         }
     }

@@ -1,9 +1,8 @@
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records
+namespace xAPI.Records;
+
+public interface IBaseResponseRecord
 {
-    public interface IBaseResponseRecord
-    {
-        void FieldsFromJsonObject(JsonObject value);
-    }
+    void FieldsFromJsonObject(JsonObject value);
 }

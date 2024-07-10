@@ -1,21 +1,20 @@
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class ConfirmRequotedResponse : BaseResponse
 {
-    public class ConfirmRequotedResponse : BaseResponse
+    public ConfirmRequotedResponse()
+        : base()
+    { }
+
+    public ConfirmRequotedResponse(string body)
+        : base(body)
     {
-        public ConfirmRequotedResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public ConfirmRequotedResponse(string body)
-            : base(body)
-        {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
-            NewRequestId = (long?)ob["requestId"];
-        }
-
-        public long? NewRequestId { get; init; }
+        var ob = ReturnData.AsObject();
+        NewRequestId = (long?)ob["requestId"];
     }
+
+    public long? NewRequestId { get; init; }
 }

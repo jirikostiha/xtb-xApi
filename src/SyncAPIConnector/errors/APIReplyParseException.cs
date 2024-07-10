@@ -1,29 +1,28 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace xAPI.Errors
+namespace xAPI.Errors;
+
+[Serializable]
+public class APIReplyParseException : Exception
 {
-    [Serializable]
-    public class APIReplyParseException : Exception
+    public APIReplyParseException()
+        : base()
     {
-        public APIReplyParseException()
-            : base()
-        {
-        }
+    }
 
-        public APIReplyParseException(string message)
-            : base(message)
-        {
-        }
+    public APIReplyParseException(string message)
+        : base(message)
+    {
+    }
 
-        public APIReplyParseException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public APIReplyParseException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        protected APIReplyParseException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+    protected APIReplyParseException(SerializationInfo info, StreamingContext context)
+        : base(info, context)
+    {
     }
 }

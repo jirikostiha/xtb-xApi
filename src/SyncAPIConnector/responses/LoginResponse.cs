@@ -1,25 +1,24 @@
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class LoginResponse : BaseResponse
 {
-    public class LoginResponse : BaseResponse
+    public LoginResponse(string body)
+        : base(body)
     {
-        public LoginResponse(string body)
-            : base(body)
+        var ob = JsonNode.Parse(body);
+        StreamSessionId = (string?)ob["streamSessionId"];
+
+        if (ob["redirect"] is JsonObject redirectJSON)
         {
-            var ob = JsonNode.Parse(body);
-            StreamSessionId = (string?)ob["streamSessionId"];
-
-            if (ob["redirect"] is JsonObject redirectJSON)
-            {
-                RedirectRecord = new RedirectRecord();
-                RedirectRecord.FieldsFromJsonObject(redirectJSON);
-            }
+            RedirectRecord = new RedirectRecord();
+            RedirectRecord.FieldsFromJsonObject(redirectJSON);
         }
-
-        public string? StreamSessionId { get; init; }
-
-        public RedirectRecord? RedirectRecord { get; init; }
     }
+
+    public string? StreamSessionId { get; init; }
+
+    public RedirectRecord? RedirectRecord { get; init; }
 }

@@ -3,29 +3,28 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class SpreadsResponse : BaseResponse
 {
-    public class SpreadsResponse : BaseResponse
+    public SpreadsResponse()
+        : base()
+    { }
+
+    public SpreadsResponse(string body)
+        : base(body)
     {
-        public SpreadsResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public SpreadsResponse(string body)
-            : base(body)
+        var arr = ReturnData.AsArray();
+        foreach (JsonObject e in arr.OfType<JsonObject>())
         {
-            if (ReturnData is null)
-                return;
-
-            var arr = ReturnData.AsArray();
-            foreach (JsonObject e in arr.OfType<JsonObject>())
-            {
-                var record = new SpreadRecord();
-                record.FieldsFromJsonObject(e);
-                SpreadRecords.AddLast(record);
-            }
+            var record = new SpreadRecord();
+            record.FieldsFromJsonObject(e);
+            SpreadRecords.AddLast(record);
         }
-
-        public LinkedList<SpreadRecord> SpreadRecords { get; init; } = [];
     }
+
+    public LinkedList<SpreadRecord> SpreadRecords { get; init; } = [];
 }

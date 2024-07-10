@@ -2,22 +2,21 @@
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records
+namespace xAPI.Records;
+
+[DebuggerDisplay("{DateTime}")]
+public record StreamingKeepAliveRecord : IBaseResponseRecord
 {
-    [DebuggerDisplay("{DateTime}")]
-    public record StreamingKeepAliveRecord : IBaseResponseRecord
+    public long? Timestamp
     {
-        public long? Timestamp
-        {
-            get;
-            set;
-        }
+        get;
+        set;
+    }
 
-        public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
+    public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
 
-        public void FieldsFromJsonObject(JsonObject value)
-        {
-            Timestamp = (long?)value["timestamp"];
-        }
+    public void FieldsFromJsonObject(JsonObject value)
+    {
+        Timestamp = (long?)value["timestamp"];
     }
 }

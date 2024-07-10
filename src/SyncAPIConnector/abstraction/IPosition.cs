@@ -1,11 +1,10 @@
-﻿namespace xAPI
+﻿namespace xAPI;
+
+public interface IPosition
 {
-    public interface IPosition
-    {
-        long? Order { get; }
+    long? Order { get; }
 
-        long? Order2 { get; }
+    long? Order2 { get; }
 
-        long? Position { get; }
-    }
+    long? Position { get; }
 }

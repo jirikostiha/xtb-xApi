@@ -1,7 +1,6 @@
-﻿namespace xAPI
+﻿namespace xAPI;
+
+public interface ISymbol
 {
-    public interface ISymbol
-    {
-        string? Symbol { get; }
-    }
+    string? Symbol { get; }
 }

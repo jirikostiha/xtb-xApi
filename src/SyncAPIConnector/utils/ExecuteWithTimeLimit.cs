@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace xAPI.Utils
+namespace xAPI.Utils;
+
+internal sealed class ExecuteWithTimeLimit
 {
-    internal sealed class ExecuteWithTimeLimit
+    public static bool Execute(TimeSpan timeSpan, Action codeBlock)
     {
-        public static bool Execute(TimeSpan timeSpan, Action codeBlock)
+        try
         {
-            try
-            {
-                Task task = Task.Factory.StartNew(() => codeBlock());
-                task.Wait(timeSpan);
-                return task.IsCompleted;
-            }
-            catch (AggregateException ae)
-            {
-                throw ae.InnerExceptions[0];
-            }
+            Task task = Task.Factory.StartNew(() => codeBlock());
+            task.Wait(timeSpan);
+            return task.IsCompleted;
+        }
+        catch (AggregateException ae)
+        {
+            throw ae.InnerExceptions[0];
         }
     }
 }

@@ -1,9 +1,8 @@
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class LogoutResponse : BaseResponse
 {
-    public class LogoutResponse : BaseResponse
-    {
-        public LogoutResponse(string body)
-            : base(body)
-        { }
-    }
+    public LogoutResponse(string body)
+        : base(body)
+    { }
 }

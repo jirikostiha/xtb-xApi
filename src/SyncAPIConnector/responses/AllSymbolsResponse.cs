@@ -3,29 +3,28 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class AllSymbolsResponse : BaseResponse
 {
-    public class AllSymbolsResponse : BaseResponse
+    public AllSymbolsResponse()
+        : base()
+    { }
+
+    public AllSymbolsResponse(string body)
+        : base(body)
     {
-        public AllSymbolsResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public AllSymbolsResponse(string body)
-            : base(body)
+        var symbolRecordsArray = ReturnData.AsArray();
+        foreach (JsonObject e in symbolRecordsArray.OfType<JsonObject>())
         {
-            if (ReturnData is null)
-                return;
-
-            var symbolRecordsArray = ReturnData.AsArray();
-            foreach (JsonObject e in symbolRecordsArray.OfType<JsonObject>())
-            {
-                var symbolRecord = new SymbolRecord();
-                symbolRecord.FieldsFromJsonObject(e);
-                SymbolRecords.AddLast(symbolRecord);
-            }
+            var symbolRecord = new SymbolRecord();
+            symbolRecord.FieldsFromJsonObject(e);
+            SymbolRecords.AddLast(symbolRecord);
         }
-
-        public LinkedList<SymbolRecord> SymbolRecords { get; init; } = [];
     }
+
+    public LinkedList<SymbolRecord> SymbolRecords { get; init; } = [];
 }

@@ -1,21 +1,20 @@
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class ProfitCalculationResponse : BaseResponse
 {
-    public class ProfitCalculationResponse : BaseResponse
+    public ProfitCalculationResponse()
+        : base()
+    { }
+
+    public ProfitCalculationResponse(string body)
+        : base(body)
     {
-        public ProfitCalculationResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public ProfitCalculationResponse(string body)
-            : base(body)
-        {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
-            Profit = (double?)ob["profit"];
-        }
-
-        public double? Profit { get; init; }
+        var ob = ReturnData.AsObject();
+        Profit = (double?)ob["profit"];
     }
+
+    public double? Profit { get; init; }
 }

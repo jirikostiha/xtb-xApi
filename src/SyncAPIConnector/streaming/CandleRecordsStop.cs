@@ -1,27 +1,26 @@
 ﻿using System.Text.Json.Nodes;
 using xAPI.Commands;
 
-namespace xAPI.Streaming
+namespace xAPI.Streaming;
+
+internal sealed class CandleRecordsStop(string symbol) : ICommand
 {
-    internal sealed class CandleRecordsStop(string symbol) : ICommand
+    public const string Name = "stopCandles";
+
+    public static readonly string[] RequiredArgs = ["symbol"];
+
+    public string CommandName => Name;
+
+    public string Symbol { get; } = symbol;
+
+    public override string ToString()
     {
-        public const string Name = "stopCandles";
-
-        public static readonly string[] RequiredArgs = ["symbol"];
-
-        public string CommandName => Name;
-
-        public string Symbol { get; } = symbol;
-
-        public override string ToString()
+        JsonObject result = new()
         {
-            JsonObject result = new()
-            {
-                { "command", CommandName },
-                { "symbol", Symbol }
-            };
+            { "command", CommandName },
+            { "symbol", Symbol }
+        };
 
-            return result.ToJsonString();
-        }
+        return result.ToJsonString();
     }
 }

@@ -4,30 +4,29 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+[DebuggerDisplay("trades:{TradeRecords.Count}")]
+public class TradeRecordsResponse : BaseResponse
 {
-    [DebuggerDisplay("trades:{TradeRecords.Count}")]
-    public class TradeRecordsResponse : BaseResponse
+    public TradeRecordsResponse()
+        : base()
+    { }
+
+    public TradeRecordsResponse(string body)
+        : base(body)
     {
-        public TradeRecordsResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public TradeRecordsResponse(string body)
-            : base(body)
+        var arr = ReturnData.AsArray();
+        foreach (JsonObject e in arr.OfType<JsonObject>())
         {
-            if (ReturnData is null)
-                return;
-
-            var arr = ReturnData.AsArray();
-            foreach (JsonObject e in arr.OfType<JsonObject>())
-            {
-                var record = new TradeRecord();
-                record.FieldsFromJsonObject(e);
-                TradeRecords.AddLast(record);
-            }
+            var record = new TradeRecord();
+            record.FieldsFromJsonObject(e);
+            TradeRecords.AddLast(record);
         }
-
-        public LinkedList<TradeRecord> TradeRecords { get; init; } = [];
     }
+
+    public LinkedList<TradeRecord> TradeRecords { get; init; } = [];
 }

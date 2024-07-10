@@ -1,16 +1,15 @@
-namespace xAPI.Commands
+namespace xAPI.Commands;
+
+public class MarginLevelCommand : BaseCommand
 {
-    public class MarginLevelCommand : BaseCommand
+    public const string Name = "getMarginLevel";
+
+    public MarginLevelCommand(bool? prettyPrint = false)
+        : base([], prettyPrint)
     {
-        public const string Name = "getMarginLevel";
-
-        public MarginLevelCommand(bool? prettyPrint = false)
-            : base([], prettyPrint)
-        {
-        }
-
-        public override string CommandName => Name;
-
-        public override string[] RequiredArguments => [];
     }
+
+    public override string CommandName => Name;
+
+    public override string[] RequiredArguments => [];
 }

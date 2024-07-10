@@ -1,24 +1,23 @@
 using System.Diagnostics;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+[DebuggerDisplay("order:{Order}")]
+public class TradeTransactionResponse : BaseResponse
 {
-    [DebuggerDisplay("order:{Order}")]
-    public class TradeTransactionResponse : BaseResponse
+    public TradeTransactionResponse()
+        : base()
+    { }
+
+    public TradeTransactionResponse(string body)
+        : base(body)
     {
-        public TradeTransactionResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public TradeTransactionResponse(string body)
-            : base(body)
-        {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
-            Order = (long?)ob["order"];
-        }
-
-        public long? Order { get; init; }
+        var ob = ReturnData.AsObject();
+        Order = (long?)ob["order"];
     }
+
+    public long? Order { get; init; }
 }

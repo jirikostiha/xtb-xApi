@@ -1,15 +1,14 @@
-﻿namespace xAPI
+﻿namespace xAPI;
+
+public interface ITickRecord : ISymbol, ITick
 {
-    public interface ITickRecord : ISymbol, ITick
-    {
-        long? AskVolume { get; }
+    long? AskVolume { get; }
 
-        long? BidVolume { get; }
+    long? BidVolume { get; }
 
-        long? Level { get; }
+    long? Level { get; }
 
-        double? SpreadRaw { get; }
+    double? SpreadRaw { get; }
 
-        double? SpreadTable { get; }
-    }
+    double? SpreadTable { get; }
 }

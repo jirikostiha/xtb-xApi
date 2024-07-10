@@ -3,29 +3,28 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class NewsResponse : BaseResponse
 {
-    public class NewsResponse : BaseResponse
+    public NewsResponse()
+        : base()
+    { }
+
+    public NewsResponse(string body)
+        : base(body)
     {
-        public NewsResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public NewsResponse(string body)
-            : base(body)
+        var arr = ReturnData.AsArray();
+        foreach (JsonObject e in arr.OfType<JsonObject>())
         {
-            if (ReturnData is null)
-                return;
-
-            var arr = ReturnData.AsArray();
-            foreach (JsonObject e in arr.OfType<JsonObject>())
-            {
-                var record = new NewsTopicRecord();
-                record.FieldsFromJsonObject(e);
-                NewsTopicRecords.AddLast(record);
-            }
+            var record = new NewsTopicRecord();
+            record.FieldsFromJsonObject(e);
+            NewsTopicRecords.AddLast(record);
         }
-
-        public LinkedList<NewsTopicRecord> NewsTopicRecords { get; init; } = [];
     }
+
+    public LinkedList<NewsTopicRecord> NewsTopicRecords { get; init; } = [];
 }

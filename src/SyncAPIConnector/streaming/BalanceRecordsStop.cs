@@ -1,22 +1,21 @@
 ﻿using System.Text.Json.Nodes;
 using xAPI.Commands;
 
-namespace xAPI.Streaming
+namespace xAPI.Streaming;
+
+internal sealed class BalanceRecordsStop : ICommand
 {
-    internal sealed class BalanceRecordsStop : ICommand
+    public const string Name = "stopBalance";
+
+    public string CommandName => Name;
+
+    public override string ToString()
     {
-        public const string Name = "stopBalance";
-
-        public string CommandName => Name;
-
-        public override string ToString()
+        JsonObject result = new()
         {
-            JsonObject result = new()
-            {
-                { "command", CommandName }
-            };
+            { "command", CommandName }
+        };
 
-            return result.ToJsonString();
-        }
+        return result.ToJsonString();
     }
 }

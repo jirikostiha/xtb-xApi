@@ -1,24 +1,23 @@
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class SymbolResponse : BaseResponse
 {
-    public class SymbolResponse : BaseResponse
+    public SymbolResponse()
+        : base()
+    { }
+
+    public SymbolResponse(string body)
+        : base(body)
     {
-        public SymbolResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public SymbolResponse(string body)
-            : base(body)
-        {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
-            Symbol = new SymbolRecord();
-            Symbol.FieldsFromJsonObject(ob);
-        }
-
-        public SymbolRecord? Symbol { get; init; }
+        var ob = ReturnData.AsObject();
+        Symbol = new SymbolRecord();
+        Symbol.FieldsFromJsonObject(ob);
     }
+
+    public SymbolRecord? Symbol { get; init; }
 }

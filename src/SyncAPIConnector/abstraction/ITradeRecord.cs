@@ -1,49 +1,48 @@
 ﻿using System;
 using xAPI.Codes;
 
-namespace xAPI
+namespace xAPI;
+
+public interface ITradeRecord : ISymbol, IPosition
 {
-    public interface ITradeRecord : ISymbol, IPosition
-    {
-        double? Close_price { get; }
+    double? Close_price { get; }
 
-        long? Close_time { get; }
+    long? Close_time { get; }
 
-        DateTimeOffset? CloseDateTime { get; }
+    DateTimeOffset? CloseDateTime { get; }
 
-        bool? Closed { get; }
+    bool? Closed { get; }
 
-        long? Cmd { get; }
+    long? Cmd { get; }
 
-        TRADE_OPERATION_CODE? Cmd2 { get; }
+    TRADE_OPERATION_CODE? Cmd2 { get; }
 
-        string Comment { get; }
+    string Comment { get; }
 
-        double? Commission { get; }
+    double? Commission { get; }
 
-        string CustomComment { get; }
+    string CustomComment { get; }
 
-        long? Digits { get; }
+    long? Digits { get; }
 
-        long? Expiration { get; }
-        DateTimeOffset? ExpirationDateTime { get; }
+    long? Expiration { get; }
+    DateTimeOffset? ExpirationDateTime { get; }
 
-        double? Margin_rate { get; }
+    double? Margin_rate { get; }
 
-        double? Open_price { get; }
+    double? Open_price { get; }
 
-        long? Open_time { get; }
+    long? Open_time { get; }
 
-        DateTimeOffset? OpenDateTime { get; }
+    DateTimeOffset? OpenDateTime { get; }
 
-        double? Profit { get; }
+    double? Profit { get; }
 
-        double? Sl { get; }
+    double? Sl { get; }
 
-        double? Storage { get; }
+    double? Storage { get; }
 
-        double? Tp { get; }
+    double? Tp { get; }
 
-        double? Volume { get; }
-    }
+    double? Volume { get; }
 }

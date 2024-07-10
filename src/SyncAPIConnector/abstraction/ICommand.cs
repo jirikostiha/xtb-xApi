@@ -1,7 +1,6 @@
-namespace xAPI.Commands
+namespace xAPI.Commands;
+
+public interface ICommand
 {
-    public interface ICommand
-    {
-        string CommandName { get; }
-    }
+    string CommandName { get; }
 }

@@ -3,28 +3,27 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class CalendarResponse : BaseResponse
 {
-    public class CalendarResponse : BaseResponse
+    public CalendarResponse()
+        : base()
+    { }
+
+    public CalendarResponse(string body)
+        : base(body)
     {
-        public CalendarResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public CalendarResponse(string body)
-            : base(body)
+        foreach (JsonObject e in ReturnData.AsArray().OfType<JsonObject>())
         {
-            if (ReturnData is null)
-                return;
-
-            foreach (JsonObject e in ReturnData.AsArray().OfType<JsonObject>())
-            {
-                var record = new CalendarRecord();
-                record.FieldsFromJsonObject(e);
-                CalendarRecords.Add(record);
-            }
+            var record = new CalendarRecord();
+            record.FieldsFromJsonObject(e);
+            CalendarRecords.Add(record);
         }
-
-        public List<CalendarRecord> CalendarRecords { get; init; } = [];
     }
+
+    public List<CalendarRecord> CalendarRecords { get; init; } = [];
 }

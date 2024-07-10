@@ -1,21 +1,20 @@
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class MarginTradeResponse : BaseResponse
 {
-    public class MarginTradeResponse : BaseResponse
+    public MarginTradeResponse()
+        : base()
+    { }
+
+    public MarginTradeResponse(string body)
+        : base(body)
     {
-        public MarginTradeResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public MarginTradeResponse(string body)
-            : base(body)
-        {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
-            Margin = (double?)ob["margin"];
-        }
-
-        public double? Margin { get; init; }
+        var ob = ReturnData.AsObject();
+        Margin = (double?)ob["margin"];
     }
+
+    public double? Margin { get; init; }
 }

@@ -1,17 +1,16 @@
 ﻿using System.Text.Json.Nodes;
 
-namespace xAPI.Records
+namespace xAPI.Records;
+
+public record StepRecord : IBaseResponseRecord
 {
-    public record StepRecord : IBaseResponseRecord
+    public double? FromValue { get; set; }
+
+    public double? Step { get; set; }
+
+    public void FieldsFromJsonObject(JsonObject value)
     {
-        public double? FromValue { get; set; }
-
-        public double? Step { get; set; }
-
-        public void FieldsFromJsonObject(JsonObject value)
-        {
-            FromValue = (double?)value["fromValue"];
-            Step = (double?)value["step"];
-        }
+        FromValue = (double?)value["fromValue"];
+        Step = (double?)value["step"];
     }
 }

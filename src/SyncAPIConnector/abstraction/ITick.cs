@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace xAPI
+namespace xAPI;
+
+public interface ITick
 {
-    public interface ITick
-    {
-        double? Ask { get; }
+    double? Ask { get; }
 
-        double? Bid { get; }
+    double? Bid { get; }
 
-        double? High { get; }
+    double? High { get; }
 
-        double? Low { get; }
+    double? Low { get; }
 
-        DateTimeOffset? DateTime { get; }
-    }
+    DateTimeOffset? DateTime { get; }
 }

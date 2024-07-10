@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace xAPI
+namespace xAPI;
+
+public interface ICandleRecord : ICandle
 {
-    public interface ICandleRecord : ICandle
-    {
-        long? Ctm { get; }
+    long? Ctm { get; }
 
-        DateTimeOffset? StartDateTime { get; }
+    DateTimeOffset? StartDateTime { get; }
 
-        double? Vol { get; }
-    }
+    double? Vol { get; }
 }

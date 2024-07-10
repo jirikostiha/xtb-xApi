@@ -1,13 +1,12 @@
 ﻿using xAPI.Commands;
 
-namespace xAPI.Streaming
+namespace xAPI.Streaming;
+
+internal abstract class SubscribeCommandBase : ICommand
 {
-    internal abstract class SubscribeCommandBase : ICommand
-    {
-        protected SubscribeCommandBase(string streamSessionId) => StreamSessionId = streamSessionId;
+    protected SubscribeCommandBase(string streamSessionId) => StreamSessionId = streamSessionId;
 
-        public abstract string CommandName { get; }
+    public abstract string CommandName { get; }
 
-        public string StreamSessionId { get; set; }
-    }
+    public string StreamSessionId { get; set; }
 }

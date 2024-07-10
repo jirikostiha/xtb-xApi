@@ -3,36 +3,35 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses
+namespace xAPI.Responses;
+
+public class ChartRangeResponse : BaseResponse
 {
-    public class ChartRangeResponse : BaseResponse
+    public ChartRangeResponse()
+        : base()
+    { }
+
+    public ChartRangeResponse(string body)
+        : base(body)
     {
-        public ChartRangeResponse()
-            : base()
-        { }
+        if (ReturnData is null)
+            return;
 
-        public ChartRangeResponse(string body)
-            : base(body)
+        var ob = ReturnData.AsObject();
+        Digits = (long?)ob["digits"];
+        var arr = ob["rateInfos"]?.AsArray();
+        if (arr != null)
         {
-            if (ReturnData is null)
-                return;
-
-            var ob = ReturnData.AsObject();
-            Digits = (long?)ob["digits"];
-            var arr = ob["rateInfos"]?.AsArray();
-            if (arr != null)
+            foreach (JsonObject e in arr.OfType<JsonObject>())
             {
-                foreach (JsonObject e in arr.OfType<JsonObject>())
-                {
-                    RateInfoRecord record = new RateInfoRecord();
-                    record.FieldsFromJsonObject(e);
-                    RateInfos.AddLast(record);
-                }
+                RateInfoRecord record = new RateInfoRecord();
+                record.FieldsFromJsonObject(e);
+                RateInfos.AddLast(record);
             }
         }
-
-        public long? Digits { get; init; }
-
-        public LinkedList<RateInfoRecord> RateInfos { get; init; } = [];
     }
+
+    public long? Digits { get; init; }
+
+    public LinkedList<RateInfoRecord> RateInfos { get; init; } = [];
 }
