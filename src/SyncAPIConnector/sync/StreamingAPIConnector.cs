@@ -193,7 +193,7 @@ namespace xAPI.Sync
                     JsonNode responseBody = JsonNode.Parse(message);
                     string commandName = responseBody["command"].ToString();
 
-                    if (commandName == "tickPrices")
+                    if (commandName == StreamingCommandName.TickPrices)
                     {
                         StreamingTickRecord tickRecord = new StreamingTickRecord();
                         tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -202,7 +202,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "trade")
+                    else if (commandName == StreamingCommandName.Trade)
                     {
                         StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
                         tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -211,7 +211,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "balance")
+                    else if (commandName == StreamingCommandName.Balance)
                     {
                         StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
                         balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -220,7 +220,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "tradeStatus")
+                    else if (commandName == StreamingCommandName.TradeStatus)
                     {
                         StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
                         tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -229,7 +229,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "profit")
+                    else if (commandName == StreamingCommandName.Profit)
                     {
                         StreamingProfitRecord profitRecord = new StreamingProfitRecord();
                         profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -238,7 +238,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "news")
+                    else if (commandName == StreamingCommandName.News)
                     {
                         StreamingNewsRecord newsRecord = new StreamingNewsRecord();
                         newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -247,7 +247,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "keepAlive")
+                    else if (commandName == StreamingCommandName.KeepAlive)
                     {
                         StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
                         keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
@@ -256,7 +256,7 @@ namespace xAPI.Sync
                         if (sl != null)
                             await sl.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
                     }
-                    else if (commandName == "candle")
+                    else if (commandName == StreamingCommandName.Candle)
                     {
                         StreamingCandleRecord candleRecord = new StreamingCandleRecord();
                         candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
