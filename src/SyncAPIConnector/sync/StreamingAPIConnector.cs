@@ -72,7 +72,7 @@ namespace xAPI.Sync
 
         #endregion
 
-        private Thread? _streamingReaderThread;
+        private Task? _streamingReaderTask;
 
         /// <summary>
         /// Dedicated streaming listener.
@@ -108,7 +108,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Connect to the streaming.
         /// </summary>
-        public void Connect()
+        public void Connect(CancellationToken cancellationToken)
         {
             if (this.streamSessionId == null)
             {
@@ -139,35 +139,26 @@ namespace xAPI.Sync
                 apiReadStream = new StreamReader(ns);
             }
 
-            if (_streamingReaderThread is not null)
+            if (_streamingReaderTask == null)
             {
-                if (!_streamingReaderThread.IsAlive)
-                {
-                    _streamingReaderThread.Abort();
-                    _streamingReaderThread = null;
-                }
+                CreateAndRunNewStreamingReaderTask(cancellationToken);
             }
-
-            if (_streamingReaderThread is null)
+            else if (_streamingReaderTask.IsCompleted || _streamingReaderTask.IsFaulted || _streamingReaderTask.IsCanceled)
             {
-                CreateAndRunNewStreamingReaderThread();
+                _streamingReaderTask = null;
+                CreateAndRunNewStreamingReaderTask(cancellationToken);
             }
         }
 
-        private void CreateAndRunNewStreamingReaderThread()
+        private void CreateAndRunNewStreamingReaderTask(CancellationToken cancellationToken)
         {
-            _streamingReaderThread = new Thread(async () =>
+            _streamingReaderTask = Task.Run(async () =>
             {
                 while (IsConnected())
                 {
-                    await ReadStreamMessageAsync(CancellationToken.None);
+                    await ReadStreamMessageAsync(cancellationToken);
                 }
-            })
-            {
-                Name = "Streaming reader",
-            };
-
-            _streamingReaderThread.Start();
+            }, cancellationToken);
         }
 
         /// <summary>

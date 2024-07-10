@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using xAPI.Codes;
 using xAPI.Commands;
 using xAPI.Sync;
@@ -389,7 +390,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Connecting to streaming");
         try
         {
-            _connector.Streaming.Connect();
+            _connector.Streaming.Connect(CancellationToken.None);
             Pass();
         }
         catch (Exception ex)

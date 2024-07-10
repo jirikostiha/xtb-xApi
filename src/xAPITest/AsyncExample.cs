@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
 using xAPI.Commands;
@@ -390,7 +391,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Connecting to streaming");
         try
         {
-            _connector.Streaming.Connect();
+            _connector.Streaming.Connect(CancellationToken.None);
             Pass();
         }
         catch (Exception ex)
