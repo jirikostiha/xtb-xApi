@@ -32,16 +32,16 @@ namespace xAPI.Records
 
         public TradeTransInfoRecord(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration)
         {
-            this.Cmd = cmd;
-            this.Type = type;
-            this.Price = price;
-            this.Sl = sl;
-            this.Tp = tp;
-            this.Symbol = symbol;
-            this.Volume = volume;
-            this.Order = order;
-            this.CustomComment = customComment;
-            this.Expiration = expiration;
+            Cmd = cmd;
+            Type = type;
+            Price = price;
+            Sl = sl;
+            Tp = tp;
+            Symbol = symbol;
+            Volume = volume;
+            Order = order;
+            CustomComment = customComment;
+            Expiration = expiration;
         }
 
         public virtual JsonObject toJsonObject()

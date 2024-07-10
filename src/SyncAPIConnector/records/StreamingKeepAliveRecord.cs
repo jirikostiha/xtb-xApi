@@ -17,7 +17,7 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.Timestamp = (long?)value["timestamp"];
+            Timestamp = (long?)value["timestamp"];
         }
     }
 }

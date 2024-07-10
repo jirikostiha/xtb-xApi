@@ -55,7 +55,7 @@ namespace xAPI.Responses
                     if (ob["redirect"] is null)
                     {
                         if (ErrorDescr is null && ErrCode != null)
-                            ErrorDescr = ERR_CODE.getErrorDescription(ErrCode.StringValue);
+                            ErrorDescr = ERR_CODE.GetErrorDescription(ErrCode.StringValue);
 
                         throw new APIErrorResponseException(ErrCode!, ErrorDescr!, body);
                     }

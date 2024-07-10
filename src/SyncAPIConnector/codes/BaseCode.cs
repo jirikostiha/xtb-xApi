@@ -15,7 +15,7 @@ namespace xAPI.Codes
         /// <param name="code">Code represented as long value.</param>
         public BaseCode(long code)
         {
-            this.code = code;
+            code = code;
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace xAPI.Codes
         public long Code
         {
             get { return code; }
-            set { this.code = value; }
+            set { code = value; }
         }
 
         public static bool operator ==(BaseCode baseCode1, BaseCode baseCode2)
@@ -52,7 +52,7 @@ namespace xAPI.Codes
             if ((object)baseCode == null)
                 return false;
 
-            return (this.Code == baseCode.Code);
+            return (Code == baseCode.Code);
         }
 
         public override int GetHashCode()

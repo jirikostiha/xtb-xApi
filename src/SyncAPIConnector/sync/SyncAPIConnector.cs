@@ -61,7 +61,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Streaming API connector.
         /// </summary>
-        private StreamingAPIConnector streamingConnector;
+        private StreamingAPIConnector _streamingConnector;
 
         /// <summary>
         /// Last command timestamp (used to calculate interval between each command).
@@ -71,8 +71,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Lock object used to synchronize access to read/write socket operations.
         /// </summary>
-        //private Object locker = new Object();
-        private readonly SemaphoreSlim locker = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _lock = new(1, 1);
 
         /// <summary>
         /// Maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
@@ -86,7 +85,7 @@ namespace xAPI.Sync
         /// <param name="connectionTimeout">Connection timeout</param>
         public SyncAPIConnector(Server server, int connectionTimeout = TIMEOUT)
         {
-            this.server = server;
+            Server = server;
             _connectionTimeout = connectionTimeout;
         }
 
@@ -97,29 +96,29 @@ namespace xAPI.Sync
         /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
         private void Connect(Server server, bool lookForBackups = true)
         {
-            this.server = server;
-            this.apiSocket = new TcpClient();
+            Server = server;
+            ApiSocket = new TcpClient();
 
             bool connectionAttempted = false;
 
-            while (!connectionAttempted || !apiSocket.Connected)
+            while (!connectionAttempted || !ApiSocket.Connected)
             {
                 // Try to connect asynchronously and wait for the result
-                IAsyncResult result = apiSocket.BeginConnect(this.server.Address, this.server.MainPort, null, null);
+                IAsyncResult result = ApiSocket.BeginConnect(Server.Address, Server.MainPort, null, null);
                 connectionAttempted = result.AsyncWaitHandle.WaitOne(_connectionTimeout, true);
 
                 // If connection attempt failed (timeout) or not connected
-                if (!connectionAttempted || !apiSocket.Connected)
+                if (!connectionAttempted || !ApiSocket.Connected)
                 {
-                    apiSocket.Close();
+                    ApiSocket.Close();
                     if (lookForBackups)
                     {
-                        this.server = Servers.GetBackup(this.server);
-                        if (this.server == null)
+                        Server = Servers.GetBackup(Server);
+                        if (Server == null)
                         {
                             throw new APICommunicationException("Connection timeout.");
                         }
-                        apiSocket = new System.Net.Sockets.TcpClient();
+                        ApiSocket = new TcpClient();
                     }
                     else
                     {
@@ -130,7 +129,7 @@ namespace xAPI.Sync
 
             if (server.IsSecure)
             {
-                SslStream sl = new SslStream(apiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
+                SslStream sl = new SslStream(ApiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
 
                 //sl.AuthenticateAsClient(server.Address);
 
@@ -142,21 +141,21 @@ namespace xAPI.Sync
                 if (!authenticated)
                     throw new APICommunicationException("Error during SSL handshaking (timed out?).");
 
-                apiWriteStream = new StreamWriter(sl);
-                apiReadStream = new StreamReader(sl);
+                ApiWriteStream = new StreamWriter(sl);
+                ApiReadStream = new StreamReader(sl);
             }
             else
             {
-                NetworkStream ns = apiSocket.GetStream();
-                apiWriteStream = new StreamWriter(ns);
-                apiReadStream = new StreamReader(ns);
+                NetworkStream ns = ApiSocket.GetStream();
+                ApiWriteStream = new StreamWriter(ns);
+                ApiReadStream = new StreamReader(ns);
             }
 
-            this.apiConnected = true;
+            apiConnected = true;
 
             Connected?.Invoke(this, new(server));
 
-            this.streamingConnector = new StreamingAPIConnector(this.server);
+            _streamingConnector = new StreamingAPIConnector(Server);
         }
 
         /// <summary>
@@ -164,9 +163,9 @@ namespace xAPI.Sync
         /// </summary>
         public void Connect()
         {
-            if (this.server != null)
+            if (Server != null)
             {
-                Connect(this.server);
+                Connect(Server);
             }
             else
             {
@@ -182,7 +181,7 @@ namespace xAPI.Sync
         {
             Redirected?.Invoke(this, new(server));
 
-            if (this.apiConnected)
+            if (apiConnected)
                 Disconnect(true);
 
             Connect(server);
@@ -244,7 +243,7 @@ namespace xAPI.Sync
         /// <returns>Response from the server</returns>
         public string ExecuteCommand(string message)
         {
-            locker.Wait();
+            _lock.Wait();
             try
             {
                 long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -273,7 +272,7 @@ namespace xAPI.Sync
             }
             finally
             {
-                locker.Release();
+                _lock.Release();
             }
         }
 
@@ -285,7 +284,7 @@ namespace xAPI.Sync
         /// <returns>Response from the server</returns>
         internal async Task<string> ExecuteCommandAsync(string message, CancellationToken cancellationToken = default)
         {
-            await locker.WaitAsync(cancellationToken);
+            await _lock.WaitAsync(cancellationToken);
             try
             {
                 long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
@@ -314,7 +313,7 @@ namespace xAPI.Sync
             }
             finally
             {
-                locker.Release();
+                _lock.Release();
             }
         }
 
@@ -323,7 +322,7 @@ namespace xAPI.Sync
         /// </summary>
         public StreamingAPIConnector Streaming
         {
-            get { return streamingConnector; }
+            get { return _streamingConnector; }
         }
 
         /// <summary>
@@ -342,8 +341,8 @@ namespace xAPI.Sync
             {
                 if (disposing)
                 {
-                    streamingConnector?.Dispose();
-                    locker.Dispose();
+                    _streamingConnector?.Dispose();
+                    _lock.Dispose();
                 }
 
                 base.Dispose(disposing);

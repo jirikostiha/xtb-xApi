@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace xAPI.Utils
 {
@@ -8,7 +7,7 @@ namespace xAPI.Utils
         private static int lastTag;
         private static int maxTag = 1000000;
 
-        private static Object locker = new Object();
+        private static readonly object _lock = new();
 
         /// <summary>
         /// Return next custom tag.
@@ -16,7 +15,7 @@ namespace xAPI.Utils
         /// <returns>Next custom tag</returns>
         public static string Next()
         {
-            lock (locker)
+            lock (_lock)
             {
                 lastTag = ++lastTag % maxTag;
                 return lastTag.ToString(CultureInfo.InvariantCulture);

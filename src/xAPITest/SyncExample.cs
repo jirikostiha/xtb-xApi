@@ -215,7 +215,7 @@ public sealed class SyncExample : ExampleBase
             var response = APICommandFactory.ExecuteTickPricesCommand(_connector, ["US500"],
                 TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds());
             Pass(response);
-            Detail(response?.Ticks.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {

@@ -9,11 +9,11 @@ namespace xAPI.Records
     {
         public ChartRangeInfoRecord(string symbol, PERIOD_CODE period, long? start, long? end, long? ticks)
         {
-            this.Symbol = symbol;
-            this.Period = period;
-            this.Start = start;
-            this.End = end;
-            this.Ticks = ticks;
+            Symbol = symbol;
+            Period = period;
+            Start = start;
+            End = end;
+            Ticks = ticks;
         }
 
         public string Symbol { get; init; }

@@ -15,6 +15,10 @@ namespace xAPI.Sync
         /// </summary>
         private static PortSet REAL_PORTS = new PortSet(5112, 5113);
 
+        private static List<Server>? _demoServers;
+        private static List<Server>? _realServers;
+        private static List<ApiAddress>? _addresses;
+
         /// <summary>
         /// List of all available addresses.
         /// </summary>
@@ -22,15 +26,14 @@ namespace xAPI.Sync
         {
             get
             {
-                if (addresses == null)
+                if (_addresses == null)
                 {
-                    addresses = new List<ApiAddress>();
-
-                    addresses.Add(new ApiAddress("xapi.xtb.com", "xAPI A"));
-                    addresses.Add(new ApiAddress("xapi.xtb.com", "xAPI B"));
+                    _addresses = [
+                        new ApiAddress("xapi.xtb.com", "xAPI A"),
+                        new ApiAddress("xapi.xtb.com", "xAPI B")];
                 }
 
-                return addresses;
+                return _addresses;
             }
         }
 
@@ -51,19 +54,19 @@ namespace xAPI.Sync
         {
             get
             {
-                if (demoServers == null)
+                if (_demoServers == null)
                 {
-                    demoServers = new List<Server>();
+                    _demoServers = new List<Server>();
 
                     foreach (ApiAddress address in ADDRESSES)
                     {
-                        demoServers.Add(new Server(address.Address, DEMO_PORTS.MainPort, DEMO_PORTS.StreamingPort, true, address.Name + " DEMO SSL"));
+                        _demoServers.Add(new Server(address.Address, DEMO_PORTS.MainPort, DEMO_PORTS.StreamingPort, true, address.Name + " DEMO SSL"));
                     }
 
-                    demoServers.Shuffle();
+                    _demoServers.Shuffle();
                 }
 
-                return demoServers;
+                return _demoServers;
             }
         }
 
@@ -74,19 +77,19 @@ namespace xAPI.Sync
         {
             get
             {
-                if (realServers == null)
+                if (_realServers == null)
                 {
-                    realServers = new List<Server>();
+                    _realServers = [];
 
                     foreach (ApiAddress address in ADDRESSES)
                     {
-                        realServers.Add(new Server(address.Address, REAL_PORTS.MainPort, REAL_PORTS.StreamingPort, true, address.Name + " REAL SSL"));
+                        _realServers.Add(new Server(address.Address, REAL_PORTS.MainPort, REAL_PORTS.StreamingPort, true, address.Name + " REAL SSL"));
                     }
 
-                    realServers.Shuffle();
+                    _realServers.Shuffle();
                 }
 
-                return realServers;
+                return _realServers;
             }
         }
 
@@ -95,7 +98,7 @@ namespace xAPI.Sync
         /// </summary>
         /// <param name="server">Broken server</param>
         /// <returns>Backup server</returns>
-        public static Server GetBackup(Server server)
+        public static Server? GetBackup(Server server)
         {
             ApiAddress address = GetNextAddress(server.Address);
             if (address == null)
@@ -110,7 +113,7 @@ namespace xAPI.Sync
         /// </summary>
         /// <param name="address">Address</param>
         /// <returns>Next API address</returns>
-        public static ApiAddress GetNextAddress(string address)
+        public static ApiAddress? GetNextAddress(string address)
         {
             ApiAddress apiAddress = ADDRESSES.Find(item => item.Address == address);
 
@@ -135,33 +138,20 @@ namespace xAPI.Sync
             }
         }
 
-        private static List<Server> demoServers;
-        private static List<Server> realServers;
-        private static List<ApiAddress> addresses;
-
         /// <summary>
         /// Represents a set of ports (main and streaming) for a single connection.
         /// </summary>
         public class PortSet
         {
-            private int mainPort;
-            private int streamingPort;
-
             public PortSet(int mainPort, int streamingPort)
             {
-                this.mainPort = mainPort;
-                this.streamingPort = streamingPort;
+                MainPort = mainPort;
+                StreamingPort = streamingPort;
             }
 
-            public int MainPort
-            {
-                get { return mainPort; }
-            }
+            public int MainPort { get; }
 
-            public int StreamingPort
-            {
-                get { return streamingPort; }
-            }
+            public int StreamingPort { get; }
         }
 
         /// <summary>
@@ -169,24 +159,15 @@ namespace xAPI.Sync
         /// </summary>
         public class ApiAddress
         {
-            private string address;
-            private string name;
-
             public ApiAddress(string address, string name)
             {
-                this.address = address;
-                this.name = name;
+                Address = address;
+                Name = name;
             }
 
-            public string Address
-            {
-                get { return address; }
-            }
+            public string Address { get; }
 
-            public string Name
-            {
-                get { return name; }
-            }
+            public string Name { get; }
         }
 
         /// <summary>

@@ -20,9 +20,9 @@ namespace xAPI.Records
         public override string ToString()
         {
             return "RedirectRecord [" +
-                "mainPort=" + this.MainPort +
-                ", streamingPort=" + this.StreamingPort +
-                ", address=" + this.Address + "]";
+                "mainPort=" + MainPort +
+                ", streamingPort=" + StreamingPort +
+                ", address=" + Address + "]";
         }
     }
 }

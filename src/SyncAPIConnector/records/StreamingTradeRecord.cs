@@ -74,30 +74,30 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.Close_price = (double?)value["close_price"];
-            this.Close_time = (long?)value["close_time"];
-            this.Closed = (bool?)value["closed"];
-            this.Cmd = (long?)value["cmd"];
-            this.cmd2 = value["cmd"] is not null ? new TRADE_OPERATION_CODE((long)value["cmd"]) : null;
-            this.Comment = (string)value["comment"];
-            this.Commission = (double?)value["commision"];
-            this.CustomComment = (string)value["customComment"];
-            this.Expiration = (long?)value["expiration"];
-            this.Margin_rate = (double?)value["margin_rate"];
-            this.Open_price = (double?)value["open_price"];
-            this.Open_time = (long?)value["open_time"];
-            this.Order = (long?)value["order"];
-            this.Order2 = (long?)value["order2"];
-            this.Position = (long?)value["position"];
-            this.Profit = (double?)value["profit"];
-            this.Type = new STREAMING_TRADE_TYPE((long)value["type"]);
-            this.Sl = (double?)value["sl"];
-            this.State = (string)value["state"];
-            this.Storage = (double?)value["storage"];
-            this.Symbol = (string)value["symbol"];
-            this.Tp = (double?)value["tp"];
-            this.Volume = (double?)value["volume"];
-            this.digits = (int?)value["digits"];
+            Close_price = (double?)value["close_price"];
+            Close_time = (long?)value["close_time"];
+            Closed = (bool?)value["closed"];
+            Cmd = (long?)value["cmd"];
+            cmd2 = value["cmd"] is not null ? new TRADE_OPERATION_CODE((long)value["cmd"]) : null;
+            Comment = (string)value["comment"];
+            Commission = (double?)value["commision"];
+            CustomComment = (string)value["customComment"];
+            Expiration = (long?)value["expiration"];
+            Margin_rate = (double?)value["margin_rate"];
+            Open_price = (double?)value["open_price"];
+            Open_time = (long?)value["open_time"];
+            Order = (long?)value["order"];
+            Order2 = (long?)value["order2"];
+            Position = (long?)value["position"];
+            Profit = (double?)value["profit"];
+            Type = new STREAMING_TRADE_TYPE((long)value["type"]);
+            Sl = (double?)value["sl"];
+            State = (string)value["state"];
+            Storage = (double?)value["storage"];
+            Symbol = (string)value["symbol"];
+            Tp = (double?)value["tp"];
+            Volume = (double?)value["volume"];
+            digits = (int?)value["digits"];
         }
 
         public void UpdateBy(ITradeRecord other)

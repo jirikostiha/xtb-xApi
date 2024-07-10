@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SyncAPIConnect.Utils
+namespace xAPI.Utils
 {
     internal sealed class ExecuteWithTimeLimit
     {

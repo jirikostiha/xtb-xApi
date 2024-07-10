@@ -32,17 +32,17 @@ namespace xAPI.Sync
         /// <summary>
         /// Socket that handles the connection.
         /// </summary>
-        protected TcpClient apiSocket;
+        protected TcpClient ApiSocket { get; set; }
 
         /// <summary>
         /// Stream writer (for outgoing data).
         /// </summary>
-        protected StreamWriter apiWriteStream;
+        protected StreamWriter ApiWriteStream { get; set; }
 
         /// <summary>
         /// Stream reader (for incoming data).
         /// </summary>
-        protected StreamReader apiReadStream;
+        protected StreamReader ApiReadStream { get; set; }
 
         /// <summary>
         /// True if connected to the remote server.
@@ -52,13 +52,12 @@ namespace xAPI.Sync
         /// <summary>
         /// Server that the connection was established with.
         /// </summary>
-        protected Server server;
+        protected Server Server { get; set; }
 
         /// <summary>
         /// Lock object used to synchronize access to write socket operations.
         /// </summary>
-        //private Object writeLocker = new Object();
-        private readonly SemaphoreSlim writeLocker = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _writeLock = new(1, 1);
 
         /// <summary>
         /// Creates new connector instance.
@@ -73,7 +72,7 @@ namespace xAPI.Sync
         /// <returns>True if socket is connected, otherwise false</returns>
         public bool IsConnected()
         {
-            return this.apiConnected;
+            return apiConnected;
         }
 
         /// <summary>
@@ -82,15 +81,15 @@ namespace xAPI.Sync
         /// <param name="message">Message to send</param>
         protected void WriteMessage(string message)
         {
-            writeLocker.Wait();
+            _writeLock.Wait();
             try
             {
                 if (IsConnected())
                 {
                     try
                     {
-                        apiWriteStream.WriteLine(message);
-                        apiWriteStream.Flush();
+                        ApiWriteStream.WriteLine(message);
+                        ApiWriteStream.Flush();
                     }
                     catch (IOException ex)
                     {
@@ -108,7 +107,7 @@ namespace xAPI.Sync
             }
             finally
             {
-                writeLocker.Release();
+                _writeLock.Release();
             }
         }
 
@@ -119,15 +118,15 @@ namespace xAPI.Sync
         /// <param name="cancellationToken">Cancellation token to cancel the operation</param>
         protected async Task WriteMessageAsync(string message, CancellationToken cancellationToken = default)
         {
-            await writeLocker.WaitAsync(cancellationToken);
+            await _writeLock.WaitAsync(cancellationToken);
             try
             {
                 if (IsConnected())
                 {
                     try
                     {
-                        await apiWriteStream.WriteLineAsync(message).ConfigureAwait(false);
-                        await apiWriteStream.FlushAsync().ConfigureAwait(false);
+                        await ApiWriteStream.WriteLineAsync(message).ConfigureAwait(false);
+                        await ApiWriteStream.FlushAsync().ConfigureAwait(false);
                     }
                     catch (IOException ex)
                     {
@@ -145,7 +144,7 @@ namespace xAPI.Sync
             }
             finally
             {
-                writeLocker.Release();
+                _writeLock.Release();
             }
         }
 
@@ -161,7 +160,7 @@ namespace xAPI.Sync
             try
             {
                 string line;
-                while ((line = apiReadStream.ReadLine()) != null)
+                while ((line = ApiReadStream.ReadLine()) != null)
                 {
                     result.Append(line);
 
@@ -204,7 +203,7 @@ namespace xAPI.Sync
             try
             {
                 string line;
-                while ((line = await apiReadStream.ReadLineAsync().ConfigureAwait(false)) != null)
+                while ((line = await ApiReadStream.ReadLineAsync().ConfigureAwait(false)) != null)
                 {
                     result.Append(line);
 
@@ -243,9 +242,9 @@ namespace xAPI.Sync
         {
             if (IsConnected())
             {
-                apiReadStream.Close();
-                apiWriteStream.Close();
-                apiSocket.Close();
+                ApiReadStream.Close();
+                ApiWriteStream.Close();
+                ApiSocket.Close();
 
                 Disconnected?.Invoke(this, EventArgs.Empty);
             }
@@ -261,10 +260,10 @@ namespace xAPI.Sync
             {
                 if (disposing)
                 {
-                    apiReadStream?.Dispose();
-                    apiWriteStream?.Dispose();
-                    apiSocket?.Dispose();
-                    writeLocker?.Dispose();
+                    ApiReadStream?.Dispose();
+                    ApiWriteStream?.Dispose();
+                    ApiSocket?.Dispose();
+                    _writeLock?.Dispose();
                 }
 
                 _disposed = true;

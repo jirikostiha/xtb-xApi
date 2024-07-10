@@ -1,14 +1,12 @@
 ﻿using System.IO;
 using System;
 using System.Net.Sockets;
-using System.Collections.Generic;
 using System.Threading;
 using System.Net.Security;
 
 using xAPI.Utils;
 using xAPI.Records;
 using xAPI.Errors;
-using xAPI.Responses;
 using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
@@ -77,12 +75,7 @@ namespace xAPI.Sync
         /// <summary>
         /// Dedicated streaming listener.
         /// </summary>
-        private IStreamingListener sl;
-
-        /// <summary>
-        /// Stream session id (given on login).
-        /// </summary>
-        private string streamSessionId;
+        private readonly IStreamingListener _streamingListener;
 
         /// <summary>
         /// Creates new StreamingAPIConnector instance based on given server data.
@@ -90,27 +83,33 @@ namespace xAPI.Sync
         /// <param name="server">Server data</param>
         public StreamingAPIConnector(Server server)
         {
-            this.server = server;
-            this.apiConnected = false;
+            Server = server;
+            apiConnected = false;
         }
 
         /// <summary>
         /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
         /// </summary>
         /// <param name="server">Server data</param>
-        public StreamingAPIConnector(Server server, string streamSessionId, IStreamingListener? streamingListner = null)
+        /// <param name="streamingListener">Streaming listener.</param>
+        public StreamingAPIConnector(Server server, IStreamingListener streamingListener)
+            : this(server)
         {
-            this.server = server;
-            this.streamSessionId = streamSessionId;
-            this.sl = streamingListner;
+            _streamingListener = streamingListener;
         }
+
+
+        /// <summary>
+        /// Stream session id (member of login response). Should be set after the successful login.
+        /// </summary>
+        public string StreamSessionId { get; set; }
 
         /// <summary>
         /// Connect to the streaming.
         /// </summary>
         public void Connect(CancellationToken cancellationToken)
         {
-            if (this.streamSessionId == null)
+            if (StreamSessionId == null)
             {
                 throw new APICommunicationException("No session exists. Please login first.");
             }
@@ -120,23 +119,23 @@ namespace xAPI.Sync
                 throw new APICommunicationException("Stream already connected.");
             }
 
-            this.apiSocket = new TcpClient(server.Address, server.StreamingPort);
-            this.apiConnected = true;
+            ApiSocket = new TcpClient(Server.Address, Server.StreamingPort);
+            apiConnected = true;
 
-            Connected?.Invoke(this, new(server));
+            Connected?.Invoke(this, new(Server));
 
-            if (server.IsSecure)
+            if (Server.IsSecure)
             {
-                SslStream ssl = new SslStream(apiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
-                ssl.AuthenticateAsClient(server.Address);
-                apiWriteStream = new StreamWriter(ssl);
-                apiReadStream = new StreamReader(ssl);
+                var ssl = new SslStream(ApiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
+                ssl.AuthenticateAsClient(Server.Address);
+                ApiWriteStream = new StreamWriter(ssl);
+                ApiReadStream = new StreamReader(ssl);
             }
             else
             {
-                NetworkStream ns = apiSocket.GetStream();
-                apiWriteStream = new StreamWriter(ns);
-                apiReadStream = new StreamReader(ns);
+                NetworkStream ns = ApiSocket.GetStream();
+                ApiWriteStream = new StreamWriter(ns);
+                ApiReadStream = new StreamReader(ns);
             }
 
             if (_streamingReaderTask == null)
@@ -162,15 +161,6 @@ namespace xAPI.Sync
         }
 
         /// <summary>
-        /// Stream session id (member of login response). Should be set after the successful login.
-        /// </summary>
-        public string StreamSessionId
-        {
-            get { return this.streamSessionId; }
-            set { this.streamSessionId = value; }
-        }
-
-        /// <summary>
         /// Reads stream message.
         /// </summary>
         private async Task ReadStreamMessageAsync(CancellationToken cancellationToken = default)
@@ -190,8 +180,8 @@ namespace xAPI.Sync
                         tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         TickReceived?.Invoke(this, new(tickRecord));
-                        if (sl != null)
-                            await sl.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.Trade)
                     {
@@ -199,8 +189,8 @@ namespace xAPI.Sync
                         tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         TradeReceived?.Invoke(this, new(tradeRecord));
-                        if (sl != null)
-                            await sl.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.Balance)
                     {
@@ -208,8 +198,8 @@ namespace xAPI.Sync
                         balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         BalanceReceived?.Invoke(this, new(balanceRecord));
-                        if (sl != null)
-                            await sl.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.TradeStatus)
                     {
@@ -217,8 +207,8 @@ namespace xAPI.Sync
                         tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
-                        if (sl != null)
-                            await sl.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.Profit)
                     {
@@ -226,8 +216,8 @@ namespace xAPI.Sync
                         profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         ProfitReceived?.Invoke(this, new(profitRecord));
-                        if (sl != null)
-                            await sl.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.News)
                     {
@@ -235,8 +225,8 @@ namespace xAPI.Sync
                         newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         NewsReceived?.Invoke(this, new(newsRecord));
-                        if (sl != null)
-                            await sl.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.KeepAlive)
                     {
@@ -244,8 +234,8 @@ namespace xAPI.Sync
                         keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
-                        if (sl != null)
-                            await sl.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else if (commandName == StreamingCommandName.Candle)
                     {
@@ -253,8 +243,8 @@ namespace xAPI.Sync
                         candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                         CandleReceived?.Invoke(this, new(candleRecord));
-                        if (sl != null)
-                            await sl.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
+                        if (_streamingListener != null)
+                            await _streamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
                     }
                     else
                     {
@@ -278,7 +268,7 @@ namespace xAPI.Sync
         #region subscribe, unsubscribe
         public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
         {
-            TickPricesSubscribe tickPricesSubscribe = new(symbol, streamSessionId, minArrivalTime, maxLevel);
+            TickPricesSubscribe tickPricesSubscribe = new(symbol, StreamSessionId, minArrivalTime, maxLevel);
             WriteMessage(tickPricesSubscribe.ToString());
         }
 
@@ -306,7 +296,7 @@ namespace xAPI.Sync
 
         public void SubscribeTrades()
         {
-            TradeRecordsSubscribe tradeRecordsSubscribe = new(streamSessionId);
+            TradeRecordsSubscribe tradeRecordsSubscribe = new(StreamSessionId);
             WriteMessage(tradeRecordsSubscribe.ToString());
         }
 
@@ -318,7 +308,7 @@ namespace xAPI.Sync
 
         public void SubscribeBalance()
         {
-            BalanceRecordsSubscribe balanceRecordsSubscribe = new(streamSessionId);
+            BalanceRecordsSubscribe balanceRecordsSubscribe = new(StreamSessionId);
             WriteMessage(balanceRecordsSubscribe.ToString());
         }
 
@@ -330,7 +320,7 @@ namespace xAPI.Sync
 
         public void SubscribeTradeStatus()
         {
-            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(streamSessionId);
+            TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(StreamSessionId);
             WriteMessage(tradeStatusRecordsSubscribe.ToString());
         }
 
@@ -342,7 +332,7 @@ namespace xAPI.Sync
 
         public void SubscribeProfits()
         {
-            ProfitsSubscribe profitsSubscribe = new(streamSessionId);
+            ProfitsSubscribe profitsSubscribe = new(StreamSessionId);
             WriteMessage(profitsSubscribe.ToString());
         }
 
@@ -354,7 +344,7 @@ namespace xAPI.Sync
 
         public void SubscribeNews()
         {
-            NewsSubscribe newsSubscribe = new(streamSessionId);
+            NewsSubscribe newsSubscribe = new(StreamSessionId);
             WriteMessage(newsSubscribe.ToString());
         }
 
@@ -366,7 +356,7 @@ namespace xAPI.Sync
 
         public void SubscribeKeepAlive()
         {
-            KeepAliveSubscribe keepAliveSubscribe = new(streamSessionId);
+            KeepAliveSubscribe keepAliveSubscribe = new(StreamSessionId);
 
             WriteMessage(keepAliveSubscribe.ToString());
         }
@@ -379,7 +369,7 @@ namespace xAPI.Sync
 
         public void SubscribeCandles(string symbol)
         {
-            CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, streamSessionId);
+            CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, StreamSessionId);
             WriteMessage(candleRecordsSubscribe.ToString());
         }
 
@@ -391,7 +381,7 @@ namespace xAPI.Sync
 
         public async Task SubscribePriceAsync(string symbol, long? minArrivalTime = null, long? maxLevel = null, CancellationToken cancellationToken = default)
         {
-            var tickPricesSubscribe = new TickPricesSubscribe(symbol, streamSessionId, minArrivalTime, maxLevel);
+            var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
             await WriteMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
         }
 
@@ -419,7 +409,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeTradesAsync(CancellationToken cancellationToken = default)
         {
-            var tradeRecordsSubscribe = new TradeRecordsSubscribe(streamSessionId);
+            var tradeRecordsSubscribe = new TradeRecordsSubscribe(StreamSessionId);
             await WriteMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
         }
 
@@ -431,7 +421,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeBalanceAsync(CancellationToken cancellationToken = default)
         {
-            var balanceRecordsSubscribe = new BalanceRecordsSubscribe(streamSessionId);
+            var balanceRecordsSubscribe = new BalanceRecordsSubscribe(StreamSessionId);
             await WriteMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
         }
 
@@ -443,7 +433,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
         {
-            var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(streamSessionId);
+            var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(StreamSessionId);
             await WriteMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
         }
 
@@ -455,7 +445,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeProfitsAsync(CancellationToken cancellationToken = default)
         {
-            var profitsSubscribe = new ProfitsSubscribe(streamSessionId);
+            var profitsSubscribe = new ProfitsSubscribe(StreamSessionId);
             await WriteMessageAsync(profitsSubscribe.ToString(), cancellationToken);
         }
 
@@ -467,7 +457,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeNewsAsync(CancellationToken cancellationToken = default)
         {
-            var newsSubscribe = new NewsSubscribe(streamSessionId);
+            var newsSubscribe = new NewsSubscribe(StreamSessionId);
             await WriteMessageAsync(newsSubscribe.ToString(), cancellationToken);
         }
 
@@ -479,7 +469,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
         {
-            var keepAliveSubscribe = new KeepAliveSubscribe(streamSessionId);
+            var keepAliveSubscribe = new KeepAliveSubscribe(StreamSessionId);
             await WriteMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
         }
 
@@ -491,7 +481,7 @@ namespace xAPI.Sync
 
         public async Task SubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
         {
-            var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, streamSessionId);
+            var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, StreamSessionId);
             await WriteMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
         }
 
@@ -521,7 +511,7 @@ namespace xAPI.Sync
             if (!_disposed)
             {
                 base.Dispose(disposing);
-                streamSessionId = null!;
+                StreamSessionId = null!;
 
                 _disposed = true;
             }

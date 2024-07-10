@@ -28,17 +28,17 @@ namespace xAPI.Records
 
         public bool FieldsFromJsonObject(JsonObject value, string str)
         {
-            this.Ask = (double?)value["ask"];
-            this.AskVolume = (long?)value["askVolume"];
-            this.Bid = (double?)value["bid"];
-            this.BidVolume = (long?)value["bidVolume"];
-            this.High = (double?)value["high"];
-            this.Level = (long?)value["level"];
-            this.Low = (double?)value["low"];
-            this.SpreadRaw = (double?)value["spreadRaw"];
-            this.SpreadTable = (double?)value["spreadTable"];
-            this.Symbol = (string)value["symbol"];
-            this.Timestamp = (long?)value["timestamp"];
+            Ask = (double?)value["ask"];
+            AskVolume = (long?)value["askVolume"];
+            Bid = (double?)value["bid"];
+            BidVolume = (long?)value["bidVolume"];
+            High = (double?)value["high"];
+            Level = (long?)value["level"];
+            Low = (double?)value["low"];
+            SpreadRaw = (double?)value["spreadRaw"];
+            SpreadTable = (double?)value["spreadTable"];
+            Symbol = (string)value["symbol"];
+            Timestamp = (long?)value["timestamp"];
 
             if ((Ask == null) || (Bid == null) || (Symbol == null) || (Timestamp == null)) return false;
             return true;

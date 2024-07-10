@@ -35,18 +35,18 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.Ask = (double?)value["ask"];
-            this.Bid = (double?)value["bid"];
-            this.AskVolume = (long?)value["askVolume"];
-            this.BidVolume = (long?)value["bidVolume"];
-            this.High = (double?)value["high"];
-            this.Low = (double?)value["low"];
-            this.Symbol = (string)value["symbol"];
-            this.Timestamp = (long?)value["timestamp"];
-            this.Level = (long?)value["level"];
-            this.QuoteId = (long?)value["quoteId"];
-            this.SpreadRaw = (double?)value["spreadRaw"];
-            this.SpreadTable = (double?)value["spreadTable"];
+            Ask = (double?)value["ask"];
+            Bid = (double?)value["bid"];
+            AskVolume = (long?)value["askVolume"];
+            BidVolume = (long?)value["bidVolume"];
+            High = (double?)value["high"];
+            Low = (double?)value["low"];
+            Symbol = (string)value["symbol"];
+            Timestamp = (long?)value["timestamp"];
+            Level = (long?)value["level"];
+            QuoteId = (long?)value["quoteId"];
+            SpreadRaw = (double?)value["spreadRaw"];
+            SpreadTable = (double?)value["spreadTable"];
         }
     }
 }

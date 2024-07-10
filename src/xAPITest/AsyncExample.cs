@@ -216,7 +216,7 @@ public sealed class AsyncExample : ExampleBase
             var response = await APICommandFactory.ExecuteTickPricesCommandAsync(_connector, ["US500"],
                 TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds());
             Pass(response);
-            Detail(response?.Ticks.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {

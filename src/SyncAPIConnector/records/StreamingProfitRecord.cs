@@ -16,8 +16,8 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.Profit = (double?)value["profit"];
-            this.Order = (long?)value["order"];
+            Profit = (double?)value["profit"];
+            Order = (long?)value["order"];
         }
 
         public void UpdateBy(StreamingProfitRecord other)

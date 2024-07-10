@@ -19,11 +19,11 @@ namespace xAPI.Records
 
         public void FieldsFromJsonObject(JsonObject value)
         {
-            this.CustomComment = (string)value["customComment"];
-            this.Message = (string)value["message"];
-            this.Order = (long?)value["order"];
-            this.Price = (double?)value["price"];
-            this.RequestStatus = new REQUEST_STATUS((long)value["requestStatus"]);
+            CustomComment = (string)value["customComment"];
+            Message = (string)value["message"];
+            Order = (long?)value["order"];
+            Price = (double?)value["price"];
+            RequestStatus = new REQUEST_STATUS((long)value["requestStatus"]);
         }
     }
 }

@@ -32,59 +32,59 @@ namespace xAPI.Errors
         public static readonly ERR_CODE INTERNAL_ERROR = new ERR_CODE("EX001");
         public static readonly ERR_CODE OTHER_ERROR = new ERR_CODE("BE099");
 
-        private string stringCode;
+        private readonly string _stringCode;
 
         public ERR_CODE(string code)
         {
-            this.stringCode = code;
+            _stringCode = code;
         }
 
         public virtual string StringValue
         {
             get
             {
-                if (stringCode == null) return "";
-                return stringCode;
+                if (_stringCode == null) return "";
+                return _stringCode;
             }
         }
 
-        public static string getErrorDescription(string errorCode)
+        public static string GetErrorDescription(string errorCode)
         {
             return new ERR_CODE(errorCode).getDescription();
         }
 
         public string getDescription()
         {
-            if (string.IsNullOrEmpty(this.stringCode)) return string.Empty;
-            if (this.stringCode.Equals(ERR_CODE.INVALID_PRICE.StringValue)) return "Invalid price.";
-            if (this.stringCode.Equals(ERR_CODE.INVALID_SL_TP.StringValue)) return "Invalid SL/TP.";
-            if (this.stringCode.Equals(ERR_CODE.INVALID_VOLUME.StringValue)) return "Invalid volume.";
-            if (this.stringCode.Equals(ERR_CODE.LOGIN_DISABLED.StringValue)) return "Login disabled.";
-            if (this.stringCode.Equals(ERR_CODE.LOGIN_NOT_FOUND.StringValue)) return "Login not found.";
-            if (this.stringCode.Equals(ERR_CODE.MARKET_IS_CLOSED.StringValue)) return "Market is closed!";
-            if (this.stringCode.Equals(ERR_CODE.MISMATCHED_PARAMETERS.StringValue)) return "Mismatched parameters.";
-            if (this.stringCode.Equals(ERR_CODE.MODIFICATION_DENIED.StringValue)) return "Modification denied.";
-            if (this.stringCode.Equals(ERR_CODE.NOT_ENOUGH_MONEY.StringValue)) return "Not enough money!";
-            if (this.stringCode.Equals(ERR_CODE.QUOTES_ARE_OFF.StringValue)) return "Quotes are off!";
-            if (this.stringCode.Equals(ERR_CODE.OPPOSITE_POSITIONS_PROHIBITED.StringValue)) return "Opposite positions prohibited!";
-            if (this.stringCode.Equals(ERR_CODE.SHORT_POSITIONS_PROHIBITED.StringValue)) return "Short positions prohibited!";
-            if (this.stringCode.Equals(ERR_CODE.PRICE_HAS_CHANGED.StringValue)) return "Price has changed..";
-            if (this.stringCode.Equals(ERR_CODE.REQUESTS_TOO_FREQUENT.StringValue)) return "Requests too frequent!";
-            if (this.stringCode.Equals(ERR_CODE.REQUOTE.StringValue)) return "Requote..";
-            if (this.stringCode.Equals(ERR_CODE.TOO_MANY_TRADE_REQUESTS.StringValue)) return "Too many trade requests!";
-            if (this.stringCode.Equals(ERR_CODE.TRADE_IS_DISABLED.StringValue)) return "Trade is disabled.";
-            if (this.stringCode.Equals(ERR_CODE.TRADE_TIMEOUT.StringValue)) return "Trade timeout..";
-            if (this.stringCode.Equals(ERR_CODE.SYMBOL_NOT_EXIST_FOR_ACCOUNT.StringValue)) return "Symbol not existent for account.";
-            if (this.stringCode.Equals(ERR_CODE.CANNOT_TRADE_ON_SYMBOL.StringValue)) return "Cannot trade on symbol.";
-            if (this.stringCode.Equals(ERR_CODE.CANNOT_CLOSE_PENDING.StringValue)) return "Cannot close pending.";
-            if (this.stringCode.Equals(ERR_CODE.CANNOT_CLOSE_ALREADY_CLOSED_ORDER.StringValue)) return "Cannot close - order already closed.";
-            if (this.stringCode.Equals(ERR_CODE.NO_SUCH_TRANSACTION.StringValue)) return "No such transaction.";
-            if (this.stringCode.Equals(ERR_CODE.UNKNOWN_SYMBOL.StringValue)) return "Unknown symbol.";
-            if (this.stringCode.Equals(ERR_CODE.UNKNOWN_TRANSACTION_TYPE.StringValue)) return "Unknown transaction type.";
-            if (this.stringCode.Equals(ERR_CODE.USER_NOT_LOGGED.StringValue)) return "User not logged.";
-            if (this.stringCode.Equals(ERR_CODE.COMMAND_NOT_EXIST.StringValue)) return "Command does not exist.";
-            if (this.stringCode.Equals(ERR_CODE.INTERNAL_ERROR.StringValue)) return "Internal error.";
-            if (this.stringCode.Equals(ERR_CODE.OTHER_ERROR.StringValue)) return "Internal error (2).";
+            if (string.IsNullOrEmpty(_stringCode)) return string.Empty;
+            if (_stringCode.Equals(INVALID_PRICE.StringValue, System.StringComparison.Ordinal)) return "Invalid price.";
+            if (_stringCode.Equals(INVALID_SL_TP.StringValue, System.StringComparison.Ordinal)) return "Invalid SL/TP.";
+            if (_stringCode.Equals(INVALID_VOLUME.StringValue, System.StringComparison.Ordinal)) return "Invalid volume.";
+            if (_stringCode.Equals(LOGIN_DISABLED.StringValue, System.StringComparison.Ordinal)) return "Login disabled.";
+            if (_stringCode.Equals(LOGIN_NOT_FOUND.StringValue, System.StringComparison.Ordinal)) return "Login not found.";
+            if (_stringCode.Equals(MARKET_IS_CLOSED.StringValue, System.StringComparison.Ordinal)) return "Market is closed!";
+            if (_stringCode.Equals(MISMATCHED_PARAMETERS.StringValue, System.StringComparison.Ordinal)) return "Mismatched parameters.";
+            if (_stringCode.Equals(MODIFICATION_DENIED.StringValue, System.StringComparison.Ordinal)) return "Modification denied.";
+            if (_stringCode.Equals(NOT_ENOUGH_MONEY.StringValue, System.StringComparison.Ordinal)) return "Not enough money!";
+            if (_stringCode.Equals(QUOTES_ARE_OFF.StringValue, System.StringComparison.Ordinal)) return "Quotes are off!";
+            if (_stringCode.Equals(OPPOSITE_POSITIONS_PROHIBITED.StringValue, System.StringComparison.Ordinal)) return "Opposite positions prohibited!";
+            if (_stringCode.Equals(SHORT_POSITIONS_PROHIBITED.StringValue, System.StringComparison.Ordinal)) return "Short positions prohibited!";
+            if (_stringCode.Equals(PRICE_HAS_CHANGED.StringValue, System.StringComparison.Ordinal)) return "Price has changed..";
+            if (_stringCode.Equals(REQUESTS_TOO_FREQUENT.StringValue, System.StringComparison.Ordinal)) return "Requests too frequent!";
+            if (_stringCode.Equals(REQUOTE.StringValue, System.StringComparison.Ordinal)) return "Requote..";
+            if (_stringCode.Equals(TOO_MANY_TRADE_REQUESTS.StringValue, System.StringComparison.Ordinal)) return "Too many trade requests!";
+            if (_stringCode.Equals(TRADE_IS_DISABLED.StringValue, System.StringComparison.Ordinal)) return "Trade is disabled.";
+            if (_stringCode.Equals(TRADE_TIMEOUT.StringValue, System.StringComparison.Ordinal)) return "Trade timeout..";
+            if (_stringCode.Equals(SYMBOL_NOT_EXIST_FOR_ACCOUNT.StringValue, System.StringComparison.Ordinal)) return "Symbol not existent for account.";
+            if (_stringCode.Equals(CANNOT_TRADE_ON_SYMBOL.StringValue, System.StringComparison.Ordinal)) return "Cannot trade on symbol.";
+            if (_stringCode.Equals(CANNOT_CLOSE_PENDING.StringValue, System.StringComparison.Ordinal)) return "Cannot close pending.";
+            if (_stringCode.Equals(CANNOT_CLOSE_ALREADY_CLOSED_ORDER.StringValue, System.StringComparison.Ordinal)) return "Cannot close - order already closed.";
+            if (_stringCode.Equals(NO_SUCH_TRANSACTION.StringValue, System.StringComparison.Ordinal)) return "No such transaction.";
+            if (_stringCode.Equals(UNKNOWN_SYMBOL.StringValue, System.StringComparison.Ordinal)) return "Unknown symbol.";
+            if (_stringCode.Equals(UNKNOWN_TRANSACTION_TYPE.StringValue, System.StringComparison.Ordinal)) return "Unknown transaction type.";
+            if (_stringCode.Equals(USER_NOT_LOGGED.StringValue, System.StringComparison.Ordinal)) return "User not logged.";
+            if (_stringCode.Equals(COMMAND_NOT_EXIST.StringValue, System.StringComparison.Ordinal)) return "Command does not exist.";
+            if (_stringCode.Equals(INTERNAL_ERROR.StringValue, System.StringComparison.Ordinal)) return "Internal error.";
+            if (_stringCode.Equals(OTHER_ERROR.StringValue, System.StringComparison.Ordinal)) return "Internal error (2).";
 
             return "Unknown error";
         }

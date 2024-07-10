@@ -55,7 +55,7 @@ public abstract class ExampleBase
             Environment.Exit(1);
     }
 
-    protected static void Detail(string text)
+    protected static void Detail(string? text)
     {
         var oc = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.DarkGray;
