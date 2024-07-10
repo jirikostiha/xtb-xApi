@@ -2,10 +2,9 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class CandleRecordsStop
+    internal sealed class CandleRecordsStop
     {
-        readonly string symbol;
+        private readonly string symbol;
 
         public CandleRecordsStop(string symbol)
         {

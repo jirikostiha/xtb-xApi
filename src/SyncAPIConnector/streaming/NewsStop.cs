@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class NewsStop
+    internal sealed class NewsStop
     {
         public NewsStop()
         {

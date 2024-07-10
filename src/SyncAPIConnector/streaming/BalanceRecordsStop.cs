@@ -2,7 +2,7 @@
 
 namespace xAPI.Streaming
 {
-    sealed class BalanceRecordsStop
+    internal sealed class BalanceRecordsStop
     {
         public BalanceRecordsStop()
         {

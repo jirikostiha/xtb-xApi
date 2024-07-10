@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class CandleRecordsSubscribe
+    internal sealed class CandleRecordsSubscribe
     {
         private readonly string symbol;
         private readonly string streamSessionId;

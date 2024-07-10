@@ -4,7 +4,6 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-
     [DebuggerDisplay("{DateTime}")]
     public record StreamingKeepAliveRecord : IBaseResponseRecord
     {

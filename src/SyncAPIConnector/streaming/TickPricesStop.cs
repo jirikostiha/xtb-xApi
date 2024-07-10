@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class TickPricesStop
+    internal sealed class TickPricesStop
     {
         private readonly string symbol;
 

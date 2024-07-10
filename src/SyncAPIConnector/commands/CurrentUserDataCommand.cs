@@ -1,6 +1,5 @@
 namespace xAPI.Commands
 {
-
     public class CurrentUserDataCommand : BaseCommand
     {
         public const string Name = "getCurrentUserData";

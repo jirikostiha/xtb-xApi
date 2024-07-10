@@ -17,5 +17,4 @@ namespace xAPI.Commands
 
         public override string[] RequiredArguments => RequiredArgs;
     }
-
 }

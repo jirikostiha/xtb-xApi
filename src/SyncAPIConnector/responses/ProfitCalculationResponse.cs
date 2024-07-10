@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 namespace xAPI.Responses
 {
     public class ProfitCalculationResponse : BaseResponse

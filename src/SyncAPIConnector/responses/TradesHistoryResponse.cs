@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
-using System.Linq;
-using System.Diagnostics;
 
 namespace xAPI.Responses
 {

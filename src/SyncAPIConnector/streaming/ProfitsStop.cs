@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class ProfitsStop
+    internal sealed class ProfitsStop
     {
         public ProfitsStop()
         {

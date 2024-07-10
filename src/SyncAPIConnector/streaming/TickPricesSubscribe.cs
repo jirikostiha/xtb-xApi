@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class TickPricesSubscribe
+    internal sealed class TickPricesSubscribe
     {
         private readonly string symbol;
         private readonly long? minArrivalTime;

@@ -5,7 +5,6 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-
     [DebuggerDisplay("{Symbol}")]
     public record TradingHoursRecord : IBaseResponseRecord, ISymbol
     {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace xAPI
+﻿namespace xAPI
 {
     public interface ITickRecord : ISymbol, ITick
     {

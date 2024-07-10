@@ -4,7 +4,6 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records
 {
-
     [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
     public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
     {

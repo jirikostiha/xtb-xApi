@@ -4,7 +4,6 @@ using xAPI.Codes;
 
 namespace xAPI.Records
 {
-
     [DebuggerDisplay("{Symbol}")]
     public record ChartRangeInfoRecord
     {

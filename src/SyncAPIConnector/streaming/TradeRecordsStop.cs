@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class TradeRecordsStop
+    internal sealed class TradeRecordsStop
     {
         public TradeRecordsStop()
         {

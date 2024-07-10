@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SyncAPIConnect.Utils
 {
-    sealed class ExecuteWithTimeLimit
+    internal sealed class ExecuteWithTimeLimit
     {
         public static bool Execute(TimeSpan timeSpan, Action codeBlock)
         {

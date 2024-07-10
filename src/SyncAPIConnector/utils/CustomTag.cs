@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 
 namespace xAPI.Utils
 {
-    abstract class CustomTag
+    internal abstract class CustomTag
     {
         private static int lastTag;
         private static int maxTag = 1000000;
@@ -25,6 +22,5 @@ namespace xAPI.Utils
                 return lastTag.ToString(CultureInfo.InvariantCulture);
             }
         }
-
     }
 }

@@ -5,7 +5,6 @@ using xAPI.Codes;
 
 namespace xAPI.Records
 {
-
     [DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
     public record TradeTransInfoRecord : ISymbol
     {

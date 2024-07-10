@@ -2,8 +2,7 @@
 
 namespace xAPI.Streaming
 {
-
-    sealed class TradeStatusRecordsSubscribe
+    internal sealed class TradeStatusRecordsSubscribe
     {
         private readonly string streamSessionId;
 

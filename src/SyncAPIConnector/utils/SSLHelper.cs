@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+﻿using System.Security.Cryptography.X509Certificates;
 
 namespace xAPI.Utils
 {
-    sealed class SSLHelper
+    internal sealed class SSLHelper
     {
         /// <summary>
         /// Validator that trusts all SSL certificates (all traffic is cyphered).
