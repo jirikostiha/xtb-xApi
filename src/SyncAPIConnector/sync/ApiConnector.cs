@@ -39,10 +39,6 @@ public class ApiConnector : Connector
     #endregion Settings
 
     /// <summary>
-    /// Streaming API connector.
-    /// </summary>
-
-    /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
     /// </summary>
     private long _lastCommandTimestamp;
@@ -101,7 +97,7 @@ public class ApiConnector : Connector
     /// Connects to the remote server.
     /// </summary>
     /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
-    private void Connect(bool lookForBackups = true)
+    public void Connect(bool lookForBackups = true)
     {
         if (Server == null)
             throw new APICommunicationException("No server to connect to.");
