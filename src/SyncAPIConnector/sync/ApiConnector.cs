@@ -100,11 +100,13 @@ public class ApiConnector : Connector
     /// <summary>
     /// Connects to the remote server.
     /// </summary>
-    /// <param name="server">Server data</param>
     /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
-    private void Connect(Server server, bool lookForBackups = true)
+    private void Connect(bool lookForBackups = true)
     {
-        Server = server;
+        if (Server == null)
+            throw new APICommunicationException("No server to connect to.");
+
+        var server = Server;
         ApiSocket = new TcpClient();
 
         bool connectionAttempted = false;
@@ -112,7 +114,7 @@ public class ApiConnector : Connector
         while (!connectionAttempted || !ApiSocket.Connected)
         {
             // Try to connect asynchronously and wait for the result
-            IAsyncResult result = ApiSocket.BeginConnect(Server.Address, Server.MainPort, null, null);
+            IAsyncResult result = ApiSocket.BeginConnect(server.Address, server.MainPort, null, null);
             connectionAttempted = result.AsyncWaitHandle.WaitOne(_connectionTimeout, true);
 
             // If connection attempt failed (timeout) or not connected
@@ -121,8 +123,8 @@ public class ApiConnector : Connector
                 ApiSocket.Close();
                 if (lookForBackups)
                 {
-                    Server = Servers.GetBackup(Server);
-                    if (Server == null)
+                    server = Servers.GetBackup(server);
+                    if (server == null)
                     {
                         throw new APICommunicationException("Connection timeout.");
                     }
@@ -137,20 +139,7 @@ public class ApiConnector : Connector
 
         if (server.IsSecure)
         {
-            SslStream sl = new SslStream(ApiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
-
-            //sl.AuthenticateAsClient(server.Address);
-
-            bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
-            {
-                sl.AuthenticateAsClient(server.Address, new X509CertificateCollection(), System.Security.Authentication.SslProtocols.None, false);
-            });
-
-            if (!authenticated)
-                throw new APICommunicationException("Error during SSL handshaking (timed out?).");
-
-            StreamWriter = new StreamWriter(sl);
-            StreamReader = new StreamReader(sl);
+            EstablishSecureConnection(server);
         }
         else
         {
@@ -163,22 +152,118 @@ public class ApiConnector : Connector
 
         Connected?.Invoke(this, new(server));
 
-        Streaming = new StreamingApiConnector(Server);
+        Streaming = new StreamingApiConnector(server);
     }
 
     /// <summary>
-    /// Connects to the remote server (NOTE: server must be already set).
+    /// Connects to the remote server.
     /// </summary>
-    public void Connect()
+    /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
+    /// <param name="cancellationToken">Token to cancel operation.</param>
+    public async Task ConnectAsync(bool lookForBackups = true, CancellationToken cancellationToken = default)
     {
-        if (Server != null)
+        if (Server == null)
+            throw new APICommunicationException("No server to connect to.");
+
+        var server = Server;
+        ApiSocket = new TcpClient
         {
-            Connect(Server);
+            ReceiveTimeout = _connectionTimeout,
+            SendTimeout = _connectionTimeout
+        };
+
+        bool connectionAttempted = false;
+
+        while (!connectionAttempted || !ApiSocket.Connected)
+        {
+            try
+            {
+                // Try to connect asynchronously and wait for the result
+                var connectTask = ApiSocket.ConnectAsync(server.Address, server.MainPort);
+                var timeoutTask = Task.Delay(_connectionTimeout, cancellationToken);
+
+                var completedTask = await Task.WhenAny(connectTask, timeoutTask);
+
+                connectionAttempted = completedTask == connectTask && ApiSocket.Connected;
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    ApiSocket.Close();
+                    throw new OperationCanceledException(cancellationToken);
+                }
+
+                if (!connectionAttempted || !ApiSocket.Connected)
+                {
+                    ApiSocket.Close();
+                    if (lookForBackups)
+                    {
+                        server = Servers.GetBackup(server);
+                        if (server == null)
+                        {
+                            throw new APICommunicationException("Connection timeout.");
+                        }
+                        ApiSocket = new TcpClient();
+                    }
+                    else
+                    {
+                        throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
+                    }
+                }
+            }
+            catch
+            {
+                ApiSocket.Close();
+                if (lookForBackups)
+                {
+                    server = Servers.GetBackup(server);
+                    if (server == null)
+                    {
+                        throw new APICommunicationException("Connection timeout.");
+                    }
+                    ApiSocket = new TcpClient();
+                }
+                else
+                {
+                    throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
+                }
+            }
+        }
+
+        if (server.IsSecure)
+        {
+            EstablishSecureConnection(server);
         }
         else
         {
-            throw new APICommunicationException("No server to connect to.");
+            NetworkStream ns = ApiSocket.GetStream();
+            StreamWriter = new StreamWriter(ns);
+            StreamReader = new StreamReader(ns);
         }
+
+        _apiConnected = true;
+
+        Connected?.Invoke(this, new(server));
+
+        Streaming = new StreamingApiConnector(server);
+    }
+
+    private void EstablishSecureConnection(Server server)
+    {
+        var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+        var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
+
+        //sslStream.AuthenticateAsClient(server.Address);
+
+        bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
+        {
+            sslStream.AuthenticateAsClient(server.Address, [], System.Security.Authentication.SslProtocols.None, false);
+        });
+
+        if (!authenticated)
+            throw new APICommunicationException("Error during SSL handshaking (timed out?).");
+
+        StreamWriter = new StreamWriter(sslStream);
+        StreamReader = new StreamReader(sslStream);
     }
 
     /// <summary>
@@ -192,7 +277,24 @@ public class ApiConnector : Connector
         if (_apiConnected)
             Disconnect(true);
 
-        Connect(server);
+        Server = server;
+        Connect();
+    }
+
+    /// <summary>
+    /// Redirects to the given server.
+    /// </summary>
+    /// <param name="server">Server data</param>
+    /// <param name="cancellationToken">Token to cancel operation.</param>
+    public async Task RedirectAsync(Server server, CancellationToken cancellationToken = default)
+    {
+        Redirected?.Invoke(this, new(server));
+
+        if (_apiConnected)
+            Disconnect(true);
+
+        Server = server;
+        await ConnectAsync(true, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

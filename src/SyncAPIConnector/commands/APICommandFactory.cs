@@ -376,7 +376,7 @@ public static class APICommandFactory
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
             var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-            connector.Redirect(newServer);
+            await connector.RedirectAsync(newServer, cancellationToken).ConfigureAwait(false);
             redirectCounter++;
             var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
             loginResponse = new LoginResponse(jsonObj2.ToString());

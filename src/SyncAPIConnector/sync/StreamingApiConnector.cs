@@ -11,6 +11,7 @@ using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Security.Authentication;
 
 namespace xAPI.Sync;
 
@@ -118,15 +119,19 @@ public class StreamingApiConnector : Connector
             throw new APICommunicationException("Stream already connected.");
         }
 
-        ApiSocket = new TcpClient(Server.Address, Server.StreamingPort);
+        ApiSocket = new TcpClient();
+        var server = Server;
+        ApiSocket.Connect(server.Address, server.StreamingPort);
+
         _apiConnected = true;
 
-        Connected?.Invoke(this, new(Server));
+        Connected?.Invoke(this, new(server));
 
-        if (Server.IsSecure)
+        if (server.IsSecure)
         {
-            var ssl = new SslStream(ApiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
-            ssl.AuthenticateAsClient(Server.Address);
+            var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+            var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
+            ssl.AuthenticateAsClient(server.Address);
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }
@@ -135,6 +140,62 @@ public class StreamingApiConnector : Connector
             NetworkStream ns = ApiSocket.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
+        }
+
+        if (_streamingReaderTask == null)
+        {
+            CreateAndRunNewStreamingReaderTask(cancellationToken);
+        }
+        else if (_streamingReaderTask.IsCompleted || _streamingReaderTask.IsFaulted || _streamingReaderTask.IsCanceled)
+        {
+            _streamingReaderTask = null;
+            CreateAndRunNewStreamingReaderTask(cancellationToken);
+        }
+    }
+
+    /// <summary>
+    /// Connect to the streaming.
+    /// </summary>
+    public async Task ConnectAsync(CancellationToken cancellationToken)
+    {
+        if (StreamSessionId == null)
+        {
+            throw new APICommunicationException("No session exists. Please login first.");
+        }
+
+        if (IsConnected)
+        {
+            throw new APICommunicationException("Stream already connected.");
+        }
+
+        ApiSocket = new TcpClient();
+        var server = Server;
+        try
+        {
+            await ApiSocket.ConnectAsync(server.Address, server.StreamingPort);
+        }
+        catch (OperationCanceledException)
+        {
+            throw new APICommunicationException("Connection attempt was canceled.");
+        }
+
+        _apiConnected = true;
+
+        Connected?.Invoke(this, new(server));
+
+        if (server.IsSecure)
+        {
+            var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+            var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
+            await ssl.AuthenticateAsClientAsync(server.Address);
+            StreamWriter = new StreamWriter(ssl);
+            StreamReader = new StreamReader(ssl);
+        }
+        else
+        {
+            var networkStream = ApiSocket.GetStream();
+            StreamWriter = new StreamWriter(networkStream);
+            StreamReader = new StreamReader(networkStream);
         }
 
         if (_streamingReaderTask == null)
