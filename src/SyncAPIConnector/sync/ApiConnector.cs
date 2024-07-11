@@ -191,7 +191,7 @@ public class ApiConnector : Connector
     /// </summary>
     /// <param name="command">Command to execute</param>
     /// <returns>Response from the server</returns>
-		public JsonObject ExecuteCommand(BaseCommand command)
+    public JsonObject ExecuteCommand(BaseCommand command)
     {
         try
         {
