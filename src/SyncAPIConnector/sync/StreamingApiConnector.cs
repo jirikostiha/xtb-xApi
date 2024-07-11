@@ -16,6 +16,34 @@ namespace xAPI.Sync;
 
 public class StreamingApiConnector : Connector
 {
+    private Task? _streamingReaderTask;
+
+    /// <summary>
+    /// Dedicated streaming listener.
+    /// </summary>
+    private readonly IStreamingListener? _streamingListener;
+
+    /// <summary>
+    /// Creates new StreamingAPIConnector instance based on given server data.
+    /// </summary>
+    /// <param name="server">Server data</param>
+    public StreamingApiConnector(Server server)
+    {
+        Server = server;
+        _apiConnected = false;
+    }
+
+    /// <summary>
+    /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
+    /// </summary>
+    /// <param name="server">Server data</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public StreamingApiConnector(Server server, IStreamingListener streamingListener)
+        : this(server)
+    {
+        _streamingListener = streamingListener;
+    }
+
     #region Events
 
     /// <summary>
@@ -70,39 +98,10 @@ public class StreamingApiConnector : Connector
 
     #endregion
 
-    private Task? _streamingReaderTask;
-
-    /// <summary>
-    /// Dedicated streaming listener.
-    /// </summary>
-    private readonly IStreamingListener _streamingListener;
-
-    /// <summary>
-    /// Creates new StreamingAPIConnector instance based on given server data.
-    /// </summary>
-    /// <param name="server">Server data</param>
-    public StreamingApiConnector(Server server)
-    {
-        Server = server;
-        apiConnected = false;
-    }
-
-    /// <summary>
-    /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
-    /// </summary>
-    /// <param name="server">Server data</param>
-    /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(Server server, IStreamingListener streamingListener)
-        : this(server)
-    {
-        _streamingListener = streamingListener;
-    }
-
-
     /// <summary>
     /// Stream session id (member of login response). Should be set after the successful login.
     /// </summary>
-    public string StreamSessionId { get; set; }
+    public string? StreamSessionId { get; set; }
 
     /// <summary>
     /// Connect to the streaming.
@@ -114,13 +113,13 @@ public class StreamingApiConnector : Connector
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        if (IsConnected())
+        if (IsConnected)
         {
             throw new APICommunicationException("Stream already connected.");
         }
 
         ApiSocket = new TcpClient(Server.Address, Server.StreamingPort);
-        apiConnected = true;
+        _apiConnected = true;
 
         Connected?.Invoke(this, new(Server));
 
@@ -128,14 +127,14 @@ public class StreamingApiConnector : Connector
         {
             var ssl = new SslStream(ApiSocket.GetStream(), false, new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback));
             ssl.AuthenticateAsClient(Server.Address);
-            ApiWriteStream = new StreamWriter(ssl);
-            ApiReadStream = new StreamReader(ssl);
+            StreamWriter = new StreamWriter(ssl);
+            StreamReader = new StreamReader(ssl);
         }
         else
         {
             NetworkStream ns = ApiSocket.GetStream();
-            ApiWriteStream = new StreamWriter(ns);
-            ApiReadStream = new StreamReader(ns);
+            StreamWriter = new StreamWriter(ns);
+            StreamReader = new StreamReader(ns);
         }
 
         if (_streamingReaderTask == null)
@@ -153,7 +152,7 @@ public class StreamingApiConnector : Connector
     {
         _streamingReaderTask = Task.Run(async () =>
         {
-            while (IsConnected())
+            while (IsConnected)
             {
                 await ReadStreamMessageAsync(cancellationToken);
             }

@@ -10,6 +10,18 @@ namespace xAPI.Sync;
 
 public class Connector : IDisposable
 {
+    /// <summary>
+    /// Lock object used to synchronize access to write socket operations.
+    /// </summary>
+    private readonly SemaphoreSlim _writeLock = new(1, 1);
+
+    /// <summary>
+    /// Creates new connector instance.
+    /// </summary>
+    public Connector()
+    {
+    }
+
     #region Events
 
     /// <summary>
@@ -30,6 +42,11 @@ public class Connector : IDisposable
     #endregion Events
 
     /// <summary>
+    /// Server that the connection was established with.
+    /// </summary>
+    protected Server Server { get; set; }
+
+    /// <summary>
     /// Socket that handles the connection.
     /// </summary>
     protected TcpClient ApiSocket { get; set; }
@@ -37,43 +54,23 @@ public class Connector : IDisposable
     /// <summary>
     /// Stream writer (for outgoing data).
     /// </summary>
-    protected StreamWriter ApiWriteStream { get; set; }
+    protected StreamWriter StreamWriter { get; set; }
 
     /// <summary>
     /// Stream reader (for incoming data).
     /// </summary>
-    protected StreamReader ApiReadStream { get; set; }
+    protected StreamReader StreamReader { get; set; }
 
     /// <summary>
     /// True if connected to the remote server.
     /// </summary>
-    protected volatile bool apiConnected;
-
-    /// <summary>
-    /// Server that the connection was established with.
-    /// </summary>
-    protected Server Server { get; set; }
-
-    /// <summary>
-    /// Lock object used to synchronize access to write socket operations.
-    /// </summary>
-    private readonly SemaphoreSlim _writeLock = new(1, 1);
-
-    /// <summary>
-    /// Creates new connector instance.
-    /// </summary>
-    public Connector()
-    {
-    }
+    protected volatile bool _apiConnected;
 
     /// <summary>
     /// Checks if socket is connected to the remote server.
     /// </summary>
     /// <returns>True if socket is connected, otherwise false</returns>
-    public bool IsConnected()
-    {
-        return apiConnected;
-    }
+    public bool IsConnected => _apiConnected;
 
     /// <summary>
     /// Writes raw message to the remote server.
@@ -84,12 +81,12 @@ public class Connector : IDisposable
         _writeLock.Wait();
         try
         {
-            if (IsConnected())
+            if (IsConnected)
             {
                 try
                 {
-                    ApiWriteStream.WriteLine(message);
-                    ApiWriteStream.Flush();
+                    StreamWriter.WriteLine(message);
+                    StreamWriter.Flush();
                 }
                 catch (IOException ex)
                 {
@@ -121,12 +118,12 @@ public class Connector : IDisposable
         await _writeLock.WaitAsync(cancellationToken);
         try
         {
-            if (IsConnected())
+            if (IsConnected)
             {
                 try
                 {
-                    await ApiWriteStream.WriteLineAsync(message).ConfigureAwait(false);
-                    await ApiWriteStream.FlushAsync().ConfigureAwait(false);
+                    await StreamWriter.WriteLineAsync(message).ConfigureAwait(false);
+                    await StreamWriter.FlushAsync().ConfigureAwait(false);
                 }
                 catch (IOException ex)
                 {
@@ -160,7 +157,7 @@ public class Connector : IDisposable
         try
         {
             string line;
-            while ((line = ApiReadStream.ReadLine()) != null)
+            while ((line = StreamReader.ReadLine()) != null)
             {
                 result.Append(line);
 
@@ -203,7 +200,7 @@ public class Connector : IDisposable
         try
         {
             string line;
-            while ((line = await ApiReadStream.ReadLineAsync().ConfigureAwait(false)) != null)
+            while ((line = await StreamReader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 result.Append(line);
 
@@ -240,16 +237,16 @@ public class Connector : IDisposable
     /// <param name="silent">If true then no event will be triggered (used in redirect process)</param>
     public void Disconnect(bool silent = false)
     {
-        if (IsConnected())
+        if (IsConnected)
         {
-            ApiReadStream.Close();
-            ApiWriteStream.Close();
+            StreamReader.Close();
+            StreamWriter.Close();
             ApiSocket.Close();
 
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
-        apiConnected = false;
+        _apiConnected = false;
     }
 
     private bool _disposed;
@@ -260,8 +257,8 @@ public class Connector : IDisposable
         {
             if (disposing)
             {
-                ApiReadStream?.Dispose();
-                ApiWriteStream?.Dispose();
+                StreamReader?.Dispose();
+                StreamWriter?.Dispose();
                 ApiSocket?.Dispose();
                 _writeLock?.Dispose();
             }

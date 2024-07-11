@@ -38,29 +38,9 @@ public class ApiConnector : Connector
 
     #endregion Settings
 
-    #region Events
-
-    /// <summary>
-    /// Event raised when a connection is established.
-    /// </summary>
-    public event EventHandler<ServerEventArgs>? Connected;
-
-    /// <summary>
-    /// Event raised when a connection is redirected.
-    /// </summary>
-    public event EventHandler<ServerEventArgs>? Redirected;
-
-    /// <summary>
-    /// Event raised when a command is being executed.
-    /// </summary>
-    public event EventHandler<CommandEventArgs>? CommandExecuting;
-
-    #endregion Events
-
     /// <summary>
     /// Streaming API connector.
     /// </summary>
-    private StreamingApiConnector _streamingConnector;
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -87,6 +67,35 @@ public class ApiConnector : Connector
         Server = server;
         _connectionTimeout = connectionTimeout;
     }
+
+    #region Events
+
+    /// <summary>
+    /// Event raised when a connection is established.
+    /// </summary>
+    public event EventHandler<ServerEventArgs>? Connected;
+
+    /// <summary>
+    /// Event raised when a connection is redirected.
+    /// </summary>
+    public event EventHandler<ServerEventArgs>? Redirected;
+
+    /// <summary>
+    /// Event raised when a command is being executed.
+    /// </summary>
+    public event EventHandler<CommandEventArgs>? CommandExecuting;
+
+    #endregion Events
+
+    /// <summary>
+    /// Streaming connector.
+    /// </summary>
+    public StreamingApiConnector? Streaming { get; private set; }
+
+    /// <summary>
+    /// Stream session id (given upon login).
+    /// </summary>
+    public string? StreamSessionId { get; }
 
     /// <summary>
     /// Connects to the remote server.
@@ -140,21 +149,21 @@ public class ApiConnector : Connector
             if (!authenticated)
                 throw new APICommunicationException("Error during SSL handshaking (timed out?).");
 
-            ApiWriteStream = new StreamWriter(sl);
-            ApiReadStream = new StreamReader(sl);
+            StreamWriter = new StreamWriter(sl);
+            StreamReader = new StreamReader(sl);
         }
         else
         {
             NetworkStream ns = ApiSocket.GetStream();
-            ApiWriteStream = new StreamWriter(ns);
-            ApiReadStream = new StreamReader(ns);
+            StreamWriter = new StreamWriter(ns);
+            StreamReader = new StreamReader(ns);
         }
 
-        apiConnected = true;
+        _apiConnected = true;
 
         Connected?.Invoke(this, new(server));
 
-        _streamingConnector = new StreamingApiConnector(Server);
+        Streaming = new StreamingApiConnector(Server);
     }
 
     /// <summary>
@@ -180,7 +189,7 @@ public class ApiConnector : Connector
     {
         Redirected?.Invoke(this, new(server));
 
-        if (apiConnected)
+        if (_apiConnected)
             Disconnect(true);
 
         Connect(server);
@@ -199,31 +208,6 @@ public class ApiConnector : Connector
 
             CommandExecuting?.Invoke(this, new(command));
             var response = ExecuteCommand(request);
-
-            var parsedResponse = JsonNode.Parse(response).AsObject();
-
-            return parsedResponse;
-        }
-        catch (Exception ex)
-        {
-            throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
-        }
-    }
-
-    /// <summary>
-    /// Executes given command and receives response (withholding API inter-command timeout).
-    /// </summary>
-    /// <param name="command">Command to execute</param>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    /// <returns>Response from the server</returns>
-    public async Task<JsonObject> ExecuteCommandAsync(BaseCommand command, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var request = command.ToJSONString();
-
-            CommandExecuting?.Invoke(this, new(command));
-            var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
 
             var parsedResponse = JsonNode.Parse(response).AsObject();
 
@@ -278,6 +262,31 @@ public class ApiConnector : Connector
     /// <summary>
     /// Executes given command and receives response (withholding API inter-command timeout).
     /// </summary>
+    /// <param name="command">Command to execute</param>
+    /// <param name="cancellationToken">Token to cancel operation.</param>
+    /// <returns>Response from the server</returns>
+    public async Task<JsonObject> ExecuteCommandAsync(BaseCommand command, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var request = command.ToJSONString();
+
+            CommandExecuting?.Invoke(this, new(command));
+            var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
+
+            var parsedResponse = JsonNode.Parse(response).AsObject();
+
+            return parsedResponse;
+        }
+        catch (Exception ex)
+        {
+            throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
+        }
+    }
+
+    /// <summary>
+    /// Executes given command and receives response (withholding API inter-command timeout).
+    /// </summary>
     /// <param name="message">Command to execute</param>
     /// <param name="cancellationToken">Token to cancel operation.</param>
     /// <returns>Response from the server</returns>
@@ -316,22 +325,6 @@ public class ApiConnector : Connector
         }
     }
 
-    /// <summary>
-    /// Streaming connector.
-    /// </summary>
-    public StreamingApiConnector Streaming
-    {
-        get { return _streamingConnector; }
-    }
-
-    /// <summary>
-    /// Stream session id (given upon login).
-    /// </summary>
-    public string StreamSessionId
-    {
-        get; set;
-    }
-
     private bool _disposed;
 
     protected override void Dispose(bool disposing)
@@ -340,7 +333,7 @@ public class ApiConnector : Connector
         {
             if (disposing)
             {
-                _streamingConnector?.Dispose();
+                Streaming?.Dispose();
                 _lock.Dispose();
             }
 
