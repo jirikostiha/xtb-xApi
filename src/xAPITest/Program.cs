@@ -28,7 +28,7 @@ namespace xAPITest
                 var asyncExample = new AsyncExample(apiConnector, _userId, _password);
                 using var tokenSource = new CancellationTokenSource();
 
-                Task.Run(() =>
+                var keyWaitTask = Task.Run(() =>
                 {
                     while (!tokenSource.Token.IsCancellationRequested)
                     {
@@ -53,6 +53,11 @@ namespace xAPITest
                 catch (OperationCanceledException)
                 {
                     Console.WriteLine("Operation was canceled.");
+                }
+                finally
+                {
+                    tokenSource.Cancel();
+                    keyWaitTask.Wait();
                 }
             }
 
