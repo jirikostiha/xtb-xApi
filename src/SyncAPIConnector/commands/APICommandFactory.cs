@@ -12,32 +12,31 @@ namespace xAPI.Commands;
 
 public static class APICommandFactory
 {
-    /// <summary>
-    /// Counts redirections.
-    /// </summary>
-    private static int redirectCounter;
-
     #region Command creators
 
     public static LoginCommand CreateLoginCommand(string userId, string password, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("userId", userId);
-        args.Add("password", password);
-        args.Add("type", "dotNET");
-        args.Add("version", ApiConnector.VERSION);
+        JsonObject args = new()
+        {
+            { "userId", userId },
+            { "password", password },
+            { "type", "dotNET" },
+            { "version", ApiConnector.VERSION }
+        };
+
         return new LoginCommand(args, prettyPrint);
     }
 
     public static LoginCommand CreateLoginCommand(Credentials credentials, bool prettyPrint = false)
     {
         JsonObject jsonObj = CreateLoginJsonObject(credentials);
+
         return new LoginCommand(jsonObj, prettyPrint);
     }
 
     private static JsonObject CreateLoginJsonObject(Credentials credentials)
     {
-        JsonObject response = new JsonObject();
+        JsonObject response = [];
         if (credentials != null)
         {
             response.Add("userId", credentials.Login);
@@ -55,150 +54,183 @@ public static class APICommandFactory
                 response.Add("appName", credentials.AppName);
             }
         }
+
         return response;
     }
 
     public static ChartLastCommand CreateChartLastCommand(string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("info", (new ChartLastInfoRecord(symbol, period, start)).ToJsonObject());
+        JsonObject args = new()
+        {
+            { "info", (new ChartLastInfoRecord(symbol, period, start)).ToJsonObject() }
+        };
+
         return new ChartLastCommand(args, prettyPrint);
     }
 
     public static ChartLastCommand CreateChartLastCommand(ChartLastInfoRecord info, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("info", info.ToJsonObject());
+        JsonObject args = new()
+        {
+            { "info", info.ToJsonObject() }
+        };
+
         return new ChartLastCommand(args, prettyPrint);
     }
 
     public static ChartRangeCommand CreateChartRangeCommand(ChartRangeInfoRecord info, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("info", info.toJsonObject());
+        JsonObject args = new()
+        {
+            { "info", info.ToJsonObject() }
+        };
+
         return new ChartRangeCommand(args, prettyPrint);
     }
 
     public static ChartRangeCommand CreateChartRangeCommand(string symbol, PERIOD_CODE period, long? start, long? end, long? ticks, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("info", (new ChartRangeInfoRecord(symbol, period, start, end, ticks)).toJsonObject());
+        JsonObject args = new()
+        {
+            { "info", (new ChartRangeInfoRecord(symbol, period, start, end, ticks)).ToJsonObject() }
+        };
+
         return new ChartRangeCommand(args, prettyPrint);
     }
 
     public static CommissionDefCommand CreateCommissionDefCommand(string symbol, double? volume, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("symbol", symbol);
-        args.Add("volume", volume);
+        JsonObject args = new()
+        {
+            { "symbol", symbol },
+            { "volume", volume }
+        };
+
         return new CommissionDefCommand(args, prettyPrint);
     }
 
     public static MarginTradeCommand CreateMarginTradeCommand(string symbol, double? volume, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("symbol", symbol);
-        args.Add("volume", volume);
+        JsonObject args = new()
+        {
+            { "symbol", symbol },
+            { "volume", volume }
+        };
+
         return new MarginTradeCommand(args, prettyPrint);
     }
 
     public static NewsCommand CreateNewsCommand(long? start, long? end, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("start", start);
-        args.Add("end", end);
+        JsonObject args = new()
+        {
+            { "start", start },
+            { "end", end }
+        };
+
         return new NewsCommand(args, prettyPrint);
     }
 
     public static ProfitCalculationCommand CreateProfitCalculationCommand(string symbol, double? volume, TRADE_OPERATION_CODE cmd, double? openPrice, double? closePrice, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("symbol", symbol);
-        args.Add("volume", volume);
-        args.Add("cmd", cmd.Code);
-        args.Add("openPrice", openPrice);
-        args.Add("closePrice", closePrice);
+        JsonObject args = new()
+        {
+            { "symbol", symbol },
+            { "volume", volume },
+            { "cmd", cmd.Code },
+            { "openPrice", openPrice },
+            { "closePrice", closePrice }
+        };
+
         return new ProfitCalculationCommand(args, prettyPrint);
     }
 
     public static SymbolCommand CreateSymbolCommand(string symbol, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("symbol", symbol);
+        JsonObject args = new()
+        {
+            { "symbol", symbol }
+        };
+
         return new SymbolCommand(args, prettyPrint);
     }
 
     public static TickPricesCommand CreateTickPricesCommand(string[] symbols, long? timestamp, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        JsonArray arr = new JsonArray();
-        foreach (string symbol in symbols)
-        {
-            arr.Add(symbol);
-        }
-
+        JsonObject args = [];
+        JsonArray arr = [.. symbols];
         args.Add("symbols", arr);
         args.Add("timestamp", timestamp);
+
         return new TickPricesCommand(args, prettyPrint);
     }
 
     public static TradeRecordsCommand CreateTradeRecordsCommand(LinkedList<long?> orders, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        JsonArray arr = new JsonArray();
-        foreach (long? order in orders)
-        {
-            arr.Add(order);
-        }
+        JsonObject args = [];
+        JsonArray arr = [.. orders];
         args.Add("orders", arr);
+
         return new TradeRecordsCommand(args, prettyPrint);
     }
 
     public static TradeTransactionCommand CreateTradeTransactionCommand(TradeTransInfoRecord tradeTransInfo, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("tradeTransInfo", tradeTransInfo.toJsonObject());
+        JsonObject args = new()
+        {
+            { "tradeTransInfo", tradeTransInfo.ToJsonObject() }
+        };
+
         return new TradeTransactionCommand(args, prettyPrint);
     }
 
     public static TradeTransactionCommand CreateTradeTransactionCommand(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("tradeTransInfo", (new TradeTransInfoRecord(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration)).toJsonObject());
+        JsonObject args = new()
+        {
+            { "tradeTransInfo", new TradeTransInfoRecord(cmd, type, price, sl, tp, symbol, volume, order, customComment, expiration).ToJsonObject() }
+        };
+
         return new TradeTransactionCommand(args, prettyPrint);
     }
 
     public static TradeTransactionStatusCommand CreateTradeTransactionStatusCommand(long? order, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("order", order);
+        JsonObject args = new()
+        {
+            { "order", order }
+        };
+
         return new TradeTransactionStatusCommand(args, prettyPrint);
     }
 
     public static TradesCommand CreateTradesCommand(bool openedOnly, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("openedOnly", openedOnly);
+        JsonObject args = new()
+        {
+            { "openedOnly", openedOnly }
+        };
+
         return new TradesCommand(args, prettyPrint);
     }
 
     public static TradesHistoryCommand CreateTradesHistoryCommand(long? start, long? end, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        args.Add("start", start);
-        args.Add("end", end);
+        JsonObject args = new()
+        {
+            { "start", start },
+            { "end", end }
+        };
+
         return new TradesHistoryCommand(args, prettyPrint);
     }
 
     public static TradingHoursCommand CreateTradingHoursCommand(string[] symbols, bool prettyPrint = false)
     {
-        JsonObject args = new JsonObject();
-        JsonArray arr = new JsonArray();
-        foreach (string symbol in symbols)
-        {
-            arr.Add(symbol);
-        }
+        JsonObject args = [];
+        JsonArray arr = [.. symbols];
         args.Add("symbols", arr);
+
         return new TradingHoursCommand(args, prettyPrint);
     }
 
@@ -332,7 +364,7 @@ public static class APICommandFactory
         var loginCommand = CreateLoginCommand(credentials, prettyPrint);
         var loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
 
-        redirectCounter = 0;
+        var redirectCounter = 0;
 
         while (loginResponse.RedirectRecord != null)
         {
@@ -368,7 +400,7 @@ public static class APICommandFactory
         var jsonObj = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
         var loginResponse = new LoginResponse(jsonObj.ToString());
 
-        redirectCounter = 0;
+        var redirectCounter = 0;
 
         while (loginResponse.RedirectRecord != null)
         {
