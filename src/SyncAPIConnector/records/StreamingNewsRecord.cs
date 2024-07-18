@@ -7,21 +7,21 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Key}")]
 public record StreamingNewsRecord : IBaseResponseRecord, INewsRecord
 {
-    public string Body { get; set; }
+    public string? Body { get; set; }
 
-    public string Key { get; set; }
+    public string? Key { get; set; }
 
-    public long? Time { get; set; }
+    public string? Title { get; set; }
 
-    public string Title { get; set; }
-
-    public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+    public DateTimeOffset? Time { get; set; }
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        Body = (string)value["body"];
-        Key = (string)value["key"];
-        Time = (long?)value["time"];
-        Title = (string)value["title"];
+        Body = (string?)value["body"];
+        Key = (string?)value["key"];
+        Title = (string?)value["title"];
+
+        var time = (long?)value["time"];
+        Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
     }
 }

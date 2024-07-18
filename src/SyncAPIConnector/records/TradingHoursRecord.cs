@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
+using System.Linq;
 
 namespace xAPI.Records;
 
@@ -64,37 +65,29 @@ public record TradingHoursRecord : IBaseResponseRecord, ISymbol
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        FieldsFromJsonObject(value, null);
-    }
-
-    public bool FieldsFromJsonObject(JsonObject value, string str)
-    {
         Symbol = (string?)value["symbol"];
         Quotes = new LinkedList<HoursRecord>();
         if (value["quotes"] != null)
         {
             JsonArray jsonarray = value["quotes"].AsArray();
-            foreach (JsonObject i in jsonarray)
+            foreach (JsonObject i in jsonarray.OfType<JsonObject>())
             {
                 HoursRecord rec = new HoursRecord();
                 rec.FieldsFromJsonObject(i);
                 Quotes.AddLast(rec);
             }
         }
+
         Trading = new LinkedList<HoursRecord>();
         if (value["trading"] != null)
         {
             JsonArray jsonarray = value["trading"].AsArray();
-            foreach (JsonObject i in jsonarray)
+            foreach (JsonObject i in jsonarray.OfType<JsonObject>())
             {
                 HoursRecord rec = new HoursRecord();
                 rec.FieldsFromJsonObject(i);
                 Trading.AddLast(rec);
             }
         }
-        if ((Symbol == null) || (Quotes.Count == 0) || (Trading.Count == 0))
-            return false;
-
-        return true;
     }
 }

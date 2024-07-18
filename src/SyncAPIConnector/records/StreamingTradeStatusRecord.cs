@@ -19,10 +19,12 @@ public record StreamingTradeStatusRecord : IBaseResponseRecord
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        CustomComment = (string)value["customComment"];
-        Message = (string)value["message"];
+        CustomComment = (string?)value["customComment"];
+        Message = (string?)value["message"];
         Order = (long?)value["order"];
         Price = (double?)value["price"];
-        RequestStatus = new REQUEST_STATUS((long)value["requestStatus"]);
+
+        var requestStatus = (long?)value["requestStatus"];
+        RequestStatus = requestStatus.HasValue ? new REQUEST_STATUS(requestStatus.Value) : null;
     }
 }

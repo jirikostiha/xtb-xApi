@@ -4,50 +4,42 @@ using System.Text.Json.Nodes;
 
 namespace xAPI.Records;
 
-[DebuggerDisplay("day:{Day}, since:{FromT2}, until:{ToT2}")]
+[DebuggerDisplay("day:{DayOfWeek}, since:{FromTime}, until:{ToTime}")]
 public record HoursRecord : IBaseResponseRecord
 {
-    public long? Day { get; set; }
+    public DayOfWeek? DayOfWeek { get; set; }
 
-    /// <summary>
-    /// Gets the value of <see cref="Day"/> converted to the corresponding <see cref="DayOfWeek"/>.
-    /// Returns <c>null</c> if <see cref="Day"/> is <c>null</c>.
-    /// </summary>
-    public DayOfWeek? DayOfWeek => Day.HasValue ? ToDayOfWeek(Day.Value) : null;
+    public TimeSpan? FromTime { get; set; }
 
-    public long? FromT { get; set; }
-
-    public long? ToT { get; set; }
-
-    public TimeSpan? FromT2 => FromT is null ? null : TimeSpan.FromMilliseconds(FromT.Value);
-
-    public TimeSpan? ToT2 => ToT is null ? null : TimeSpan.FromMilliseconds(ToT.Value);
+    public TimeSpan? ToTime { get; set; }
 
     public bool? IsInTimeInterval(TimeSpan timeOfDay)
     {
-        if (!FromT.HasValue || !ToT.HasValue)
+        if (!FromTime.HasValue || !ToTime.HasValue)
             return null;
 
-        TimeSpan fromTimeOfDay = TimeSpan.FromMilliseconds(FromT.Value);
-        TimeSpan toTimeOfDay = TimeSpan.FromMilliseconds(ToT.Value);
-
         // Check if the timeOfDay falls between fromTime and toTime
-        if (fromTimeOfDay <= toTimeOfDay)
+        if (FromTime <= ToTime)
         {
-            return timeOfDay >= fromTimeOfDay && timeOfDay <= toTimeOfDay;
+            return timeOfDay >= FromTime && timeOfDay <= ToTime;
         }
         else
         {
             // Crossing midnight
-            return timeOfDay >= fromTimeOfDay || timeOfDay <= toTimeOfDay;
+            return timeOfDay >= FromTime || timeOfDay <= ToTime;
         }
     }
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        Day = (long?)value["day"];
-        FromT = (long?)value["fromT"];
-        ToT = (long?)value["toT"];
+        var day = (long?)value["day"];
+        DayOfWeek = day.HasValue ? ToDayOfWeek(day.Value) : null;
+
+        var fromTime = (long?)value["fromT"];
+        FromTime = fromTime.HasValue ? TimeSpan.FromMilliseconds(fromTime.Value) : null;
+
+        var toTime = (long?)value["toT"];
+        ToTime = toTime.HasValue ? TimeSpan.FromMilliseconds(toTime.Value) : null;
     }
 
     /// <summary>

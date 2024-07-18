@@ -6,9 +6,7 @@ using System;
 
 public record RateInfoRecord : IBaseResponseRecord, ICandleRecord
 {
-    public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
-
-    public long? Ctm { get; set; }
+    public DateTimeOffset? StartTime { get; set; }
 
     public double? Open { get; set; }
 
@@ -18,15 +16,17 @@ public record RateInfoRecord : IBaseResponseRecord, ICandleRecord
 
     public double? Close { get; set; }
 
-    public double? Vol { get; set; }
+    public double? Volume { get; set; }
 
     public void FieldsFromJsonObject(JsonObject value)
     {
         Close = (double?)value["close"];
-        Ctm = (long?)value["ctm"];
         High = (double?)value["high"];
         Low = (double?)value["low"];
         Open = (double?)value["open"];
-        Vol = (double?)value["vol"];
+        Volume = (double?)value["vol"];
+
+        var ctm = (long?)value["ctm"];
+        StartTime = ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(ctm.Value);
     }
 }

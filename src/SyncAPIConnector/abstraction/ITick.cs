@@ -12,5 +12,5 @@ public interface ITick
 
     double? Low { get; }
 
-    DateTimeOffset? DateTime { get; }
+    DateTimeOffset? Time { get; }
 }

@@ -8,11 +8,32 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
 public record TradeTransInfoRecord : ISymbol
 {
-    public TRADE_OPERATION_CODE Cmd { get; init; }
+    public TradeTransInfoRecord(
+        TRADE_OPERATION_CODE tradeOperation,
+        TRADE_TRANSACTION_TYPE transactionType,
+        double? price,
+        double? sl,
+        double? tp,
+        string symbol,
+        double? volume,
+        long? order,
+        string customComment,
+        long? expiration)
+    {
+        Price = price;
+        Sl = sl;
+        Tp = tp;
+        Symbol = symbol;
+        Volume = volume;
+        Order = order;
+        CustomComment = customComment;
+
+        TradeOperation = tradeOperation;
+        TransactionType = transactionType;
+        Expiration = expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value);
+    }
 
     public string CustomComment { get; init; }
-
-    public long? Expiration { get; init; }
 
     public long? Order { get; init; }
 
@@ -24,32 +45,20 @@ public record TradeTransInfoRecord : ISymbol
 
     public double? Tp { get; init; }
 
-    public TRADE_TRANSACTION_TYPE Type { get; init; }
-
     public double? Volume { get; init; }
 
-    public DateTimeOffset? ExpirationDateTime => Expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Expiration.Value);
+    public TRADE_OPERATION_CODE TradeOperation { get; init; }
 
-    public TradeTransInfoRecord(TRADE_OPERATION_CODE cmd, TRADE_TRANSACTION_TYPE type, double? price, double? sl, double? tp, string symbol, double? volume, long? order, string customComment, long? expiration)
-    {
-        Cmd = cmd;
-        Type = type;
-        Price = price;
-        Sl = sl;
-        Tp = tp;
-        Symbol = symbol;
-        Volume = volume;
-        Order = order;
-        CustomComment = customComment;
-        Expiration = expiration;
-    }
+    public TRADE_TRANSACTION_TYPE TransactionType { get; init; }
 
-    public virtual JsonObject toJsonObject()
+    public DateTimeOffset? Expiration { get; init; }
+
+    public virtual JsonObject ToJsonObject()
     {
         JsonObject obj = new()
         {
-            { "cmd", (long)Cmd.Code },
-            { "type", (long)Type.Code },
+            { "cmd", TradeOperation.Code },
+            { "type", TransactionType.Code },
             { "price", Price },
             { "sl", Sl },
             { "tp", Tp },
@@ -57,8 +66,9 @@ public record TradeTransInfoRecord : ISymbol
             { "volume", Volume },
             { "order", Order },
             { "customComment", CustomComment },
-            { "expiration", Expiration }
+            { "expiration", Expiration?.ToUnixTimeMilliseconds() ?? null },
         };
+
         return obj;
     }
 }

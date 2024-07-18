@@ -7,18 +7,6 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Country}, impact:{Impact}")]
 public record CalendarRecord : IBaseResponseRecord
 {
-    public void FieldsFromJsonObject(JsonObject value)
-    {
-        Country = (string?)value["country"];
-        Current = (string?)value["current"];
-        Forecast = (string?)value["forecast"];
-        Impact = (string?)value["impact"];
-        Period = (string?)value["period"];
-        Previous = (string?)value["previous"];
-        Time = (long?)value["time"];
-        Title = (string?)value["title"];
-    }
-
     public string? Country { get; set; }
 
     public string? Current { get; set; }
@@ -31,9 +19,21 @@ public record CalendarRecord : IBaseResponseRecord
 
     public string? Previous { get; set; }
 
-    public long? Time { get; set; }
-
     public string? Title { get; set; }
 
-    public DateTimeOffset? DateTime => Time is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Time.Value);
+    public DateTimeOffset? Time { get; set; }
+
+    public void FieldsFromJsonObject(JsonObject value)
+    {
+        Country = (string?)value["country"];
+        Current = (string?)value["current"];
+        Forecast = (string?)value["forecast"];
+        Impact = (string?)value["impact"];
+        Period = (string?)value["period"];
+        Previous = (string?)value["previous"];
+        Title = (string?)value["title"];
+
+        var time = (long?)value["time"];
+        Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
+    }
 }

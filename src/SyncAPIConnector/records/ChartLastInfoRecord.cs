@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 using xAPI.Codes;
@@ -11,22 +12,22 @@ public record ChartLastInfoRecord
     {
         Symbol = symbol;
         Period = period;
-        Start = start;
+        Start = start.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(start.Value) : null;
     }
 
     public string Symbol { get; init; }
 
     public PERIOD_CODE Period { get; init; }
 
-    public long? Start { get; init; }
+    public DateTimeOffset? Start { get; init; }
 
     public virtual JsonObject ToJsonObject()
     {
         JsonObject obj = new()
         {
             { "symbol", Symbol },
-            { "period", (long?)Period.Code },
-            { "start", Start }
+            { "period", Period?.Code },
+            { "start", Start?.ToUnixTimeMilliseconds() ?? null }
         };
 
         return obj;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
+using System.Linq;
 
 namespace xAPI.Records;
 
@@ -20,7 +21,7 @@ public record StepRuleRecord : IBaseResponseRecord
         if (value["steps"] != null)
         {
             JsonArray jsonarray = value["steps"].AsArray();
-            foreach (JsonObject i in jsonarray)
+            foreach (JsonObject i in jsonarray.OfType<JsonObject>())
             {
                 StepRecord rec = new StepRecord();
                 rec.FieldsFromJsonObject(i);

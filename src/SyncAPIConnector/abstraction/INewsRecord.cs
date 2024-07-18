@@ -4,11 +4,11 @@ namespace xAPI;
 
 public interface INewsRecord
 {
-    string Title { get; }
+    string? Title { get; }
 
-    string Body { get; }
+    string? Body { get; }
 
-    string Key { get; }
+    string? Key { get; }
 
-    DateTimeOffset? DateTime { get; }
+    DateTimeOffset? Time { get; }
 }

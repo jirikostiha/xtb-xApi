@@ -9,10 +9,6 @@ public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecor
 {
     public double? Close { get; set; }
 
-    public long? Ctm { get; set; }
-
-    public string CtmString { get; set; }
-
     public double? High { get; set; }
 
     public double? Low { get; set; }
@@ -21,22 +17,24 @@ public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecor
 
     public long? QuoteId { get; set; }
 
-    public string Symbol { get; set; }
+    public string? Symbol { get; set; }
 
-    public double? Vol { get; set; }
+    public double? Volume { get; set; }
 
-    public DateTimeOffset? StartDateTime => Ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Ctm.Value);
+    public DateTimeOffset? StartTime { get; set; }
 
     public void FieldsFromJsonObject(JsonObject value)
     {
         Close = (double?)value["close"];
-        Ctm = (long?)value["ctm"];
-        CtmString = (string)value["ctmString"];
         High = (double?)value["high"];
         Low = (double?)value["low"];
         Open = (double?)value["open"];
         QuoteId = (long?)value["quoteId"];
-        Symbol = (string)value["symbol"];
-        Vol = (double?)value["vol"];
+        Symbol = (string?)value["symbol"];
+        Volume = (double?)value["vol"];
+
+        var ctm = (long?)value["ctm"];
+        StartTime = ctm.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(ctm.Value) : null;
+        //CtmString = (string?)value["ctmString"];
     }
 }

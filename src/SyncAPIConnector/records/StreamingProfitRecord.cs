@@ -18,6 +18,8 @@ public record StreamingProfitRecord : IBaseResponseRecord, IPosition
     {
         Profit = (double?)value["profit"];
         Order = (long?)value["order"];
+        Order2 = (long?)value["order2"]; //todo check
+        Position = (long?)value["position"]; //todo check
     }
 
     public void UpdateBy(StreamingProfitRecord other)

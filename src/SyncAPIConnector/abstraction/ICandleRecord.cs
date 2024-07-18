@@ -4,9 +4,7 @@ namespace xAPI;
 
 public interface ICandleRecord : ICandle
 {
-    long? Ctm { get; }
+    DateTimeOffset? StartTime { get; }
 
-    DateTimeOffset? StartDateTime { get; }
-
-    double? Vol { get; }
+    double? Volume { get; }
 }

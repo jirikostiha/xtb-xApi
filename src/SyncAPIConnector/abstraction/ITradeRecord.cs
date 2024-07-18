@@ -7,34 +7,27 @@ public interface ITradeRecord : ISymbol, IPosition
 {
     double? Close_price { get; }
 
-    long? Close_time { get; }
-
-    DateTimeOffset? CloseDateTime { get; }
+    DateTimeOffset? CloseTime { get; }
 
     bool? Closed { get; }
 
-    long? Cmd { get; }
+    TRADE_OPERATION_CODE? TradeOperation { get; }
 
-    TRADE_OPERATION_CODE? Cmd2 { get; }
-
-    string Comment { get; }
+    string? Comment { get; }
 
     double? Commission { get; }
 
     string CustomComment { get; }
 
-    long? Digits { get; }
+    int? Digits { get; }
 
-    long? Expiration { get; }
-    DateTimeOffset? ExpirationDateTime { get; }
+    DateTimeOffset? ExpirationTime { get; }
 
     double? Margin_rate { get; }
 
     double? Open_price { get; }
 
-    long? Open_time { get; }
-
-    DateTimeOffset? OpenDateTime { get; }
+    DateTimeOffset? OpenTime { get; }
 
     double? Profit { get; }
 

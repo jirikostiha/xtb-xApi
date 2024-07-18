@@ -19,19 +19,17 @@ public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
 
     public double? Low { get; set; }
 
-    public string Symbol { get; set; }
+    public string? Symbol { get; set; }
 
     public double? SpreadRaw { get; set; }
 
     public double? SpreadTable { get; set; }
 
-    public long? Timestamp { get; set; }
-
     public long? Level { get; set; }
 
     public long? QuoteId { get; set; }
 
-    public DateTimeOffset? DateTime => Timestamp is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(Timestamp.Value);
+    public DateTimeOffset? Time { get; set; }
 
     public void FieldsFromJsonObject(JsonObject value)
     {
@@ -41,11 +39,13 @@ public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
         BidVolume = (long?)value["bidVolume"];
         High = (double?)value["high"];
         Low = (double?)value["low"];
-        Symbol = (string)value["symbol"];
-        Timestamp = (long?)value["timestamp"];
+        Symbol = (string?)value["symbol"];
         Level = (long?)value["level"];
         QuoteId = (long?)value["quoteId"];
         SpreadRaw = (double?)value["spreadRaw"];
         SpreadTable = (double?)value["spreadTable"];
+
+        var timestamp = (long?)value["timestamp"];
+        Time = timestamp.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value) : null;
     }
 }
