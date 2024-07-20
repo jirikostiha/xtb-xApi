@@ -16,6 +16,7 @@ In the beginning there were mostly additive changes with some necessary exceptio
 
 ## Changelog
 
+2.5.16 async cancelation, time members, various small changes  
 2.5.15 async streaming subscriptions, async IStreamingListener, various simplifications  
 2.5.14 replaced Newtonsoft.Json by System.Text.Json (pkamphuis)  
 2.5.13 support custom handling of exceptions in streaming connector, enriched exceptions  
