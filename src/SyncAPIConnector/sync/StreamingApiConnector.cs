@@ -329,13 +329,13 @@ public class StreamingApiConnector : Connector
     public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
     {
         TickPricesSubscribe tickPricesSubscribe = new(symbol, StreamSessionId, minArrivalTime, maxLevel);
-        WriteMessage(tickPricesSubscribe.ToString());
+        ExecuteCommandWOResponse(tickPricesSubscribe);
     }
 
     public void UnsubscribePrice(string symbol)
     {
         TickPricesStop tickPricesStop = new(symbol);
-        WriteMessage(tickPricesStop.ToString());
+        ExecuteCommandWOResponse(tickPricesStop);
     }
 
     public void SubscribePrices(string[] symbols)
@@ -357,97 +357,111 @@ public class StreamingApiConnector : Connector
     public void SubscribeTrades()
     {
         TradeRecordsSubscribe tradeRecordsSubscribe = new(StreamSessionId);
-        WriteMessage(tradeRecordsSubscribe.ToString());
+        ExecuteCommandWOResponse(tradeRecordsSubscribe);
     }
 
     public void UnsubscribeTrades()
     {
         TradeRecordsStop tradeRecordsStop = new();
+        ExecuteCommandWOResponse
         WriteMessage(tradeRecordsStop.ToString());
     }
 
     public void SubscribeBalance()
     {
         BalanceRecordsSubscribe balanceRecordsSubscribe = new(StreamSessionId);
+        ExecuteCommandWOResponse
         WriteMessage(balanceRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeBalance()
     {
         BalanceRecordsStop balanceRecordsStop = new();
+        ExecuteCommandWOResponse
         WriteMessage(balanceRecordsStop.ToString());
     }
 
     public void SubscribeTradeStatus()
     {
         TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(StreamSessionId);
+        ExecuteCommandWOResponse
         WriteMessage(tradeStatusRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTradeStatus()
     {
         TradeStatusRecordsStop tradeStatusRecordsStop = new();
+        ExecuteCommandWOResponse
         WriteMessage(tradeStatusRecordsStop.ToString());
     }
 
     public void SubscribeProfits()
     {
         ProfitsSubscribe profitsSubscribe = new(StreamSessionId);
+        ExecuteCommandWOResponse
         WriteMessage(profitsSubscribe.ToString());
     }
 
     public void UnsubscribeProfits()
     {
         ProfitsStop profitsStop = new();
+        ExecuteCommandWOResponse
         WriteMessage(profitsStop.ToString());
     }
 
     public void SubscribeNews()
     {
         NewsSubscribe newsSubscribe = new(StreamSessionId);
+        ExecuteCommandWOResponse
         WriteMessage(newsSubscribe.ToString());
     }
 
     public void UnsubscribeNews()
     {
         NewsStop newsStop = new();
+        ExecuteCommandWOResponse
         WriteMessage(newsStop.ToString());
     }
 
     public void SubscribeKeepAlive()
     {
         KeepAliveSubscribe keepAliveSubscribe = new(StreamSessionId);
-
+        ExecuteCommandWOResponse
         WriteMessage(keepAliveSubscribe.ToString());
     }
 
     public void UnsubscribeKeepAlive()
     {
         KeepAliveStop keepAliveStop = new();
+        ExecuteCommandWOResponse
         WriteMessage(keepAliveStop.ToString());
     }
 
     public void SubscribeCandles(string symbol)
     {
         CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, StreamSessionId);
+        ExecuteCommandWOResponse
         WriteMessage(candleRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeCandles(string symbol)
     {
         CandleRecordsStop candleRecordsStop = new(symbol);
+        ExecuteCommandWOResponse
         WriteMessage(candleRecordsStop.ToString());
     }
 
     public async Task SubscribePriceAsync(string symbol, long? minArrivalTime = null, long? maxLevel = null, CancellationToken cancellationToken = default)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
+        ExecuteCommandWOResponse
         await WriteMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribePriceAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var tickPricesStop = new TickPricesStop(symbol);
+        ExecuteCommandWOResponse
         await WriteMessageAsync(tickPricesStop.ToString(), cancellationToken);
     }
 

@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Commands;
 using xAPI.Errors;
+using xAPI.Responses;
+using xAPI.Streaming;
 using xAPI.Utils;
 
 namespace xAPI.Sync;
@@ -76,10 +78,6 @@ public class ApiConnector : Connector
     /// </summary>
     public event EventHandler<ServerEventArgs>? Redirected;
 
-    /// <summary>
-    /// Event raised when a command is being executed.
-    /// </summary>
-    public event EventHandler<CommandEventArgs>? CommandExecuting;
 
     #endregion Events
 
@@ -293,21 +291,22 @@ public class ApiConnector : Connector
         await ConnectAsync(true, cancellationToken).ConfigureAwait(false);
     }
 
+
     /// <summary>
     /// Executes given command and receives response (withholding API inter-command timeout).
     /// </summary>
     /// <param name="command">Command to execute</param>
     /// <returns>Response from the server</returns>
-    public JsonObject ExecuteCommand(BaseCommand command)
+    public JsonObject? ExecuteCommand(BaseCommand command)
     {
         try
         {
-            var request = command.ToJSONString();
-
             CommandExecuting?.Invoke(this, new(command));
+
+            var request = command.ToJSONString();
             var response = ExecuteCommand(request);
 
-            var parsedResponse = JsonNode.Parse(response).AsObject();
+            var parsedResponse = JsonNode.Parse(response)?.AsObject();
 
             return parsedResponse;
         }
@@ -322,7 +321,7 @@ public class ApiConnector : Connector
     /// </summary>
     /// <param name="message">Command to execute</param>
     /// <returns>Response from the server</returns>
-    public string ExecuteCommand(string message)
+    private string ExecuteCommand(string message)
     {
         _lock.Wait();
         try
@@ -421,6 +420,15 @@ public class ApiConnector : Connector
         {
             _lock.Release();
         }
+    }
+
+    private static string _connectivityCheckCommand = new PingCommand().ToJSONString();
+    protected void CheckConnectivity()
+    {
+        var jsonObj = ExecuteCommand(_connectivityCheckCommand);
+
+        var response = new PingResponse(jsonObj.ToString());
+        //todo
     }
 
     private bool _disposed;

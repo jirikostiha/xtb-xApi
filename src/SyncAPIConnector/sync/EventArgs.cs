@@ -16,7 +16,7 @@ public class MessageEventArgs(string message) : EventArgs
     public string Message { get; } = message;
 }
 
-public class CommandEventArgs(ICommand command) : EventArgs
+public class RequestEventArgs(ICommand command) : EventArgs
 {
     public ICommand Command { get; } = command;
 }
