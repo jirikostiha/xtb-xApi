@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading;
 using xAPI.Codes;
 using xAPI.Commands;
+using xAPI.Records;
+using xAPI.Responses;
 using xAPI.Sync;
 
 namespace xAPITest;
@@ -25,10 +27,11 @@ public sealed class SyncExample : ExampleBase
         AuthenticationStage();
         AccountInfoStage();
         MarketDataStage();
-        TradingStage();
-        TradingHistoryStage();
         GlobalDataStage();
         StreamingSubscriptionStage();
+        TradingStage();
+        TradingStage();
+        TradingHistoryStage();
     }
 
     public void ConnectionStage()
@@ -292,66 +295,6 @@ public sealed class SyncExample : ExampleBase
         }
     }
 
-    public void TradingStage()
-    {
-        Stage("Trading");
-
-        Action($"Getting all trades");
-        try
-        {
-            var response = APICommandFactory.ExecuteTradesCommand(_connector, false);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-
-        Action($"Getting opened only trades");
-        try
-        {
-            var response = APICommandFactory.ExecuteTradesCommand(_connector, true);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-
-        Action($"Getting trades for orders");
-        try
-        {
-            var response = APICommandFactory.ExecuteTradeRecordsCommand(_connector, []);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-    }
-
-    public void TradingHistoryStage()
-    {
-        Stage("Trading history");
-
-        Action($"Getting passed trades");
-        try
-        {
-            var response = APICommandFactory.ExecuteTradesHistoryCommand(_connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-    }
-
     public void GlobalDataStage()
     {
         Stage("Global data");
@@ -590,6 +533,153 @@ public sealed class SyncExample : ExampleBase
         {
             _connector.Streaming.UnsubscribePrices(["US500"]);
             Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public void TradingStage()
+    {
+        Stage("Trading");
+
+        Action($"Getting all trades");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradesCommand(_connector, false);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        long? orderId = null;
+        if (ShallOpenTrades)
+        {
+            Action($"Opening long position.");
+            try
+            {
+                var trade = new TradeTransInfoRecord(
+                    TRADE_OPERATION_CODE.BUY,
+                    TRADE_TRANSACTION_TYPE.ORDER_OPEN,
+                    price: null,
+                    sl: null,
+                    tp: null,
+                    symbol: "US500",
+                    volume: 0.1,
+                    order: null,
+                    customComment: "opened by test example",
+                    expiration: null);
+
+                // Warning: Opening trade. Make sure you have set up demo account!
+                var response = APICommandFactory.ExecuteTradeTransactionCommand(_connector, trade, true);
+                Pass(response);
+                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                orderId = response?.Order;
+            }
+            catch (Exception ex)
+            {
+                Fail(ex);
+            }
+        }
+
+        Action($"Getting opened only trades");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradesCommand(_connector, true);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+
+        if (ShallOpenTrades)
+        {
+            Action($"Modifying position.");
+            try
+            {
+                var trade = new TradeTransInfoRecord(
+                    tradeOperation: null,
+                    transactionType: TRADE_TRANSACTION_TYPE.ORDER_MODIFY,
+                    price: null,
+                    sl: null,
+                    tp: null,
+                    symbol: "US500",
+                    volume: 0.2,
+                    order: orderId,
+                    customComment: "modified by test example",
+                    expiration: null);
+
+                // Warning: Make sure you have set up demo account!
+                var response = APICommandFactory.ExecuteTradeTransactionCommand(_connector, trade, true);
+                Pass(response);
+                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            }
+            catch (Exception ex)
+            {
+                Fail(ex);
+            }
+        }
+
+        Action($"Getting trades for orders");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradeRecordsCommand(_connector, new([orderId]), true);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        if (ShallOpenTrades)
+        {
+            Action($"Closing position.");
+            try
+            {
+                var trade = new TradeTransInfoRecord(
+                    tradeOperation: null,
+                    transactionType: TRADE_TRANSACTION_TYPE.ORDER_CLOSE,
+                    price: null,
+                    sl: null,
+                    tp: null,
+                    symbol: "US500",
+                    volume: null,
+                    order: orderId,
+                    customComment: "closed by test example",
+                    expiration: null);
+
+                // Warning: Make sure you have set up demo account!
+                var response = APICommandFactory.ExecuteTradeTransactionCommand(_connector, trade, true);
+                Pass(response);
+                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            }
+            catch (Exception ex)
+            {
+                Fail(ex);
+            }
+        }
+    }
+
+    public void TradingHistoryStage()
+    {
+        Stage("Trading history");
+
+        Action($"Getting passed trades");
+        try
+        {
+            var response = APICommandFactory.ExecuteTradesHistoryCommand(_connector,
+                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                0);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {

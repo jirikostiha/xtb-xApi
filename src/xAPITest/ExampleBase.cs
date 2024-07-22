@@ -6,6 +6,8 @@ namespace xAPITest;
 
 public abstract class ExampleBase
 {
+    public bool ShallOpenTrades { get; set; }
+
     protected static void Stage(string name)
     {
         var oc = Console.ForegroundColor;
