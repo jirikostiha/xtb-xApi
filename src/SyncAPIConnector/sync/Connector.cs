@@ -10,7 +10,7 @@ using xAPI.Errors;
 
 namespace xAPI.Sync;
 
-public class Connector : IDisposable
+public class Connector : IDisposable//, IConnector
 {
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.

@@ -14,7 +14,7 @@ using xAPI.Utils;
 
 namespace xAPI.Sync;
 
-public class ApiConnector : Connector
+public class ApiConnector : Connector//, IApiConnector
 {
     #region Settings
 
