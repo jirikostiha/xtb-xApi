@@ -46,9 +46,9 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     //public long? Cmd { get; set; }
 
-    public TRADE_OPERATION_CODE? TradeOperation { get; set; }
+    public TRADE_OPERATION_TYPE? TradeOperation { get; set; }
 
-    public STREAMING_TRADE_TYPE? TradeType { get; set; }
+    public STREAMING_TRADE_TYPE? StreamingTradeType { get; set; }
 
     public DateTimeOffset? OpenTime { get; set; }
 
@@ -77,11 +77,11 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         Volume = (double?)value["volume"];
         Digits = (int?)value["digits"];
 
-        var tradeType = (long?)value["type"];
-        TradeType = tradeType.HasValue ? new STREAMING_TRADE_TYPE(tradeType.Value) : null;
+        var streamingTradeCode = (long?)value["type"];
+        StreamingTradeType = streamingTradeCode.HasValue ? new STREAMING_TRADE_TYPE(streamingTradeCode.Value) : null;
 
         var tradeOperationCode = (long?)value["cmd"];
-        TradeOperation = tradeOperationCode.HasValue ? new TRADE_OPERATION_CODE(tradeOperationCode.Value) : null;
+        TradeOperation = tradeOperationCode.HasValue ? new TRADE_OPERATION_TYPE(tradeOperationCode.Value) : null;
 
         var openTime = (long?)value["open_time"];
         OpenTime = openTime.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(openTime.Value) : null;
@@ -138,7 +138,7 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         Storage = other.Storage;
         Symbol = other.Symbol;
         Tp = other.Tp;
-        TradeType = other.TradeType;
+        StreamingTradeType = other.StreamingTradeType;
         TradeOperation = other.TradeOperation;
         Volume = other.Volume;
         Digits = other.Digits;
@@ -165,10 +165,10 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         Storage = null;
         Symbol = null;
         Tp = null;
-        TradeType = null;
+        StreamingTradeType = null;
         Volume = null;
         Digits = null;
-        TradeType = null;
+        StreamingTradeType = null;
         TradeOperation = null;
     }
 }

@@ -86,7 +86,7 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
     public SWAP_TYPE? SwapType { get; set; }
 
-    public SWAP_ROLLOVER_TYPE? SwapRollover { get; set; }
+    public SWAP_ROLLOVER_TYPE? SwapRolloverType { get; set; }
 
     public DateTimeOffset? ExpirationTime { get; set; }
 
@@ -137,17 +137,17 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
         TickSize = (double?)value["tickSize"];
         TickValue = (double?)value["tickValue"];
 
-        var marginMode = (long?)value["marginMode"];
-        MarginMode = marginMode.HasValue ? new MARGIN_MODE(marginMode.Value) : null;
+        var marginModeCode = (long?)value["marginMode"];
+        MarginMode = marginModeCode.HasValue ? new MARGIN_MODE(marginModeCode.Value) : null;
 
-        var profitMode = (long?)value["profitMode"];
-        ProfitMode = profitMode.HasValue ? new PROFIT_MODE(profitMode.Value) : null;
+        var profitModeCode = (long?)value["profitMode"];
+        ProfitMode = profitModeCode.HasValue ? new PROFIT_MODE(profitModeCode.Value) : null;
 
         var swapType = (long?)value["swapType"];
         SwapType = swapType.HasValue ? new SWAP_TYPE(swapType.Value) : null;
 
-        var swapRollover = (long?)value["swap_rollover3days"];
-        SwapRollover = swapRollover.HasValue ? new SWAP_ROLLOVER_TYPE(swapRollover.Value) : null;
+        var swapRolloverCode = (long?)value["swap_rollover3days"];
+        SwapRolloverType = swapRolloverCode.HasValue ? new SWAP_ROLLOVER_TYPE(swapRolloverCode.Value) : null;
 
         var time = (long?)value["time"];
         Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;

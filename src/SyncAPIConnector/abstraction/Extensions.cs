@@ -6,9 +6,9 @@ public static class TradeRecordExtensions
 {
     public static bool IsLongPosition(this ITradeRecord trade) =>
         trade.TradeOperation is not null
-        && (trade.TradeOperation == TRADE_OPERATION_CODE.BUY || trade.TradeOperation == TRADE_OPERATION_CODE.BUY_LIMIT || trade.TradeOperation == TRADE_OPERATION_CODE.BUY_STOP);
+        && (trade.TradeOperation == TRADE_OPERATION_TYPE.BUY || trade.TradeOperation == TRADE_OPERATION_TYPE.BUY_LIMIT || trade.TradeOperation == TRADE_OPERATION_TYPE.BUY_STOP);
 
     public static bool IsShortPosition(this ITradeRecord trade) =>
         trade.TradeOperation is not null
-        && (trade.TradeOperation == TRADE_OPERATION_CODE.SELL || trade.TradeOperation == TRADE_OPERATION_CODE.SELL_LIMIT || trade.TradeOperation == TRADE_OPERATION_CODE.SELL_STOP);
+        && (trade.TradeOperation == TRADE_OPERATION_TYPE.SELL || trade.TradeOperation == TRADE_OPERATION_TYPE.SELL_LIMIT || trade.TradeOperation == TRADE_OPERATION_TYPE.SELL_STOP);
 }

@@ -234,7 +234,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = await APICommandFactory.ExecuteChartLastCommandAsync(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartLastCommandAsync(_connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(), cancellationToken);
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -247,7 +247,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(_connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0,
@@ -289,7 +289,7 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecuteProfitCalculationCommandAsync(_connector, "US500",
                 1,
-                TRADE_OPERATION_CODE.BUY,
+                TRADE_OPERATION_TYPE.BUY,
                 5000,
                 5100,
                 cancellationToken);
