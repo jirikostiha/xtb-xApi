@@ -24,7 +24,7 @@ public record StreamingTradeStatusRecord : IBaseResponseRecord
         Order = (long?)value["order"];
         Price = (double?)value["price"];
 
-        var requestStatus = (long?)value["requestStatus"];
-        RequestStatus = requestStatus.HasValue ? new REQUEST_STATUS(requestStatus.Value) : null;
+        var requestStatusCode = (long?)value["requestStatus"];
+        RequestStatus = requestStatusCode.HasValue ? new REQUEST_STATUS(requestStatusCode.Value) : null;
     }
 }

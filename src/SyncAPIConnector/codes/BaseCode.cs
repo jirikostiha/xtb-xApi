@@ -49,14 +49,9 @@ public class BaseCode
         return (Code == baseCode.Code);
     }
 
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
-    }
+    /// <inheritdoc/>
+    public override int GetHashCode() => Code.GetHashCode();
 
     /// <inheritdoc/>
-    public override string ToString()
-    {
-        return Code.ToString(CultureInfo.InvariantCulture);
-    }
+    public override string ToString() => Code.ToString(CultureInfo.InvariantCulture);
 }

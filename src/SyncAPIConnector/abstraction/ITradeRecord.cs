@@ -11,7 +11,7 @@ public interface ITradeRecord : ISymbol, IPosition
 
     bool? Closed { get; }
 
-    TRADE_OPERATION_CODE? TradeOperation { get; }
+    TRADE_OPERATION_TYPE? TradeOperation { get; }
 
     string? Comment { get; }
 

@@ -2,7 +2,7 @@
 
 namespace xAPI.Codes;
 
-public class Side : BaseCode
+public class SIDE : BaseCode
 {
     public const int BUY_CODE = 0;
     public const int SELL_CODE = 1;
@@ -10,14 +10,14 @@ public class Side : BaseCode
     /// <summary>
     /// Buy.
     /// </summary>
-    public static readonly Side BUY = new(BUY_CODE);
+    public static readonly SIDE BUY = new(BUY_CODE);
 
     /// <summary>
     /// Sell.
     /// </summary>
-    public static readonly Side SELL = new(SELL_CODE);
+    public static readonly SIDE SELL = new(SELL_CODE);
 
-    public static Side? FromCode(int code)
+    public static SIDE? FromCode(int code)
     {
         if (code == BUY_CODE)
             return BUY;
@@ -27,7 +27,7 @@ public class Side : BaseCode
             return null;
     }
 
-    private Side(int code)
+    private SIDE(int code)
         : base(code)
     {
     }

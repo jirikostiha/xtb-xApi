@@ -285,7 +285,7 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecuteProfitCalculationCommandAsync(Connector, "US500",
                 1,
-                TRADE_OPERATION_CODE.BUY,
+                TRADE_OPERATION_TYPE.BUY,
                 5000,
                 5100,
                 cancellationToken);
