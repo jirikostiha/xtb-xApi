@@ -46,7 +46,7 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
 
     public double? Volume { get; set; }
 
-    public TRADE_OPERATION_CODE? TradeOperation { get; set; }
+    public TRADE_OPERATION_TYPE? TradeOperation { get; set; }
 
     public DateTimeOffset? Timestamp { get; set; }
 
@@ -79,7 +79,7 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
         Volume = (double?)value["volume"];
 
         var tradeOperationCode = (long?)value["cmd"];
-        TradeOperation = tradeOperationCode.HasValue ? new TRADE_OPERATION_CODE(tradeOperationCode.Value) : null;
+        TradeOperation = tradeOperationCode.HasValue ? new TRADE_OPERATION_TYPE(tradeOperationCode.Value) : null;
 
         var timestamp = (long?)value["timestamp"];
         Timestamp = timestamp.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value) : null;

@@ -9,7 +9,7 @@ namespace xAPI.Records;
 public record TradeTransInfoRecord : ISymbol
 {
     public TradeTransInfoRecord(
-        TRADE_OPERATION_CODE tradeOperation,
+        TRADE_OPERATION_TYPE tradeOperation,
         TRADE_TRANSACTION_TYPE transactionType,
         double? price,
         double? sl,
@@ -47,7 +47,7 @@ public record TradeTransInfoRecord : ISymbol
 
     public double? Volume { get; init; }
 
-    public TRADE_OPERATION_CODE TradeOperation { get; init; }
+    public TRADE_OPERATION_TYPE TradeOperation { get; init; }
 
     public TRADE_TRANSACTION_TYPE TransactionType { get; init; }
 

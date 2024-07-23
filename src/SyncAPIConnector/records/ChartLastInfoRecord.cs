@@ -8,7 +8,7 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Symbol}")]
 public record ChartLastInfoRecord
 {
-    public ChartLastInfoRecord(string symbol, PERIOD_CODE period, long? start)
+    public ChartLastInfoRecord(string symbol, PERIOD period, long? start)
     {
         Symbol = symbol;
         Period = period;
@@ -17,7 +17,7 @@ public record ChartLastInfoRecord
 
     public string Symbol { get; init; }
 
-    public PERIOD_CODE Period { get; init; }
+    public PERIOD Period { get; init; }
 
     public DateTimeOffset? Start { get; init; }
 

@@ -4,15 +4,15 @@ namespace xAPI.Codes;
 
 public class SWAP_TYPE : BaseCode
 {
-    public const long SWAP_BY_POINTS_CODE = 0;
-    public const long SWAP_BY_DOLLARS_CODE = 1;
-    public const long SWAP_BY_INTEREST_CODE = 2;
-    public const long SWAP_BY_MARGIN_CURRENCY_CODE = 3;
+    public const long POINTS_CODE = 0;
+    public const long DOLLARS_CODE = 1;
+    public const long INTEREST_CODE = 2;
+    public const long MARGIN_CURRENCY_CODE = 3;
 
-    public static readonly SWAP_TYPE SWAP_BY_POINTS = new(SWAP_BY_POINTS_CODE);
-    public static readonly SWAP_TYPE SWAP_BY_DOLLARS = new(SWAP_BY_DOLLARS_CODE);
-    public static readonly SWAP_TYPE SWAP_BY_INTEREST = new(SWAP_BY_INTEREST_CODE);
-    public static readonly SWAP_TYPE SWAP_BY_MARGIN_CURRENCY = new(SWAP_BY_MARGIN_CURRENCY_CODE);
+    public static readonly SWAP_TYPE POINTS = new(POINTS_CODE);
+    public static readonly SWAP_TYPE DOLLARS = new(DOLLARS_CODE);
+    public static readonly SWAP_TYPE INTEREST = new(INTEREST_CODE);
+    public static readonly SWAP_TYPE MARGIN_CURRENCY = new(MARGIN_CURRENCY_CODE);
 
     public SWAP_TYPE(long code)
         : base(code)
@@ -23,10 +23,10 @@ public class SWAP_TYPE : BaseCode
     public string? ToFriendlyString() =>
         Code switch
         {
-            SWAP_BY_POINTS_CODE => "points",
-            SWAP_BY_DOLLARS_CODE => "dollars",
-            SWAP_BY_INTEREST_CODE => "interest",
-            SWAP_BY_MARGIN_CURRENCY_CODE => "margin currency",
+            POINTS_CODE => "points",
+            DOLLARS_CODE => "dollars",
+            INTEREST_CODE => "interest",
+            MARGIN_CURRENCY_CODE => "margin currency",
             _ => Code.ToString(CultureInfo.InvariantCulture),
         };
 }

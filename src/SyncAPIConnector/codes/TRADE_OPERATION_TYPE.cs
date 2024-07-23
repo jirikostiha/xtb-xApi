@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace xAPI.Codes;
 
-public class TRADE_OPERATION_CODE : BaseCode
+public class TRADE_OPERATION_TYPE : BaseCode
 {
     public const long BUY_CODE = 0;
     public const long SELL_CODE = 1;
@@ -12,15 +12,15 @@ public class TRADE_OPERATION_CODE : BaseCode
     public const long SELL_STOP_CODE = 5;
     public const long BALANCE_CODE = 6;
 
-    public static readonly TRADE_OPERATION_CODE BUY = new(BUY_CODE);
-    public static readonly TRADE_OPERATION_CODE SELL = new(SELL_CODE);
-    public static readonly TRADE_OPERATION_CODE BUY_LIMIT = new(BUY_LIMIT_CODE);
-    public static readonly TRADE_OPERATION_CODE SELL_LIMIT = new(SELL_LIMIT_CODE);
-    public static readonly TRADE_OPERATION_CODE BUY_STOP = new(BUY_STOP_CODE);
-    public static readonly TRADE_OPERATION_CODE SELL_STOP = new(SELL_STOP_CODE);
-    public static readonly TRADE_OPERATION_CODE BALANCE = new(BALANCE_CODE);
+    public static readonly TRADE_OPERATION_TYPE BUY = new(BUY_CODE);
+    public static readonly TRADE_OPERATION_TYPE SELL = new(SELL_CODE);
+    public static readonly TRADE_OPERATION_TYPE BUY_LIMIT = new(BUY_LIMIT_CODE);
+    public static readonly TRADE_OPERATION_TYPE SELL_LIMIT = new(SELL_LIMIT_CODE);
+    public static readonly TRADE_OPERATION_TYPE BUY_STOP = new(BUY_STOP_CODE);
+    public static readonly TRADE_OPERATION_TYPE SELL_STOP = new(SELL_STOP_CODE);
+    public static readonly TRADE_OPERATION_TYPE BALANCE = new(BALANCE_CODE);
 
-    public TRADE_OPERATION_CODE(long code)
+    public TRADE_OPERATION_TYPE(long code)
         : base(code)
     {
     }
