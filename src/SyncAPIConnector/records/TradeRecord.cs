@@ -83,14 +83,18 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
 
         var timestamp = (long?)value["timestamp"];
         Timestamp = timestamp.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value) : null;
+        Debug.Assert(Timestamp?.ToUnixTimeMilliseconds() == timestamp);
 
         var openTime = (long?)value["open_time"];
         OpenTime = openTime.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(openTime.Value) : null;
+        Debug.Assert(OpenTime?.ToUnixTimeMilliseconds() == openTime);
 
         var closeTime = (long?)value["close_time"];
         CloseTime = closeTime.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(closeTime.Value) : null;
+        Debug.Assert(CloseTime?.ToUnixTimeMilliseconds() == closeTime);
 
         var expiration = (long?)value["expiration"];
         ExpirationTime = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
+        Debug.Assert(ExpirationTime?.ToUnixTimeMilliseconds() == expiration);
     }
 }

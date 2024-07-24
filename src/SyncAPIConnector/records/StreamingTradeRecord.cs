@@ -83,12 +83,15 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
         var openTime = (long?)value["open_time"];
         OpenTime = openTime.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(openTime.Value) : null;
+        Debug.Assert(OpenTime?.ToUnixTimeMilliseconds() == openTime);
 
         var closeTime = (long?)value["close_time"];
         CloseTime = closeTime.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(closeTime.Value) : null;
+        Debug.Assert(CloseTime?.ToUnixTimeMilliseconds() == closeTime);
 
         var expiration = (long?)value["expiration"];
         ExpirationTime = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
+        Debug.Assert(ExpirationTime?.ToUnixTimeMilliseconds() == expiration);
     }
 
     public void UpdateBy(ITradeRecord other)

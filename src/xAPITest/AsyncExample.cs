@@ -571,7 +571,7 @@ public sealed class AsyncExample : ExampleBase
             try
             {
                 var trade = new TradeTransInfoRecord(
-                    TRADE_OPERATION_CODE.BUY,
+                    TRADE_OPERATION_TYPE.BUY,
                     TRADE_TRANSACTION_TYPE.ORDER_OPEN,
                     price: null,
                     sl: null,
@@ -683,8 +683,8 @@ public sealed class AsyncExample : ExampleBase
         try
         {
             var response = await APICommandFactory.ExecuteTradesHistoryCommandAsync(_connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0,
+                TimeProvider.System.GetUtcNow().AddDays(-10),
+                default,
                 cancellationToken);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");

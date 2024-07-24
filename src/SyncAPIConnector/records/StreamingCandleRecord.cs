@@ -35,6 +35,6 @@ public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecor
 
         var ctm = (long?)value["ctm"];
         StartTime = ctm.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(ctm.Value) : null;
-        //CtmString = (string?)value["ctmString"];
+        Debug.Assert(StartTime?.ToUnixTimeMilliseconds() == ctm);
     }
 }
