@@ -8,12 +8,12 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Symbol}")]
 public record ChartRangeInfoRecord
 {
-    public ChartRangeInfoRecord(string symbol, PERIOD period, long? start, long? end, long? ticks)
+    public ChartRangeInfoRecord(string symbol, PERIOD period, DateTimeOffset? start, DateTimeOffset? end, int? ticks)
     {
         Symbol = symbol;
         Period = period;
-        Start = start.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(start.Value) : null;
-        End = end.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(end.Value) : null;
+        Start = start;
+        End = end;
         Ticks = ticks;
     }
 
@@ -33,8 +33,8 @@ public record ChartRangeInfoRecord
         {
             { "symbol", Symbol },
             { "period", Period?.Code },
-            { "start", Start?.ToUnixTimeMilliseconds() ?? null },
-            { "end", End?.ToUnixTimeMilliseconds() ?? null },
+            { "start", Start?.ToUnixTimeMilliseconds() },
+            { "end", End?.ToUnixTimeMilliseconds() },
             { "ticks", Ticks }
         };
 

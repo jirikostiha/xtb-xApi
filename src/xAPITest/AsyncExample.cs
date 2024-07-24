@@ -213,7 +213,7 @@ public sealed class AsyncExample : ExampleBase
         try
         {
             var response = await APICommandFactory.ExecuteTickPricesCommandAsync(Connector, ["US500"], 0,
-                TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds(), cancellationToken);
+                TimeProvider.System.GetUtcNow(), cancellationToken);
             Pass(response);
             Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -231,7 +231,7 @@ public sealed class AsyncExample : ExampleBase
         try
         {
             var response = await APICommandFactory.ExecuteChartLastCommandAsync(Connector, "US500", PERIOD_CODE.PERIOD_H1,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(), cancellationToken);
+                TimeProvider.System.GetUtcNow().AddDays(-10), cancellationToken);
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -244,8 +244,8 @@ public sealed class AsyncExample : ExampleBase
         try
         {
             var response = await APICommandFactory.ExecuteChartRangeCommandAsync(Connector, "US500", PERIOD_CODE.PERIOD_H1,
-                TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                TimeProvider.System.GetUtcNow().AddDays(-20),
+                TimeProvider.System.GetUtcNow().AddDays(-10),
                 0,
                 cancellationToken);
             Pass(response);
@@ -306,8 +306,8 @@ public sealed class AsyncExample : ExampleBase
         try
         {
             var response = await APICommandFactory.ExecuteNewsCommandAsync(Connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0,
+                TimeProvider.System.GetUtcNow().AddDays(-10),
+                default, //todo test
                 cancellationToken);
             Pass(response);
             Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
