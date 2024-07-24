@@ -18,7 +18,7 @@ public record TradeTransInfoRecord : ISymbol
         double? volume,
         long? order,
         string customComment,
-        long? expiration)
+        DateTimeOffset? expiration)
     {
         Price = price;
         Sl = sl;
@@ -30,7 +30,7 @@ public record TradeTransInfoRecord : ISymbol
 
         TradeOperation = tradeOperation;
         TransactionType = transactionType;
-        Expiration = expiration is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value);
+        Expiration = expiration;
     }
 
     public string CustomComment { get; init; }
@@ -66,7 +66,7 @@ public record TradeTransInfoRecord : ISymbol
             { "volume", Volume },
             { "order", Order },
             { "customComment", CustomComment },
-            { "expiration", Expiration?.ToUnixTimeMilliseconds() ?? null },
+            { "expiration", Expiration?.ToUnixTimeMilliseconds() },
         };
 
         return obj;

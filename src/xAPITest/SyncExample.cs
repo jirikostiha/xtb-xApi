@@ -216,7 +216,7 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteTickPricesCommand(_connector, ["US500"],
-                TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds());
+                TimeProvider.System.GetUtcNow());
             Pass(response);
             Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -234,7 +234,7 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteChartLastCommand(_connector, "US500", PERIOD.H1,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds());
+                TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -247,8 +247,8 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteChartRangeCommand(_connector, "US500", PERIOD.H1,
-                TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                TimeProvider.System.GetUtcNow().AddDays(-20),
+                TimeProvider.System.GetUtcNow().AddDays(-10),
                 0);
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -303,8 +303,8 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteNewsCommand(_connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0);
+                TimeProvider.System.GetUtcNow().AddDays(-10),
+                default); //todo test
             Pass(response);
             Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
