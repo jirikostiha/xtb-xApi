@@ -44,8 +44,6 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public int? Digits { get; set; }
 
-    //public long? Cmd { get; set; }
-
     public TRADE_OPERATION_TYPE? TradeOperation { get; set; }
 
     public STREAMING_TRADE_TYPE? StreamingTradeType { get; set; }
@@ -77,10 +75,10 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         Volume = (double?)value["volume"];
         Digits = (int?)value["digits"];
 
-        var streamingTradeCode = (long?)value["type"];
+        var streamingTradeCode = (int?)value["type"];
         StreamingTradeType = streamingTradeCode.HasValue ? new STREAMING_TRADE_TYPE(streamingTradeCode.Value) : null;
 
-        var tradeOperationCode = (long?)value["cmd"];
+        var tradeOperationCode = (int?)value["cmd"];
         TradeOperation = tradeOperationCode.HasValue ? new TRADE_OPERATION_TYPE(tradeOperationCode.Value) : null;
 
         var openTime = (long?)value["open_time"];

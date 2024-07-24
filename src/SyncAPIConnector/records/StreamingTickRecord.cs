@@ -11,9 +11,9 @@ public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
 
     public double? Bid { get; set; }
 
-    public long? AskVolume { get; set; }
+    public int? AskVolume { get; set; }
 
-    public long? BidVolume { get; set; }
+    public int? BidVolume { get; set; }
 
     public double? High { get; set; }
 
@@ -25,9 +25,9 @@ public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
 
     public double? SpreadTable { get; set; }
 
-    public long? Level { get; set; }
+    public int? Level { get; set; }
 
-    public long? QuoteId { get; set; }
+    public int? QuoteId { get; set; }
 
     public DateTimeOffset? Time { get; set; }
 
@@ -35,13 +35,13 @@ public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
     {
         Ask = (double?)value["ask"];
         Bid = (double?)value["bid"];
-        AskVolume = (long?)value["askVolume"];
-        BidVolume = (long?)value["bidVolume"];
+        AskVolume = (int?)value["askVolume"];
+        BidVolume = (int?)value["bidVolume"];
         High = (double?)value["high"];
         Low = (double?)value["low"];
         Symbol = (string?)value["symbol"];
-        Level = (long?)value["level"];
-        QuoteId = (long?)value["quoteId"];
+        Level = (int?)value["level"];
+        QuoteId = (int?)value["quoteId"];
         SpreadRaw = (double?)value["spreadRaw"];
         SpreadTable = (double?)value["spreadTable"];
 

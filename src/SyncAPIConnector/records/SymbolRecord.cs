@@ -28,7 +28,7 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
     public double? High { get; set; }
 
-    public long? InitialMargin { get; set; }
+    public int? InitialMargin { get; set; }
 
     public long? InstantMaxVolume { get; set; }
 
@@ -44,27 +44,25 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
     public double? Low { get; set; }
 
-    public long? MarginHedged { get; set; }
+    public int? MarginHedged { get; set; }
 
     public bool? MarginHedgedStrong { get; set; }
 
-    public long? MarginMaintenance { get; set; }
+    public int? MarginMaintenance { get; set; }
 
-    public long? Precision { get; set; }
+    public int? Precision { get; set; }
 
     public double? Percentage { get; set; }
 
-    public long? QuoteId { get; set; }
+    public int? QuoteId { get; set; }
 
     public double? SpreadRaw { get; set; }
 
     public double? SpreadTable { get; set; }
 
-    public long? Starting { get; set; }
+    public int? StepRuleId { get; set; }
 
-    public long? StepRuleId { get; set; }
-
-    public long? StopsLevel { get; set; }
+    public int? StopsLevel { get; set; }
 
     public bool? SwapEnable { get; set; }
 
@@ -78,7 +76,7 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
     public double? TickValue { get; set; }
 
-    public long? Type { get; set; }
+    public int? Type { get; set; } //todo
 
     public MARGIN_MODE? MarginMode { get; set; }
 
@@ -87,6 +85,8 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
     public SWAP_TYPE? SwapType { get; set; }
 
     public SWAP_ROLLOVER_TYPE? SwapRolloverType { get; set; }
+
+    public DateTimeOffset? StartingTime { get; set; }
 
     public DateTimeOffset? ExpirationTime { get; set; }
 
@@ -116,38 +116,40 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
         LotMin = (double?)value["lotMin"];
         LotStep = (double?)value["lotStep"];
         Low = (double?)value["low"];
-        Precision = (long?)value["precision"];
-        Starting = (long?)value["starting"];
-        StopsLevel = (long?)value["stopsLevel"];
+        Precision = (int?)value["precision"];
+        StopsLevel = (int?)value["stopsLevel"];
         Symbol = (string?)value["symbol"];
-        Type = (long?)value["type"];
+        Type = (int?)value["type"];
         ContractSize = (long?)value["contractSize"];
-        InitialMargin = (long?)value["initialMargin"];
-        MarginHedged = (long?)value["marginHedged"];
+        InitialMargin = (int?)value["initialMargin"];
+        MarginHedged = (int?)value["marginHedged"];
         MarginHedgedStrong = (bool?)value["marginHedgedStrong"];
-        MarginMaintenance = (long?)value["marginMaintenance"];
+        MarginMaintenance = (int?)value["marginMaintenance"];
         Percentage = (double?)value["percentage"];
-        QuoteId = (long?)value["quoteId"];
+        QuoteId = (int?)value["quoteId"];
         SpreadRaw = (double?)value["spreadRaw"];
         SpreadTable = (double?)value["spreadTable"];
-        StepRuleId = (long?)value["stepRuleId"];
+        StepRuleId = (int?)value["stepRuleId"];
         SwapEnable = (bool?)value["swapEnable"];
         SwapLong = (double?)value["swapLong"];
         SwapShort = (double?)value["swapShort"];
         TickSize = (double?)value["tickSize"];
         TickValue = (double?)value["tickValue"];
 
-        var marginModeCode = (long?)value["marginMode"];
+        var marginModeCode = (int?)value["marginMode"];
         MarginMode = marginModeCode.HasValue ? new MARGIN_MODE(marginModeCode.Value) : null;
 
-        var profitModeCode = (long?)value["profitMode"];
+        var profitModeCode = (int?)value["profitMode"];
         ProfitMode = profitModeCode.HasValue ? new PROFIT_MODE(profitModeCode.Value) : null;
 
-        var swapType = (long?)value["swapType"];
+        var swapType = (int?)value["swapType"];
         SwapType = swapType.HasValue ? new SWAP_TYPE(swapType.Value) : null;
 
-        var swapRolloverCode = (long?)value["swap_rollover3days"];
+        var swapRolloverCode = (int?)value["swap_rollover3days"];
         SwapRolloverType = swapRolloverCode.HasValue ? new SWAP_ROLLOVER_TYPE(swapRolloverCode.Value) : null;
+
+        var starting = (long?)value["starting"];
+        StartingTime = starting.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(starting.Value) : null;
 
         var time = (long?)value["time"];
         Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
