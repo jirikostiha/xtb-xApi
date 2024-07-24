@@ -229,87 +229,92 @@ public class StreamingApiConnector : Connector
         {
             var message = await ReadMessageAsync().ConfigureAwait(false);
 
-            if (message != null)
+            if (message == null)
+                throw new ArgumentNullException(message, "Incoming streaming message is null.");
+
+            var responseBody = JsonNode.Parse(message);
+            if (responseBody is null)
+                throw new ArgumentNullException(message, "Result of incoming parsed streaming message is null.");
+
+            var commandName = responseBody["command"]?.ToString();
+            if (commandName == null)
+                throw new ArgumentNullException(commandName, "Incoming streaming command is null.");
+
+            if (commandName == StreamingCommandName.TickPrices)
             {
-                JsonNode responseBody = JsonNode.Parse(message);
-                string commandName = responseBody["command"].ToString();
+                var tickRecord = new StreamingTickRecord();
+                tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                if (commandName == StreamingCommandName.TickPrices)
-                {
-                    StreamingTickRecord tickRecord = new StreamingTickRecord();
-                    tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                TickReceived?.Invoke(this, new(tickRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.Trade)
+            {
+                StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
+                tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    TickReceived?.Invoke(this, new(tickRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.Trade)
-                {
-                    StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
-                    tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                TradeReceived?.Invoke(this, new(tradeRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.Balance)
+            {
+                StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
+                balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    TradeReceived?.Invoke(this, new(tradeRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.Balance)
-                {
-                    StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
-                    balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                BalanceReceived?.Invoke(this, new(balanceRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.TradeStatus)
+            {
+                StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
+                tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    BalanceReceived?.Invoke(this, new(balanceRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.TradeStatus)
-                {
-                    StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
-                    tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.Profit)
+            {
+                StreamingProfitRecord profitRecord = new StreamingProfitRecord();
+                profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.Profit)
-                {
-                    StreamingProfitRecord profitRecord = new StreamingProfitRecord();
-                    profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                ProfitReceived?.Invoke(this, new(profitRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.News)
+            {
+                StreamingNewsRecord newsRecord = new StreamingNewsRecord();
+                newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    ProfitReceived?.Invoke(this, new(profitRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.News)
-                {
-                    StreamingNewsRecord newsRecord = new StreamingNewsRecord();
-                    newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                NewsReceived?.Invoke(this, new(newsRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.KeepAlive)
+            {
+                StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
+                keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    NewsReceived?.Invoke(this, new(newsRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.KeepAlive)
-                {
-                    StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
-                    keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else if (commandName == StreamingCommandName.Candle)
+            {
+                StreamingCandleRecord candleRecord = new StreamingCandleRecord();
+                candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                    KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else if (commandName == StreamingCommandName.Candle)
-                {
-                    StreamingCandleRecord candleRecord = new StreamingCandleRecord();
-                    candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
-
-                    CandleReceived?.Invoke(this, new(candleRecord));
-                    if (_streamingListener != null)
-                        await _streamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    throw new APICommunicationException($"Unknown streaming record received. command:'{commandName}'");
-                }
+                CandleReceived?.Invoke(this, new(candleRecord));
+                if (_streamingListener != null)
+                    await _streamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                throw new APICommunicationException($"Unknown streaming record received. command:'{commandName}'");
             }
         }
         catch (APICommunicationException ex) when (ex.InnerException.InnerException is SocketException se)
