@@ -25,7 +25,7 @@ public record ChartRangeInfoRecord
 
     public DateTimeOffset? End { get; init; }
 
-    public long? Ticks { get; init; }
+    public int? Ticks { get; init; }
 
     public virtual JsonObject ToJsonObject()
     {

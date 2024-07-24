@@ -4,17 +4,17 @@ namespace xAPI.Codes;
 
 public class SWAP_TYPE : BaseCode
 {
-    public const long POINTS_CODE = 0;
-    public const long DOLLARS_CODE = 1;
-    public const long INTEREST_CODE = 2;
-    public const long MARGIN_CURRENCY_CODE = 3;
+    public const int POINTS_CODE = 0;
+    public const int DOLLARS_CODE = 1;
+    public const int INTEREST_CODE = 2;
+    public const int MARGIN_CURRENCY_CODE = 3;
 
     public static readonly SWAP_TYPE POINTS = new(POINTS_CODE);
     public static readonly SWAP_TYPE DOLLARS = new(DOLLARS_CODE);
     public static readonly SWAP_TYPE INTEREST = new(INTEREST_CODE);
     public static readonly SWAP_TYPE MARGIN_CURRENCY = new(MARGIN_CURRENCY_CODE);
 
-    public SWAP_TYPE(long code)
+    public SWAP_TYPE(int code)
         : base(code)
     {
     }

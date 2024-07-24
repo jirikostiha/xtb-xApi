@@ -19,7 +19,7 @@ public class ApiConnector : Connector
     /// <summary>
     /// Delay between each command to the server.
     /// </summary>
-    private const long COMMAND_TIME_SPACE = 200;
+    private const int COMMAND_TIME_SPACE = 200;
 
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.

@@ -4,15 +4,15 @@ namespace xAPI.Codes;
 
 public class PERIOD : BaseCode
 {
-    public const long M1_CODE = 1;
-    public const long M5_CODE = 5;
-    public const long M15_CODE = 15;
-    public const long M30_CODE = 30;
-    public const long H1_CODE = 60;
-    public const long H4_CODE = 240;
-    public const long D1_CODE = 1440;
-    public const long W1_CODE = 10080;
-    public const long MN1_CODE = 43200;
+    public const int M1_CODE = 1;
+    public const int M5_CODE = 5;
+    public const int M15_CODE = 15;
+    public const int M30_CODE = 30;
+    public const int H1_CODE = 60;
+    public const int H4_CODE = 240;
+    public const int D1_CODE = 1440;
+    public const int W1_CODE = 10080;
+    public const int MN1_CODE = 43200;
 
     public static readonly PERIOD M1 = new(M1_CODE);
     public static readonly PERIOD M5 = new(M5_CODE);
@@ -24,7 +24,7 @@ public class PERIOD : BaseCode
     public static readonly PERIOD W1 = new(W1_CODE);
     public static readonly PERIOD MN1 = new(MN1_CODE);
 
-    public PERIOD(long code)
+    public PERIOD(int code)
         : base(code)
     {
     }

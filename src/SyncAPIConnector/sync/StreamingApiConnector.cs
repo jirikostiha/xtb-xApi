@@ -339,7 +339,7 @@ public class StreamingApiConnector : Connector
     }
 
     #region subscribe, unsubscribe
-    public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
+    public void SubscribePrice(string symbol, long? minArrivalTime = null, int? maxLevel = null)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
         WriteMessage(tickPricesSubscribe.ToString());
@@ -451,7 +451,7 @@ public class StreamingApiConnector : Connector
         WriteMessage(candleRecordsStop.ToString());
     }
 
-    public async Task SubscribePriceAsync(string symbol, long? minArrivalTime = null, long? maxLevel = null, CancellationToken cancellationToken = default)
+    public async Task SubscribePriceAsync(string symbol, long? minArrivalTime = null, int? maxLevel = null, CancellationToken cancellationToken = default)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
         await WriteMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);

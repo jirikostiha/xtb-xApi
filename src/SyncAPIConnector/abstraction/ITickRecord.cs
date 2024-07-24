@@ -2,11 +2,11 @@
 
 public interface ITickRecord : ISymbol, ITick
 {
-    long? AskVolume { get; }
+    int? AskVolume { get; }
 
-    long? BidVolume { get; }
+    int? BidVolume { get; }
 
-    long? Level { get; }
+    int? Level { get; }
 
     double? SpreadRaw { get; }
 

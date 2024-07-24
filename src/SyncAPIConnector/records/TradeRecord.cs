@@ -78,7 +78,7 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
         Value_date = (long?)value["value_date"];
         Volume = (double?)value["volume"];
 
-        var tradeOperationCode = (long?)value["cmd"];
+        var tradeOperationCode = (int?)value["cmd"];
         TradeOperation = tradeOperationCode.HasValue ? new TRADE_OPERATION_TYPE(tradeOperationCode.Value) : null;
 
         var timestamp = (long?)value["timestamp"];

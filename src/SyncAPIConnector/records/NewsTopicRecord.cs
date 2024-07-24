@@ -9,7 +9,7 @@ public record NewsTopicRecord : IBaseResponseRecord, INewsRecord
 {
     public string? Body { get; set; }
 
-    public long? Bodylen { get; set; }
+    public int? Bodylen { get; set; }
 
     public string? Key { get; set; }
 
@@ -20,7 +20,7 @@ public record NewsTopicRecord : IBaseResponseRecord, INewsRecord
     public void FieldsFromJsonObject(JsonObject value)
     {
         Body = (string?)value["body"];
-        Bodylen = (long?)value["bodylen"];
+        Bodylen = (int?)value["bodylen"];
         Key = (string?)value["key"];
         Title = (string?)value["title"];
 

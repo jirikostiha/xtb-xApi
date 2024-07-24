@@ -6,7 +6,7 @@ internal sealed class TickPricesSubscribe : SubscribeCommandBase
 {
     public const string Name = "getTickPrices";
 
-    public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime = null, long? maxLevel = null)
+    public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime = null, int? maxLevel = null)
         : base(streamSessionId)
     {
         Symbol = symbol;
@@ -20,7 +20,7 @@ internal sealed class TickPricesSubscribe : SubscribeCommandBase
 
     public long? MinArrivalTime { get; }
 
-    public long? MaxLevel { get; }
+    public int? MaxLevel { get; }
 
     public override string ToString()
     {

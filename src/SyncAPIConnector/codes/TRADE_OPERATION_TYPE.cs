@@ -4,13 +4,13 @@ namespace xAPI.Codes;
 
 public class TRADE_OPERATION_TYPE : BaseCode
 {
-    public const long BUY_CODE = 0;
-    public const long SELL_CODE = 1;
-    public const long BUY_LIMIT_CODE = 2;
-    public const long SELL_LIMIT_CODE = 3;
-    public const long BUY_STOP_CODE = 4;
-    public const long SELL_STOP_CODE = 5;
-    public const long BALANCE_CODE = 6;
+    public const int BUY_CODE = 0;
+    public const int SELL_CODE = 1;
+    public const int BUY_LIMIT_CODE = 2;
+    public const int SELL_LIMIT_CODE = 3;
+    public const int BUY_STOP_CODE = 4;
+    public const int SELL_STOP_CODE = 5;
+    public const int BALANCE_CODE = 6;
 
     public static readonly TRADE_OPERATION_TYPE BUY = new(BUY_CODE);
     public static readonly TRADE_OPERATION_TYPE SELL = new(SELL_CODE);
@@ -20,7 +20,7 @@ public class TRADE_OPERATION_TYPE : BaseCode
     public static readonly TRADE_OPERATION_TYPE SELL_STOP = new(SELL_STOP_CODE);
     public static readonly TRADE_OPERATION_TYPE BALANCE = new(BALANCE_CODE);
 
-    public TRADE_OPERATION_TYPE(long code)
+    public TRADE_OPERATION_TYPE(int code)
         : base(code)
     {
     }

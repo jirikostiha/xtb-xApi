@@ -15,7 +15,7 @@ public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecor
 
     public double? Open { get; set; }
 
-    public long? QuoteId { get; set; }
+    public int? QuoteId { get; set; }
 
     public string? Symbol { get; set; }
 
@@ -29,7 +29,7 @@ public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecor
         High = (double?)value["high"];
         Low = (double?)value["low"];
         Open = (double?)value["open"];
-        QuoteId = (long?)value["quoteId"];
+        QuoteId = (int?)value["quoteId"];
         Symbol = (string?)value["symbol"];
         Volume = (double?)value["vol"];
 

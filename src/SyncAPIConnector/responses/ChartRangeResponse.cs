@@ -18,7 +18,7 @@ public class ChartRangeResponse : BaseResponse
             return;
 
         var ob = ReturnData.AsObject();
-        Digits = (long?)ob["digits"];
+        Digits = (int?)ob["digits"];
         var arr = ob["rateInfos"]?.AsArray();
         if (arr != null)
         {
@@ -31,7 +31,7 @@ public class ChartRangeResponse : BaseResponse
         }
     }
 
-    public long? Digits { get; init; }
+    public int? Digits { get; init; }
 
     public LinkedList<RateInfoRecord> RateInfos { get; init; } = [];
 }

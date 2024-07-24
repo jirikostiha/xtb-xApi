@@ -9,15 +9,15 @@ public record TickRecord : IBaseResponseRecord, ITickRecord
 {
     public double? Ask { get; set; }
 
-    public long? AskVolume { get; set; }
+    public int? AskVolume { get; set; }
 
     public double? Bid { get; set; }
 
-    public long? BidVolume { get; set; }
+    public int? BidVolume { get; set; }
 
     public double? High { get; set; }
 
-    public long? Level { get; set; }
+    public int? Level { get; set; }
 
     public double? Low { get; set; }
 
@@ -32,11 +32,11 @@ public record TickRecord : IBaseResponseRecord, ITickRecord
     public void FieldsFromJsonObject(JsonObject value)
     {
         Ask = (double?)value["ask"];
-        AskVolume = (long?)value["askVolume"];
+        AskVolume = (int?)value["askVolume"];
         Bid = (double?)value["bid"];
-        BidVolume = (long?)value["bidVolume"];
+        BidVolume = (int?)value["bidVolume"];
         High = (double?)value["high"];
-        Level = (long?)value["level"];
+        Level = (int?)value["level"];
         Low = (double?)value["low"];
         SpreadRaw = (double?)value["spreadRaw"];
         SpreadTable = (double?)value["spreadTable"];
