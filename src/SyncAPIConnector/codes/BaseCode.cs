@@ -15,7 +15,7 @@ public class BaseCode
     /// <param name="code">Code represented as long value.</param>
     public BaseCode(long code)
     {
-        code = code;
+        this.code = code;
     }
 
     /// <summary>
@@ -23,8 +23,8 @@ public class BaseCode
     /// </summary>
     public long Code
     {
-        get { return code; }
-        set { code = value; }
+        get => code;
+        set => code = value;
     }
 
     public static bool operator ==(BaseCode baseCode1, BaseCode baseCode2)
