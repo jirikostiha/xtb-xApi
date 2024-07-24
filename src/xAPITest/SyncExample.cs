@@ -556,7 +556,7 @@ public sealed class SyncExample : ExampleBase
             try
             {
                 var trade = new TradeTransInfoRecord(
-                    TRADE_OPERATION_CODE.BUY,
+                    TRADE_OPERATION_TYPE.BUY,
                     TRADE_TRANSACTION_TYPE.ORDER_OPEN,
                     price: null,
                     sl: null,
@@ -669,8 +669,8 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteTradesHistoryCommand(Connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0);
+                TimeProvider.System.GetUtcNow().AddDays(-10),
+                default);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }

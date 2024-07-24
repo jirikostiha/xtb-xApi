@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 namespace xAPI.Records;
 
 using System;
+using System.Diagnostics;
 
 public record RateInfoRecord : IBaseResponseRecord, ICandleRecord
 {
@@ -28,5 +29,6 @@ public record RateInfoRecord : IBaseResponseRecord, ICandleRecord
 
         var ctm = (long?)value["ctm"];
         StartTime = ctm is null ? null : DateTimeOffset.FromUnixTimeMilliseconds(ctm.Value);
+        Debug.Assert(StartTime?.ToUnixTimeMilliseconds() == ctm);
     }
 }

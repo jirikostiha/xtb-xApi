@@ -47,5 +47,6 @@ public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
 
         var timestamp = (long?)value["timestamp"];
         Time = timestamp.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value) : null;
+        Debug.Assert(Time?.ToUnixTimeMilliseconds() == timestamp);
     }
 }

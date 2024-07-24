@@ -23,5 +23,6 @@ public record StreamingNewsRecord : IBaseResponseRecord, INewsRecord
 
         var time = (long?)value["time"];
         Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
+        Debug.Assert(Time?.ToUnixTimeMilliseconds() == time);
     }
 }

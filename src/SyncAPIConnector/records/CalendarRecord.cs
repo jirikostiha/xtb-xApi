@@ -35,5 +35,6 @@ public record CalendarRecord : IBaseResponseRecord
 
         var time = (long?)value["time"];
         Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
+        Debug.Assert(Time?.ToUnixTimeMilliseconds() == time);
     }
 }
