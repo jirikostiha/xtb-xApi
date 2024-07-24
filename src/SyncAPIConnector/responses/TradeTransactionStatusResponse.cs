@@ -22,7 +22,8 @@ public class TradeTransactionStatusResponse : BaseResponse
         CustomComment = (string?)ob["customComment"];
         Message = (string?)ob["message"];
         Order = (long?)ob["order"];
-        var requestStatusCode = (long?)ob["requestStatus"];
+
+        var requestStatusCode = (int?)ob["requestStatus"];
         RequestStatus = requestStatusCode.HasValue ? new REQUEST_STATUS(requestStatusCode.Value) : null;
     }
 

@@ -4,15 +4,15 @@ namespace xAPI.Codes;
 
 public class MARGIN_MODE : BaseCode
 {
-    public const long FOREX_CODE = 101;
-    public const long CFD_LEVERAGED_CODE = 102;
-    public const long CFD_CODE = 103;
+    public const int FOREX_CODE = 101;
+    public const int CFD_LEVERAGED_CODE = 102;
+    public const int CFD_CODE = 103;
 
     public static readonly MARGIN_MODE FOREX = new(FOREX_CODE);
     public static readonly MARGIN_MODE CFD_LEVERAGED = new(CFD_LEVERAGED_CODE);
     public static readonly MARGIN_MODE CFD = new(CFD_CODE);
 
-    public MARGIN_MODE(long code)
+    public MARGIN_MODE(int code)
         : base(code)
     {
     }

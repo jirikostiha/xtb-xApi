@@ -32,7 +32,7 @@ public record HoursRecord : IBaseResponseRecord
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        var day = (long?)value["day"];
+        var day = (int?)value["day"];
         DayOfWeek = day.HasValue ? ToDayOfWeek(day.Value) : null;
 
         var fromTime = (long?)value["fromT"];
@@ -49,5 +49,5 @@ public record HoursRecord : IBaseResponseRecord
     /// <returns>
     /// The <see cref="DayOfWeek"/> corresponding to the provided day.
     /// </returns>
-    public static DayOfWeek ToDayOfWeek(long day) => day == 7 ? System.DayOfWeek.Sunday : (DayOfWeek)day;
+    public static DayOfWeek ToDayOfWeek(int day) => day == 7 ? System.DayOfWeek.Sunday : (DayOfWeek)day;
 }

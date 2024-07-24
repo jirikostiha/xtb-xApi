@@ -4,15 +4,15 @@ namespace xAPI.Codes;
 
 public class EXECUTION_TYPE : BaseCode
 {
-    public const long REQUEST_CODE = 0;
-    public const long INSTANT_CODE = 1;
-    public const long MARKET_CODE = 2;
+    public const int REQUEST_CODE = 0;
+    public const int INSTANT_CODE = 1;
+    public const int MARKET_CODE = 2;
 
     public static readonly EXECUTION_TYPE REQUEST = new(REQUEST_CODE);
     public static readonly EXECUTION_TYPE INSTANT = new(INSTANT_CODE);
     public static readonly EXECUTION_TYPE MARKET = new(MARKET_CODE);
 
-    public EXECUTION_TYPE(long code)
+    public EXECUTION_TYPE(int code)
         : base(code)
     {
     }

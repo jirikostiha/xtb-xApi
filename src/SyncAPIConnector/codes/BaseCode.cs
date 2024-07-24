@@ -11,7 +11,7 @@ public class BaseCode
     /// Creates new base code object.
     /// </summary>
     /// <param name="code">Code represented as long value.</param>
-    public BaseCode(long code)
+    public BaseCode(int code)
     {
         Code = code;
     }
@@ -19,7 +19,7 @@ public class BaseCode
     /// <summary>
     /// Raw code received from the API.
     /// </summary>
-    public long Code { get; set; }
+    public int Code { get; set; }
 
     public static bool operator ==(BaseCode baseCode1, BaseCode baseCode2)
     {
@@ -29,7 +29,7 @@ public class BaseCode
         if ((object)baseCode1 == null || (object)baseCode2 == null)
             return false;
 
-        return (baseCode1.Code == baseCode2.Code);
+        return baseCode1.Code == baseCode2.Code;
     }
 
     public static bool operator !=(BaseCode baseCode1, BaseCode baseCode2)
@@ -37,6 +37,7 @@ public class BaseCode
         return !(baseCode1 == baseCode2);
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object target)
     {
         if (target == null)
@@ -46,7 +47,7 @@ public class BaseCode
         if ((object)baseCode == null)
             return false;
 
-        return (Code == baseCode.Code);
+        return Code == baseCode.Code;
     }
 
     /// <inheritdoc/>

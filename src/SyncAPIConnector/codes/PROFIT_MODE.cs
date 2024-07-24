@@ -4,13 +4,13 @@ namespace xAPI.Codes;
 
 public class PROFIT_MODE : BaseCode
 {
-    public const long FOREX_CODE = 5;
-    public const long CFD_CODE = 6;
+    public const int FOREX_CODE = 5;
+    public const int CFD_CODE = 6;
 
     public static readonly PROFIT_MODE FOREX = new(FOREX_CODE);
     public static readonly PROFIT_MODE CFD = new(CFD_CODE);
 
-    public PROFIT_MODE(long code)
+    public PROFIT_MODE(int code)
         : base(code)
     {
     }

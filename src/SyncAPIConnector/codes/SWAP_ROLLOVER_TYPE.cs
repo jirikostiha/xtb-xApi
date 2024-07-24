@@ -4,11 +4,11 @@ namespace xAPI.Codes;
 
 public class SWAP_ROLLOVER_TYPE : BaseCode
 {
-    public const long MONDAY_CODE = 0;
-    public const long TUESDAY_CODE = 1;
-    public const long WEDNESDAY_CODE = 2;
-    public const long THURSDAY_CODE = 3;
-    public const long FRIDAY_CODE = 4;
+    public const int MONDAY_CODE = 0;
+    public const int TUESDAY_CODE = 1;
+    public const int WEDNESDAY_CODE = 2;
+    public const int THURSDAY_CODE = 3;
+    public const int FRIDAY_CODE = 4;
 
     public static readonly SWAP_ROLLOVER_TYPE MONDAY = new(MONDAY_CODE);
     public static readonly SWAP_ROLLOVER_TYPE TUESDAY = new(TUESDAY_CODE);
@@ -16,7 +16,7 @@ public class SWAP_ROLLOVER_TYPE : BaseCode
     public static readonly SWAP_ROLLOVER_TYPE THURSDAY = new(THURSDAY_CODE);
     public static readonly SWAP_ROLLOVER_TYPE FRIDAY = new(FRIDAY_CODE);
 
-    public SWAP_ROLLOVER_TYPE(long code)
+    public SWAP_ROLLOVER_TYPE(int code)
         : base(code)
     {
     }

@@ -4,15 +4,15 @@ namespace xAPI.Codes;
 
 public class STREAMING_TRADE_TYPE : BaseCode
 {
-    public const long OPEN_CODE = 0;
-    public const long PENDING_CODE = 1;
-    public const long CLOSE_CODE = 2;
+    public const int OPEN_CODE = 0;
+    public const int PENDING_CODE = 1;
+    public const int CLOSE_CODE = 2;
 
     public static readonly STREAMING_TRADE_TYPE OPEN = new(OPEN_CODE);
     public static readonly STREAMING_TRADE_TYPE PENDING = new(PENDING_CODE);
     public static readonly STREAMING_TRADE_TYPE CLOSE = new(CLOSE_CODE);
 
-    public STREAMING_TRADE_TYPE(long code)
+    public STREAMING_TRADE_TYPE(int code)
         : base(code)
     {
     }
