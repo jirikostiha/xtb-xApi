@@ -307,9 +307,13 @@ public class ApiConnector : Connector
             CommandExecuting?.Invoke(this, new(command));
             var response = ExecuteCommand(request);
 
-            var parsedResponse = JsonNode.Parse(response).AsObject();
+            var parsedResponse = JsonNode.Parse(response);
+            if (parsedResponse is null)
+                throw new InvalidOperationException("Parsed command response is null.");
 
-            return parsedResponse;
+            var jsonObj = parsedResponse.AsObject();
+
+            return jsonObj;
         }
         catch (Exception ex)
         {
@@ -372,9 +376,13 @@ public class ApiConnector : Connector
             CommandExecuting?.Invoke(this, new(command));
             var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
 
-            var parsedResponse = JsonNode.Parse(response).AsObject();
+            var parsedResponse = JsonNode.Parse(response);
+            if (parsedResponse is null)
+                throw new InvalidOperationException("Parsed command response is null.");
 
-            return parsedResponse;
+            var jsonObj = parsedResponse.AsObject();
+
+            return jsonObj;
         }
         catch (Exception ex)
         {
@@ -407,7 +415,7 @@ public class ApiConnector : Connector
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            string response = await ReadMessageAsync().ConfigureAwait(false);
+            string response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(response))
             {

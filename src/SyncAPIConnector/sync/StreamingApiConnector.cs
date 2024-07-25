@@ -230,15 +230,15 @@ public class StreamingApiConnector : Connector
             var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
 
             if (message == null)
-                throw new ArgumentNullException(message, "Incoming streaming message is null.");
+                throw new InvalidOperationException("Incoming streaming message is null.");
 
             var responseBody = JsonNode.Parse(message);
             if (responseBody is null)
-                throw new ArgumentNullException(message, "Result of incoming parsed streaming message is null.");
+                throw new InvalidOperationException("Result of incoming parsed streaming message is null.");
 
             var commandName = responseBody["command"]?.ToString();
             if (commandName == null)
-                throw new ArgumentNullException(commandName, "Incoming streaming command is null.");
+                throw new InvalidOperationException("Incoming streaming command is null.");
 
             if (commandName == StreamingCommandName.TickPrices)
             {
