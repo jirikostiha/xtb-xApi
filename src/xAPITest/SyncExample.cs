@@ -333,7 +333,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Connecting to streaming");
         try
         {
-            _connector.Streaming.Connect(CancellationToken.None);
+            _connector.Streaming.Connect();
             Pass();
         }
         catch (Exception ex)

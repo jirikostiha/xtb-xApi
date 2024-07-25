@@ -341,7 +341,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Connecting to streaming");
         try
         {
-            _connector.Streaming.Connect(cancellationToken);
+            await _connector.Streaming.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)

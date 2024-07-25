@@ -107,7 +107,7 @@ public class StreamingApiConnector : Connector
     /// <summary>
     /// Connect to the streaming.
     /// </summary>
-    public void Connect(CancellationToken cancellationToken)
+    public void Connect()
     {
         if (StreamSessionId == null)
         {
@@ -144,19 +144,19 @@ public class StreamingApiConnector : Connector
 
         if (_streamingReaderTask == null)
         {
-            CreateAndRunNewStreamingReaderTask(cancellationToken);
+            CreateAndRunNewStreamingReaderTask(default);
         }
         else if (_streamingReaderTask.IsCompleted || _streamingReaderTask.IsFaulted || _streamingReaderTask.IsCanceled)
         {
             _streamingReaderTask = null;
-            CreateAndRunNewStreamingReaderTask(cancellationToken);
+            CreateAndRunNewStreamingReaderTask(default);
         }
     }
 
     /// <summary>
     /// Connect to the streaming.
     /// </summary>
-    public async Task ConnectAsync(CancellationToken cancellationToken)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)
         {
@@ -227,7 +227,7 @@ public class StreamingApiConnector : Connector
     {
         try
         {
-            var message = await ReadMessageAsync().ConfigureAwait(false);
+            var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
 
             if (message == null)
                 throw new ArgumentNullException(message, "Incoming streaming message is null.");
