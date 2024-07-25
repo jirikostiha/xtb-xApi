@@ -114,9 +114,9 @@ public class StreamingApiConnector : Connector, IConnector
             throw new APICommunicationException("Stream already connected.");
         }
 
-        ApiSocket = new TcpClient();
+        TcpClient = new TcpClient();
         var server = Server;
-        ApiSocket.Connect(server.Address, server.StreamingPort);
+        TcpClient.Connect(server.Address, server.StreamingPort);
 
         _apiConnected = true;
 
@@ -125,14 +125,14 @@ public class StreamingApiConnector : Connector, IConnector
         if (server.IsSecure)
         {
             var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
-            var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
+            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
             ssl.AuthenticateAsClient(server.Address);
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }
         else
         {
-            NetworkStream ns = ApiSocket.GetStream();
+            NetworkStream ns = TcpClient.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
         }
@@ -161,11 +161,11 @@ public class StreamingApiConnector : Connector, IConnector
             throw new APICommunicationException("Stream already connected.");
         }
 
-        ApiSocket = new TcpClient();
+        TcpClient = new TcpClient();
         var server = Server;
         try
         {
-            await ApiSocket.ConnectAsync(server.Address, server.StreamingPort);
+            await TcpClient.ConnectAsync(server.Address, server.StreamingPort);
         }
         catch (OperationCanceledException)
         {
@@ -179,14 +179,14 @@ public class StreamingApiConnector : Connector, IConnector
         if (server.IsSecure)
         {
             var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
-            var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
+            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
             await ssl.AuthenticateAsClientAsync(server.Address);
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }
         else
         {
-            var networkStream = ApiSocket.GetStream();
+            var networkStream = TcpClient.GetStream();
             StreamWriter = new StreamWriter(networkStream);
             StreamReader = new StreamReader(networkStream);
         }
@@ -327,13 +327,13 @@ public class StreamingApiConnector : Connector, IConnector
     public void SubscribePrice(string symbol, long? minArrivalTime = null, int? maxLevel = null)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
-        WriteMessage(tickPricesSubscribe.ToString());
+        SendMessage(tickPricesSubscribe.ToString());
     }
 
     public void UnsubscribePrice(string symbol)
     {
         var tickPricesStop = new TickPricesStop(symbol);
-        WriteMessage(tickPricesStop.ToString());
+        SendMessage(tickPricesStop.ToString());
     }
 
     public void SubscribePrices(string[] symbols)
@@ -355,97 +355,97 @@ public class StreamingApiConnector : Connector, IConnector
     public void SubscribeTrades()
     {
         var tradeRecordsSubscribe = new TradeRecordsSubscribe(StreamSessionId);
-        WriteMessage(tradeRecordsSubscribe.ToString());
+        SendMessage(tradeRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTrades()
     {
         var tradeRecordsStop = new TradeRecordsStop();
-        WriteMessage(tradeRecordsStop.ToString());
+        SendMessage(tradeRecordsStop.ToString());
     }
 
     public void SubscribeBalance()
     {
         var balanceRecordsSubscribe = new BalanceRecordsSubscribe(StreamSessionId);
-        WriteMessage(balanceRecordsSubscribe.ToString());
+        SendMessage(balanceRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeBalance()
     {
         var balanceRecordsStop = new BalanceRecordsStop();
-        WriteMessage(balanceRecordsStop.ToString());
+        SendMessage(balanceRecordsStop.ToString());
     }
 
     public void SubscribeTradeStatus()
     {
         var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(StreamSessionId);
-        WriteMessage(tradeStatusRecordsSubscribe.ToString());
+        SendMessage(tradeStatusRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTradeStatus()
     {
         var tradeStatusRecordsStop = new TradeRecordsSubscribe(StreamSessionId);
-        WriteMessage(tradeStatusRecordsStop.ToString());
+        SendMessage(tradeStatusRecordsStop.ToString());
     }
 
     public void SubscribeProfits()
     {
         var profitsSubscribe = new ProfitsSubscribe(StreamSessionId);
-        WriteMessage(profitsSubscribe.ToString());
+        SendMessage(profitsSubscribe.ToString());
     }
 
     public void UnsubscribeProfits()
     {
         var profitsStop = new ProfitsStop();
-        WriteMessage(profitsStop.ToString());
+        SendMessage(profitsStop.ToString());
     }
 
     public void SubscribeNews()
     {
         var newsSubscribe = new NewsSubscribe(StreamSessionId);
-        WriteMessage(newsSubscribe.ToString());
+        SendMessage(newsSubscribe.ToString());
     }
 
     public void UnsubscribeNews()
     {
         var newsStop = new NewsStop();
-        WriteMessage(newsStop.ToString());
+        SendMessage(newsStop.ToString());
     }
 
     public void SubscribeKeepAlive()
     {
         var keepAliveSubscribe = new KeepAliveSubscribe(StreamSessionId);
-        WriteMessage(keepAliveSubscribe.ToString());
+        SendMessage(keepAliveSubscribe.ToString());
     }
 
     public void UnsubscribeKeepAlive()
     {
         var keepAliveStop = new KeepAliveStop();
-        WriteMessage(keepAliveStop.ToString());
+        SendMessage(keepAliveStop.ToString());
     }
 
     public void SubscribeCandles(string symbol)
     {
         var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, StreamSessionId);
-        WriteMessage(candleRecordsSubscribe.ToString());
+        SendMessage(candleRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeCandles(string symbol)
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
-        WriteMessage(candleRecordsStop.ToString());
+        SendMessage(candleRecordsStop.ToString());
     }
 
     public async Task SubscribePriceAsync(string symbol, long? minArrivalTime = null, int? maxLevel = null, CancellationToken cancellationToken = default)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
-        await WriteMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribePriceAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var tickPricesStop = new TickPricesStop(symbol);
-        await WriteMessageAsync(tickPricesStop.ToString(), cancellationToken);
+        await SendMessageAsync(tickPricesStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribePricesAsync(string[] symbols, CancellationToken cancellationToken = default)
@@ -467,85 +467,85 @@ public class StreamingApiConnector : Connector, IConnector
     public async Task SubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
         var tradeRecordsSubscribe = new TradeRecordsSubscribe(StreamSessionId);
-        await WriteMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
         var tradeRecordsStop = new TradeRecordsStop();
-        await WriteMessageAsync(tradeRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(tradeRecordsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
         var balanceRecordsSubscribe = new BalanceRecordsSubscribe(StreamSessionId);
-        await WriteMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
         var balanceRecordsStop = new BalanceRecordsStop();
-        await WriteMessageAsync(balanceRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(balanceRecordsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
         var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(StreamSessionId);
-        await WriteMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
         var tradeStatusRecordsStop = new TradeStatusRecordsStop();
-        await WriteMessageAsync(tradeStatusRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(tradeStatusRecordsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
         var profitsSubscribe = new ProfitsSubscribe(StreamSessionId);
-        await WriteMessageAsync(profitsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(profitsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
         var profitsStop = new ProfitsStop();
-        await WriteMessageAsync(profitsStop.ToString(), cancellationToken);
+        await SendMessageAsync(profitsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
         var newsSubscribe = new NewsSubscribe(StreamSessionId);
-        await WriteMessageAsync(newsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(newsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
         var newsStop = new NewsStop();
-        await WriteMessageAsync(newsStop.ToString(), cancellationToken);
+        await SendMessageAsync(newsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
         var keepAliveSubscribe = new KeepAliveSubscribe(StreamSessionId);
-        await WriteMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
         var keepAliveStop = new KeepAliveStop();
-        await WriteMessageAsync(keepAliveStop.ToString(), cancellationToken);
+        await SendMessageAsync(keepAliveStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, StreamSessionId);
-        await WriteMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
-        await WriteMessageAsync(candleRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(candleRecordsStop.ToString(), cancellationToken);
     }
     #endregion
 

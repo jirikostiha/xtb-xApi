@@ -126,7 +126,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Logging in again as '{_credentials.Login}'");
         try
         {
-            await _connector.ConnectAsync(true, cancellationToken);
+            await _connector.ConnectAsync(cancellationToken);
             var response = await APICommandFactory.ExecuteLoginCommandAsync(_connector, _credentials, cancellationToken);
             Pass(response);
             Detail(response.StreamSessionId);

@@ -93,20 +93,20 @@ public class ApiConnector : Connector, IConnector
             throw new APICommunicationException("No server to connect to.");
 
         var server = Server;
-        ApiSocket = new TcpClient();
+        TcpClient = new TcpClient();
 
         bool connectionAttempted = false;
 
-        while (!connectionAttempted || !ApiSocket.Connected)
+        while (!connectionAttempted || !TcpClient.Connected)
         {
             // Try to connect asynchronously and wait for the result
-            IAsyncResult result = ApiSocket.BeginConnect(server.Address, server.MainPort, null, null);
+            IAsyncResult result = TcpClient.BeginConnect(server.Address, server.MainPort, null, null);
             connectionAttempted = result.AsyncWaitHandle.WaitOne(_connectionTimeout, true);
 
             // If connection attempt failed (timeout) or not connected
-            if (!connectionAttempted || !ApiSocket.Connected)
+            if (!connectionAttempted || !TcpClient.Connected)
             {
-                ApiSocket.Close();
+                TcpClient.Close();
                 if (LookForBackups)
                 {
                     server = Servers.GetBackup(server);
@@ -114,7 +114,7 @@ public class ApiConnector : Connector, IConnector
                     {
                         throw new APICommunicationException("Connection timeout.");
                     }
-                    ApiSocket = new TcpClient();
+                    TcpClient = new TcpClient();
                 }
                 else
                 {
@@ -129,7 +129,7 @@ public class ApiConnector : Connector, IConnector
         }
         else
         {
-            NetworkStream ns = ApiSocket.GetStream();
+            NetworkStream ns = TcpClient.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
         }
@@ -148,7 +148,7 @@ public class ApiConnector : Connector, IConnector
             throw new APICommunicationException("No server to connect to.");
 
         var server = Server;
-        ApiSocket = new TcpClient
+        TcpClient = new TcpClient
         {
             ReceiveTimeout = _connectionTimeout,
             SendTimeout = _connectionTimeout
@@ -156,27 +156,27 @@ public class ApiConnector : Connector, IConnector
 
         bool connectionAttempted = false;
 
-        while (!connectionAttempted || !ApiSocket.Connected)
+        while (!connectionAttempted || !TcpClient.Connected)
         {
             try
             {
                 // Try to connect asynchronously and wait for the result
-                var connectTask = ApiSocket.ConnectAsync(server.Address, server.MainPort);
+                var connectTask = TcpClient.ConnectAsync(server.Address, server.MainPort);
                 var timeoutTask = Task.Delay(_connectionTimeout, cancellationToken);
 
                 var completedTask = await Task.WhenAny(connectTask, timeoutTask);
 
-                connectionAttempted = completedTask == connectTask && ApiSocket.Connected;
+                connectionAttempted = completedTask == connectTask && TcpClient.Connected;
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    ApiSocket.Close();
+                    TcpClient.Close();
                     throw new OperationCanceledException(cancellationToken);
                 }
 
-                if (!connectionAttempted || !ApiSocket.Connected)
+                if (!connectionAttempted || !TcpClient.Connected)
                 {
-                    ApiSocket.Close();
+                    TcpClient.Close();
                     if (LookForBackups)
                     {
                         server = Servers.GetBackup(server);
@@ -184,7 +184,7 @@ public class ApiConnector : Connector, IConnector
                         {
                             throw new APICommunicationException("Connection timeout.");
                         }
-                        ApiSocket = new TcpClient();
+                        TcpClient = new TcpClient();
                     }
                     else
                     {
@@ -194,7 +194,7 @@ public class ApiConnector : Connector, IConnector
             }
             catch
             {
-                ApiSocket.Close();
+                TcpClient.Close();
                 if (LookForBackups)
                 {
                     server = Servers.GetBackup(server);
@@ -202,7 +202,7 @@ public class ApiConnector : Connector, IConnector
                     {
                         throw new APICommunicationException("Connection timeout.");
                     }
-                    ApiSocket = new TcpClient();
+                    TcpClient = new TcpClient();
                 }
                 else
                 {
@@ -217,7 +217,7 @@ public class ApiConnector : Connector, IConnector
         }
         else
         {
-            NetworkStream ns = ApiSocket.GetStream();
+            NetworkStream ns = TcpClient.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
         }
@@ -232,7 +232,7 @@ public class ApiConnector : Connector, IConnector
     private void EstablishSecureConnection(Server server)
     {
         var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
-        var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
+        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
 
         //sslStream.AuthenticateAsClient(server.Address);
 
@@ -327,7 +327,7 @@ public class ApiConnector : Connector, IConnector
                 Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
             }
 
-            WriteMessage(message);
+            SendMessage(message);
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
@@ -397,7 +397,7 @@ public class ApiConnector : Connector, IConnector
                 await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
             }
 
-            await WriteMessageAsync(message, cancellationToken).ConfigureAwait(false);
+            await SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 

@@ -8,12 +8,12 @@ using xAPI.Errors;
 
 namespace xAPI.Sync;
 
-public class Connector : IDisposable
+public class Connector : ISender, IReceiver, IDisposable
 {
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.
     /// </summary>
-    private readonly SemaphoreSlim _writeLock = new(1, 1);
+    private readonly SemaphoreSlim _lock = new(1, 1);
 
     /// <summary>
     /// Creates new connector instance.
@@ -23,20 +23,14 @@ public class Connector : IDisposable
     }
 
     #region Events
-
-    /// <summary>
-    /// Event raised when a message is received.
-    /// </summary>
+    /// <inheritdoc/>
     public event EventHandler<MessageEventArgs>? MessageReceived;
 
-    /// <summary>
-    /// Event raised when a message is sent.
-    /// </summary>
+    /// <inheritdoc/>
     public event EventHandler<MessageEventArgs>? MessageSent;
 
     /// <inheritdoc/>
     public event EventHandler? Disconnected;
-
     #endregion Events
 
     /// <summary>
@@ -47,7 +41,7 @@ public class Connector : IDisposable
     /// <summary>
     /// Socket that handles the connection.
     /// </summary>
-    protected TcpClient ApiSocket { get; set; }
+    protected TcpClient TcpClient { get; set; }
 
     /// <summary>
     /// Stream writer (for outgoing data).
@@ -67,13 +61,10 @@ public class Connector : IDisposable
     /// <inheritdoc/>
     public bool IsConnected => _apiConnected;
 
-    /// <summary>
-    /// Writes raw message to the remote server.
-    /// </summary>
-    /// <param name="message">Message to send</param>
-    protected void WriteMessage(string message)
+    /// <inheritdoc/>
+    public void SendMessage(string message)
     {
-        _writeLock.Wait();
+        _lock.Wait();
         try
         {
             if (IsConnected)
@@ -99,18 +90,14 @@ public class Connector : IDisposable
         }
         finally
         {
-            _writeLock.Release();
+            _lock.Release();
         }
     }
 
-    /// <summary>
-    /// Writes raw message to the remote server.
-    /// </summary>
-    /// <param name="message">Message to send</param>
-    /// <param name="cancellationToken">Cancellation token to cancel the operation</param>
-    protected async Task WriteMessageAsync(string message, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
     {
-        await _writeLock.WaitAsync(cancellationToken);
+        await _lock.WaitAsync(cancellationToken);
         try
         {
             if (IsConnected)
@@ -136,15 +123,12 @@ public class Connector : IDisposable
         }
         finally
         {
-            _writeLock.Release();
+            _lock.Release();
         }
     }
 
-    /// <summary>
-    /// Reads raw message from the remote server.
-    /// </summary>
-    /// <returns>Read message</returns>
-    protected string ReadMessage()
+    /// <inheritdoc/>
+    public string ReadMessage()
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -183,11 +167,8 @@ public class Connector : IDisposable
         }
     }
 
-    /// <summary>
-    /// Reads raw message from the remote server.
-    /// </summary>
-    /// <returns>Read message</returns>
-    protected async Task<string> ReadMessageAsync(CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public async Task<string> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -235,7 +216,7 @@ public class Connector : IDisposable
         {
             StreamReader.Close();
             StreamWriter.Close();
-            ApiSocket.Close();
+            TcpClient.Close();
 
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
@@ -253,8 +234,8 @@ public class Connector : IDisposable
             {
                 StreamReader?.Dispose();
                 StreamWriter?.Dispose();
-                ApiSocket?.Dispose();
-                _writeLock?.Dispose();
+                TcpClient?.Dispose();
+                _lock?.Dispose();
             }
 
             _disposed = true;
