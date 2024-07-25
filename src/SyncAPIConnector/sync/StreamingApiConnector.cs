@@ -251,7 +251,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.Trade)
             {
-                StreamingTradeRecord tradeRecord = new StreamingTradeRecord();
+                var tradeRecord = new StreamingTradeRecord();
                 tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 TradeReceived?.Invoke(this, new(tradeRecord));
@@ -260,7 +260,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.Balance)
             {
-                StreamingBalanceRecord balanceRecord = new StreamingBalanceRecord();
+                var balanceRecord = new StreamingBalanceRecord();
                 balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 BalanceReceived?.Invoke(this, new(balanceRecord));
@@ -269,7 +269,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.TradeStatus)
             {
-                StreamingTradeStatusRecord tradeStatusRecord = new StreamingTradeStatusRecord();
+                var tradeStatusRecord = new StreamingTradeStatusRecord();
                 tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
@@ -278,7 +278,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.Profit)
             {
-                StreamingProfitRecord profitRecord = new StreamingProfitRecord();
+                var profitRecord = new StreamingProfitRecord();
                 profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 ProfitReceived?.Invoke(this, new(profitRecord));
@@ -287,7 +287,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.News)
             {
-                StreamingNewsRecord newsRecord = new StreamingNewsRecord();
+                var newsRecord = new StreamingNewsRecord();
                 newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 NewsReceived?.Invoke(this, new(newsRecord));
@@ -296,7 +296,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.KeepAlive)
             {
-                StreamingKeepAliveRecord keepAliveRecord = new StreamingKeepAliveRecord();
+                var keepAliveRecord = new StreamingKeepAliveRecord();
                 keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
@@ -305,7 +305,7 @@ public class StreamingApiConnector : Connector
             }
             else if (commandName == StreamingCommandName.Candle)
             {
-                StreamingCandleRecord candleRecord = new StreamingCandleRecord();
+                var candleRecord = new StreamingCandleRecord();
                 candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
                 CandleReceived?.Invoke(this, new(candleRecord));
@@ -333,13 +333,13 @@ public class StreamingApiConnector : Connector
     #region subscribe, unsubscribe
     public void SubscribePrice(string symbol, long? minArrivalTime = null, long? maxLevel = null)
     {
-        TickPricesSubscribe tickPricesSubscribe = new(symbol, StreamSessionId, minArrivalTime, maxLevel);
+        var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
         WriteMessage(tickPricesSubscribe.ToString());
     }
 
     public void UnsubscribePrice(string symbol)
     {
-        TickPricesStop tickPricesStop = new(symbol);
+        var tickPricesStop = new TickPricesStop(symbol);
         WriteMessage(tickPricesStop.ToString());
     }
 
@@ -361,86 +361,85 @@ public class StreamingApiConnector : Connector
 
     public void SubscribeTrades()
     {
-        TradeRecordsSubscribe tradeRecordsSubscribe = new(StreamSessionId);
+        var tradeRecordsSubscribe = new TradeRecordsSubscribe(StreamSessionId);
         WriteMessage(tradeRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTrades()
     {
-        TradeRecordsStop tradeRecordsStop = new();
+        var tradeRecordsStop = new TradeRecordsStop();
         WriteMessage(tradeRecordsStop.ToString());
     }
 
     public void SubscribeBalance()
     {
-        BalanceRecordsSubscribe balanceRecordsSubscribe = new(StreamSessionId);
+        var balanceRecordsSubscribe = new BalanceRecordsSubscribe(StreamSessionId);
         WriteMessage(balanceRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeBalance()
     {
-        BalanceRecordsStop balanceRecordsStop = new();
+        var balanceRecordsStop = new BalanceRecordsStop();
         WriteMessage(balanceRecordsStop.ToString());
     }
 
     public void SubscribeTradeStatus()
     {
-        TradeStatusRecordsSubscribe tradeStatusRecordsSubscribe = new(StreamSessionId);
+        var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(StreamSessionId);
         WriteMessage(tradeStatusRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTradeStatus()
     {
-        TradeStatusRecordsStop tradeStatusRecordsStop = new();
+        var tradeStatusRecordsStop = new TradeRecordsSubscribe(StreamSessionId);
         WriteMessage(tradeStatusRecordsStop.ToString());
     }
 
     public void SubscribeProfits()
     {
-        ProfitsSubscribe profitsSubscribe = new(StreamSessionId);
+        var profitsSubscribe = new ProfitsSubscribe(StreamSessionId);
         WriteMessage(profitsSubscribe.ToString());
     }
 
     public void UnsubscribeProfits()
     {
-        ProfitsStop profitsStop = new();
+        var profitsStop = new ProfitsStop();
         WriteMessage(profitsStop.ToString());
     }
 
     public void SubscribeNews()
     {
-        NewsSubscribe newsSubscribe = new(StreamSessionId);
+        var newsSubscribe = new NewsSubscribe(StreamSessionId);
         WriteMessage(newsSubscribe.ToString());
     }
 
     public void UnsubscribeNews()
     {
-        NewsStop newsStop = new();
+        var newsStop = new NewsStop();
         WriteMessage(newsStop.ToString());
     }
 
     public void SubscribeKeepAlive()
     {
-        KeepAliveSubscribe keepAliveSubscribe = new(StreamSessionId);
-
+        var keepAliveSubscribe = new KeepAliveSubscribe(StreamSessionId);
         WriteMessage(keepAliveSubscribe.ToString());
     }
 
     public void UnsubscribeKeepAlive()
     {
-        KeepAliveStop keepAliveStop = new();
+        var keepAliveStop = new KeepAliveStop();
         WriteMessage(keepAliveStop.ToString());
     }
 
     public void SubscribeCandles(string symbol)
     {
-        CandleRecordsSubscribe candleRecordsSubscribe = new(symbol, StreamSessionId);
+        var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, StreamSessionId);
         WriteMessage(candleRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeCandles(string symbol)
     {
-        CandleRecordsStop candleRecordsStop = new(symbol);
+        var candleRecordsStop = new CandleRecordsStop(symbol);
         WriteMessage(candleRecordsStop.ToString());
     }
 
