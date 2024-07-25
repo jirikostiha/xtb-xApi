@@ -12,51 +12,39 @@ namespace xAPI.Commands;
 
 public static class APICommandFactory
 {
+    /// <summary>
+    /// Wrappers version.
+    /// </summary>
+    public const string VERSION = "2.5.0";
+
+    /// <summary>
+    /// Maximum number of redirects (to avoid redirection loops).
+    /// </summary>
+    public const long MAX_REDIRECTS = 3;
+
     #region Command creators
 
-    public static LoginCommand CreateLoginCommand(string userId, string password, bool prettyPrint = false)
+    public static LoginCommand CreateLoginCommand(string userId, string password, string? appId = null, string? appName = null, bool prettyPrint = false)
     {
         JsonObject args = new()
         {
             { "userId", userId },
             { "password", password },
             { "type", "dotNET" },
-            { "version", ApiConnector.VERSION }
+            { "version", VERSION },
         };
+
+        if (appId != null)
+            args.Add("appId", appId);
+
+        if (appName != null)
+            args.Add("appName", appName);
 
         return new LoginCommand(args, prettyPrint);
     }
 
     public static LoginCommand CreateLoginCommand(Credentials credentials, bool prettyPrint = false)
-    {
-        JsonObject jsonObj = CreateLoginJsonObject(credentials);
-
-        return new LoginCommand(jsonObj, prettyPrint);
-    }
-
-    private static JsonObject CreateLoginJsonObject(Credentials credentials)
-    {
-        JsonObject response = [];
-        if (credentials != null)
-        {
-            response.Add("userId", credentials.Login);
-            response.Add("password", credentials.Password);
-            response.Add("type", "dotNET");
-            response.Add("version", ApiConnector.VERSION);
-
-            if (credentials.AppId != null)
-            {
-                response.Add("appId", credentials.AppId);
-            }
-
-            if (credentials.AppName != null)
-            {
-                response.Add("appName", credentials.AppName);
-            }
-        }
-
-        return response;
-    }
+        => CreateLoginCommand(credentials.Login, credentials.Password, credentials.AppId, credentials.AppName, prettyPrint);
 
     public static ChartLastCommand CreateChartLastCommand(string symbol, PERIOD_CODE period, long? start, bool prettyPrint = false)
     {
@@ -350,25 +338,20 @@ public static class APICommandFactory
         return new CommissionDefResponse(jsonObj.ToString());
     }
 
-    public static LoginResponse ExecuteLoginCommand(ApiConnector connector, string userId, string password, bool prettyPrint = false)
-    {
-        var credentials = new Credentials(userId, password);
-        var command = CreateLoginCommand(credentials, prettyPrint);
-        var jsonObj = connector.ExecuteCommand(command);
-
-        return new LoginResponse(jsonObj.ToString());
-    }
-
     public static LoginResponse ExecuteLoginCommand(ApiConnector connector, Credentials credentials, bool prettyPrint = false)
+        => ExecuteLoginCommand(connector, credentials.Login, credentials.Password, credentials.AppId, credentials.AppName, prettyPrint);
+
+    public static LoginResponse ExecuteLoginCommand(ApiConnector connector, string userId, string password, string? appId = null, string? appName = null, bool prettyPrint = false)
     {
-        var loginCommand = CreateLoginCommand(credentials, prettyPrint);
-        var loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
+        var loginCommand = CreateLoginCommand(userId, password, appId, appName, prettyPrint);
+        var jsonObj = connector.ExecuteCommand(loginCommand);
+        var loginResponse = new LoginResponse(jsonObj.ToString());
 
         var redirectCounter = 0;
 
         while (loginResponse.RedirectRecord != null)
         {
-            if (redirectCounter >= ApiConnector.MAX_REDIRECTS)
+            if (redirectCounter >= MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
             var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
@@ -385,18 +368,12 @@ public static class APICommandFactory
         return loginResponse;
     }
 
-    public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, string userId, string password, CancellationToken cancellationToken = default)
-    {
-        var credentials = new Credentials(userId, password);
-        var command = CreateLoginCommand(credentials);
-        var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
+    public static Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, Credentials credentials, CancellationToken cancellationToken = default)
+        => ExecuteLoginCommandAsync(connector, credentials.Login, credentials.Password, credentials.AppId, credentials.AppName, cancellationToken);
 
-        return new LoginResponse(jsonObj.ToString());
-    }
-
-    public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, Credentials credentials, CancellationToken cancellationToken = default)
+    public static async Task<LoginResponse> ExecuteLoginCommandAsync(ApiConnector connector, string userId, string password, string? appId = null, string? appName = null, CancellationToken cancellationToken = default)
     {
-        var loginCommand = CreateLoginCommand(credentials);
+        var loginCommand = CreateLoginCommand(userId, password, appId, appName, false);
         var jsonObj = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
         var loginResponse = new LoginResponse(jsonObj.ToString());
 
@@ -404,7 +381,7 @@ public static class APICommandFactory
 
         while (loginResponse.RedirectRecord != null)
         {
-            if (redirectCounter >= ApiConnector.MAX_REDIRECTS)
+            if (redirectCounter >= MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
             var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);

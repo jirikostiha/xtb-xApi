@@ -17,19 +17,9 @@ public class ApiConnector : Connector
     #region Settings
 
     /// <summary>
-    /// Wrappers version.
-    /// </summary>
-    public const string VERSION = "2.5.0";
-
-    /// <summary>
     /// Delay between each command to the server.
     /// </summary>
     private const long COMMAND_TIME_SPACE = 200;
-
-    /// <summary>
-    /// Maximum number of redirects (to avoid redirection loops).
-    /// </summary>
-    public const long MAX_REDIRECTS = 3;
 
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
