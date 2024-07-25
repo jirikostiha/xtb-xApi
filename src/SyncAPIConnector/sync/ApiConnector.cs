@@ -270,7 +270,7 @@ public class ApiConnector : Connector
     {
         Redirected?.Invoke(this, new(server));
 
-        if (_apiConnected)
+        if (IsConnected)
             Disconnect(true);
 
         Server = server;
@@ -286,7 +286,7 @@ public class ApiConnector : Connector
     {
         Redirected?.Invoke(this, new(server));
 
-        if (_apiConnected)
+        if (IsConnected)
             Disconnect(true);
 
         Server = server;
