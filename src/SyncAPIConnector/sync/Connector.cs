@@ -202,6 +202,8 @@ public class Connector : IDisposable
             string line;
             while ((line = await StreamReader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 result.Append(line);
 
                 // Last line is always empty
