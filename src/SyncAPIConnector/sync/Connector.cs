@@ -34,9 +34,7 @@ public class Connector : IDisposable
     /// </summary>
     public event EventHandler<MessageEventArgs>? MessageSent;
 
-    /// <summary>
-    /// Event raised when the client disconnects from the server.
-    /// </summary>
+    /// <inheritdoc/>
     public event EventHandler? Disconnected;
 
     #endregion Events
@@ -66,10 +64,7 @@ public class Connector : IDisposable
     /// </summary>
     protected volatile bool _apiConnected;
 
-    /// <summary>
-    /// Checks if socket is connected to the remote server.
-    /// </summary>
-    /// <returns>True if socket is connected, otherwise false</returns>
+    /// <inheritdoc/>
     public bool IsConnected => _apiConnected;
 
     /// <summary>
@@ -233,11 +228,8 @@ public class Connector : IDisposable
         }
     }
 
-    /// <summary>
-    /// Disconnects from the remote server.
-    /// </summary>
-    /// <param name="silent">If true then no event will be triggered (used in redirect process)</param>
-    public void Disconnect(bool silent = false)
+    /// <inheritdoc/>
+    public void Disconnect()
     {
         if (IsConnected)
         {

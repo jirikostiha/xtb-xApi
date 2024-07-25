@@ -11,11 +11,10 @@ using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using System.Security.Authentication;
 
 namespace xAPI.Sync;
 
-public class StreamingApiConnector : Connector
+public class StreamingApiConnector : Connector, IConnector
 {
     private Task? _streamingReaderTask;
 
@@ -47,9 +46,7 @@ public class StreamingApiConnector : Connector
 
     #region Events
 
-    /// <summary>
-    /// Event raised when a connection is established.
-    /// </summary>
+    /// <inheritdoc/>
     public event EventHandler<ServerEventArgs>? Connected;
 
     /// <summary>
@@ -104,9 +101,7 @@ public class StreamingApiConnector : Connector
     /// </summary>
     public string? StreamSessionId { get; set; }
 
-    /// <summary>
-    /// Connect to the streaming.
-    /// </summary>
+    /// <inheritdoc/>
     public void Connect()
     {
         if (StreamSessionId == null)
@@ -153,9 +148,7 @@ public class StreamingApiConnector : Connector
         }
     }
 
-    /// <summary>
-    /// Connect to the streaming.
-    /// </summary>
+    /// <inheritdoc/>
     public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)

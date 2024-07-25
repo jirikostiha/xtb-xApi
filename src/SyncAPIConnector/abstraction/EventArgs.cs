@@ -1,8 +1,8 @@
 using System;
-using xAPI.Commands;
 using xAPI.Records;
+using xAPI.Sync;
 
-namespace xAPI.Sync;
+namespace xAPI;
 
 public class ExceptionEventArgs(Exception exception) : EventArgs
 {

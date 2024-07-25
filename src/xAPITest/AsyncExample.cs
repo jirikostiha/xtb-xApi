@@ -42,7 +42,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Establishing connection");
         try
         {
-            await _connector.ConnectAsync(true, cancellationToken);
+            await _connector.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -64,7 +64,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Reestablishing connection");
         try
         {
-            await _connector.ConnectAsync(true, cancellationToken);
+            await _connector.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)

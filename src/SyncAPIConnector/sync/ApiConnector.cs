@@ -12,7 +12,7 @@ using xAPI.Utils;
 
 namespace xAPI.Sync;
 
-public class ApiConnector : Connector
+public class ApiConnector : Connector, IConnector
 {
     #region Settings
 
@@ -56,9 +56,7 @@ public class ApiConnector : Connector
 
     #region Events
 
-    /// <summary>
-    /// Event raised when a connection is established.
-    /// </summary>
+    /// <inheritdoc/>
     public event EventHandler<ServerEventArgs>? Connected;
 
     /// <summary>
@@ -74,6 +72,11 @@ public class ApiConnector : Connector
     #endregion Events
 
     /// <summary>
+    /// If false, no connection to backup servers will be made.
+    /// </summary>
+    public bool LookForBackups { get; set; } = true;
+
+    /// <summary>
     /// Streaming connector.
     /// </summary>
     public StreamingApiConnector? Streaming { get; private set; }
@@ -83,11 +86,8 @@ public class ApiConnector : Connector
     /// </summary>
     public string? StreamSessionId { get; }
 
-    /// <summary>
-    /// Connects to the remote server.
-    /// </summary>
-    /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
-    public void Connect(bool lookForBackups = true)
+    /// <inheritdoc/>
+    public void Connect()
     {
         if (Server == null)
             throw new APICommunicationException("No server to connect to.");
@@ -107,7 +107,7 @@ public class ApiConnector : Connector
             if (!connectionAttempted || !ApiSocket.Connected)
             {
                 ApiSocket.Close();
-                if (lookForBackups)
+                if (LookForBackups)
                 {
                     server = Servers.GetBackup(server);
                     if (server == null)
@@ -141,12 +141,8 @@ public class ApiConnector : Connector
         Streaming = new StreamingApiConnector(server);
     }
 
-    /// <summary>
-    /// Connects to the remote server.
-    /// </summary>
-    /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task ConnectAsync(bool lookForBackups = true, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (Server == null)
             throw new APICommunicationException("No server to connect to.");
@@ -181,7 +177,7 @@ public class ApiConnector : Connector
                 if (!connectionAttempted || !ApiSocket.Connected)
                 {
                     ApiSocket.Close();
-                    if (lookForBackups)
+                    if (LookForBackups)
                     {
                         server = Servers.GetBackup(server);
                         if (server == null)
@@ -199,7 +195,7 @@ public class ApiConnector : Connector
             catch
             {
                 ApiSocket.Close();
-                if (lookForBackups)
+                if (LookForBackups)
                 {
                     server = Servers.GetBackup(server);
                     if (server == null)
@@ -261,7 +257,7 @@ public class ApiConnector : Connector
         Redirected?.Invoke(this, new(server));
 
         if (IsConnected)
-            Disconnect(true);
+            Disconnect();
 
         Server = server;
         Connect();
@@ -277,10 +273,10 @@ public class ApiConnector : Connector
         Redirected?.Invoke(this, new(server));
 
         if (IsConnected)
-            Disconnect(true);
+            Disconnect();
 
         Server = server;
-        await ConnectAsync(true, cancellationToken).ConfigureAwait(false);
+        await ConnectAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
