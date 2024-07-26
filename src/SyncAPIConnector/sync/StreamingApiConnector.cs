@@ -9,6 +9,7 @@ using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace xAPI.Sync;
 
@@ -24,24 +25,25 @@ public class StreamingApiConnector : Connector
     /// <summary>
     /// Creates new StreamingAPIConnector instance based on given server data.
     /// </summary>
-    /// <param name="server">Server data</param>
-    public StreamingApiConnector(Server server)
-        :base(server)
+    /// <param name="endpoint">Target endpoint.</param>
+    public StreamingApiConnector(IPEndPoint endpoint)
+        :base(endpoint)
     {
     }
 
     /// <summary>
     /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
     /// </summary>
-    /// <param name="server">Server data</param>
+    /// <param name="endpoint">Target endpoint.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(Server server, IStreamingListener streamingListener)
-        : this(server)
+    public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener streamingListener)
+        : this(endpoint)
     {
         _streamingListener = streamingListener;
     }
 
     #region Events
+    public event EventHandler<EndpointEventArgs>? Connected;
     /// <summary>
     /// Event raised when a tick record is received.
     /// </summary>

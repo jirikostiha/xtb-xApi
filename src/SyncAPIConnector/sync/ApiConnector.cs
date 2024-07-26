@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,10 +28,11 @@ public class ApiConnector : Connector
     /// <summary>
     /// Creates new SyncAPIConnector instance based on given Server data.
     /// </summary>
-    /// <param name="server">Server data</param>
-    public ApiConnector(Server server)
-        : base(server)
+    /// <param name="endpoint">Target endpoint</param>
+    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint)
+        : base(endpoint)
     {
+        StreamingEndpoint = streamingEndpoint;
     }
 
     #region Events
@@ -46,6 +48,11 @@ public class ApiConnector : Connector
     public StreamingApiConnector? Streaming { get; private set; }
 
     /// <summary>
+    /// Streaming endpoint.
+    /// </summary>
+    public IPEndPoint StreamingEndpoint { get; private set; }
+
+    /// <summary>
     /// Stream session id (given upon login).
     /// </summary>
     public string? StreamSessionId { get; }
@@ -55,7 +62,7 @@ public class ApiConnector : Connector
     {
         base.Connect();
 
-        Streaming = new StreamingApiConnector(Server);
+        Streaming = new StreamingApiConnector(StreamingEndpoint);
     }
 
     /// <inheritdoc/>
@@ -63,7 +70,7 @@ public class ApiConnector : Connector
     {
         await base.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
-        Streaming = new StreamingApiConnector(Server);
+        Streaming = new StreamingApiConnector(StreamingEndpoint);
     }
 
     /// <summary>

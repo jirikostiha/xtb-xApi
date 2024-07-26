@@ -1,19 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace xAPI.Sync;
 
 public static class Servers
 {
+    public const int DemoMainPort = 5124;
+    public const int DemoStreamingPort = 5125;
+
+    public const int RealMainPort = 5112;
+    public const int RealStreamingPort = 5113;
+
+    public static IPAddress Address = new([81,2,190,163]);
+
     /// <summary>
     /// Demo port set.
     /// </summary>
-    private static PortSet DEMO_PORTS = new PortSet(5124, 5125);
+    private static PortSet DEMO_PORTS = new PortSet(DemoMainPort, DemoStreamingPort);
 
     /// <summary>
     /// Real port set.
     /// </summary>
-    private static PortSet REAL_PORTS = new PortSet(5112, 5113);
+    private static PortSet REAL_PORTS = new PortSet(RealMainPort, RealStreamingPort);
 
     private static List<Server>? _demoServers;
     private static List<Server>? _realServers;

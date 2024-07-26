@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
@@ -25,14 +26,14 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
     /// <summary>
     /// Creates new connector instance.
     /// </summary>
-    public Connector(Server server)
+    public Connector(IPEndPoint endpoint)
     {
-        Server = server;
+        Endpoint = endpoint;
     }
 
     #region Events
     /// <inheritdoc/>
-    public event EventHandler<ServerEventArgs>? Connected;
+    public event EventHandler<EndpointEventArgs>? Connected;
 
     /// <inheritdoc/>
     public event EventHandler<MessageEventArgs>? MessageReceived;
@@ -43,13 +44,8 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
     /// <inheritdoc/>
     public event EventHandler? Disconnected;
 
-    protected void OnConnected(Server server) => Connected?.Invoke(this, new(server));
+    protected void OnConnected(IPEndPoint endpoint) => Connected?.Invoke(this, new(endpoint));
     #endregion Events
-
-    /// <summary>
-    /// Server that the connection was established with.
-    /// </summary>
-    protected Server Server { get; init; }
 
     /// <summary>
     /// Socket that handles the connection.
@@ -72,14 +68,16 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
     public TimeSpan ConnectionTimeout { get; set; }
 
     /// <inheritdoc/>
+    public IPEndPoint Endpoint { get; init; }
+
+    public bool ShallUseSecureConnection { get; init; }
+
+    /// <inheritdoc/>
     public bool IsConnected => TcpClient.Connected;
 
     /// <inheritdoc/>
     public virtual void Connect()
     {
-        if (Server == null)
-            throw new APICommunicationException("No server to connect to.");
-
         TcpClient = new TcpClient
         {
             ReceiveTimeout = ConnectionTimeout.Milliseconds,
@@ -88,14 +86,14 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
 
         try
         {
-            TcpClient.Connect(Server.Address, Server.StreamingPort);
+            TcpClient.Connect(Endpoint);
         }
         catch (Exception ex)
         {
-            throw new APICommunicationException($"Connection to {Server.Address} failed.", ex);
+            throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (Server.IsSecure)
+        if (ShallUseSecureConnection)
         {
             EstablishSecureConnection();
         }
@@ -106,15 +104,12 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
             StreamReader = new StreamReader(ns);
         }
 
-        OnConnected(Server);
+        OnConnected(Endpoint);
     }
 
     /// <inheritdoc/>
     public virtual async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        if (Server == null)
-            throw new APICommunicationException("No server to connect to.");
-
         TcpClient = new TcpClient
         {
             ReceiveTimeout = ConnectionTimeout.Milliseconds,
@@ -123,22 +118,22 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
 
         try
         {
-            var connectTask = TcpClient.ConnectAsync(Server.Address, Server.MainPort);
+            var connectTask = TcpClient.ConnectAsync(Endpoint.Address, Endpoint.Port);
             var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
 
             var completedTask = await Task.WhenAny(connectTask, timeoutTask).ConfigureAwait(false);
 
             if (completedTask == timeoutTask)
             {
-                throw new TimeoutException($"Connection attempt to {Server.Address} timed out.");
+                throw new TimeoutException($"Connection attempt to {Endpoint} timed out.");
             }
         }
         catch (Exception ex)
         {
-            throw new APICommunicationException($"Connection to {Server.Address} failed.", ex);
+            throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (Server.IsSecure)
+        if (ShallUseSecureConnection)
         {
             await EstablishSecureConnectionAsync(cancellationToken);
         }
@@ -149,17 +144,17 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
             StreamReader = new StreamReader(ns);
         }
 
-        OnConnected(Server);
+        OnConnected(Endpoint);
     }
 
     private void EstablishSecureConnection()
     {
-        var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
         var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
 
         bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
         {
-            sslStream.AuthenticateAsClient(Server.Address, [], System.Security.Authentication.SslProtocols.None, false);
+            sslStream.AuthenticateAsClient(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
         });
 
         if (!authenticated)
@@ -172,10 +167,10 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
     //todo use token in higher .net versions
     private async Task EstablishSecureConnectionAsync(CancellationToken cancellationToken = default)
     {
-        var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
         var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
 
-        await sslStream.AuthenticateAsClientAsync(Server.Address, [], System.Security.Authentication.SslProtocols.None, false);
+        await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
 
         StreamWriter = new StreamWriter(sslStream);
         StreamReader = new StreamReader(sslStream);

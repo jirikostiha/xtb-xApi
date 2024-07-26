@@ -13,7 +13,7 @@ namespace xAPI
         /// <summary>
         /// Event raised when the client connects to the server.
         /// </summary>
-        event EventHandler<ServerEventArgs>? Connected;
+        event EventHandler<EndpointEventArgs>? Connected;
 
         /// <summary>
         /// Event raised when the client disconnects from the server.
@@ -23,7 +23,7 @@ namespace xAPI
         /// <summary>
         /// Connection endpoint.
         /// </summary>
-        //public IPEndPoint Endpoint { get; }
+        public IPEndPoint Endpoint { get; }
 
         /// <summary>
         /// Indicates whether the client is connected to the server.
