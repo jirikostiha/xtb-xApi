@@ -1,32 +1,18 @@
 using System;
-using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Commands;
 using xAPI.Errors;
-using xAPI.Utils;
 
 namespace xAPI.Sync;
 
-public class ApiConnector : Connector, IConnector
+public class ApiConnector : Connector
 {
-    #region Settings
-
     /// <summary>
     /// Delay between each command to the server.
     /// </summary>
     private const int COMMAND_TIME_SPACE = 200;
-
-    /// <summary>
-    /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
-    /// </summary>
-    private const int TIMEOUT = 5000;
-
-    #endregion Settings
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -39,42 +25,20 @@ public class ApiConnector : Connector, IConnector
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     /// <summary>
-    /// Maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
-    /// </summary>
-    private readonly int _connectionTimeout;
-
-    /// <summary>
     /// Creates new SyncAPIConnector instance based on given Server data.
     /// </summary>
     /// <param name="server">Server data</param>
-    /// <param name="connectionTimeout">Connection timeout</param>
-    public ApiConnector(Server server, int connectionTimeout = TIMEOUT)
+    public ApiConnector(Server server)
+        : base(server)
     {
-        Server = server;
-        _connectionTimeout = connectionTimeout;
     }
 
     #region Events
-
-    /// <inheritdoc/>
-    public event EventHandler<ServerEventArgs>? Connected;
-
-    /// <summary>
-    /// Event raised when a connection is redirected.
-    /// </summary>
-    public event EventHandler<ServerEventArgs>? Redirected;
-
     /// <summary>
     /// Event raised when a command is being executed.
     /// </summary>
     public event EventHandler<CommandEventArgs>? CommandExecuting;
-
     #endregion Events
-
-    /// <summary>
-    /// If false, no connection to backup servers will be made.
-    /// </summary>
-    public bool LookForBackups { get; set; } = true;
 
     /// <summary>
     /// Streaming connector.
@@ -87,196 +51,19 @@ public class ApiConnector : Connector, IConnector
     public string? StreamSessionId { get; }
 
     /// <inheritdoc/>
-    public void Connect()
+    public override void Connect()
     {
-        if (Server == null)
-            throw new APICommunicationException("No server to connect to.");
+        base.Connect();
 
-        var server = Server;
-        TcpClient = new TcpClient();
-
-        bool connectionAttempted = false;
-
-        while (!connectionAttempted || !TcpClient.Connected)
-        {
-            // Try to connect asynchronously and wait for the result
-            IAsyncResult result = TcpClient.BeginConnect(server.Address, server.MainPort, null, null);
-            connectionAttempted = result.AsyncWaitHandle.WaitOne(_connectionTimeout, true);
-
-            // If connection attempt failed (timeout) or not connected
-            if (!connectionAttempted || !TcpClient.Connected)
-            {
-                TcpClient.Close();
-                if (LookForBackups)
-                {
-                    server = Servers.GetBackup(server);
-                    if (server == null)
-                    {
-                        throw new APICommunicationException("Connection timeout.");
-                    }
-                    TcpClient = new TcpClient();
-                }
-                else
-                {
-                    throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
-                }
-            }
-        }
-
-        if (server.IsSecure)
-        {
-            EstablishSecureConnection(server);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
-
-        _apiConnected = true;
-
-        Connected?.Invoke(this, new(server));
-
-        Streaming = new StreamingApiConnector(server);
+        Streaming = new StreamingApiConnector(Server);
     }
 
     /// <inheritdoc/>
-    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        if (Server == null)
-            throw new APICommunicationException("No server to connect to.");
+        await base.ConnectAsync(cancellationToken).ConfigureAwait(false);
 
-        var server = Server;
-        TcpClient = new TcpClient
-        {
-            ReceiveTimeout = _connectionTimeout,
-            SendTimeout = _connectionTimeout
-        };
-
-        bool connectionAttempted = false;
-
-        while (!connectionAttempted || !TcpClient.Connected)
-        {
-            try
-            {
-                // Try to connect asynchronously and wait for the result
-                var connectTask = TcpClient.ConnectAsync(server.Address, server.MainPort);
-                var timeoutTask = Task.Delay(_connectionTimeout, cancellationToken);
-
-                var completedTask = await Task.WhenAny(connectTask, timeoutTask);
-
-                connectionAttempted = completedTask == connectTask && TcpClient.Connected;
-
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    TcpClient.Close();
-                    throw new OperationCanceledException(cancellationToken);
-                }
-
-                if (!connectionAttempted || !TcpClient.Connected)
-                {
-                    TcpClient.Close();
-                    if (LookForBackups)
-                    {
-                        server = Servers.GetBackup(server);
-                        if (server == null)
-                        {
-                            throw new APICommunicationException("Connection timeout.");
-                        }
-                        TcpClient = new TcpClient();
-                    }
-                    else
-                    {
-                        throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
-                    }
-                }
-            }
-            catch
-            {
-                TcpClient.Close();
-                if (LookForBackups)
-                {
-                    server = Servers.GetBackup(server);
-                    if (server == null)
-                    {
-                        throw new APICommunicationException("Connection timeout.");
-                    }
-                    TcpClient = new TcpClient();
-                }
-                else
-                {
-                    throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
-                }
-            }
-        }
-
-        if (server.IsSecure)
-        {
-            EstablishSecureConnection(server);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
-
-        _apiConnected = true;
-
-        Connected?.Invoke(this, new(server));
-
-        Streaming = new StreamingApiConnector(server);
-    }
-
-    private void EstablishSecureConnection(Server server)
-    {
-        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
-
-        //sslStream.AuthenticateAsClient(server.Address);
-
-        bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
-        {
-            sslStream.AuthenticateAsClient(server.Address, [], System.Security.Authentication.SslProtocols.None, false);
-        });
-
-        if (!authenticated)
-            throw new APICommunicationException("Error during SSL handshaking (timed out?).");
-
-        StreamWriter = new StreamWriter(sslStream);
-        StreamReader = new StreamReader(sslStream);
-    }
-
-    /// <summary>
-    /// Redirects to the given server.
-    /// </summary>
-    /// <param name="server">Server data</param>
-    public void Redirect(Server server)
-    {
-        Redirected?.Invoke(this, new(server));
-
-        if (IsConnected)
-            Disconnect();
-
-        Server = server;
-        Connect();
-    }
-
-    /// <summary>
-    /// Redirects to the given server.
-    /// </summary>
-    /// <param name="server">Server data</param>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task RedirectAsync(Server server, CancellationToken cancellationToken = default)
-    {
-        Redirected?.Invoke(this, new(server));
-
-        if (IsConnected)
-            Disconnect();
-
-        Server = server;
-        await ConnectAsync(cancellationToken).ConfigureAwait(false);
+        Streaming = new StreamingApiConnector(Server);
     }
 
     /// <summary>

@@ -396,23 +396,23 @@ public static class APICommandFactory
         var jsonObj = connector.ExecuteCommand(loginCommand);
         var loginResponse = new LoginResponse(jsonObj.ToString());
 
-        var redirectCounter = 0;
+        //var redirectCounter = 0;
 
-        while (loginResponse.RedirectRecord != null)
-        {
-            if (redirectCounter >= MAX_REDIRECTS)
-                throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
+        //while (loginResponse.RedirectRecord != null)
+        //{
+        //    if (redirectCounter >= MAX_REDIRECTS)
+        //        throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
-            var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-            connector.Redirect(newServer);
-            redirectCounter++;
-            loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
-        }
+        //    var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
+        //    connector.Redirect(newServer);
+        //    redirectCounter++;
+        //    loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
+        //}
 
-        if (loginResponse.StreamSessionId != null)
-        {
-            connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
-        }
+        //if (loginResponse.StreamSessionId != null)
+        //{
+        //    connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
+        //}
 
         return loginResponse;
     }
@@ -426,24 +426,24 @@ public static class APICommandFactory
         var jsonObj = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
         var loginResponse = new LoginResponse(jsonObj.ToString());
 
-        var redirectCounter = 0;
+        //var redirectCounter = 0;
 
-        while (loginResponse.RedirectRecord != null)
-        {
-            if (redirectCounter >= MAX_REDIRECTS)
-                throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
+        //while (loginResponse.RedirectRecord != null)
+        //{
+        //    if (redirectCounter >= MAX_REDIRECTS)
+        //        throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
-            var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-            await connector.RedirectAsync(newServer, cancellationToken).ConfigureAwait(false);
-            redirectCounter++;
-            var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
-            loginResponse = new LoginResponse(jsonObj2.ToString());
-        }
+        //    var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
+        //    await connector.RedirectAsync(newServer, cancellationToken).ConfigureAwait(false);
+        //    redirectCounter++;
+        //    var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
+        //    loginResponse = new LoginResponse(jsonObj2.ToString());
+        //}
 
-        if (loginResponse.StreamSessionId != null)
-        {
-            connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
-        }
+        //if (loginResponse.StreamSessionId != null)
+        //{
+        //    connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
+        //}
 
         return loginResponse;
     }

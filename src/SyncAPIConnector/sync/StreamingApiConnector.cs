@@ -1,10 +1,8 @@
-﻿using System.IO;
+﻿
 using System;
 using System.Net.Sockets;
 using System.Threading;
-using System.Net.Security;
 
-using xAPI.Utils;
 using xAPI.Records;
 using xAPI.Errors;
 using xAPI.Streaming;
@@ -14,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace xAPI.Sync;
 
-public class StreamingApiConnector : Connector, IConnector
+public class StreamingApiConnector : Connector
 {
     private Task? _streamingReaderTask;
 
@@ -28,9 +26,8 @@ public class StreamingApiConnector : Connector, IConnector
     /// </summary>
     /// <param name="server">Server data</param>
     public StreamingApiConnector(Server server)
+        :base(server)
     {
-        Server = server;
-        _apiConnected = false;
     }
 
     /// <summary>
@@ -45,10 +42,6 @@ public class StreamingApiConnector : Connector, IConnector
     }
 
     #region Events
-
-    /// <inheritdoc/>
-    public event EventHandler<ServerEventArgs>? Connected;
-
     /// <summary>
     /// Event raised when a tick record is received.
     /// </summary>
@@ -93,7 +86,6 @@ public class StreamingApiConnector : Connector, IConnector
     /// Event raised when read streamed message.
     /// </summary>
     public event EventHandler<ExceptionEventArgs>? StreamingErrorOccurred;
-
     #endregion
 
     /// <summary>
@@ -102,40 +94,14 @@ public class StreamingApiConnector : Connector, IConnector
     public string? StreamSessionId { get; set; }
 
     /// <inheritdoc/>
-    public void Connect()
+    public override void Connect()
     {
         if (StreamSessionId == null)
         {
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        if (IsConnected)
-        {
-            throw new APICommunicationException("Stream already connected.");
-        }
-
-        TcpClient = new TcpClient();
-        var server = Server;
-        TcpClient.Connect(server.Address, server.StreamingPort);
-
-        _apiConnected = true;
-
-        Connected?.Invoke(this, new(server));
-
-        if (server.IsSecure)
-        {
-            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
-            ssl.AuthenticateAsClient(server.Address);
-            StreamWriter = new StreamWriter(ssl);
-            StreamReader = new StreamReader(ssl);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+        base.Connect();
 
         if (_streamingReaderTask == null)
         {
@@ -149,47 +115,14 @@ public class StreamingApiConnector : Connector, IConnector
     }
 
     /// <inheritdoc/>
-    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)
         {
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        if (IsConnected)
-        {
-            throw new APICommunicationException("Stream already connected.");
-        }
-
-        TcpClient = new TcpClient();
-        var server = Server;
-        try
-        {
-            await TcpClient.ConnectAsync(server.Address, server.StreamingPort);
-        }
-        catch (OperationCanceledException)
-        {
-            throw new APICommunicationException("Connection attempt was canceled.");
-        }
-
-        _apiConnected = true;
-
-        Connected?.Invoke(this, new(server));
-
-        if (server.IsSecure)
-        {
-            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
-            await ssl.AuthenticateAsClientAsync(server.Address);
-            StreamWriter = new StreamWriter(ssl);
-            StreamReader = new StreamReader(ssl);
-        }
-        else
-        {
-            var networkStream = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(networkStream);
-            StreamReader = new StreamReader(networkStream);
-        }
+        await base.ConnectAsync(cancellationToken);
 
         if (_streamingReaderTask == null)
         {
