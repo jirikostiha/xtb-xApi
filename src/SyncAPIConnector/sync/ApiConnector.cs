@@ -235,7 +235,7 @@ public class ApiConnector : Connector
 
     private void EstablishSecureConnection(Server server)
     {
-        var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
         var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
 
         //sslStream.AuthenticateAsClient(server.Address);

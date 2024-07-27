@@ -4,8 +4,8 @@ namespace xAPI.Utils;
 
 internal abstract class CustomTag
 {
-    private static int lastTag;
-    private static int maxTag = 1000000;
+    private static int _lastTag;
+    private static int _maxTag = 1000000;
 
     private static readonly object _lock = new();
 
@@ -17,8 +17,8 @@ internal abstract class CustomTag
     {
         lock (_lock)
         {
-            lastTag = ++lastTag % maxTag;
-            return lastTag.ToString(CultureInfo.InvariantCulture);
+            _lastTag = ++_lastTag % _maxTag;
+            return _lastTag.ToString(CultureInfo.InvariantCulture);
         }
     }
 }
