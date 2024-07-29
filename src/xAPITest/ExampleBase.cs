@@ -1,11 +1,51 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 using xAPI.Responses;
+using xAPI.Sync;
 
 namespace xAPITest;
 
 public abstract class ExampleBase
 {
+    protected ExampleBase(ApiConnector connector, string user, string password, string? messageFolder = null)
+    {
+        Connector = connector;
+        Credentials = new Credentials(user, password);
+        MessageFolder = messageFolder;
+
+        if (messageFolder != null)
+        {
+            Connector.MessageReceived += Connector_MessageReceived;
+            connector.MessageSent += Connector_MessageSent;
+        }
+    }
+
+    private void Connector_MessageSent(object? sender, MessageEventArgs e)
+    {
+        if (MessageFolder != null)
+        {
+            var fileName = $"sent_{TimeProvider.System.GetUtcNow().ToString(CultureInfo.InvariantCulture)}.json";
+            File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
+        }
+    }
+
+    private void Connector_MessageReceived(object? sender, MessageEventArgs e)
+    {
+        if (MessageFolder != null)
+        {
+            var fileName = $"received_{TimeProvider.System.GetUtcNow().ToString(CultureInfo.InvariantCulture)}.json";
+            File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
+        }
+    }
+
+    protected Credentials Credentials { get; set; }
+
+    protected ApiConnector Connector { get; set; }
+
+    protected string? MessageFolder { get; set; }
+
     public bool ShallOpenTrades { get; set; }
 
     protected static void Stage(string name)

@@ -25,7 +25,7 @@ internal static class Program
         using (var apiConnector = new ApiConnector(_server))
         {
             Console.WriteLine("----Sync test---");
-            var syncExample = new SyncExample(apiConnector, _userId, _password);
+            var syncExample = new SyncExample(apiConnector, _userId, _password, @"\messages\");
             syncExample.Run();
         }
     }
