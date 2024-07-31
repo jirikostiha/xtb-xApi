@@ -12,7 +12,7 @@ public static class Servers
     public const int RealMainPort = 5112;
     public const int RealStreamingPort = 5113;
 
-    public static IPAddress Address = new([81,2,190,163]);
+    public static IPAddress Address => IPAddress.Parse("81.2.190.163");
 
     /// <summary>
     /// Demo port set.

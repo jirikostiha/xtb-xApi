@@ -440,10 +440,10 @@ public static class APICommandFactory
         //    loginResponse = new LoginResponse(jsonObj2.ToString());
         //}
 
-        //if (loginResponse.StreamSessionId != null)
-        //{
-        //    connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
-        //}
+        if (loginResponse.StreamSessionId != null)
+        {
+            connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
+        }
 
         return loginResponse;
     }

@@ -15,13 +15,13 @@ namespace xAPI
         event EventHandler<MessageEventArgs>? MessageSent;
 
         /// <summary>
-        /// Send a message to the remote server.
+        /// Send a message to the remote endpoint.
         /// </summary>
         /// <param name="message">Message to send.</param>
         void SendMessage(string message);
 
         /// <summary>
-        /// Send a message to the remote server.
+        /// Send a message to the remote endpoint.
         /// </summary>
         /// <param name="message">A message to send.</param>
         /// <param name="cancellationToken">Token to cancel operation.</param>

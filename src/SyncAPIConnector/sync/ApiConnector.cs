@@ -21,14 +21,10 @@ public class ApiConnector : Connector
     private long _lastCommandTimestamp;
 
     /// <summary>
-    /// Lock object used to synchronize access to read/write socket operations.
-    /// </summary>
-    private readonly SemaphoreSlim _lock = new(1, 1);
-
-    /// <summary>
     /// Creates new SyncAPIConnector instance based on given Server data.
     /// </summary>
     /// <param name="endpoint">Target endpoint</param>
+    /// <param name="streamingEndpoint">Streaming endpoint</param>
     public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint)
         : base(endpoint)
     {
@@ -51,11 +47,6 @@ public class ApiConnector : Connector
     /// Streaming endpoint.
     /// </summary>
     public IPEndPoint StreamingEndpoint { get; private set; }
-
-    /// <summary>
-    /// Stream session id (given upon login).
-    /// </summary>
-    public string? StreamSessionId { get; }
 
     /// <inheritdoc/>
     public override void Connect()
@@ -84,8 +75,17 @@ public class ApiConnector : Connector
         {
             var request = command.ToJSONString();
 
+            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            long interval = currentTimestamp - _lastCommandTimestamp;
+            // If interval between now and last command is less than minimum command time space - wait
+            if (interval < COMMAND_TIME_SPACE)
+            {
+                Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
+            }
+
             CommandExecuting?.Invoke(this, new(command));
-            var response = ExecuteCommand(request);
+            var response = SendMessageWaitResponse(request);
+            _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
             if (parsedResponse is null)
@@ -98,46 +98,6 @@ public class ApiConnector : Connector
         catch (Exception ex)
         {
             throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
-        }
-    }
-
-    /// <summary>
-    /// Executes given command and receives response (withholding API inter-command timeout).
-    /// </summary>
-    /// <param name="message">Command to execute</param>
-    /// <returns>Response from the server</returns>
-    public string ExecuteCommand(string message)
-    {
-        _lock.Wait();
-        try
-        {
-            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            long interval = currentTimestamp - _lastCommandTimestamp;
-
-            // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
-            {
-                Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
-            }
-
-            SendMessage(message);
-
-            _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            string response = ReadMessage();
-
-            if (string.IsNullOrEmpty(response))
-            {
-                Disconnect();
-                throw new APICommunicationException("Server not responding. Response has no value.");
-            }
-
-            return response;
-        }
-        finally
-        {
-            _lock.Release();
         }
     }
 
@@ -153,8 +113,17 @@ public class ApiConnector : Connector
         {
             var request = command.ToJSONString();
 
+            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            long interval = currentTimestamp - _lastCommandTimestamp;
+            // If interval between now and last command is less than minimum command time space - wait
+            if (interval < COMMAND_TIME_SPACE)
+            {
+                await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
+            }
+
             CommandExecuting?.Invoke(this, new(command));
-            var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
+            _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
             if (parsedResponse is null)
@@ -170,47 +139,6 @@ public class ApiConnector : Connector
         }
     }
 
-    /// <summary>
-    /// Executes given command and receives response (withholding API inter-command timeout).
-    /// </summary>
-    /// <param name="message">Command to execute</param>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    /// <returns>Response from the server</returns>
-    internal async Task<string> ExecuteCommandAsync(string message, CancellationToken cancellationToken = default)
-    {
-        await _lock.WaitAsync(cancellationToken);
-        try
-        {
-            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            long interval = currentTimestamp - _lastCommandTimestamp;
-
-            // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
-            {
-                await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
-            }
-
-            await SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
-
-            _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            string response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
-
-            if (string.IsNullOrEmpty(response))
-            {
-                Disconnect();
-                throw new APICommunicationException("Server not responding. Response has no value.");
-            }
-
-            return response;
-        }
-        finally
-        {
-            _lock.Release();
-        }
-    }
-
     private bool _disposed;
 
     protected override void Dispose(bool disposing)
@@ -220,7 +148,6 @@ public class ApiConnector : Connector
             if (disposing)
             {
                 Streaming?.Dispose();
-                _lock.Dispose();
             }
 
             base.Dispose(disposing);

@@ -43,7 +43,6 @@ public class StreamingApiConnector : Connector
     }
 
     #region Events
-    public event EventHandler<EndpointEventArgs>? Connected;
     /// <summary>
     /// Event raised when a tick record is received.
     /// </summary>
@@ -491,7 +490,7 @@ public class StreamingApiConnector : Connector
 
         if (!args.Handled)
         {
-            // If the exception was not handled, rethrow it
+            // If the exception was not handled, re-throw it
             throw new APICommunicationException("Read streaming message failed.", ex);
         }
     }

@@ -8,7 +8,16 @@ namespace xAPITest;
 
 internal static class Program
 {
-    private static Server _server = Servers.DEMO;
+    public const int DemoMainPort = 5124;
+    public const int DemoStreamingPort = 5125;
+    public const int RealMainPort = 5112;
+    public const int RealStreamingPort = 5113;
+    public static IPAddress Address => IPAddress.Parse("81.2.190.163");
+    public static IPEndPoint DemoMainEndpoint => new(Address, DemoMainPort);
+    public static IPEndPoint DemoStreamingEndpoint => new(Address, DemoStreamingPort);
+    public static IPEndPoint RealMainEndpoint => new(Address, RealMainPort);
+    public static IPEndPoint RealStreamingEndpoint => new(Address, RealStreamingPort);
+
     private static string _userId = "16401086";
     private static string _password = "8Ddddddd";
 
@@ -23,7 +32,7 @@ internal static class Program
 
     private static void RunSyncExample()
     {
-        using (var apiConnector = new ApiConnector(_server))
+        using (var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint))
         {
             Console.WriteLine("----Sync test---");
             var syncExample = new SyncExample(apiConnector, _userId, _password, @"\messages\");
@@ -33,7 +42,7 @@ internal static class Program
 
     private static void RunAsyncExample()
     {
-        using (var apiConnector = new ApiConnector(_server))
+        using (var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint))
         {
             Console.WriteLine();
             Console.WriteLine("----Async test---");

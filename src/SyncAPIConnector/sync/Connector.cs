@@ -11,7 +11,7 @@ using xAPI.Utils;
 
 namespace xAPI.Sync;
 
-public class Connector : ISender, IReceiver, IConnector, IDisposable
+public class Connector : IClient, IDisposable
 {
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
@@ -65,7 +65,7 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
     /// <summary>
     /// Maximum connection time. After that the connection attempt is immediately dropped.
     /// </summary>
-    public TimeSpan ConnectionTimeout { get; set; }
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
 
     /// <inheritdoc/>
     public IPEndPoint Endpoint { get; init; }
@@ -184,24 +184,13 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
         {
             if (IsConnected)
             {
-                try
-                {
-                    StreamWriter.WriteLine(message);
-                    StreamWriter.Flush();
-                }
-                catch (IOException ex)
-                {
-                    Disconnect();
-                    throw new APICommunicationException($"Error while sending data:'{message.Substring(0, 250)}'", ex);
-                }
+                SendMessageInternal(message);
             }
             else
             {
                 Disconnect();
                 throw new APICommunicationException("Error while sending data (socket disconnected).");
             }
-
-            MessageSent?.Invoke(this, new(message));
         }
         finally
         {
@@ -217,28 +206,47 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
         {
             if (IsConnected)
             {
-                try
-                {
-                    await StreamWriter.WriteLineAsync(message).ConfigureAwait(false);
-                    await StreamWriter.FlushAsync().ConfigureAwait(false);
-                }
-                catch (IOException ex)
-                {
-                    Disconnect();
-                    throw new APICommunicationException($"Error while sending data:'{message.Substring(0, 250)}'", ex);
-                }
+                await SendMessageInternalAsync(message, cancellationToken).ConfigureAwait(false);
             }
             else
             {
                 Disconnect();
                 throw new APICommunicationException("Error while sending the data (socket disconnected).");
             }
-
-            MessageSent?.Invoke(this, new(message));
         }
         finally
         {
             _lock.Release();
+        }
+    }
+
+    public void SendMessageInternal(string message)
+    {
+        try
+        {
+            StreamWriter.WriteLine(message);
+            StreamWriter.Flush();
+
+            MessageSent?.Invoke(this, new(message));
+        }
+        catch (IOException ex)
+        {
+            throw new APICommunicationException($"Error while sending message:'{message.Substring(0, 250)}'", ex);
+        }
+    }
+
+    public async Task SendMessageInternalAsync(string message, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await StreamWriter.WriteLineAsync(message).ConfigureAwait(false);
+            await StreamWriter.FlushAsync().ConfigureAwait(false);
+
+            MessageSent?.Invoke(this, new(message));
+        }
+        catch (IOException ex)
+        {
+            throw new APICommunicationException($"Error while sending message:'{message.Substring(0, 250)}'", ex);
         }
     }
 
@@ -323,6 +331,53 @@ public class Connector : ISender, IReceiver, IConnector, IDisposable
             throw new APICommunicationException("Disconnected from server.", ex);
         }
     }
+
+    /// <inheritdoc/>
+    public string SendMessageWaitResponse(string message)
+    {
+        _lock.Wait();
+        try
+        {
+            SendMessageInternal(message);
+            string response = ReadMessage();
+
+            if (string.IsNullOrEmpty(response))
+            {
+                Disconnect();
+                throw new APICommunicationException("Server not responding. Response has no value.");
+            }
+
+            return response;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default)
+    {
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await SendMessageInternalAsync(message, cancellationToken).ConfigureAwait(false);
+            var response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(response))
+            {
+                Disconnect();
+                throw new APICommunicationException("Server not responding. Response has no value.");
+            }
+
+            return response;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
 
     /// <inheritdoc/>
     public void Disconnect()

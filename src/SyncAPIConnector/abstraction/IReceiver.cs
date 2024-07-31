@@ -15,13 +15,13 @@ namespace xAPI
         event EventHandler<MessageEventArgs>? MessageReceived;
 
         /// <summary>
-        /// Read a message from the remote server.
+        /// Read a message from the remote endpoint.
         /// </summary>
         /// <returns>A message.</returns>
         string? ReadMessage();
 
         /// <summary>
-        /// Read a message from the remote server.
+        /// Read a message from the remote endpoint.
         /// </summary>
         /// <param name="cancellationToken">Token to cancel operation.</param>
         /// <returns>A message.</returns>
