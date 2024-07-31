@@ -8,7 +8,7 @@ namespace xAPI
     /// <summary>
     /// Remote connector interface.
     /// </summary>
-    public interface IConnector
+    public interface IConnectable
     {
         /// <summary>
         /// Event raised when the client connects to the server.

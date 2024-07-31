@@ -6,7 +6,7 @@ namespace xAPI
     /// <summary>
     /// Remote client interface.
     /// </summary>
-    public interface IClient : IConnector, ISender, IReceiver
+    public interface IClient : IConnectable, ISender, IReceiver
     {
         /// <summary>
         /// Send a message to the remote endpoint and wait for response.

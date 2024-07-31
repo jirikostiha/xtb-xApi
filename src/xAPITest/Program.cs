@@ -32,7 +32,7 @@ internal static class Program
 
     private static void RunSyncExample()
     {
-        using (var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint))
+        using (var apiConnector = new ApiConnector(DemoMainEndpoint, new StreamingApiConnector(DemoStreamingEndpoint)))
         {
             Console.WriteLine("----Sync test---");
             var syncExample = new SyncExample(apiConnector, _userId, _password, @"\messages\");
@@ -42,7 +42,7 @@ internal static class Program
 
     private static void RunAsyncExample()
     {
-        using (var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint))
+        using (var apiConnector = new ApiConnector(DemoMainEndpoint, new StreamingApiConnector(DemoStreamingEndpoint)))
         {
             Console.WriteLine();
             Console.WriteLine("----Async test---");

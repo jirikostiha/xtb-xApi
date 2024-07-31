@@ -24,11 +24,11 @@ public class ApiConnector : Connector
     /// Creates new SyncAPIConnector instance based on given Server data.
     /// </summary>
     /// <param name="endpoint">Target endpoint</param>
-    /// <param name="streamingEndpoint">Streaming endpoint</param>
-    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint)
+    /// <param name="streamingConnector">Streaming connector</param>
+    public ApiConnector(IPEndPoint endpoint, StreamingApiConnector streamingConnector)
         : base(endpoint)
     {
-        StreamingEndpoint = streamingEndpoint;
+        Streaming = streamingConnector;
     }
 
     #region Events
@@ -43,25 +43,16 @@ public class ApiConnector : Connector
     /// </summary>
     public StreamingApiConnector? Streaming { get; private set; }
 
-    /// <summary>
-    /// Streaming endpoint.
-    /// </summary>
-    public IPEndPoint StreamingEndpoint { get; private set; }
-
     /// <inheritdoc/>
     public override void Connect()
     {
         base.Connect();
-
-        Streaming = new StreamingApiConnector(StreamingEndpoint);
     }
 
     /// <inheritdoc/>
     public override async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         await base.ConnectAsync(cancellationToken).ConfigureAwait(false);
-
-        Streaming = new StreamingApiConnector(StreamingEndpoint);
     }
 
     /// <summary>
