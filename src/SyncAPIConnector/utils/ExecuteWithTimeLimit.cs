@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace xAPI.Utils;
 
-internal sealed class ExecuteWithTimeLimit
+internal static class ExecuteWithTimeLimit
 {
     public static bool Execute(TimeSpan timeSpan, Action codeBlock)
     {

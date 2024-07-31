@@ -150,9 +150,6 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
         var starting = (long?)value["starting"];
         StartingTime = starting.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(starting.Value) : null;
-
-        var starting = (long?)value["starting"];
-        StartingTime = starting.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(starting.Value) : null;
         Debug.Assert(StartingTime?.ToUnixTimeMilliseconds() == starting);
 
         var time = (long?)value["time"];

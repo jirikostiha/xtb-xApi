@@ -124,7 +124,7 @@ public class StreamingApiConnector : Connector, IConnector
 
         if (server.IsSecure)
         {
-            var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
             var ssl = new SslStream(TcpClient.GetStream(), false, callback);
             ssl.AuthenticateAsClient(server.Address);
             StreamWriter = new StreamWriter(ssl);
@@ -178,7 +178,7 @@ public class StreamingApiConnector : Connector, IConnector
 
         if (server.IsSecure)
         {
-            var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
             var ssl = new SslStream(TcpClient.GetStream(), false, callback);
             await ssl.AuthenticateAsClientAsync(server.Address);
             StreamWriter = new StreamWriter(ssl);
