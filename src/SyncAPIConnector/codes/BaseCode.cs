@@ -7,25 +7,19 @@ namespace xAPI.Codes;
 /// </summary>
 public class BaseCode
 {
-    private long code;
-
     /// <summary>
     /// Creates new base code object.
     /// </summary>
     /// <param name="code">Code represented as long value.</param>
     public BaseCode(long code)
     {
-        this.code = code;
+        Code = code;
     }
 
     /// <summary>
     /// Raw code received from the API.
     /// </summary>
-    public long Code
-    {
-        get => code;
-        set => code = value;
-    }
+    public long Code { get; set; }
 
     public static bool operator ==(BaseCode baseCode1, BaseCode baseCode2)
     {
@@ -63,6 +57,6 @@ public class BaseCode
     /// <inheritdoc/>
     public override string ToString()
     {
-        return code.ToString(CultureInfo.InvariantCulture);
+        return Code.ToString(CultureInfo.InvariantCulture);
     }
 }

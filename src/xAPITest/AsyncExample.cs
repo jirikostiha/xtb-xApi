@@ -1,23 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
 using xAPI.Commands;
+using xAPI.Records;
 using xAPI.Sync;
 
 namespace xAPITest;
 
 public sealed class AsyncExample : ExampleBase
 {
-    private readonly Credentials _credentials;
-    private readonly ApiConnector _connector;
-
-    public AsyncExample(ApiConnector connector, string user, string password)
+    public AsyncExample(ApiConnector connector, string user, string password, string? messageFolder = null)
+        : base(connector, user, password, messageFolder)
     {
-        _connector = connector;
-        _credentials = new Credentials(user, password);
     }
 
     public async Task RunAsync(CancellationToken cancellationToken)
@@ -26,10 +24,11 @@ public sealed class AsyncExample : ExampleBase
         await AuthenticationStage(cancellationToken);
         await AccountInfoStage(cancellationToken);
         await MarketDataStage(cancellationToken);
-        await TradingStage(cancellationToken);
-        await TradingHistoryStage(cancellationToken);
         await GlobalDataStage(cancellationToken);
         await StreamingSubscriptionStage(cancellationToken);
+        await TradingStage(cancellationToken);
+        await TradingStage(cancellationToken);
+        await TradingHistoryStage(cancellationToken);
     }
 
     public async Task ConnectionStage(CancellationToken cancellationToken)
@@ -39,7 +38,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Establishing connection");
         try
         {
-            await _connector.ConnectAsync(true, cancellationToken);
+            await Connector.ConnectAsync(true, cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -50,7 +49,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Dropping connection");
         try
         {
-            _connector.Disconnect();
+            Connector.Disconnect();
             Pass();
         }
         catch (Exception ex)
@@ -61,7 +60,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Reestablishing connection");
         try
         {
-            await _connector.ConnectAsync(true, cancellationToken);
+            await Connector.ConnectAsync(true, cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -72,7 +71,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Ping");
         try
         {
-            var response = await APICommandFactory.ExecutePingCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecutePingCommandAsync(Connector, cancellationToken);
             Pass(response);
         }
         catch (Exception ex)
@@ -83,7 +82,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Getting version");
         try
         {
-            var response = await APICommandFactory.ExecuteVersionCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteVersionCommandAsync(Connector, cancellationToken);
             Pass(response);
             Detail(response.Version);
         }
@@ -97,10 +96,10 @@ public sealed class AsyncExample : ExampleBase
     {
         Stage("Authentication");
 
-        Action($"Logging in as '{_credentials.Login}'");
+        Action($"Logging in as '{Credentials.Login}'");
         try
         {
-            var response = await APICommandFactory.ExecuteLoginCommandAsync(_connector, _credentials, cancellationToken);
+            var response = await APICommandFactory.ExecuteLoginCommandAsync(Connector, Credentials, cancellationToken);
             Pass(response);
             Detail(response.StreamSessionId);
         }
@@ -112,7 +111,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Logging out");
         try
         {
-            var response = await APICommandFactory.ExecuteLogoutCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteLogoutCommandAsync(Connector, cancellationToken);
             Pass(response);
         }
         catch (Exception ex)
@@ -120,11 +119,11 @@ public sealed class AsyncExample : ExampleBase
             Fail(ex);
         }
 
-        Action($"Logging in again as '{_credentials.Login}'");
+        Action($"Logging in again as '{Credentials.Login}'");
         try
         {
-            _connector.Connect();
-            var response = await APICommandFactory.ExecuteLoginCommandAsync(_connector, _credentials, cancellationToken);
+            await Connector.ConnectAsync(true, cancellationToken);
+            var response = await APICommandFactory.ExecuteLoginCommandAsync(Connector, Credentials, cancellationToken);
             Pass(response);
             Detail(response.StreamSessionId);
         }
@@ -136,7 +135,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Getting server time");
         try
         {
-            var response = await APICommandFactory.ExecuteServerTimeCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteServerTimeCommandAsync(Connector, cancellationToken);
             Pass(response);
             Detail(response.TimeString);
         }
@@ -153,7 +152,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting user data");
         try
         {
-            var response = await APICommandFactory.ExecuteCurrentUserDataCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteCurrentUserDataCommandAsync(Connector, cancellationToken);
             Pass(response);
             Detail(response.Currency);
         }
@@ -165,7 +164,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting margin level");
         try
         {
-            var response = await APICommandFactory.ExecuteMarginLevelCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteMarginLevelCommandAsync(Connector, cancellationToken);
             Pass(response);
             Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -177,7 +176,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting all symbols");
         try
         {
-            var response = await APICommandFactory.ExecuteAllSymbolsCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteAllSymbolsCommandAsync(Connector, cancellationToken);
             Pass(response);
             Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -189,7 +188,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting single symbol");
         try
         {
-            var response = await APICommandFactory.ExecuteSymbolCommandAsync(_connector, "US500", cancellationToken);
+            var response = await APICommandFactory.ExecuteSymbolCommandAsync(Connector, "US500", cancellationToken);
             Pass(response);
             Detail(response?.Symbol?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -201,7 +200,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting trading hours");
         try
         {
-            var response = await APICommandFactory.ExecuteTradingHoursCommandAsync(_connector, ["US500"], cancellationToken);
+            var response = await APICommandFactory.ExecuteTradingHoursCommandAsync(Connector, ["US500"], cancellationToken);
             Pass(response);
             Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -213,7 +212,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting tick prices");
         try
         {
-            var response = await APICommandFactory.ExecuteTickPricesCommandAsync(_connector, ["US500"], 0,
+            var response = await APICommandFactory.ExecuteTickPricesCommandAsync(Connector, ["US500"], 0,
                 TimeProvider.System.GetUtcNow().ToUnixTimeMilliseconds(), cancellationToken);
             Pass(response);
             Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -231,7 +230,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = await APICommandFactory.ExecuteChartLastCommandAsync(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartLastCommandAsync(Connector, "US500", PERIOD_CODE.PERIOD_H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(), cancellationToken);
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -244,7 +243,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(_connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(Connector, "US500", PERIOD_CODE.PERIOD_H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20).ToUnixTimeMilliseconds(),
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0,
@@ -260,7 +259,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting commissions");
         try
         {
-            var response = await APICommandFactory.ExecuteCommissionDefCommandAsync(_connector, "US500", 1, cancellationToken);
+            var response = await APICommandFactory.ExecuteCommissionDefCommandAsync(Connector, "US500", 1, cancellationToken);
             Pass(response);
             Detail(response?.Commission?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -272,7 +271,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting margin calculation");
         try
         {
-            var response = await APICommandFactory.ExecuteMarginTradeCommandAsync(_connector, "US500", 1, cancellationToken);
+            var response = await APICommandFactory.ExecuteMarginTradeCommandAsync(Connector, "US500", 1, cancellationToken);
             Pass(response);
             Detail(response?.Margin?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -284,7 +283,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting profit calculation");
         try
         {
-            var response = await APICommandFactory.ExecuteProfitCalculationCommandAsync(_connector, "US500",
+            var response = await APICommandFactory.ExecuteProfitCalculationCommandAsync(Connector, "US500",
                 1,
                 TRADE_OPERATION_CODE.BUY,
                 5000,
@@ -299,67 +298,6 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task TradingStage(CancellationToken cancellationToken)
-    {
-        Stage("Trading");
-
-        Action($"Getting all trades");
-        try
-        {
-            var response = await APICommandFactory.ExecuteTradesCommandAsync(_connector, false, cancellationToken);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-
-        Action($"Getting opened only trades");
-        try
-        {
-            var response = await APICommandFactory.ExecuteTradesCommandAsync(_connector, true, cancellationToken);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-
-        Action($"Getting trades for orders");
-        try
-        {
-            var response = await APICommandFactory.ExecuteTradeRecordsCommandAsync(_connector, [], cancellationToken);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-    }
-
-    public async Task TradingHistoryStage(CancellationToken cancellationToken)
-    {
-        Stage("Trading history");
-
-        Action($"Getting passed trades");
-        try
-        {
-            var response = await APICommandFactory.ExecuteTradesHistoryCommandAsync(_connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0,
-                cancellationToken);
-            Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
-        }
-        catch (Exception ex)
-        {
-            Fail(ex);
-        }
-    }
-
     public async Task GlobalDataStage(CancellationToken cancellationToken)
     {
         Stage("Global data");
@@ -367,7 +305,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting news");
         try
         {
-            var response = await APICommandFactory.ExecuteNewsCommandAsync(_connector,
+            var response = await APICommandFactory.ExecuteNewsCommandAsync(Connector,
                 TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
                 0,
                 cancellationToken);
@@ -382,7 +320,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting calendar events");
         try
         {
-            var response = await APICommandFactory.ExecuteCalendarCommandAsync(_connector, cancellationToken);
+            var response = await APICommandFactory.ExecuteCalendarCommandAsync(Connector, cancellationToken);
             Pass(response);
             Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -399,7 +337,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Connecting to streaming");
         try
         {
-            _connector.Streaming.Connect(cancellationToken);
+            await Connector.Streaming.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -410,7 +348,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe keep alive");
         try
         {
-            await _connector.Streaming.SubscribeKeepAliveAsync(cancellationToken);
+            await Connector.Streaming.SubscribeKeepAliveAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -421,7 +359,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe keep alive");
         try
         {
-            await _connector.Streaming.UnsubscribeKeepAliveAsync(cancellationToken);
+            await Connector.Streaming.UnsubscribeKeepAliveAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -432,7 +370,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe balance");
         try
         {
-            await _connector.Streaming.SubscribeBalanceAsync(cancellationToken);
+            await Connector.Streaming.SubscribeBalanceAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -443,7 +381,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe balance");
         try
         {
-            await _connector.Streaming.UnsubscribeBalanceAsync(cancellationToken);
+            await Connector.Streaming.UnsubscribeBalanceAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -454,7 +392,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe news");
         try
         {
-            await _connector.Streaming.SubscribeNewsAsync(cancellationToken);
+            await Connector.Streaming.SubscribeNewsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -465,7 +403,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe news");
         try
         {
-            await _connector.Streaming.UnsubscribeNewsAsync(cancellationToken);
+            await Connector.Streaming.UnsubscribeNewsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -476,7 +414,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe profits");
         try
         {
-            await _connector.Streaming.SubscribeProfitsAsync(cancellationToken);
+            await Connector.Streaming.SubscribeProfitsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -487,7 +425,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe profits");
         try
         {
-            await _connector.Streaming.UnsubscribeProfitsAsync(cancellationToken);
+            await Connector.Streaming.UnsubscribeProfitsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -498,7 +436,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe trades");
         try
         {
-            await _connector.Streaming.SubscribeTradesAsync(cancellationToken);
+            await Connector.Streaming.SubscribeTradesAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -509,7 +447,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe trades");
         try
         {
-            await _connector.Streaming.UnsubscribeTradesAsync(cancellationToken);
+            await Connector.Streaming.UnsubscribeTradesAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -520,7 +458,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe trade status");
         try
         {
-            await _connector.Streaming.SubscribeTradeStatusAsync(cancellationToken);
+            await Connector.Streaming.SubscribeTradeStatusAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -531,7 +469,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe trade status");
         try
         {
-            await _connector.Streaming.UnsubscribeTradeStatusAsync(cancellationToken);
+            await Connector.Streaming.UnsubscribeTradeStatusAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -542,7 +480,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe candles");
         try
         {
-            await _connector.Streaming.SubscribeCandlesAsync("US500", cancellationToken);
+            await Connector.Streaming.SubscribeCandlesAsync("US500", cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -553,7 +491,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe candles");
         try
         {
-            await _connector.Streaming.UnsubscribeCandlesAsync("US500", cancellationToken);
+            await Connector.Streaming.UnsubscribeCandlesAsync("US500", cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -564,7 +502,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe price");
         try
         {
-            await _connector.Streaming.SubscribePriceAsync("US500", null, null, cancellationToken);
+            await Connector.Streaming.SubscribePriceAsync("US500", null, null, cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -575,7 +513,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe price");
         try
         {
-            await _connector.Streaming.UnsubscribePriceAsync("US500", cancellationToken);
+            await Connector.Streaming.UnsubscribePriceAsync("US500", cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -586,7 +524,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe prices");
         try
         {
-            await _connector.Streaming.SubscribePricesAsync(["US500"], cancellationToken);
+            await Connector.Streaming.SubscribePricesAsync(["US500"], cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -597,8 +535,155 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe prices");
         try
         {
-            await _connector.Streaming.UnsubscribePricesAsync(["US500"], cancellationToken);
+            await Connector.Streaming.UnsubscribePricesAsync(["US500"], cancellationToken);
             Pass();
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+    }
+
+    public async Task TradingStage(CancellationToken cancellationToken)
+    {
+        Stage("Trading");
+
+        Action($"Getting all trades");
+        try
+        {
+            var response = await APICommandFactory.ExecuteTradesCommandAsync(Connector, false, cancellationToken);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        long? orderId = null;
+        if (ShallOpenTrades)
+        {
+            Action($"Opening long position.");
+            try
+            {
+                var trade = new TradeTransInfoRecord(
+                    TRADE_OPERATION_CODE.BUY,
+                    TRADE_TRANSACTION_TYPE.ORDER_OPEN,
+                    price: null,
+                    sl: null,
+                    tp: null,
+                    symbol: "US500",
+                    volume: 0.1,
+                    order: null,
+                    customComment: "opened by test example",
+                    expiration: null);
+
+                // Warning: Opening trade. Make sure you have set up demo account!
+                var response = await APICommandFactory.ExecuteTradeTransactionCommandAsync(Connector, trade, cancellationToken);
+                Pass(response);
+                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                orderId = response?.Order;
+            }
+            catch (Exception ex)
+            {
+                Fail(ex);
+            }
+        }
+
+        Action($"Getting opened only trades");
+        try
+        {
+            var response = await APICommandFactory.ExecuteTradesCommandAsync(Connector, true, cancellationToken);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        if (ShallOpenTrades)
+        {
+            Action($"Modifying position.");
+            try
+            {
+                var trade = new TradeTransInfoRecord(
+                    tradeOperation: null,
+                    transactionType: TRADE_TRANSACTION_TYPE.ORDER_MODIFY,
+                    price: null,
+                    sl: null,
+                    tp: null,
+                    symbol: "US500",
+                    volume: 0.2,
+                    order: orderId,
+                    customComment: "modified by test example",
+                    expiration: null);
+
+                // Warning: Make sure you have set up demo account!
+                var response = APICommandFactory.ExecuteTradeTransactionCommand(Connector, trade, true);
+                Pass(response);
+                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            }
+            catch (Exception ex)
+            {
+                Fail(ex);
+            }
+        }
+
+        Action($"Getting trades for orders");
+        try
+        {
+            var response = await APICommandFactory.ExecuteTradeRecordsCommandAsync(Connector, new([orderId]), cancellationToken);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
+        if (ShallOpenTrades)
+        {
+            Action($"Closing position.");
+            try
+            {
+                var trade = new TradeTransInfoRecord(
+                    tradeOperation: null,
+                    transactionType: TRADE_TRANSACTION_TYPE.ORDER_CLOSE,
+                    price: null,
+                    sl: null,
+                    tp: null,
+                    symbol: "US500",
+                    volume: null,
+                    order: orderId,
+                    customComment: "closed by test example",
+                    expiration: null);
+
+                // Warning: Make sure you have set up demo account!
+                var response = await APICommandFactory.ExecuteTradeTransactionCommandAsync(Connector, trade, cancellationToken);
+                Pass(response);
+                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            }
+            catch (Exception ex)
+            {
+                Fail(ex);
+            }
+        }
+    }
+
+    public async Task TradingHistoryStage(CancellationToken cancellationToken)
+    {
+        Stage("Trading history");
+
+        Action($"Getting passed trades");
+        try
+        {
+            var response = await APICommandFactory.ExecuteTradesHistoryCommandAsync(Connector,
+                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
+                0,
+                cancellationToken);
+            Pass(response);
+            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {

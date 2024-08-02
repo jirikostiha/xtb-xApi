@@ -192,7 +192,7 @@ public class Connector : IDisposable
     /// Reads raw message from the remote server.
     /// </summary>
     /// <returns>Read message</returns>
-    protected async Task<string> ReadMessageAsync()
+    protected async Task<string> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -202,6 +202,8 @@ public class Connector : IDisposable
             string line;
             while ((line = await StreamReader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 result.Append(line);
 
                 // Last line is always empty

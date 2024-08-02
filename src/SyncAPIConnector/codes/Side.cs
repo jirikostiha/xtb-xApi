@@ -17,7 +17,7 @@ public class Side : BaseCode
     /// </summary>
     public static readonly Side SELL = new(SELL_CODE);
 
-    public static Side FromCode(int code)
+    public static Side? FromCode(int code)
     {
         if (code == BUY_CODE)
             return BUY;

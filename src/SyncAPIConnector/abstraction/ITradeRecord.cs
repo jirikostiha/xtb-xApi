@@ -17,7 +17,7 @@ public interface ITradeRecord : ISymbol, IPosition
 
     double? Commission { get; }
 
-    string CustomComment { get; }
+    string? CustomComment { get; }
 
     int? Digits { get; }
 

@@ -2,7 +2,7 @@
 
 namespace xAPI.Utils;
 
-internal sealed class SSLHelper
+internal static class SslHelper
 {
     /// <summary>
     /// Validator that trusts all SSL certificates (all traffic is cyphered).

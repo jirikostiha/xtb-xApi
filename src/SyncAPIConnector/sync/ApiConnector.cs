@@ -17,19 +17,9 @@ public class ApiConnector : Connector
     #region Settings
 
     /// <summary>
-    /// Wrappers version.
-    /// </summary>
-    public const string VERSION = "2.5.0";
-
-    /// <summary>
     /// Delay between each command to the server.
     /// </summary>
     private const long COMMAND_TIME_SPACE = 200;
-
-    /// <summary>
-    /// Maximum number of redirects (to avoid redirection loops).
-    /// </summary>
-    public const long MAX_REDIRECTS = 3;
 
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
@@ -245,7 +235,7 @@ public class ApiConnector : Connector
 
     private void EstablishSecureConnection(Server server)
     {
-        var callback = new RemoteCertificateValidationCallback(SSLHelper.TrustAllCertificatesCallback);
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
         var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
 
         //sslStream.AuthenticateAsClient(server.Address);
@@ -270,7 +260,7 @@ public class ApiConnector : Connector
     {
         Redirected?.Invoke(this, new(server));
 
-        if (_apiConnected)
+        if (IsConnected)
             Disconnect(true);
 
         Server = server;
@@ -286,7 +276,7 @@ public class ApiConnector : Connector
     {
         Redirected?.Invoke(this, new(server));
 
-        if (_apiConnected)
+        if (IsConnected)
             Disconnect(true);
 
         Server = server;
@@ -307,9 +297,13 @@ public class ApiConnector : Connector
             CommandExecuting?.Invoke(this, new(command));
             var response = ExecuteCommand(request);
 
-            var parsedResponse = JsonNode.Parse(response).AsObject();
+            var parsedResponse = JsonNode.Parse(response);
+            if (parsedResponse is null)
+                throw new InvalidOperationException("Parsed command response is null.");
 
-            return parsedResponse;
+            var jsonObj = parsedResponse.AsObject();
+
+            return jsonObj;
         }
         catch (Exception ex)
         {
@@ -372,9 +366,13 @@ public class ApiConnector : Connector
             CommandExecuting?.Invoke(this, new(command));
             var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
 
-            var parsedResponse = JsonNode.Parse(response).AsObject();
+            var parsedResponse = JsonNode.Parse(response);
+            if (parsedResponse is null)
+                throw new InvalidOperationException("Parsed command response is null.");
 
-            return parsedResponse;
+            var jsonObj = parsedResponse.AsObject();
+
+            return jsonObj;
         }
         catch (Exception ex)
         {
@@ -407,7 +405,7 @@ public class ApiConnector : Connector
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            string response = await ReadMessageAsync().ConfigureAwait(false);
+            string response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(response))
             {
