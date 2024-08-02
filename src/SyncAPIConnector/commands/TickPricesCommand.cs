@@ -6,7 +6,7 @@ public class TickPricesCommand : BaseCommand
 {
     public const string Name = "getTickPrices";
 
-    public static readonly string[] RequiredArgs = ["symbols", "timestamp"];
+    public static readonly string[] RequiredArgs = ["level", "symbols", "timestamp"];
 
     public TickPricesCommand(JsonObject arguments, bool prettyPrint)
         : base(arguments, prettyPrint)
