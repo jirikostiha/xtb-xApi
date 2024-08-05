@@ -18,8 +18,8 @@ public abstract class ExampleBase
 
         if (messageFolder != null)
         {
-            Connector.MessageReceived += Connector_MessageReceived;
-            Connector.MessageSent += Connector_MessageSent;
+            Connector.Client.MessageReceived += Connector_MessageReceived;
+            Connector.Client.MessageSent += Connector_MessageSent;
         }
     }
 

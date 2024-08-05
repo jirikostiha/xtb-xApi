@@ -12,6 +12,7 @@ internal static class Program
     public const int DemoStreamingPort = 5125;
     public const int RealMainPort = 5112;
     public const int RealStreamingPort = 5113;
+
     public static IPAddress Address => IPAddress.Parse("81.2.190.163");
     public static IPEndPoint DemoMainEndpoint => new(Address, DemoMainPort);
     public static IPEndPoint DemoStreamingEndpoint => new(Address, DemoStreamingPort);
@@ -32,55 +33,54 @@ internal static class Program
 
     private static void RunSyncExample()
     {
-        using (var apiConnector = new ApiConnector(DemoMainEndpoint, new StreamingApiConnector(DemoStreamingEndpoint)))
-        {
-            Console.WriteLine("----Sync test---");
-            var syncExample = new SyncExample(apiConnector, _userId, _password, @"\messages\");
-            syncExample.Run();
-        }
+        var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint);
+
+        Console.WriteLine();
+        Console.WriteLine("----Sync test---");
+        var syncExample = new SyncExample(apiConnector, _userId, _password, @"\messages\");
+        syncExample.Run();
     }
 
     private static void RunAsyncExample()
     {
-        using (var apiConnector = new ApiConnector(DemoMainEndpoint, new StreamingApiConnector(DemoStreamingEndpoint)))
+        var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint);
+
+        Console.WriteLine();
+        Console.WriteLine("----Async test---");
+        Console.WriteLine("(esc) abort");
+        var asyncExample = new AsyncExample(apiConnector, _userId, _password);
+        using var tokenSource = new CancellationTokenSource();
+
+        var keyWaitTask = Task.Run(() =>
         {
-            Console.WriteLine();
-            Console.WriteLine("----Async test---");
-            Console.WriteLine("(esc) abort");
-            var asyncExample = new AsyncExample(apiConnector, _userId, _password);
-            using var tokenSource = new CancellationTokenSource();
-
-            var keyWaitTask = Task.Run(() =>
+            while (!tokenSource.Token.IsCancellationRequested)
             {
-                while (!tokenSource.Token.IsCancellationRequested)
+                if (Console.KeyAvailable)
                 {
-                    if (Console.KeyAvailable)
+                    var key = Console.ReadKey(intercept: true);
+                    if (key.Key == ConsoleKey.Escape)
                     {
-                        var key = Console.ReadKey(intercept: true);
-                        if (key.Key == ConsoleKey.Escape)
-                        {
-                            tokenSource.Cancel();
-                            Console.WriteLine("Operation aborted.");
-                            break;
-                        }
+                        tokenSource.Cancel();
+                        Console.WriteLine("Operation aborted.");
+                        break;
                     }
-                    Thread.Sleep(100);
                 }
-            });
+                Thread.Sleep(100);
+            }
+        });
 
-            try
-            {
-                asyncExample.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine("Operation was canceled.");
-            }
-            finally
-            {
-                tokenSource.Cancel();
-                keyWaitTask.Wait();
-            }
+        try
+        {
+            asyncExample.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+        }
+        finally
+        {
+            tokenSource.Cancel();
+            keyWaitTask.Wait();
         }
     }
 }

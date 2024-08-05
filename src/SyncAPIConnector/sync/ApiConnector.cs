@@ -8,7 +8,7 @@ using xAPI.Errors;
 
 namespace xAPI.Sync;
 
-public class ApiConnector : Connector
+public class ApiConnector : IConnectable
 {
     /// <summary>
     /// Delay between each command to the server.
@@ -21,22 +21,51 @@ public class ApiConnector : Connector
     private long _lastCommandTimestamp;
 
     /// <summary>
-    /// Creates new SyncAPIConnector instance based on given Server data.
+    /// Creates new instance.
     /// </summary>
-    /// <param name="endpoint">Target endpoint</param>
-    /// <param name="streamingConnector">Streaming connector</param>
-    public ApiConnector(IPEndPoint endpoint, StreamingApiConnector streamingConnector)
-        : base(endpoint)
+    /// <param name="endpoint">Endpoint for requesting data.</param>
+    /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
+    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint)
+        : this(new Connector(endpoint), new StreamingApiConnector(streamingEndpoint))
     {
+    }
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
+    /// <param name="connector">Underlaying client.</param>
+    /// <param name="streamingConnector">Streaming client.</param>
+    public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
+    {
+        Client = connector;
         Streaming = streamingConnector;
     }
 
     #region Events
+    /// <inheritdoc/>
+    public event EventHandler<EndpointEventArgs>? Connected
+    {
+        add => Client.Connected += value;
+        remove => Client.Connected -= value;
+    }
+
     /// <summary>
     /// Event raised when a command is being executed.
     /// </summary>
     public event EventHandler<CommandEventArgs>? CommandExecuting;
+
+    /// <inheritdoc/>
+    public event EventHandler? Disconnected
+    {
+        add => Client.Disconnected += value;
+        remove => Client.Disconnected -= value;
+    }
     #endregion Events
+
+    /// <summary>
+    /// Streaming connector.
+    /// </summary>
+    public IClient Client { get; private set; }
 
     /// <summary>
     /// Streaming connector.
@@ -44,15 +73,21 @@ public class ApiConnector : Connector
     public StreamingApiConnector? Streaming { get; private set; }
 
     /// <inheritdoc/>
-    public override void Connect()
+    public bool IsConnected => Client.IsConnected;
+
+    /// <inheritdoc/>
+    public IPEndPoint Endpoint => Client.Endpoint;
+
+    /// <inheritdoc/>
+    public void Connect()
     {
-        base.Connect();
+        Client.Connect();
     }
 
     /// <inheritdoc/>
-    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        await base.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        await Client.ConnectAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -75,7 +110,7 @@ public class ApiConnector : Connector
             }
 
             CommandExecuting?.Invoke(this, new(command));
-            var response = SendMessageWaitResponse(request);
+            var response = Client.SendMessageWaitResponse(request);
             _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
@@ -113,7 +148,7 @@ public class ApiConnector : Connector
             }
 
             CommandExecuting?.Invoke(this, new(command));
-            var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await Client.SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
             _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
@@ -130,25 +165,5 @@ public class ApiConnector : Connector
         }
     }
 
-    private bool _disposed;
-
-    protected override void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                Streaming?.Dispose();
-            }
-
-            base.Dispose(disposing);
-
-            _disposed = true;
-        }
-    }
-
-    ~ApiConnector()
-    {
-        Dispose(false);
-    }
+    public void Disconnect() => Client.Disconnect();
 }
