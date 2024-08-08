@@ -208,8 +208,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting tick prices");
         try
         {
-            var response = APICommandFactory.ExecuteTickPricesCommand(Connector, ["US500"],
-                TimeProvider.System.GetUtcNow());
+            var response = APICommandFactory.ExecuteTickPricesCommand(Connector, ["US500"], 0, TimeProvider.System.GetUtcNow());
             Pass(response);
             Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -226,7 +225,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = APICommandFactory.ExecuteChartLastCommand(Connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = APICommandFactory.ExecuteChartLastCommand(Connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -239,7 +238,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = APICommandFactory.ExecuteChartRangeCommand(Connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = APICommandFactory.ExecuteChartRangeCommand(Connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20),
                 TimeProvider.System.GetUtcNow().AddDays(-10),
                 0);
@@ -278,7 +277,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting profit calculation");
         try
         {
-            var response = APICommandFactory.ExecuteProfitCalculationCommand(Connector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
+            var response = APICommandFactory.ExecuteProfitCalculationCommand(Connector, "US500", 1, TRADE_OPERATION_TYPE.BUY, 5000, 5100);
             Pass(response);
             Detail(response?.Profit?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
