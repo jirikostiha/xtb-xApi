@@ -245,72 +245,80 @@ public class StreamingApiConnector : Connector
                 var tickRecord = new StreamingTickRecord();
                 tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                TickReceived?.Invoke(this, new(tickRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
+
+                TickReceived?.Invoke(this, new(tickRecord));
             }
             else if (commandName == StreamingCommandName.Trade)
             {
                 var tradeRecord = new StreamingTradeRecord();
                 tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                TradeReceived?.Invoke(this, new(tradeRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
+
+                TradeReceived?.Invoke(this, new(tradeRecord));
             }
             else if (commandName == StreamingCommandName.Balance)
             {
                 var balanceRecord = new StreamingBalanceRecord();
                 balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                BalanceReceived?.Invoke(this, new(balanceRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
+
+                BalanceReceived?.Invoke(this, new(balanceRecord));
             }
             else if (commandName == StreamingCommandName.TradeStatus)
             {
                 var tradeStatusRecord = new StreamingTradeStatusRecord();
                 tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
+
+                TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
             }
             else if (commandName == StreamingCommandName.Profit)
             {
                 var profitRecord = new StreamingProfitRecord();
                 profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                ProfitReceived?.Invoke(this, new(profitRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
+
+                ProfitReceived?.Invoke(this, new(profitRecord));
             }
             else if (commandName == StreamingCommandName.News)
             {
                 var newsRecord = new StreamingNewsRecord();
                 newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                NewsReceived?.Invoke(this, new(newsRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
+
+                NewsReceived?.Invoke(this, new(newsRecord));
             }
             else if (commandName == StreamingCommandName.KeepAlive)
             {
                 var keepAliveRecord = new StreamingKeepAliveRecord();
                 keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
+
+                KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
             }
             else if (commandName == StreamingCommandName.Candle)
             {
                 var candleRecord = new StreamingCandleRecord();
                 candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
 
-                CandleReceived?.Invoke(this, new(candleRecord));
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
+
+                CandleReceived?.Invoke(this, new(candleRecord));
             }
             else
             {
