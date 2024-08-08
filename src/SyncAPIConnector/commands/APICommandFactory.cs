@@ -154,10 +154,11 @@ public static class APICommandFactory
         return new SymbolCommand(args, prettyPrint);
     }
 
-    public static TickPricesCommand CreateTickPricesCommand(string[] symbols, DateTimeOffset? timestamp, bool prettyPrint = false)
+    public static TickPricesCommand CreateTickPricesCommand(string[] symbols, int level, DateTimeOffset? timestamp, bool prettyPrint = false)
     {
         JsonObject args = [];
         JsonArray arr = [.. symbols];
+        args.Add("level", level);
         args.Add("symbols", arr);
         args.Add("timestamp", timestamp?.ToUnixTimeMilliseconds());
 
@@ -634,10 +635,11 @@ public static class APICommandFactory
 
     public static TickPricesResponse ExecuteTickPricesCommand(ApiConnector connector,
         string[] symbols,
+        int level,
         DateTimeOffset? timestamp,
         bool prettyPrint = false)
     {
-        var command = CreateTickPricesCommand(symbols, timestamp, prettyPrint);
+        var command = CreateTickPricesCommand(symbols, level, timestamp, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
 
         return new TickPricesResponse(jsonObj.ToString());
@@ -645,10 +647,11 @@ public static class APICommandFactory
 
     public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(ApiConnector connector,
         string[] symbols,
+        int level,
         DateTimeOffset? timestamp,
         CancellationToken cancellationToken = default)
     {
-        var command = CreateTickPricesCommand(symbols, timestamp);
+        var command = CreateTickPricesCommand(symbols, level, timestamp);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
 
         return new TickPricesResponse(jsonObj.ToString());
