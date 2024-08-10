@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace xAPI;
 
 public static class GroupName
@@ -100,4 +102,30 @@ public static class GroupName
     // Other
     /// <summary>Other</summary>
     public const string Other = "Other";
+
+    /// <summary>
+    /// Enumerates all group values.
+    /// </summary>
+    /// <returns>An enumerable of all group strings.</returns>
+    public static IEnumerable<string> Enumerate()
+    {
+        yield return Major;
+        yield return Minor;
+        yield return Emergings;
+
+        foreach (var country in Country.Enumerate())
+            yield return country;
+
+        foreach (var region in Region.Enumerate())
+            yield return region;
+
+        yield return Crypto;
+        yield return ETF;
+        yield return ETFs;
+
+        foreach (var commodityGroup in CommodityGroup.Enumerate())
+            yield return commodityGroup;
+
+        yield return Other;
+    }
 }
