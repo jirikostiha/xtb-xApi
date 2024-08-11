@@ -123,7 +123,11 @@ public class Connector : IDisposable
                 try
                 {
                     await StreamWriter.WriteLineAsync(message).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+                    await StreamWriter.FlushAsync(cancellationToken).ConfigureAwait(false);
+#else
                     await StreamWriter.FlushAsync().ConfigureAwait(false);
+#endif
                 }
                 catch (IOException ex)
                 {
@@ -156,7 +160,7 @@ public class Connector : IDisposable
 
         try
         {
-            string line;
+            string? line;
             while ((line = StreamReader.ReadLine()) != null)
             {
                 result.Append(line);
@@ -199,8 +203,13 @@ public class Connector : IDisposable
 
         try
         {
-            string line;
+            string? line;
+
+#if NET8_0_OR_GREATER
+            while ((line = await StreamReader.ReadLineAsync(cancellationToken).ConfigureAwait(false)) != null)
+#else
             while ((line = await StreamReader.ReadLineAsync().ConfigureAwait(false)) != null)
+#endif
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
