@@ -4,7 +4,6 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
-using xAPI.Errors;
 using xAPI.Records;
 using xAPI.Responses;
 using xAPI.Sync;
@@ -13,15 +12,11 @@ namespace xAPI.Commands;
 
 public static class APICommandFactory
 {
-    /// <summary>
-    /// Wrappers version.
-    /// </summary>
-    public const string VERSION = "2.5.0";
+    /// <summary> Api version. </summary>
+    public const string Version = "2.5.0";
 
-    /// <summary>
-    /// Maximum number of redirects (to avoid redirection loops).
-    /// </summary>
-    public const long MAX_REDIRECTS = 3;
+    /// <summary> Application type. </summary>
+    public const string AppType = "dotNET";
 
     #region Command creators
 
@@ -31,8 +26,8 @@ public static class APICommandFactory
         {
             { "userId", userId },
             { "password", password },
-            { "type", "dotNET" },
-            { "version", VERSION },
+            { "type", AppType },
+            { "version", Version },
         };
 
         if (appId != null)
