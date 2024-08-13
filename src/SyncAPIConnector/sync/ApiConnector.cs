@@ -23,10 +23,25 @@ public class ApiConnector : IConnectable
     /// <summary>
     /// Creates new instance.
     /// </summary>
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="requestingPort">Port for requesting data.</param>
+    /// <param name="streamingPort">Port for streaming data.</param>
+    /// /// <param name="streamingListener">Streaming listener.</param>
+    public ApiConnector(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
+        : this(
+              new Connector(new IPEndPoint(IPAddress.Parse(address), requestingPort)),
+              new StreamingApiConnector(new IPEndPoint(IPAddress.Parse(address), streamingPort), streamingListener))
+    {
+    }
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
     /// <param name="endpoint">Endpoint for requesting data.</param>
     /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
-    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint)
-        : this(new Connector(endpoint), new StreamingApiConnector(streamingEndpoint))
+    /// <param name="streamingListener">Streaming listener.</param>
+    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+        : this(new Connector(endpoint), new StreamingApiConnector(streamingEndpoint, streamingListener))
     {
     }
 

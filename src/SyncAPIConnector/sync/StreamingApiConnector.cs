@@ -26,28 +26,10 @@ public class StreamingApiConnector : IConnectable
     /// Creates new instance.
     /// </summary>
     /// <param name="connector">Underlying client.</param>
-    public StreamingApiConnector(IClient connector)
+    /// <param name="streamingListener">Streaming listener.</param>
+    public StreamingApiConnector(IClient connector, IStreamingListener? streamingListener = null)
     {
         Connector = connector;
-    }
-
-    /// <summary>
-    /// Creates new instance.
-    /// </summary>
-    /// <param name="endpoint">Endpoint for streaming data.</param>
-    public StreamingApiConnector(IPEndPoint endpoint)
-        : this(new Connector(endpoint))
-    {
-    }
-
-    /// <summary>
-    /// Creates new instance.
-    /// </summary>
-    /// <param name="connector">Underlying client.</param>
-    /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(IClient connector, IStreamingListener streamingListener)
-        :this(connector)
-    {
         _streamingListener = streamingListener;
     }
 
@@ -56,7 +38,7 @@ public class StreamingApiConnector : IConnectable
     /// </summary>
     /// <param name="endpoint">Endpoint for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener streamingListener)
+    public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
         : this(new Connector(endpoint), streamingListener)
     {
     }
