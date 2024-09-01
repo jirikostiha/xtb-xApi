@@ -43,6 +43,7 @@ jobs:
         run: dotnet build "${{ env.sln-path }}" --no-restore -o "${{ env.build-dir }}"
 
       - name: Upload artifact - binaries
+        if: matrix.dotnet-version == '2.1.x'
         uses: actions/upload-artifact@v4
         with:
           name: binaries
