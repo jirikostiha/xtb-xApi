@@ -230,7 +230,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = await APICommandFactory.ExecuteChartLastCommandAsync(Connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartLastCommandAsync(Connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10), cancellationToken);
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -243,7 +243,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(Connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = await APICommandFactory.ExecuteChartRangeCommandAsync(Connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20),
                 TimeProvider.System.GetUtcNow().AddDays(-10),
                 0,
@@ -567,7 +567,7 @@ public sealed class AsyncExample : ExampleBase
             try
             {
                 var trade = new TradeTransInfoRecord(
-                    TRADE_OPERATION_CODE.BUY,
+                    TRADE_OPERATION_TYPE.BUY,
                     TRADE_TRANSACTION_TYPE.ORDER_OPEN,
                     price: null,
                     sl: null,
@@ -679,8 +679,8 @@ public sealed class AsyncExample : ExampleBase
         try
         {
             var response = await APICommandFactory.ExecuteTradesHistoryCommandAsync(Connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0,
+                TimeProvider.System.GetUtcNow().AddDays(-10),
+                default,
                 cancellationToken);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");

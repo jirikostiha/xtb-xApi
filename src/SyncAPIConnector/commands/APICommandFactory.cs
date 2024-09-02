@@ -155,7 +155,6 @@ public static class APICommandFactory
     }
 
     public static TickPricesCommand CreateTickPricesCommand(string[] symbols, int level, DateTimeOffset? timestamp, bool prettyPrint = false)
-    public static TickPricesCommand CreateTickPricesCommand(string[] symbols, int level, long? timestamp, bool prettyPrint = false)
     {
         JsonObject args = [];
         JsonArray arr = [.. symbols];
@@ -634,9 +633,9 @@ public static class APICommandFactory
         return new SymbolResponse(jsonObj.ToString());
     }
 
-    public static TickPricesResponse ExecuteTickPricesCommand(ApiConnector connector, string[] symbols, int level, long? timestamp, bool prettyPrint = false)
     public static TickPricesResponse ExecuteTickPricesCommand(ApiConnector connector,
         string[] symbols,
+        int level,
         DateTimeOffset? timestamp,
         bool prettyPrint = false)
     {
@@ -646,9 +645,9 @@ public static class APICommandFactory
         return new TickPricesResponse(jsonObj.ToString());
     }
 
-    public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(ApiConnector connector, string[] symbols, int level, long? timestamp, CancellationToken cancellationToken = default)
     public static async Task<TickPricesResponse> ExecuteTickPricesCommandAsync(ApiConnector connector,
         string[] symbols,
+        int level,
         DateTimeOffset? timestamp,
         CancellationToken cancellationToken = default)
     {

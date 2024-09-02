@@ -150,11 +150,15 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
         var starting = (long?)value["starting"];
         StartingTime = starting.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(starting.Value) : null;
+        Debug.Assert(StartingTime?.ToUnixTimeMilliseconds() == starting);
 
         var time = (long?)value["time"];
         Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
+        Debug.Assert(Time?.ToUnixTimeMilliseconds() == time);
+
 
         var expiration = (long?)value["expiration"];
         ExpirationTime = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
+        Debug.Assert(ExpirationTime?.ToUnixTimeMilliseconds() == expiration);
     }
 }

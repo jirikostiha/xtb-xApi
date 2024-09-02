@@ -226,7 +226,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting latest candles");
         try
         {
-            var response = APICommandFactory.ExecuteChartLastCommand(Connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = APICommandFactory.ExecuteChartLastCommand(Connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
@@ -239,7 +239,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = APICommandFactory.ExecuteChartRangeCommand(Connector, "US500", PERIOD_CODE.PERIOD_H1,
+            var response = APICommandFactory.ExecuteChartRangeCommand(Connector, "US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20),
                 TimeProvider.System.GetUtcNow().AddDays(-10),
                 0);
@@ -278,7 +278,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Getting profit calculation");
         try
         {
-            var response = APICommandFactory.ExecuteProfitCalculationCommand(Connector, "US500", 1, TRADE_OPERATION_CODE.BUY, 5000, 5100);
+            var response = APICommandFactory.ExecuteProfitCalculationCommand(Connector, "US500", 1, TRADE_OPERATION_TYPE.BUY, 5000, 5100);
             Pass(response);
             Detail(response?.Profit?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -556,7 +556,7 @@ public sealed class SyncExample : ExampleBase
             try
             {
                 var trade = new TradeTransInfoRecord(
-                    TRADE_OPERATION_CODE.BUY,
+                    TRADE_OPERATION_TYPE.BUY,
                     TRADE_TRANSACTION_TYPE.ORDER_OPEN,
                     price: null,
                     sl: null,
@@ -669,8 +669,8 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteTradesHistoryCommand(Connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10).ToUnixTimeMilliseconds(),
-                0);
+                TimeProvider.System.GetUtcNow().AddDays(-10),
+                default);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
