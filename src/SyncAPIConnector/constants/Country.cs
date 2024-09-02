@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+
 namespace xAPI;
 
+/// <summary>
+/// Country group values.
+/// </summary>
 public static class Country
 {
     /// <summary>United States</summary>
@@ -49,4 +54,28 @@ public static class Country
 
     /// <summary>Norway</summary>
     public const string Norway = "Norway";
+
+    /// <summary>
+    /// Enumerates all country group values.
+    /// </summary>
+    /// <returns>An enumerable of all country group strings.</returns>
+    public static IEnumerable<string> Enumerate()
+    {
+        yield return US;
+        yield return Sweden;
+        yield return UK;
+        yield return Spain;
+        yield return Germany;
+        yield return Poland;
+        yield return France;
+        yield return Belgium;
+        yield return Finland;
+        yield return Italy;
+        yield return Denmark;
+        yield return Netherlands;
+        yield return Portugal;
+        yield return CzechRep;
+        yield return Switzerland;
+        yield return Norway;
+    }
 }

@@ -27,7 +27,8 @@ public abstract class ExampleBase
     {
         if (MessageFolder != null)
         {
-            var fileName = $"sent_{TimeProvider.System.GetUtcNow().ToString(CultureInfo.InvariantCulture)}.json";
+            Directory.CreateDirectory(MessageFolder);
+            var fileName = $"sent_{TimeProvider.System.GetUtcNow().ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}.json";
             File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
         }
     }
@@ -36,7 +37,8 @@ public abstract class ExampleBase
     {
         if (MessageFolder != null)
         {
-            var fileName = $"received_{TimeProvider.System.GetUtcNow().ToString(CultureInfo.InvariantCulture)}.json";
+            Directory.CreateDirectory(MessageFolder);
+            var fileName = $"sent_{TimeProvider.System.GetUtcNow().ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}.json";
             File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
         }
     }
