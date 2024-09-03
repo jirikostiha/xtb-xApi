@@ -296,8 +296,7 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteNewsCommand(Connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10),
-                default); //todo test
+                TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -669,8 +668,7 @@ public sealed class SyncExample : ExampleBase
         try
         {
             var response = APICommandFactory.ExecuteTradesHistoryCommand(Connector,
-                TimeProvider.System.GetUtcNow().AddDays(-10),
-                default);
+                TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
