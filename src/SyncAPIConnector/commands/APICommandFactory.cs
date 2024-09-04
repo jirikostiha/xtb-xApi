@@ -114,7 +114,7 @@ public static class APICommandFactory
         JsonObject args = new()
         {
             { "start", start?.ToUnixTimeMilliseconds() },
-            { "end", end?.ToUnixTimeMilliseconds() }
+            { "end", end?.ToUnixTimeMilliseconds() ?? 0 }
         };
 
         return new NewsCommand(args, prettyPrint);
@@ -224,7 +224,7 @@ public static class APICommandFactory
         JsonObject args = new()
         {
             { "start", start?.ToUnixTimeMilliseconds() },
-            { "end", end?.ToUnixTimeMilliseconds() }
+            { "end", end?.ToUnixTimeMilliseconds() ?? 0 }
         };
 
         return new TradesHistoryCommand(args, prettyPrint);
@@ -500,7 +500,7 @@ public static class APICommandFactory
 
     public static NewsResponse ExecuteNewsCommand(ApiConnector connector,
         DateTimeOffset? start,
-        DateTimeOffset? end,
+        DateTimeOffset? end = null,
         bool prettyPrint = false)
     {
         var command = CreateNewsCommand(start, end, prettyPrint);
@@ -760,7 +760,7 @@ public static class APICommandFactory
 
     public static TradesHistoryResponse ExecuteTradesHistoryCommand(ApiConnector connector,
         DateTimeOffset? start,
-        DateTimeOffset? end,
+        DateTimeOffset? end = null,
         bool prettyPrint = false)
     {
         var command = CreateTradesHistoryCommand(start, end, prettyPrint);

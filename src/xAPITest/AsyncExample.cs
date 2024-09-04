@@ -307,7 +307,7 @@ public sealed class AsyncExample : ExampleBase
         {
             var response = await APICommandFactory.ExecuteNewsCommandAsync(Connector,
                 TimeProvider.System.GetUtcNow().AddDays(-10),
-                default, //todo test
+                default,
                 cancellationToken);
             Pass(response);
             Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
