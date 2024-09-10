@@ -8,7 +8,7 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}, profit:{Profit}, volume:{Volume}")]
 public record TradeRecord : IBaseResponseRecord, ITradeRecord
 {
-    public double? Close_price { get; set; }
+    public double? ClosePrice { get; set; }
 
     public bool? Closed { get; set; }
 
@@ -16,15 +16,15 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
 
     public double? Commission { get; set; }
 
-    public double? Commission_agent { get; set; }
+    public double? CommissionAgent { get; set; }
 
     public string? CustomComment { get; set; }
 
     public int? Digits { get; set; }
 
-    public double? Margin_rate { get; set; }
+    public double? MarginRate { get; set; }
 
-    public double? Open_price { get; set; }
+    public double? OpenPrice { get; set; }
 
     public long? Order { get; set; }
 
@@ -42,7 +42,7 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
 
     public double? Tp { get; set; }
 
-    public long? Value_date { get; set; } //?
+    public long? ValueDate { get; set; }
 
     public double? Volume { get; set; }
 
@@ -58,15 +58,15 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        Close_price = (double?)value["close_price"];
+        ClosePrice = (double?)value["close_price"];
         Closed = (bool?)value["closed"];
         Comment = (string?)value["comment"];
         Commission = (double?)value["commission"];
-        Commission_agent = (double?)value["commission_agent"];
+        CommissionAgent = (double?)value["commission_agent"];
         CustomComment = (string?)value["customComment"];
         Digits = (int?)value["digits"];
-        Margin_rate = (double?)value["margin_rate"];
-        Open_price = (double?)value["open_price"];
+        MarginRate = (double?)value["margin_rate"];
+        OpenPrice = (double?)value["open_price"];
         Order = (long?)value["order"];
         Order2 = (long?)value["order2"];
         Position = (long?)value["position"];
@@ -75,7 +75,7 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
         Storage = (double?)value["storage"];
         Symbol = (string?)value["symbol"];
         Tp = (double?)value["tp"];
-        Value_date = (long?)value["value_date"];
+        ValueDate = (long?)value["value_date"];
         Volume = (double?)value["volume"];
 
         var tradeOperationCode = (int?)value["cmd"];

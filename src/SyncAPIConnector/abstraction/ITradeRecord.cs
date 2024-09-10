@@ -5,7 +5,7 @@ namespace xAPI;
 
 public interface ITradeRecord : ISymbol, IPosition
 {
-    double? Close_price { get; }
+    double? ClosePrice { get; }
 
     DateTimeOffset? CloseTime { get; }
 
@@ -23,9 +23,9 @@ public interface ITradeRecord : ISymbol, IPosition
 
     DateTimeOffset? ExpirationTime { get; }
 
-    double? Margin_rate { get; }
+    double? MarginRate { get; }
 
-    double? Open_price { get; }
+    double? OpenPrice { get; }
 
     DateTimeOffset? OpenTime { get; }
 

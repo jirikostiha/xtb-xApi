@@ -156,7 +156,6 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
         Time = time.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(time.Value) : null;
         Debug.Assert(Time?.ToUnixTimeMilliseconds() == time);
 
-
         var expiration = (long?)value["expiration"];
         ExpirationTime = expiration.HasValue ? DateTimeOffset.FromUnixTimeMilliseconds(expiration.Value) : null;
         Debug.Assert(ExpirationTime?.ToUnixTimeMilliseconds() == expiration);
