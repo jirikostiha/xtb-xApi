@@ -41,17 +41,17 @@ public class ApiConnector : Connector
     /// <summary>
     /// Maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
     /// </summary>
-    private readonly int _connectionTimeout;
+    private readonly TimeSpan _connectionTimeout;
 
     /// <summary>
     /// Creates new SyncAPIConnector instance based on given Server data.
     /// </summary>
     /// <param name="server">Server data</param>
     /// <param name="connectionTimeout">Connection timeout</param>
-    public ApiConnector(Server server, int connectionTimeout = TIMEOUT)
+    public ApiConnector(Server server, TimeSpan connectionTimeout = default)
     {
         Server = server;
-        _connectionTimeout = connectionTimeout;
+        _connectionTimeout = (connectionTimeout != default) ? connectionTimeout : TimeSpan.FromMilliseconds(TIMEOUT);
     }
 
     #region Events
@@ -154,8 +154,8 @@ public class ApiConnector : Connector
         var server = Server;
         ApiSocket = new TcpClient
         {
-            ReceiveTimeout = _connectionTimeout,
-            SendTimeout = _connectionTimeout
+            ReceiveTimeout = _connectionTimeout.Milliseconds,
+            SendTimeout = _connectionTimeout.Milliseconds
         };
 
         bool connectionAttempted = false;
@@ -217,7 +217,7 @@ public class ApiConnector : Connector
 
         if (server.IsSecure)
         {
-            EstablishSecureConnection(server);
+            await EstablishSecureConnectionAsync(server);
         }
         else
         {
@@ -247,6 +247,18 @@ public class ApiConnector : Connector
 
         if (!authenticated)
             throw new APICommunicationException("Error during SSL handshaking (timed out?).");
+
+        StreamWriter = new StreamWriter(sslStream);
+        StreamReader = new StreamReader(sslStream);
+    }
+
+
+    private async Task EstablishSecureConnectionAsync(Server server)
+    {
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+        var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
+
+        await sslStream.AuthenticateAsClientAsync(server.Address, [], System.Security.Authentication.SslProtocols.None, false);
 
         StreamWriter = new StreamWriter(sslStream);
         StreamReader = new StreamReader(sslStream);

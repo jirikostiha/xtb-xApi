@@ -21,7 +21,7 @@ public static class APICommandFactory
     /// <summary>
     /// Maximum number of redirects (to avoid redirection loops).
     /// </summary>
-    public const long MAX_REDIRECTS = 3;
+    public const int MAX_REDIRECTS = 3;
 
     #region Command creators
 

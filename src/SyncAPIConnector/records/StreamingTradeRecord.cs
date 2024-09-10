@@ -8,7 +8,7 @@ namespace xAPI.Records;
 [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
 public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 {
-    public double? Close_price { get; set; }
+    public double? ClosePrice { get; set; }
 
     public bool? Closed { get; set; }
 
@@ -18,9 +18,9 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public string? CustomComment { get; set; }
 
-    public double? Margin_rate { get; set; }
+    public double? MarginRate { get; set; }
 
-    public double? Open_price { get; set; }
+    public double? OpenPrice { get; set; }
 
     public long? Order { get; set; }
 
@@ -56,13 +56,13 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        Close_price = (double?)value["close_price"];
+        ClosePrice = (double?)value["close_price"];
         Closed = (bool?)value["closed"];
         Comment = (string?)value["comment"];
         Commission = (double?)value["commision"];
         CustomComment = (string?)value["customComment"];
-        Margin_rate = (double?)value["margin_rate"];
-        Open_price = (double?)value["open_price"];
+        MarginRate = (double?)value["margin_rate"];
+        OpenPrice = (double?)value["open_price"];
         Order = (long?)value["order"];
         Order2 = (long?)value["order2"];
         Position = (long?)value["position"];
@@ -96,13 +96,13 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public void UpdateBy(ITradeRecord other)
     {
-        Close_price = other.Close_price;
+        ClosePrice = other.ClosePrice;
         Closed = other.Closed;
         Comment = other.Comment;
         Commission = other.Commission;
         CustomComment = other.CustomComment;
-        Margin_rate = other.Margin_rate;
-        Open_price = other.Open_price;
+        MarginRate = other.MarginRate;
+        OpenPrice = other.OpenPrice;
         Order = other.Order;
         Order2 = other.Order2;
         Position = other.Position;
@@ -120,15 +120,15 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public void UpdateBy(StreamingTradeRecord other)
     {
-        Close_price = other.Close_price;
+        ClosePrice = other.ClosePrice;
         CloseTime = other.CloseTime;
         Closed = other.Closed;
         Comment = other.Comment;
         Commission = other.Commission;
         CustomComment = other.CustomComment;
         ExpirationTime = other.ExpirationTime;
-        Margin_rate = other.Margin_rate;
-        Open_price = other.Open_price;
+        MarginRate = other.MarginRate;
+        OpenPrice = other.OpenPrice;
         OpenTime = other.OpenTime;
         Order = other.Order;
         Order2 = other.Order2;
@@ -147,15 +147,15 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public void Reset()
     {
-        Close_price = null;
+        ClosePrice = null;
         CloseTime = null;
         Closed = null;
         Comment = null;
         Commission = null;
         CustomComment = null;
         ExpirationTime = null;
-        Margin_rate = null;
-        Open_price = null;
+        MarginRate = null;
+        OpenPrice = null;
         OpenTime = null;
         Order = null;
         Order2 = null;

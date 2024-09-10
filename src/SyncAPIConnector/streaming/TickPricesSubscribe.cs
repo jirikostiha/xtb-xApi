@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System;
+using System.Text.Json.Nodes;
 
 namespace xAPI.Streaming;
 
@@ -6,7 +7,7 @@ internal sealed class TickPricesSubscribe : SubscribeCommandBase
 {
     public const string Name = "getTickPrices";
 
-    public TickPricesSubscribe(string symbol, string streamSessionId, long? minArrivalTime = null, int? maxLevel = null)
+    public TickPricesSubscribe(string symbol, string streamSessionId, DateTimeOffset? minArrivalTime = null, int? maxLevel = null)
         : base(streamSessionId)
     {
         Symbol = symbol;
@@ -18,7 +19,7 @@ internal sealed class TickPricesSubscribe : SubscribeCommandBase
 
     public string Symbol { get; }
 
-    public long? MinArrivalTime { get; }
+    public DateTimeOffset? MinArrivalTime { get; }
 
     public int? MaxLevel { get; }
 
@@ -32,7 +33,7 @@ internal sealed class TickPricesSubscribe : SubscribeCommandBase
         };
 
         if (MinArrivalTime.HasValue)
-            result.Add("minArrivalTime", MinArrivalTime);
+            result.Add("minArrivalTime", MinArrivalTime.Value.ToUnixTimeMilliseconds());
 
         if (MaxLevel.HasValue)
             result.Add("maxLevel", MaxLevel);
