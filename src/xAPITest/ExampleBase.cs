@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using xAPI;
 using xAPI.Responses;
 using xAPI.Sync;
 
@@ -9,16 +10,17 @@ namespace xAPITest;
 
 public abstract class ExampleBase
 {
-    protected ExampleBase(ApiConnector connector, string user, string password, string? messageFolder = null)
+    protected ExampleBase(XApiClient client, Server server, string user, string password, string? messageFolder = null)
     {
-        Connector = connector;
+        Client = client;
+        Server = server;
         Credentials = new Credentials(user, password);
         MessageFolder = messageFolder;
 
         if (messageFolder != null)
         {
-            Connector.MessageReceived += Connector_MessageReceived;
-            connector.MessageSent += Connector_MessageSent;
+            Client.MessageReceived += Connector_MessageReceived;
+            client.MessageSent += Connector_MessageSent;
         }
     }
 
@@ -42,9 +44,11 @@ public abstract class ExampleBase
         }
     }
 
+    protected Server Server { get; set; }
+
     protected Credentials Credentials { get; set; }
 
-    protected ApiConnector Connector { get; set; }
+    protected XApiClient Client { get; set; }
 
     protected string? MessageFolder { get; set; }
 

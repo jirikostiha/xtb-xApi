@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
@@ -34,6 +36,19 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
         add { ApiConnector.Disconnected += value; }
         remove { ApiConnector.Disconnected -= value; }
     }
+
+    public event EventHandler<MessageEventArgs>? MessageReceived
+    {
+        add { ApiConnector.MessageReceived += value; }
+        remove { ApiConnector.MessageReceived -= value; }
+    }
+
+    public event EventHandler<MessageEventArgs>? MessageSent
+    {
+        add { ApiConnector.MessageSent += value; }
+        remove { ApiConnector.MessageSent -= value; }
+    }
+
     #endregion
 
     public ApiConnector ApiConnector { get; set; }
@@ -50,6 +65,17 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
     public Task ConnectAsync(Server endpoint, CancellationToken cancellationToken = default)
     {
         ApiConnector = new ApiConnector(endpoint);
+        return Task.CompletedTask;
+    }
+
+    public void Disconnect()
+    {
+        ApiConnector.Disconnect();
+    }
+
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        ApiConnector.Disconnect();
         return Task.CompletedTask;
     }
 
@@ -84,6 +110,25 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
     public Task<CurrentUserDataResponse> GetCurrentUserDataAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteCurrentUserDataCommandAsync(ApiConnector, cancellationToken);
 
+    public CommissionDefResponse GetCommissionDef(string symbol, double? volume)
+        => APICommandFactory.ExecuteCommissionDefCommand(ApiConnector, symbol, volume);
+    public Task<CommissionDefResponse> GetCommissionDefAsync(string symbol, double? volume, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteCommissionDefCommandAsync(ApiConnector, symbol, volume, cancellationToken);
+
+    public MarginLevelResponse GetMarginLevel() => APICommandFactory.ExecuteMarginLevelCommand(ApiConnector);
+    public Task<MarginLevelResponse> GetMarginLevelAsync(CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteMarginLevelCommandAsync(ApiConnector, cancellationToken);
+
+    public MarginTradeResponse GetMarginTrade(string symbol, double? volume)
+        => APICommandFactory.ExecuteMarginTradeCommand(ApiConnector, symbol, volume);
+    public Task<MarginTradeResponse> GetMarginTradeAsync(string symbol, double? volume, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteMarginTradeCommandAsync(ApiConnector, symbol, volume, cancellationToken);
+
+    public ProfitCalculationResponse GetProfitCalculation(string symbol, double? volume, TRADE_OPERATION_TYPE tradeOperation, double? openPrice, double? closePrice)
+        => APICommandFactory.ExecuteProfitCalculationCommand(ApiConnector, symbol, volume, tradeOperation, openPrice, closePrice);
+    public Task<ProfitCalculationResponse> GetProfitCalculationAsync(string symbol, double? volume, TRADE_OPERATION_TYPE tradeOperation, double? openPrice, double? closePrice, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteProfitCalculationCommandAsync(ApiConnector, symbol, volume, tradeOperation, openPrice, closePrice, cancellationToken);
+
     public SymbolResponse GetMarketInfo(string symbol) => APICommandFactory.ExecuteSymbolCommand(ApiConnector, symbol);
     public Task<SymbolResponse> GetMarketInfoAsync(string symbol, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteSymbolCommandAsync(ApiConnector, symbol, cancellationToken);
@@ -112,8 +157,8 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 
     public ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, symbol, period, since, until, 0);
-    public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, int ticks, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, until, ticks, cancellationToken);
+    public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, until, 0, cancellationToken);
 
     public ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, int ticks)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, symbol, period, since, default, ticks);
@@ -139,11 +184,21 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
     public Task<TradeTransactionResponse> GetTradeTransactionAsync(TradeTransInfoRecord tradeTransInfoRecord, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeTransactionCommandAsync(ApiConnector, tradeTransInfoRecord, cancellationToken);
 
+    public TradeRecordsResponse GetTradeRecords(LinkedList<long?> orders)
+        => APICommandFactory.ExecuteTradeRecordsCommand(ApiConnector, orders);
+    public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orders, cancellationToken);
+
+    public TradesHistoryResponse GetTradesHistory(DateTimeOffset? start, DateTimeOffset? end = null)
+        => APICommandFactory.ExecuteTradesHistoryCommand(ApiConnector, start, end);
+    public Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? start, DateTimeOffset? end = null, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteTradesHistoryCommandAsync(ApiConnector, start, end, cancellationToken);
+
     public CalendarResponse GetCalendar() => APICommandFactory.ExecuteCalendarCommand(ApiConnector);
     public Task<CalendarResponse> GetCalendarAsync(CancellationToken cancellationToken = default)
          => APICommandFactory.ExecuteCalendarCommandAsync(ApiConnector, cancellationToken);
 
-    public NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until)
+    public NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until = null)
         => APICommandFactory.ExecuteNewsCommand(ApiConnector, since, until);
     public Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteNewsCommandAsync(ApiConnector, since, until, cancellationToken);
