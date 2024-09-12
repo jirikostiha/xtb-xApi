@@ -11,7 +11,6 @@ using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using System.Security.Authentication;
 
 namespace xAPI.Sync;
 
