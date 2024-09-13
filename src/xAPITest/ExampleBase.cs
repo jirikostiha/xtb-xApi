@@ -10,10 +10,9 @@ namespace xAPITest;
 
 public abstract class ExampleBase
 {
-    protected ExampleBase(XApiClient client, Server server, string user, string password, string? messageFolder = null)
+    protected ExampleBase(XApiClient client, string user, string password, string? messageFolder = null)
     {
         Client = client;
-        Server = server;
         Credentials = new Credentials(user, password);
         MessageFolder = messageFolder;
 
@@ -43,8 +42,6 @@ public abstract class ExampleBase
             File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
         }
     }
-
-    protected Server Server { get; set; }
 
     protected Credentials Credentials { get; set; }
 

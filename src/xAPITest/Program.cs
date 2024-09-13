@@ -9,8 +9,8 @@ namespace xAPITest;
 internal static class Program
 {
     private static Server _server = Servers.DEMO;
-    private static string _userId = "16401086";
-    private static string _password = "8Ddddddd";
+    private static string _userId = "16697884";
+    private static string _password = "xoh11724";
 
     private static void Main(string[] args)
     {
@@ -23,22 +23,22 @@ internal static class Program
 
     private static void RunSyncExample()
     {
-        using (var client = new XApiClient())
+        using (var client = new XApiClient(_server))
         {
             Console.WriteLine("----Sync test---");
-            var syncExample = new SyncExample(client, _server, _userId, _password, @"\messages\");
+            var syncExample = new SyncExample(client, _userId, _password, @"\messages\");
             syncExample.Run();
         }
     }
 
     private static void RunAsyncExample()
     {
-        using (var apiConnector = new XApiClient())
+        using (var apiConnector = new XApiClient(_server))
         {
             Console.WriteLine();
             Console.WriteLine("----Async test---");
             Console.WriteLine("(esc) abort");
-            var asyncExample = new AsyncExample(apiConnector, _server, _userId, _password);
+            var asyncExample = new AsyncExample(apiConnector, _userId, _password);
             using var tokenSource = new CancellationTokenSource();
 
             var keyWaitTask = Task.Run(() =>

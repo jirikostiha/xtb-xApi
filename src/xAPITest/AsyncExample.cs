@@ -12,8 +12,8 @@ namespace xAPITest;
 
 public sealed class AsyncExample : ExampleBase
 {
-    public AsyncExample(XApiClient client, Server server, string user, string password, string? messageFolder = null)
-        : base(client, server, user, password, messageFolder)
+    public AsyncExample(XApiClient client, string user, string password, string? messageFolder = null)
+        : base(client, user, password, messageFolder)
     {
     }
 
@@ -37,7 +37,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Establishing connection");
         try
         {
-            await Client.ConnectAsync(Server, cancellationToken);
+            await Client.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -59,7 +59,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Reestablishing connection");
         try
         {
-            await Client.ConnectAsync(Server, cancellationToken);
+            await Client.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -121,7 +121,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Logging in again as '{Credentials.Login}'");
         try
         {
-            await Client.ConnectAsync(Server, cancellationToken);
+            await Client.ConnectAsync(cancellationToken);
             var response = await Client.LoginAsync(Credentials, cancellationToken);
             Pass(response);
             Detail(response.StreamSessionId);

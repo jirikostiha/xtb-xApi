@@ -22,7 +22,7 @@ public interface IXApiClientBase
 
 public interface IXApiClientAsync : IXApiClientBase
 {
-    Task ConnectAsync(Server endpoint, CancellationToken cancellationToken = default);
+    Task ConnectAsync(CancellationToken cancellationToken = default);
 
     Task DisconnectAsync(CancellationToken cancellationToken = default);
 
@@ -81,7 +81,7 @@ public interface IXApiClientAsync : IXApiClientBase
 
 public interface IXApiClientSync : IXApiClientBase
 {
-    void Connect(Server endpoint);
+    void Connect();
 
     void Disconnect();
 

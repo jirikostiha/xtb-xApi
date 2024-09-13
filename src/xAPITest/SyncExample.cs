@@ -11,8 +11,8 @@ namespace xAPITest;
 
 public sealed class SyncExample : ExampleBase
 {
-    public SyncExample(XApiClient client, Server server, string user, string password, string? messageFolder = null)
-     : base(client, server, user, password, messageFolder)
+    public SyncExample(XApiClient client, string user, string password, string? messageFolder = null)
+     : base(client, user, password, messageFolder)
     {
     }
 
@@ -36,7 +36,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Establishing connection");
         try
         {
-            Client.Connect(Server);
+            Client.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -58,7 +58,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Reestablishing connection");
         try
         {
-            Client.Connect(Server);
+            Client.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -120,7 +120,7 @@ public sealed class SyncExample : ExampleBase
         Action($"Logging in again as '{Credentials.Login}'");
         try
         {
-            Client.Connect(Server);
+            Client.Connect();
             var response = Client.Login(Credentials);
             Pass(response);
             Detail(response.StreamSessionId);

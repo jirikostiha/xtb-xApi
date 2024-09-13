@@ -18,6 +18,11 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 {
     private Credentials? _credentials;
 
+    public XApiClient(Server endpoint)
+    {
+        ApiConnector = new ApiConnector(endpoint);
+    }
+
     #region Events
     public event EventHandler<ServerEventArgs>? Connected
     {
@@ -53,19 +58,18 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 
     public ApiConnector ApiConnector { get; set; }
 
-    public StreamingApiConnector? Streaming => ApiConnector?.Streaming;
+    public StreamingApiConnector? Streaming => ApiConnector.Streaming;
 
     public string AccountId => _credentials?.Login ?? string.Empty;
 
-    public void Connect(Server endpoint)
+    public void Connect()
     {
-        ApiConnector = new ApiConnector(endpoint);
+        ApiConnector.Connect();
     }
 
-    public Task ConnectAsync(Server endpoint, CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        ApiConnector = new ApiConnector(endpoint);
-        return Task.CompletedTask;
+        await ApiConnector.ConnectAsync(true, cancellationToken);
     }
 
     public void Disconnect()
