@@ -1,4 +1,4 @@
-namespace xAPI.Commands;
+namespace XApi.Commands;
 
 public class AllSymbolsCommand : BaseCommand
 {

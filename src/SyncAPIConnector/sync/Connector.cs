@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Utils;
 
-namespace xAPI;
+namespace XApi;
 
 public class Connector : IClient, IDisposable
 {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using xAPI;
 using xAPI.Responses;
 
-namespace xAPITest;
+namespace XApiTest;
 
 public abstract class ExampleBase
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Nodes;
 
-namespace xAPI.Streaming;
+namespace XApi.Streaming;
 
 internal sealed class TickPricesSubscribe : SubscribeCommandBase
 {

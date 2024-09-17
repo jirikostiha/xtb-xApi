@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 [DebuggerDisplay("{Time}")]
 public record StreamingKeepAliveRecord : IBaseResponseRecord

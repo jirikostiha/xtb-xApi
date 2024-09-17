@@ -1,6 +1,6 @@
 using xAPI.Codes;
 
-namespace xAPI;
+namespace XApi;
 
 public static class TradeRecordExtensions
 {

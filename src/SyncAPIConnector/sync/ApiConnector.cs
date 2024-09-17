@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Commands;
 
-namespace xAPI;
+namespace XApi;
 
 public class ApiConnector : IConnectable
 {

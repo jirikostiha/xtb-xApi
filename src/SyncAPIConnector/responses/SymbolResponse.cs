@@ -1,6 +1,6 @@
 using xAPI.Records;
 
-namespace xAPI.Responses;
+namespace XApi.Responses;
 
 public class SymbolResponse : BaseResponse
 {

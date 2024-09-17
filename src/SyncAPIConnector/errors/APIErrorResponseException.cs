@@ -1,6 +1,6 @@
 using System;
 
-namespace xAPI;
+namespace XApi;
 
 public class APIErrorResponseException : Exception
 {

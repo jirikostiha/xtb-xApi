@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Text.Json.Nodes;
 using xAPI.Codes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
 public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick

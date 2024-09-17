@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace xAPI.Codes;
+namespace XApi.Codes;
 
 public class TRADE_OPERATION_TYPE : BaseCode
 {

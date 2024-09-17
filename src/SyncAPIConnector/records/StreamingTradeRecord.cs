@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Text.Json.Nodes;
 using xAPI.Codes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
 public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord

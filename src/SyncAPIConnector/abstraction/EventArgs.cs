@@ -3,7 +3,7 @@ using System.Net;
 using xAPI.Records;
 using xAPI.Sync;
 
-namespace xAPI;
+namespace XApi;
 
 public class ExceptionEventArgs(Exception exception) : EventArgs
 {

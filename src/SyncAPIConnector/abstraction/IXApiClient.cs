@@ -6,7 +6,7 @@ using xAPI.Codes;
 using xAPI.Records;
 using xAPI.Responses;
 
-namespace xAPI;
+namespace XApi;
 
 public interface IXApiClientBase
 {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using xAPI.Commands;
 
-namespace xAPI.Streaming;
+namespace XApi.Streaming;
 
 internal sealed class TradeStatusRecordsStop : ICommand
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace xAPI;
+namespace XApi;
 
 public static class CategoryName
 {

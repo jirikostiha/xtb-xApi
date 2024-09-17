@@ -1,7 +1,7 @@
 ﻿using System;
 using xAPI.Codes;
 
-namespace xAPI;
+namespace XApi;
 
 public interface ITradeRecord : ISymbol, IPosition
 {

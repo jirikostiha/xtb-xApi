@@ -1,6 +1,6 @@
 ﻿using xAPI.Commands;
 
-namespace xAPI.Streaming;
+namespace XApi.Streaming;
 
 internal abstract class SubscribeCommandBase : ICommand
 {

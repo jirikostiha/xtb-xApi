@@ -1,4 +1,4 @@
-﻿namespace xAPI.Streaming;
+﻿namespace XApi.Streaming;
 
 public static class StreamingCommandName
 {

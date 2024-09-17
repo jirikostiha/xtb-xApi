@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace xAPI.Commands;
+namespace XApi.Commands;
 
 public class NewsCommand : BaseCommand
 {

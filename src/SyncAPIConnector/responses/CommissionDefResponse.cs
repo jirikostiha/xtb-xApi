@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace xAPI.Responses;
+namespace XApi.Responses;
 
 public class CommissionDefResponse : BaseResponse
 {

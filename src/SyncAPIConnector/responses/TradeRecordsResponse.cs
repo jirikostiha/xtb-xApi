@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses;
+namespace XApi.Responses;
 
 [DebuggerDisplay("trades:{TradeRecords.Count}")]
 public class TradeRecordsResponse : BaseResponse

@@ -2,7 +2,7 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace xAPI.Utils;
+namespace XApi.Utils;
 
 internal static class SslHelper
 {

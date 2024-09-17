@@ -1,4 +1,4 @@
-namespace xAPI.Responses;
+namespace XApi.Responses;
 
 public class LogoutResponse : BaseResponse
 {
