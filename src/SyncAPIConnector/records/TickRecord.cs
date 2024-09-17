@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
 public record TickRecord : IBaseResponseRecord, ITickRecord

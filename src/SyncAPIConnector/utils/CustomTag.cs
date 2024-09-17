@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace xAPI.Utils;
+namespace XApi.Utils;
 
 internal abstract class CustomTag
 {

@@ -12,7 +12,7 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Net;
 
-namespace xAPI;
+namespace XApi;
 
 public class StreamingApiConnector : Connector
 {

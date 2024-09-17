@@ -8,7 +8,7 @@ using xAPI.Codes;
 using xAPI.Records;
 using xAPI.Responses;
 
-namespace xAPI.Commands;
+namespace XApi.Commands;
 
 public static class APICommandFactory
 {

@@ -5,7 +5,7 @@ using xAPI;
 using xAPI.Codes;
 using xAPI.Records;
 
-namespace xAPITest;
+namespace XApiTest;
 
 public sealed class SyncExample : ExampleBase
 {

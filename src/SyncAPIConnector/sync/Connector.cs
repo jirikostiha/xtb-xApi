@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace xAPI;
+namespace XApi;
 
 public class Connector : IDisposable
 {

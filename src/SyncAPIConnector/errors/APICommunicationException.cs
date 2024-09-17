@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace xAPI;
+namespace XApi;
 
 [Serializable]
 public class APICommunicationException : Exception

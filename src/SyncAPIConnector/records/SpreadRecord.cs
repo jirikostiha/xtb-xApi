@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 [DebuggerDisplay("{Symbol}, value:{Value}")]
 public record SpreadRecord : IBaseResponseRecord, ISymbol

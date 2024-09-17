@@ -8,7 +8,7 @@ using xAPI.Commands;
 using xAPI.Records;
 using xAPI.Responses;
 
-namespace xAPI;
+namespace XApi;
 
 /// <summary>
 /// Xtb xapi client.

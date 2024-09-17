@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using xAPI;
 
-namespace xAPITest;
+namespace XApiTest;
 
 internal static class Program
 {

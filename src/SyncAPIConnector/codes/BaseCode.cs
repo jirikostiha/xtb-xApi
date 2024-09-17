@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace xAPI.Codes;
+namespace XApi.Codes;
 
 /// <summary>
 /// Base class for all xAPI codes.

@@ -1,4 +1,4 @@
-namespace xAPI;
+namespace XApi;
 
 public class ERR_CODE
 {

@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using xAPI.Records;
 
-namespace xAPI;
+namespace XApi;
 
 public class ExceptionEventArgs(Exception exception) : EventArgs
 {

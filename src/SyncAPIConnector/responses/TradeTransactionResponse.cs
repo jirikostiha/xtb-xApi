@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace xAPI.Responses;
+namespace XApi.Responses;
 
 [DebuggerDisplay("order:{Order}")]
 public class TradeTransactionResponse : BaseResponse

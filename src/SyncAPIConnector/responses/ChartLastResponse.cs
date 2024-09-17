@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.Json.Nodes;
 using xAPI.Records;
 
-namespace xAPI.Responses;
+namespace XApi.Responses;
 
 public class ChartLastResponse : BaseResponse
 {

@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace xAPI.Codes;
+namespace XApi.Codes;
 
 public class STREAMING_TRADE_TYPE : BaseCode
 {

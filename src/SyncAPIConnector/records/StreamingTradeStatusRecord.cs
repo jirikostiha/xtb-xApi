@@ -2,7 +2,7 @@
 using System.Text.Json.Nodes;
 using xAPI.Codes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 [DebuggerDisplay("o:{Order}, price:{Price}")]
 public record StreamingTradeStatusRecord : IBaseResponseRecord

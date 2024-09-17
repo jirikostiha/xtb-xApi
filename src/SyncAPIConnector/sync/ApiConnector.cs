@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using xAPI.Commands;
 using xAPI.Utils;
 
-namespace xAPI;
+namespace XApi;
 
 public class ApiConnector : Connector
 {

@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace xAPI.Records;
+namespace XApi.Records;
 
 using System;
 using System.Diagnostics;
