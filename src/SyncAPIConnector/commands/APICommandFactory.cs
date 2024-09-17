@@ -13,10 +13,11 @@ namespace xAPI.Commands;
 
 public static class APICommandFactory
 {
-    /// <summary>
-    /// Wrappers version.
-    /// </summary>
-    public const string VERSION = "2.5.0";
+    /// <summary> Api version. </summary>
+    public const string Version = "2.5.0";
+
+    /// <summary> Application type. </summary>
+    public const string AppType = "dotNET";
 
     /// <summary>
     /// Maximum number of redirects (to avoid redirection loops).
@@ -31,8 +32,8 @@ public static class APICommandFactory
         {
             { "userId", userId },
             { "password", password },
-            { "type", "dotNET" },
-            { "version", VERSION },
+            { "type", AppType },
+            { "version", Version },
         };
 
         if (appId != null)
