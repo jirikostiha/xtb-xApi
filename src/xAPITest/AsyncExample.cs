@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using xAPI;
 using xAPI.Codes;
 using xAPI.Records;
-using xAPI.Sync;
 
 namespace xAPITest;
 

@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using xAPI.Records;
-using xAPI.Sync;
 
 namespace xAPI;
 

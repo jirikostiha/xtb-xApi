@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading.Tasks;
 using xAPI;
 using xAPI.Responses;
-using xAPI.Sync;
 
 namespace xAPITest;
 

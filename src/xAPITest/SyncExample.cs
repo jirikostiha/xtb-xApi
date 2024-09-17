@@ -3,9 +3,7 @@ using System.Globalization;
 using System.Linq;
 using xAPI;
 using xAPI.Codes;
-using xAPI.Commands;
 using xAPI.Records;
-using xAPI.Sync;
 
 namespace xAPITest;
 

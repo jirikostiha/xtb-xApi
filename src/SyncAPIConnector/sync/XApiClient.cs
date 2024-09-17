@@ -7,7 +7,6 @@ using xAPI.Codes;
 using xAPI.Commands;
 using xAPI.Records;
 using xAPI.Responses;
-using xAPI.Sync;
 
 namespace xAPI;
 
