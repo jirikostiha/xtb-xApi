@@ -1,6 +1,5 @@
 using System;
 using System.Text.Json.Nodes;
-using xAPI.Errors;
 
 namespace xAPI.Responses;
 

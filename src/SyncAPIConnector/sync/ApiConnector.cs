@@ -7,7 +7,6 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Commands;
-using xAPI.Errors;
 using xAPI.Utils;
 
 namespace xAPI.Sync;

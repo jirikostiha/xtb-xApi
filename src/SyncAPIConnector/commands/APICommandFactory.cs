@@ -5,7 +5,6 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
-using xAPI.Errors;
 using xAPI.Records;
 using xAPI.Responses;
 using xAPI.Sync;

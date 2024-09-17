@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace xAPI.Errors;
+namespace xAPI;
 
 [Serializable]
 public class APIReplyParseException : Exception

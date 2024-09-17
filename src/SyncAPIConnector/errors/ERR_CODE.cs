@@ -1,4 +1,4 @@
-namespace xAPI.Errors;
+namespace xAPI;
 
 public class ERR_CODE
 {

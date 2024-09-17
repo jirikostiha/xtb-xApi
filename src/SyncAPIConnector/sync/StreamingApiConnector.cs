@@ -6,7 +6,6 @@ using System.Net.Security;
 
 using xAPI.Utils;
 using xAPI.Records;
-using xAPI.Errors;
 using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
