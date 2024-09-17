@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
@@ -18,19 +18,45 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 {
     private Credentials? _credentials;
 
-    public XApiClient(Server endpoint)
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="requestingPort">Port for requesting data.</param>
+    /// <param name="streamingPort">Port for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public XApiClient(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
+        : this(
+              new IPEndPoint(IPAddress.Parse(address), requestingPort),
+              new IPEndPoint(IPAddress.Parse(address), streamingPort),
+              streamingListener)
     {
-        ApiConnector = new ApiConnector(endpoint);
+    }
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
+    /// <param name="endpoint">Endpoint for requesting data.</param>
+    /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public XApiClient(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+        : this(new ApiConnector(endpoint, streamingEndpoint, streamingListener))
+    {
+    }
+
+    public XApiClient(ApiConnector apiConnector)
+    {
+        ApiConnector = apiConnector;
     }
 
     #region Events
-    public event EventHandler<ServerEventArgs>? Connected
+    public event EventHandler<EndpointEventArgs>? Connected
     {
         add { ApiConnector.Connected += value; }
         remove { ApiConnector.Connected -= value; }
     }
 
-    public event EventHandler<ServerEventArgs>? Redirected
+    public event EventHandler<EndpointEventArgs>? Redirected
     {
         add { ApiConnector.Redirected += value; }
         remove { ApiConnector.Redirected -= value; }

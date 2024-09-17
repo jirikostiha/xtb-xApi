@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -404,8 +405,7 @@ public static class APICommandFactory
             if (redirectCounter >= MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
-            var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-            connector.Redirect(newServer);
+            connector.Redirect(new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort));
             redirectCounter++;
             loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
         }
@@ -434,8 +434,9 @@ public static class APICommandFactory
             if (redirectCounter >= MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
-            var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-            await connector.RedirectAsync(newServer, cancellationToken).ConfigureAwait(false);
+            await connector.RedirectAsync(
+                new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort),
+                cancellationToken).ConfigureAwait(false);
             redirectCounter++;
             var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
             loginResponse = new LoginResponse(jsonObj2.ToString());

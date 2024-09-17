@@ -11,8 +11,8 @@ namespace xAPI;
 
 public interface IXApiClientBase
 {
-    event EventHandler<ServerEventArgs>? Connected;
-    event EventHandler<ServerEventArgs>? Redirected;
+    event EventHandler<EndpointEventArgs>? Connected;
+    event EventHandler<EndpointEventArgs>? Redirected;
     event EventHandler? Disconnected;
 
     string AccountId { get; }

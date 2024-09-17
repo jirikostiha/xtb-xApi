@@ -1,8 +1,9 @@
 using System;
-using xAPI.Commands;
+using System.Net;
 using xAPI.Records;
+using xAPI.Sync;
 
-namespace xAPI.Sync;
+namespace xAPI;
 
 public class ExceptionEventArgs(Exception exception) : EventArgs
 {
@@ -21,9 +22,9 @@ public class CommandEventArgs(ICommand command) : EventArgs
     public ICommand Command { get; } = command;
 }
 
-public class ServerEventArgs(Server server) : EventArgs
+public class EndpointEventArgs(IPEndPoint endpoint) : EventArgs
 {
-    public Server Server { get; } = server;
+    public IPEndPoint EndPoint { get; } = endpoint;
 }
 
 public class TickReceivedEventArgs(StreamingTickRecord tickRecord) : EventArgs

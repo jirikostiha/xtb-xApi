@@ -11,6 +11,7 @@ using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace xAPI.Sync;
 
@@ -24,22 +25,23 @@ public class StreamingApiConnector : Connector
     private readonly IStreamingListener? _streamingListener;
 
     /// <summary>
-    /// Creates new StreamingAPIConnector instance based on given server data.
+    /// Creates new instance.
     /// </summary>
-    /// <param name="server">Server data</param>
-    public StreamingApiConnector(Server server)
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="port">Port for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public StreamingApiConnector(string address, int port, IStreamingListener? streamingListener = null)
+        : this(new IPEndPoint(IPAddress.Parse(address), port), streamingListener)
     {
-        Server = server;
-        _apiConnected = false;
     }
 
     /// <summary>
-    /// Creates new StreamingAPIConnector instance based on given server data, stream session id and streaming listener.
+    /// Creates new instance.
     /// </summary>
-    /// <param name="server">Server data</param>
+    /// <param name="endpoint">Endpoint for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(Server server, IStreamingListener streamingListener)
-        : this(server)
+    public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
+        : base(endpoint)
     {
         _streamingListener = streamingListener;
     }
@@ -49,7 +51,7 @@ public class StreamingApiConnector : Connector
     /// <summary>
     /// Event raised when a connection is established.
     /// </summary>
-    public event EventHandler<ServerEventArgs>? Connected;
+    public event EventHandler<EndpointEventArgs>? Connected;
 
     /// <summary>
     /// Event raised when a tick record is received.
@@ -119,18 +121,18 @@ public class StreamingApiConnector : Connector
         }
 
         ApiSocket = new TcpClient();
-        var server = Server;
-        ApiSocket.Connect(server.Address, server.StreamingPort);
+        var endpoint = Endpoint;
+        ApiSocket.Connect(endpoint.Address, endpoint.Port);
 
         _apiConnected = true;
 
-        Connected?.Invoke(this, new(server));
+        Connected?.Invoke(this, new(endpoint));
 
-        if (server.IsSecure)
+        if (ShallUseSecureConnection)
         {
             var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
             var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
-            ssl.AuthenticateAsClient(server.Address);
+            ssl.AuthenticateAsClient(endpoint.Address.ToString());
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }
@@ -168,10 +170,10 @@ public class StreamingApiConnector : Connector
         }
 
         ApiSocket = new TcpClient();
-        var server = Server;
+        var endpoint = Endpoint;
         try
         {
-            await ApiSocket.ConnectAsync(server.Address, server.StreamingPort);
+            await ApiSocket.ConnectAsync(endpoint.Address, endpoint.Port);
         }
         catch (OperationCanceledException)
         {
@@ -180,13 +182,13 @@ public class StreamingApiConnector : Connector
 
         _apiConnected = true;
 
-        Connected?.Invoke(this, new(server));
+        Connected?.Invoke(this, new(endpoint));
 
-        if (server.IsSecure)
+        if (ShallUseSecureConnection)
         {
             var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
             var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
-            await ssl.AuthenticateAsClientAsync(server.Address);
+            await ssl.AuthenticateAsClientAsync(endpoint.Address.ToString());
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }

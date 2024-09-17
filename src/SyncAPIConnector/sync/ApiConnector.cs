@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
@@ -20,12 +21,12 @@ public class ApiConnector : Connector
     /// </summary>
     private const int COMMAND_TIME_SPACE = 200;
 
-    /// <summary>
-    /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
-    /// </summary>
-    private const int TIMEOUT = 5000;
-
     #endregion Settings
+
+    /// <summary>
+    /// Streaming listener.
+    /// </summary>
+    private readonly IStreamingListener? _streamingListener;
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -38,19 +39,27 @@ public class ApiConnector : Connector
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     /// <summary>
-    /// Maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
+    /// Creates new instance.
     /// </summary>
-    private readonly TimeSpan _connectionTimeout;
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="requestingPort">Port for requesting data.</param>
+    /// <param name="streamingPort">Port for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public ApiConnector(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
+        : this(new IPEndPoint(IPAddress.Parse(address), requestingPort), new IPEndPoint(IPAddress.Parse(address), streamingPort))
+    {
+    }
 
     /// <summary>
-    /// Creates new SyncAPIConnector instance based on given Server data.
+    /// Creates new instance.
     /// </summary>
-    /// <param name="server">Server data</param>
-    /// <param name="connectionTimeout">Connection timeout</param>
-    public ApiConnector(Server server, TimeSpan connectionTimeout = default)
+    /// <param name="endpoint">Endpoint for requesting data.</param>
+    /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+        : base(endpoint)
     {
-        Server = server;
-        _connectionTimeout = (connectionTimeout != default) ? connectionTimeout : TimeSpan.FromMilliseconds(TIMEOUT);
+        _streamingListener = streamingListener;
     }
 
     #region Events
@@ -58,12 +67,12 @@ public class ApiConnector : Connector
     /// <summary>
     /// Event raised when a connection is established.
     /// </summary>
-    public event EventHandler<ServerEventArgs>? Connected;
+    public event EventHandler<EndpointEventArgs>? Connected;
 
     /// <summary>
     /// Event raised when a connection is redirected.
     /// </summary>
-    public event EventHandler<ServerEventArgs>? Redirected;
+    public event EventHandler<EndpointEventArgs>? Redirected;
 
     /// <summary>
     /// Event raised when a command is being executed.
@@ -88,10 +97,10 @@ public class ApiConnector : Connector
     /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
     public void Connect(bool lookForBackups = true)
     {
-        if (Server == null)
-            throw new APICommunicationException("No server to connect to.");
+        if (Endpoint == null)
+            throw new APICommunicationException("No endpoint to connect to.");
 
-        var server = Server;
+        var endpoint = Endpoint;
         ApiSocket = new TcpClient();
 
         bool connectionAttempted = false;
@@ -99,32 +108,20 @@ public class ApiConnector : Connector
         while (!connectionAttempted || !ApiSocket.Connected)
         {
             // Try to connect asynchronously and wait for the result
-            IAsyncResult result = ApiSocket.BeginConnect(server.Address, server.MainPort, null, null);
-            connectionAttempted = result.AsyncWaitHandle.WaitOne(_connectionTimeout, true);
+            IAsyncResult result = ApiSocket.BeginConnect(endpoint.Address, endpoint.Port, null, null);
+            connectionAttempted = result.AsyncWaitHandle.WaitOne(ConnectionTimeout, true);
 
             // If connection attempt failed (timeout) or not connected
             if (!connectionAttempted || !ApiSocket.Connected)
             {
                 ApiSocket.Close();
-                if (lookForBackups)
-                {
-                    server = Servers.GetBackup(server);
-                    if (server == null)
-                    {
-                        throw new APICommunicationException("Connection timeout.");
-                    }
-                    ApiSocket = new TcpClient();
-                }
-                else
-                {
-                    throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
-                }
+                throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
             }
         }
 
-        if (server.IsSecure)
+        if (ShallUseSecureConnection)
         {
-            EstablishSecureConnection(server);
+            EstablishSecureConnection();
         }
         else
         {
@@ -135,9 +132,9 @@ public class ApiConnector : Connector
 
         _apiConnected = true;
 
-        Connected?.Invoke(this, new(server));
+        Connected?.Invoke(this, new(endpoint));
 
-        Streaming = new StreamingApiConnector(server);
+        Streaming = new StreamingApiConnector(endpoint, _streamingListener);
     }
 
     /// <summary>
@@ -147,14 +144,14 @@ public class ApiConnector : Connector
     /// <param name="cancellationToken">Token to cancel operation.</param>
     public async Task ConnectAsync(bool lookForBackups = true, CancellationToken cancellationToken = default)
     {
-        if (Server == null)
+        if (Endpoint == null)
             throw new APICommunicationException("No server to connect to.");
 
-        var server = Server;
+        var endpoint = Endpoint;
         ApiSocket = new TcpClient
         {
-            ReceiveTimeout = _connectionTimeout.Milliseconds,
-            SendTimeout = _connectionTimeout.Milliseconds
+            ReceiveTimeout = ConnectionTimeout.Milliseconds,
+            SendTimeout = ConnectionTimeout.Milliseconds
         };
 
         bool connectionAttempted = false;
@@ -164,8 +161,8 @@ public class ApiConnector : Connector
             try
             {
                 // Try to connect asynchronously and wait for the result
-                var connectTask = ApiSocket.ConnectAsync(server.Address, server.MainPort);
-                var timeoutTask = Task.Delay(_connectionTimeout, cancellationToken);
+                var connectTask = ApiSocket.ConnectAsync(endpoint.Address, endpoint.Port);
+                var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
 
                 var completedTask = await Task.WhenAny(connectTask, timeoutTask);
 
@@ -180,43 +177,19 @@ public class ApiConnector : Connector
                 if (!connectionAttempted || !ApiSocket.Connected)
                 {
                     ApiSocket.Close();
-                    if (lookForBackups)
-                    {
-                        server = Servers.GetBackup(server);
-                        if (server == null)
-                        {
-                            throw new APICommunicationException("Connection timeout.");
-                        }
-                        ApiSocket = new TcpClient();
-                    }
-                    else
-                    {
-                        throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
-                    }
+                    throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
                 }
             }
             catch
             {
                 ApiSocket.Close();
-                if (lookForBackups)
-                {
-                    server = Servers.GetBackup(server);
-                    if (server == null)
-                    {
-                        throw new APICommunicationException("Connection timeout.");
-                    }
-                    ApiSocket = new TcpClient();
-                }
-                else
-                {
-                    throw new APICommunicationException($"Cannot connect to:{server.Address}:{server.MainPort}");
-                }
+                throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
             }
         }
 
-        if (server.IsSecure)
+        if (ShallUseSecureConnection)
         {
-            await EstablishSecureConnectionAsync(server);
+            await EstablishSecureConnectionAsync();
         }
         else
         {
@@ -227,12 +200,12 @@ public class ApiConnector : Connector
 
         _apiConnected = true;
 
-        Connected?.Invoke(this, new(server));
+        Connected?.Invoke(this, new(endpoint));
 
-        Streaming = new StreamingApiConnector(server);
+        Streaming = new StreamingApiConnector(endpoint, _streamingListener);
     }
 
-    private void EstablishSecureConnection(Server server)
+    private void EstablishSecureConnection()
     {
         var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
         var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
@@ -241,7 +214,7 @@ public class ApiConnector : Connector
 
         bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
         {
-            sslStream.AuthenticateAsClient(server.Address, [], System.Security.Authentication.SslProtocols.None, false);
+            sslStream.AuthenticateAsClient(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
         });
 
         if (!authenticated)
@@ -252,12 +225,12 @@ public class ApiConnector : Connector
     }
 
 
-    private async Task EstablishSecureConnectionAsync(Server server)
+    private async Task EstablishSecureConnectionAsync()
     {
         var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
         var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
 
-        await sslStream.AuthenticateAsClientAsync(server.Address, [], System.Security.Authentication.SslProtocols.None, false);
+        await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
 
         StreamWriter = new StreamWriter(sslStream);
         StreamReader = new StreamReader(sslStream);
@@ -266,31 +239,31 @@ public class ApiConnector : Connector
     /// <summary>
     /// Redirects to the given server.
     /// </summary>
-    /// <param name="server">Server data</param>
-    public void Redirect(Server server)
+    /// <param name="endpoint">Endpoint to redirect to.</param>
+    public void Redirect(IPEndPoint endpoint)
     {
-        Redirected?.Invoke(this, new(server));
+        Redirected?.Invoke(this, new(endpoint));
 
         if (IsConnected)
             Disconnect(true);
 
-        Server = server;
+        Endpoint = endpoint;
         Connect();
     }
 
     /// <summary>
     /// Redirects to the given server.
     /// </summary>
-    /// <param name="server">Server data</param>
+    /// <param name="endpoint">Endpoint to redirect to.</param>
     /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task RedirectAsync(Server server, CancellationToken cancellationToken = default)
+    public async Task RedirectAsync(IPEndPoint endpoint, CancellationToken cancellationToken = default)
     {
-        Redirected?.Invoke(this, new(server));
+        Redirected?.Invoke(this, new(endpoint));
 
         if (IsConnected)
             Disconnect(true);
 
-        Server = server;
+        Endpoint = endpoint;
         await ConnectAsync(true, cancellationToken).ConfigureAwait(false);
     }
 

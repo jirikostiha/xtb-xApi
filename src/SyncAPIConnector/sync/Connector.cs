@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -11,15 +12,21 @@ namespace xAPI.Sync;
 public class Connector : IDisposable
 {
     /// <summary>
+    /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
+    /// </summary>
+    private const int TIMEOUT = 5000;
+
+    /// <summary>
     /// Lock object used to synchronize access to write socket operations.
     /// </summary>
     private readonly SemaphoreSlim _writeLock = new(1, 1);
 
     /// <summary>
-    /// Creates new connector instance.
+    /// Creates new instance.
     /// </summary>
-    public Connector()
+    public Connector(IPEndPoint endpoint)
     {
+        Endpoint = endpoint;
     }
 
     #region Events
@@ -42,9 +49,11 @@ public class Connector : IDisposable
     #endregion Events
 
     /// <summary>
-    /// Server that the connection was established with.
+    /// Endpoint that the connection was established with.
     /// </summary>
-    protected Server Server { get; set; }
+    public IPEndPoint Endpoint { get; set; }
+
+    public bool ShallUseSecureConnection { get; init; }
 
     /// <summary>
     /// Socket that handles the connection.
@@ -60,6 +69,12 @@ public class Connector : IDisposable
     /// Stream reader (for incoming data).
     /// </summary>
     protected StreamReader StreamReader { get; set; }
+
+    /// <summary>
+    /// Maximum connection time. After that the connection attempt is immediately dropped.
+    /// </summary>
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
+
 
     /// <summary>
     /// True if connected to the remote server.

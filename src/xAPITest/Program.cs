@@ -1,14 +1,24 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI;
-using xAPI.Sync;
 
 namespace xAPITest;
 
 internal static class Program
 {
-    private static Server _server = Servers.DEMO;
+    public const int DemoRequestingPort = 5124;
+    public const int DemoStreamingPort = 5125;
+    public const int RealRequestingPort = 5112;
+    public const int RealStreamingPort = 5113;
+
+    public static IPAddress Address => IPAddress.Parse("81.2.190.163");
+    public static IPEndPoint DemoRequestingEndpoint => new(Address, DemoRequestingPort);
+    public static IPEndPoint DemoStreamingEndpoint => new(Address, DemoStreamingPort);
+    public static IPEndPoint RealRequestingEndpoint => new(Address, RealRequestingPort);
+    public static IPEndPoint RealStreamingEndpoint => new(Address, RealStreamingPort);
+
     private static string _userId = "16697884";
     private static string _password = "xoh11724";
 
@@ -23,7 +33,7 @@ internal static class Program
 
     private static void RunSyncExample()
     {
-        using (var client = new XApiClient(_server))
+        using (var client = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
             Console.WriteLine("----Sync test---");
             var syncExample = new SyncExample(client, _userId, _password, @"\messages\");
@@ -33,7 +43,7 @@ internal static class Program
 
     private static void RunAsyncExample()
     {
-        using (var apiConnector = new XApiClient(_server))
+        using (var apiConnector = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
             Console.WriteLine();
             Console.WriteLine("----Async test---");
