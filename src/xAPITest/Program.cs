@@ -2,25 +2,25 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Sync;
+using xAPI;
 
 namespace xAPITest;
 
 internal static class Program
 {
-    public const int DemoMainPort = 5124;
+    public const int DemoRequestingPort = 5124;
     public const int DemoStreamingPort = 5125;
-    public const int RealMainPort = 5112;
+    public const int RealRequestingPort = 5112;
     public const int RealStreamingPort = 5113;
 
     public static IPAddress Address => IPAddress.Parse("81.2.190.163");
-    public static IPEndPoint DemoMainEndpoint => new(Address, DemoMainPort);
+    public static IPEndPoint DemoRequestingEndpoint => new(Address, DemoRequestingPort);
     public static IPEndPoint DemoStreamingEndpoint => new(Address, DemoStreamingPort);
-    public static IPEndPoint RealMainEndpoint => new(Address, RealMainPort);
+    public static IPEndPoint RealRequestingEndpoint => new(Address, RealRequestingPort);
     public static IPEndPoint RealStreamingEndpoint => new(Address, RealStreamingPort);
 
-    private static string _userId = "16401086";
-    private static string _password = "8Ddddddd";
+    private static string _userId = "16697884";
+    private static string _password = "xoh11724";
 
     private static void Main(string[] args)
     {
@@ -33,17 +33,17 @@ internal static class Program
 
     private static void RunSyncExample()
     {
-        var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint);
+        using (var client = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
 
         Console.WriteLine();
         Console.WriteLine("----Sync test---");
-        var syncExample = new SyncExample(apiConnector, _userId, _password, @"\messages\");
+            var syncExample = new SyncExample(client, _userId, _password, @"\messages\");
         syncExample.Run();
     }
 
     private static void RunAsyncExample()
     {
-        var apiConnector = new ApiConnector(DemoMainEndpoint, DemoStreamingEndpoint);
+        using (var apiConnector = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
 
         Console.WriteLine();
         Console.WriteLine("----Async test---");

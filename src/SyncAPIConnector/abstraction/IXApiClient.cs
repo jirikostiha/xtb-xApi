@@ -1,17 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
 using xAPI.Records;
 using xAPI.Responses;
-using xAPI.Sync;
 
 namespace xAPI;
 
 public interface IXApiClientBase
 {
-    event EventHandler<ServerEventArgs>? Connected;
-    event EventHandler<ServerEventArgs>? Redirected;
+    event EventHandler<EndpointEventArgs>? Connected;
+    event EventHandler<EndpointEventArgs>? Redirected;
     event EventHandler? Disconnected;
 
     string AccountId { get; }
@@ -21,7 +21,9 @@ public interface IXApiClientBase
 
 public interface IXApiClientAsync : IXApiClientBase
 {
-    Task ConnectAsync(Server endpoint, CancellationToken cancellationToken = default);
+    Task ConnectAsync(CancellationToken cancellationToken = default);
+
+    Task DisconnectAsync(CancellationToken cancellationToken = default);
 
     Task<PingResponse> PingAsync(CancellationToken cancellationToken = default);
 
@@ -35,6 +37,14 @@ public interface IXApiClientAsync : IXApiClientBase
 
     Task<CurrentUserDataResponse> GetCurrentUserDataAsync(CancellationToken cancellationToken = default);
 
+    Task<CommissionDefResponse> GetCommissionDefAsync(string symbol, double? volume, CancellationToken cancellationToken = default);
+
+    Task<MarginLevelResponse> GetMarginLevelAsync(CancellationToken cancellationToken = default);
+
+    Task<ProfitCalculationResponse> GetProfitCalculationAsync(string symbol, double? volume, TRADE_OPERATION_TYPE tradeOperation, double? openPrice, double? closePrice, CancellationToken cancellationToken = default);
+
+    Task<MarginTradeResponse> GetMarginTradeAsync(string symbol, double? volume, CancellationToken cancellationToken = default);
+
     Task<SymbolResponse> GetMarketInfoAsync(string symbol, CancellationToken cancellationToken = default);
 
     Task<AllSymbolsResponse> GetAllSymbolsAsync(CancellationToken cancellationToken = default);
@@ -47,7 +57,7 @@ public interface IXApiClientAsync : IXApiClientBase
 
     Task<ChartRangeResponse> GetChartRangeAsync(ChartRangeInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default);
 
-    Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, int ticks, CancellationToken cancellationToken = default);
+    Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, CancellationToken cancellationToken = default);
 
     Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, int ticks, CancellationToken cancellationToken = default);
 
@@ -59,6 +69,10 @@ public interface IXApiClientAsync : IXApiClientBase
 
     Task<TradeTransactionResponse> GetTradeTransactionAsync(TradeTransInfoRecord tradeTransInfoRecord, CancellationToken cancellationToken = default);
 
+    Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default);
+
+    Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? start, DateTimeOffset? end = null, CancellationToken cancellationToken = default);
+
     Task<CalendarResponse> GetCalendarAsync(CancellationToken cancellationToken = default);
 
     Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default);
@@ -66,7 +80,9 @@ public interface IXApiClientAsync : IXApiClientBase
 
 public interface IXApiClientSync : IXApiClientBase
 {
-    void Connect(Server endpoint);
+    void Connect();
+
+    void Disconnect();
 
     PingResponse Ping();
 
@@ -79,6 +95,14 @@ public interface IXApiClientSync : IXApiClientBase
     LogoutResponse Logout();
 
     CurrentUserDataResponse GetCurrentUserData();
+
+    CommissionDefResponse GetCommissionDef(string symbol, double? volume);
+
+    MarginLevelResponse GetMarginLevel();
+
+    MarginTradeResponse GetMarginTrade(string symbol, double? volume);
+
+    ProfitCalculationResponse GetProfitCalculation(string symbol, double? volume, TRADE_OPERATION_TYPE tradeOperation, double? openPrice, double? closePrice);
 
     SymbolResponse GetMarketInfo(string symbol);
 
@@ -104,7 +128,11 @@ public interface IXApiClientSync : IXApiClientBase
 
     TradeTransactionResponse GetTradeTransaction(TradeTransInfoRecord tradeTransInfoRecord);
 
+    TradeRecordsResponse GetTradeRecords(LinkedList<long?> orders);
+
+    TradesHistoryResponse GetTradesHistory(DateTimeOffset? since, DateTimeOffset? until = null);
+
     CalendarResponse GetCalendar();
 
-    NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until);
+    NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until = null);
 }

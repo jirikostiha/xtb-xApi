@@ -4,14 +4,13 @@ using System.Net.Sockets;
 using System.Threading;
 
 using xAPI.Records;
-using xAPI.Errors;
 using xAPI.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Net;
 
-namespace xAPI.Sync;
+namespace xAPI;
 
 public class StreamingApiConnector : IConnectable
 {
@@ -25,12 +24,12 @@ public class StreamingApiConnector : IConnectable
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    /// <param name="connector">Underlying client.</param>
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="port">Port for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(IClient connector, IStreamingListener? streamingListener = null)
+    public StreamingApiConnector(string address, int port, IStreamingListener? streamingListener = null)
+        : this(new IPEndPoint(IPAddress.Parse(address), port), streamingListener)
     {
-        Connector = connector;
-        _streamingListener = streamingListener;
     }
 
     /// <summary>
@@ -39,7 +38,7 @@ public class StreamingApiConnector : IConnectable
     /// <param name="endpoint">Endpoint for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
     public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
-        : this(new Connector(endpoint), streamingListener)
+        : base(endpoint)
     {
     }
 

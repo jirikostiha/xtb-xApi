@@ -1,6 +1,6 @@
 using System;
 
-namespace xAPI.Errors;
+namespace xAPI;
 
 public class APIErrorResponseException : Exception
 {

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Codes;
 using xAPI.Records;
 using xAPI.Responses;
-using xAPI.Sync;
 
 namespace xAPI.Commands;
 
@@ -14,6 +14,9 @@ public static class APICommandFactory
 {
     /// <summary> Api version. </summary>
     public const string Version = "2.5.0";
+
+    /// <summary> Application type. </summary>
+    public const string AppType = "dotNET";
 
     /// <summary> Application type. </summary>
     public const string AppType = "dotNET";

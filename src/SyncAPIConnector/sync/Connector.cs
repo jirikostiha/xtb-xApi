@@ -6,10 +6,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Errors;
 using xAPI.Utils;
 
-namespace xAPI.Sync;
+namespace xAPI;
 
 public class Connector : IClient, IDisposable
 {
@@ -24,7 +23,7 @@ public class Connector : IClient, IDisposable
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     /// <summary>
-    /// Creates new connector instance.
+    /// Creates new instance.
     /// </summary>
     public Connector(IPEndPoint endpoint)
     {
@@ -48,6 +47,10 @@ public class Connector : IClient, IDisposable
     #endregion Events
 
     /// <summary>
+    /// Endpoint that the connection was established with.
+    public IPEndPoint Endpoint { get; set; }
+
+    public bool ShallUseSecureConnection { get; init; }
     /// Socket that handles the connection.
     /// </summary>
     protected TcpClient TcpClient { get; set; }
@@ -61,6 +64,12 @@ public class Connector : IClient, IDisposable
     /// Stream reader (for incoming data).
     /// </summary>
     protected StreamReader StreamReader { get; set; }
+
+    /// <summary>
+    /// Maximum connection time. After that the connection attempt is immediately dropped.
+    /// </summary>
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
+
 
     /// <summary>
     /// Maximum connection time. After that the connection attempt is immediately dropped.

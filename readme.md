@@ -16,6 +16,7 @@ In the beginning there were mostly additive changes with some necessary exceptio
 
 ## Changelog
 
+2.5.18 XApiClient as main api providing class  
 2.5.17 time arguments instead of long, reduced memory footprint (long->int)  
 2.5.16 async cancelation, time members, various small changes  
 2.5.15 async streaming subscriptions, async IStreamingListener, various simplifications  

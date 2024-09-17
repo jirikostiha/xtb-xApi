@@ -1,4 +1,4 @@
-﻿namespace xAPI.Sync;
+﻿namespace xAPI;
 
 public record Credentials
 {

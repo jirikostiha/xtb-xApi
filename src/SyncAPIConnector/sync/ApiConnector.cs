@@ -1,12 +1,12 @@
 using System;
 using System.Net;
+using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Commands;
-using xAPI.Errors;
 
-namespace xAPI.Sync;
+namespace xAPI;
 
 public class ApiConnector : IConnectable
 {
@@ -14,6 +14,8 @@ public class ApiConnector : IConnectable
     /// Delay between each command to the server.
     /// </summary>
     private const int COMMAND_TIME_SPACE = 200;
+
+    #endregion Settings
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -44,6 +46,14 @@ public class ApiConnector : IConnectable
         : this(new Connector(endpoint), new StreamingApiConnector(streamingEndpoint, streamingListener))
     {
     }
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="requestingPort">Port for requesting data.</param>
+    /// <param name="streamingPort">Port for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public ApiConnector(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
+        : this(new IPEndPoint(IPAddress.Parse(address), requestingPort), new IPEndPoint(IPAddress.Parse(address), streamingPort))
+    {
+    }
 
     /// <summary>
     /// Creates new instance.
@@ -51,6 +61,8 @@ public class ApiConnector : IConnectable
     /// <param name="connector">Underlaying client.</param>
     /// <param name="streamingConnector">Streaming client.</param>
     public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
+    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+        : base(endpoint)
     {
         Client = connector;
         Streaming = streamingConnector;
