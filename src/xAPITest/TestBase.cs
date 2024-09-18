@@ -2,14 +2,13 @@
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using Xtb.XApi;
 using Xtb.XApi.Responses;
 
-namespace Xtb.XApiTest;
+namespace Xtb.XApi.SystemTests;
 
-public abstract class ExampleBase
+public abstract class TestBase
 {
-    protected ExampleBase(XApiClient client, string user, string password, string? messageFolder = null)
+    protected TestBase(XApiClient client, string user, string password, string? messageFolder = null)
     {
         Client = client;
         Credentials = new Credentials(user, password);
