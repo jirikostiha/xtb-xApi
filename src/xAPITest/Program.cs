@@ -2,9 +2,8 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi;
 
-namespace Xtb.XApiTest;
+namespace Xtb.XApi.SystemTests;
 
 internal static class Program
 {
@@ -24,31 +23,31 @@ internal static class Program
 
     private static void Main(string[] args)
     {
-        RunSyncExample();
-        RunAsyncExample();
+        RunSyncTest();
+        RunAsyncTest();
 
         Console.WriteLine("Done.");
         Console.Read();
     }
 
-    private static void RunSyncExample()
+    private static void RunSyncTest()
     {
         using (var client = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
             Console.WriteLine("----Sync test---");
-            var syncExample = new SyncExample(client, _userId, _password, @"\messages\");
-            syncExample.Run();
+            var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
+            syncTest.Run();
         }
     }
 
-    private static void RunAsyncExample()
+    private static void RunAsyncTest()
     {
         using (var apiConnector = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
             Console.WriteLine();
             Console.WriteLine("----Async test---");
             Console.WriteLine("(esc) abort");
-            var asyncExample = new AsyncExample(apiConnector, _userId, _password);
+            var asyncTest = new AsyncTest(apiConnector, _userId, _password);
             using var tokenSource = new CancellationTokenSource();
 
             var keyWaitTask = Task.Run(() =>
@@ -71,7 +70,7 @@ internal static class Program
 
             try
             {
-                asyncExample.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
+                asyncTest.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
             }
             catch (OperationCanceledException)
             {

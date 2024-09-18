@@ -1,42 +1,39 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Xtb.XApi;
 using Xtb.XApi.Codes;
 using Xtb.XApi.Records;
 
-namespace Xtb.XApiTest;
+namespace Xtb.XApi.SystemTests;
 
-public sealed class AsyncExample : ExampleBase
+public sealed class SyncTest : TestBase
 {
-    public AsyncExample(XApiClient client, string user, string password, string? messageFolder = null)
+    public SyncTest(XApiClient client, string user, string password, string? messageFolder = null)
         : base(client, user, password, messageFolder)
     {
     }
 
-    public async Task RunAsync(CancellationToken cancellationToken)
+    public void Run()
     {
-        await ConnectionStage(cancellationToken);
-        await AuthenticationStage(cancellationToken);
-        await AccountInfoStage(cancellationToken);
-        await MarketDataStage(cancellationToken);
-        await GlobalDataStage(cancellationToken);
-        await StreamingSubscriptionStage(cancellationToken);
-        await TradingStage(cancellationToken);
-        await TradingStage(cancellationToken);
-        await TradingHistoryStage(cancellationToken);
+        ConnectionStage();
+        AuthenticationStage();
+        AccountInfoStage();
+        MarketDataStage();
+        GlobalDataStage();
+        StreamingSubscriptionStage();
+        TradingStage();
+        TradingStage();
+        TradingHistoryStage();
     }
 
-    public async Task ConnectionStage(CancellationToken cancellationToken)
+    public void ConnectionStage()
     {
         Stage("Connection");
 
         Action($"Establishing connection");
         try
         {
-            await Client.ConnectAsync(cancellationToken);
+            Client.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -47,7 +44,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Dropping connection");
         try
         {
-            await Client.DisconnectAsync(cancellationToken);
+            Client.Disconnect();
             Pass();
         }
         catch (Exception ex)
@@ -58,7 +55,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Reestablishing connection");
         try
         {
-            await Client.ConnectAsync(cancellationToken);
+            Client.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -69,7 +66,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Ping");
         try
         {
-            var response = await Client.PingAsync(cancellationToken);
+            var response = Client.Ping();
             Pass(response);
         }
         catch (Exception ex)
@@ -80,7 +77,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Getting version");
         try
         {
-            var response = await Client.GetVersionAsync(cancellationToken);
+            var response = Client.GetVersion();
             Pass(response);
             Detail(response.Version);
         }
@@ -90,26 +87,26 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task AuthenticationStage(CancellationToken cancellationToken)
+    public void AuthenticationStage()
     {
         Stage("Authentication");
 
         Action($"Logging in as '{Credentials.Login}'");
         try
         {
-            var response = await Client.LoginAsync(Credentials, cancellationToken);
+            var response = Client.Login(Credentials);
             Pass(response);
             Detail(response.StreamSessionId);
         }
         catch (Exception ex)
         {
-            Fail(ex);
+            Fail(ex, true);
         }
 
         Action($"Logging out");
         try
         {
-            var response = await Client.LogoutAsync(cancellationToken);
+            var response = Client.Logout();
             Pass(response);
         }
         catch (Exception ex)
@@ -120,8 +117,8 @@ public sealed class AsyncExample : ExampleBase
         Action($"Logging in again as '{Credentials.Login}'");
         try
         {
-            await Client.ConnectAsync(cancellationToken);
-            var response = await Client.LoginAsync(Credentials, cancellationToken);
+            Client.Connect();
+            var response = Client.Login(Credentials);
             Pass(response);
             Detail(response.StreamSessionId);
         }
@@ -133,7 +130,7 @@ public sealed class AsyncExample : ExampleBase
         Action("Getting server time");
         try
         {
-            var response = await Client.GetServerTimeAsync(cancellationToken);
+            var response = Client.GetServerTime();
             Pass(response);
             Detail(response.TimeString);
         }
@@ -143,14 +140,14 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task AccountInfoStage(CancellationToken cancellationToken)
+    public void AccountInfoStage()
     {
         Stage("Account information");
 
         Action($"Getting user data");
         try
         {
-            var response = await Client.GetCurrentUserDataAsync(cancellationToken);
+            var response = Client.GetCurrentUserData();
             Pass(response);
             Detail(response.Currency);
         }
@@ -162,7 +159,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting margin level");
         try
         {
-            var response = await Client.GetMarginLevelAsync(cancellationToken);
+            var response = Client.GetMarginLevel();
             Pass(response);
             Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -174,7 +171,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting all symbols");
         try
         {
-            var response = await Client.GetAllSymbolsAsync(cancellationToken);
+            var response = Client.GetAllSymbols();
             Pass(response);
             Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -186,7 +183,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting single symbol");
         try
         {
-            var response = await Client.GetSymbolAsync("US500", cancellationToken);
+            var response = Client.GetSymbol("US500");
             Pass(response);
             Detail(response?.Symbol?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -198,7 +195,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting trading hours");
         try
         {
-            var response = await Client.GetTradingHoursAsync(["US500"], cancellationToken);
+            var response = Client.GetTradingHours(["US500"]);
             Pass(response);
             Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -210,8 +207,8 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting tick prices");
         try
         {
-            var response = await Client.GetTickPricesAsync(["US500"], 0,
-                TimeProvider.System.GetUtcNow(), cancellationToken);
+            var response = Client.GetTickPrices(["US500"], 0,
+                TimeProvider.System.GetUtcNow());
             Pass(response);
             Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -221,15 +218,15 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task MarketDataStage(CancellationToken cancellationToken)
+    public void MarketDataStage()
     {
         Stage("Market data");
 
         Action($"Getting latest candles");
         try
         {
-            var response = await Client.GetChartLastAsync("US500", PERIOD.H1,
-                TimeProvider.System.GetUtcNow().AddDays(-10), cancellationToken);
+            var response = Client.GetChartLast("US500", PERIOD.H1,
+                TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -241,10 +238,9 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting candles in interval");
         try
         {
-            var response = await Client.GetChartRangeAsync("US500", PERIOD.H1,
+            var response = Client.GetChartRange("US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-20),
-                TimeProvider.System.GetUtcNow().AddDays(-10),
-                cancellationToken);
+                TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -256,7 +252,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting commissions");
         try
         {
-            var response = await Client.GetCommissionDefAsync("US500", 1, cancellationToken);
+            var response = Client.GetCommissionDef("US500", 1);
             Pass(response);
             Detail(response?.Commission?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -268,7 +264,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting margin calculation");
         try
         {
-            var response = await Client.GetMarginTradeAsync("US500", 1, cancellationToken);
+            var response = Client.GetMarginTrade("US500", 1); //??
             Pass(response);
             Detail(response?.Margin?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -280,12 +276,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting profit calculation");
         try
         {
-            var response = await Client.GetProfitCalculationAsync("US500",
-                1,
-                TRADE_OPERATION_TYPE.BUY,
-                5000,
-                5100,
-                cancellationToken);
+            var response = Client.GetProfitCalculation("US500", 1, TRADE_OPERATION_TYPE.BUY, 5000, 5100);
             Pass(response);
             Detail(response?.Profit?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -295,17 +286,14 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task GlobalDataStage(CancellationToken cancellationToken)
+    public void GlobalDataStage()
     {
         Stage("Global data");
 
         Action($"Getting news");
         try
         {
-            var response = await Client.GetNewsAsync(
-                TimeProvider.System.GetUtcNow().AddDays(-10),
-                default,
-                cancellationToken);
+            var response = Client.GetNews(TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -317,7 +305,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting calendar events");
         try
         {
-            var response = await Client.GetCalendarAsync(cancellationToken);
+            var response = Client.GetCalendar();
             Pass(response);
             Detail(response?.CalendarRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -327,14 +315,14 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task StreamingSubscriptionStage(CancellationToken cancellationToken)
+    public void StreamingSubscriptionStage()
     {
         Stage("Streaming subscriptions");
 
         Action($"Connecting to streaming");
         try
         {
-            await Client.Streaming.ConnectAsync(cancellationToken);
+            Client.Streaming.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -345,7 +333,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe keep alive");
         try
         {
-            await Client.Streaming.SubscribeKeepAliveAsync(cancellationToken);
+            Client.Streaming.SubscribeKeepAlive();
             Pass();
         }
         catch (Exception ex)
@@ -356,7 +344,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe keep alive");
         try
         {
-            await Client.Streaming.UnsubscribeKeepAliveAsync(cancellationToken);
+            Client.Streaming.UnsubscribeKeepAlive();
             Pass();
         }
         catch (Exception ex)
@@ -367,7 +355,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe balance");
         try
         {
-            await Client.Streaming.SubscribeBalanceAsync(cancellationToken);
+            Client.Streaming.SubscribeBalance();
             Pass();
         }
         catch (Exception ex)
@@ -378,7 +366,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe balance");
         try
         {
-            await Client.Streaming.UnsubscribeBalanceAsync(cancellationToken);
+            Client.Streaming.UnsubscribeBalance();
             Pass();
         }
         catch (Exception ex)
@@ -389,7 +377,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe news");
         try
         {
-            await Client.Streaming.SubscribeNewsAsync(cancellationToken);
+            Client.Streaming.SubscribeNews();
             Pass();
         }
         catch (Exception ex)
@@ -400,7 +388,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe news");
         try
         {
-            await Client.Streaming.UnsubscribeNewsAsync(cancellationToken);
+            Client.Streaming.UnsubscribeNews();
             Pass();
         }
         catch (Exception ex)
@@ -411,7 +399,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe profits");
         try
         {
-            await Client.Streaming.SubscribeProfitsAsync(cancellationToken);
+            Client.Streaming.SubscribeProfits();
             Pass();
         }
         catch (Exception ex)
@@ -422,7 +410,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe profits");
         try
         {
-            await Client.Streaming.UnsubscribeProfitsAsync(cancellationToken);
+            Client.Streaming.UnsubscribeProfits();
             Pass();
         }
         catch (Exception ex)
@@ -433,7 +421,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe trades");
         try
         {
-            await Client.Streaming.SubscribeTradesAsync(cancellationToken);
+            Client.Streaming.SubscribeTrades();
             Pass();
         }
         catch (Exception ex)
@@ -444,7 +432,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe trades");
         try
         {
-            await Client.Streaming.UnsubscribeTradesAsync(cancellationToken);
+            Client.Streaming.UnsubscribeTrades();
             Pass();
         }
         catch (Exception ex)
@@ -455,7 +443,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe trade status");
         try
         {
-            await Client.Streaming.SubscribeTradeStatusAsync(cancellationToken);
+            Client.Streaming.SubscribeTradeStatus();
             Pass();
         }
         catch (Exception ex)
@@ -466,7 +454,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe trade status");
         try
         {
-            await Client.Streaming.UnsubscribeTradeStatusAsync(cancellationToken);
+            Client.Streaming.UnsubscribeTradeStatus();
             Pass();
         }
         catch (Exception ex)
@@ -477,7 +465,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe candles");
         try
         {
-            await Client.Streaming.SubscribeCandlesAsync("US500", cancellationToken);
+            Client.Streaming.SubscribeCandles("US500");
             Pass();
         }
         catch (Exception ex)
@@ -488,7 +476,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe candles");
         try
         {
-            await Client.Streaming.UnsubscribeCandlesAsync("US500", cancellationToken);
+            Client.Streaming.UnsubscribeCandles("US500");
             Pass();
         }
         catch (Exception ex)
@@ -499,7 +487,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe price");
         try
         {
-            await Client.Streaming.SubscribePriceAsync("US500", null, null, cancellationToken);
+            Client.Streaming.SubscribePrice("US500");
             Pass();
         }
         catch (Exception ex)
@@ -510,7 +498,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe price");
         try
         {
-            await Client.Streaming.UnsubscribePriceAsync("US500", cancellationToken);
+            Client.Streaming.UnsubscribePrice("US500");
             Pass();
         }
         catch (Exception ex)
@@ -521,7 +509,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Subscribe prices");
         try
         {
-            await Client.Streaming.SubscribePricesAsync(["US500"], cancellationToken);
+            Client.Streaming.SubscribePrices(["US500"]);
             Pass();
         }
         catch (Exception ex)
@@ -532,7 +520,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Unsubscribe prices");
         try
         {
-            await Client.Streaming.UnsubscribePricesAsync(["US500"], cancellationToken);
+            Client.Streaming.UnsubscribePrices(["US500"]);
             Pass();
         }
         catch (Exception ex)
@@ -541,14 +529,14 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task TradingStage(CancellationToken cancellationToken)
+    public void TradingStage()
     {
         Stage("Trading");
 
         Action($"Getting all trades");
         try
         {
-            var response = await Client.GetTradesAsync(false, cancellationToken);
+            var response = Client.GetTrades(false);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -572,11 +560,11 @@ public sealed class AsyncExample : ExampleBase
                     symbol: "US500",
                     volume: 0.1,
                     order: null,
-                    customComment: "opened by test example",
+                    customComment: "opened by test",
                     expiration: null);
 
                 // Warning: Opening trade. Make sure you have set up demo account!
-                var response = await Client.GetTradeTransactionAsync(trade, cancellationToken);
+                var response = Client.GetTradeTransaction(trade);
                 Pass(response);
                 Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
                 orderId = response?.Order;
@@ -590,7 +578,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting opened only trades");
         try
         {
-            var response = await Client.GetTradesAsync(true, cancellationToken);
+            var response = Client.GetTrades(true);
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -613,11 +601,11 @@ public sealed class AsyncExample : ExampleBase
                     symbol: "US500",
                     volume: 0.2,
                     order: orderId,
-                    customComment: "modified by test example",
+                    customComment: "modified by test",
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
-                var response = await Client.GetTradeTransactionAsync(trade, cancellationToken);
+                var response = Client.GetTradeTransaction(trade);
                 Pass(response);
                 Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
@@ -630,7 +618,7 @@ public sealed class AsyncExample : ExampleBase
         Action($"Getting trades for orders");
         try
         {
-            var response = await Client.GetTradeRecordsAsync(new([orderId]), cancellationToken);
+            var response = Client.GetTradeRecords(new([orderId]));
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
@@ -653,11 +641,11 @@ public sealed class AsyncExample : ExampleBase
                     symbol: "US500",
                     volume: null,
                     order: orderId,
-                    customComment: "closed by test example",
+                    customComment: "closed by test",
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
-                var response = await Client.GetTradeTransactionAsync(trade, cancellationToken);
+                var response = Client.GetTradeTransaction(trade);
                 Pass(response);
                 Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
@@ -668,17 +656,14 @@ public sealed class AsyncExample : ExampleBase
         }
     }
 
-    public async Task TradingHistoryStage(CancellationToken cancellationToken)
+    public void TradingHistoryStage()
     {
         Stage("Trading history");
 
         Action($"Getting passed trades");
         try
         {
-            var response = await Client.GetTradesHistoryAsync(
-                TimeProvider.System.GetUtcNow().AddDays(-10),
-                default,
-                cancellationToken);
+            var response = Client.GetTradesHistory(TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
             Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
