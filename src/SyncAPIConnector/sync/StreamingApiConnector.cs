@@ -1,16 +1,14 @@
-﻿using System.IO;
-using System;
-using System.Net.Sockets;
-using System.Threading;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Net.Security;
-
-using Xtb.XApi.Utils;
+using System.Net.Sockets;
+using System.Text.Json.Nodes;
+using System.Threading;
+using System.Threading.Tasks;
 using Xtb.XApi.Records;
 using Xtb.XApi.Streaming;
-
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
-using System.Net;
+using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
@@ -97,7 +95,7 @@ public class StreamingApiConnector : Connector
     /// </summary>
     public event EventHandler<ExceptionEventArgs>? StreamingErrorOccurred;
 
-    #endregion
+    #endregion Events
 
     /// <summary>
     /// Stream session id (member of login response). Should be set after the successful login.
@@ -339,6 +337,7 @@ public class StreamingApiConnector : Connector
     }
 
     #region subscribe, unsubscribe
+
     public void SubscribePrice(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
@@ -562,7 +561,8 @@ public class StreamingApiConnector : Connector
         var candleRecordsStop = new CandleRecordsStop(symbol);
         await WriteMessageAsync(candleRecordsStop.ToString(), cancellationToken);
     }
-    #endregion
+
+    #endregion subscribe, unsubscribe
 
     protected virtual void OnStreamingErrorOccurred(Exception ex)
     {

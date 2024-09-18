@@ -223,7 +223,6 @@ public class ApiConnector : Connector
         StreamReader = new StreamReader(sslStream);
     }
 
-
     private async Task EstablishSecureConnectionAsync()
     {
         var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);

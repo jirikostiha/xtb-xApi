@@ -74,7 +74,6 @@ public class Connector : IDisposable
     /// </summary>
     public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
 
-
     /// <summary>
     /// True if connected to the remote server.
     /// </summary>

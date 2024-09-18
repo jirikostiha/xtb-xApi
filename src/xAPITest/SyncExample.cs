@@ -588,7 +588,6 @@ public sealed class SyncExample : ExampleBase
             Fail(ex);
         }
 
-
         if (ShallOpenTrades)
         {
             Action($"Modifying position.");
