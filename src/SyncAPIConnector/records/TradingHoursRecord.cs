@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Text.Json.Nodes;
 using System.Linq;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}")]
 public record TradingHoursRecord : IBaseResponseRecord, ISymbol

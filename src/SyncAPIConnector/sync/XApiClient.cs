@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using XApi.Codes;
-using XApi.Commands;
-using XApi.Records;
-using XApi.Responses;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Commands;
+using Xtb.XApi.Records;
+using Xtb.XApi.Responses;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 /// <summary>
 /// Xtb xapi client.

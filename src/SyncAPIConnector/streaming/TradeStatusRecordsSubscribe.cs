@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 
-namespace XApi.Streaming;
+namespace Xtb.XApi.Streaming;
 
 internal sealed class TradeStatusRecordsSubscribe : SubscribeCommandBase
 {

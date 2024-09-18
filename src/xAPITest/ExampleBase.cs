@@ -2,10 +2,10 @@
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using XApi;
-using XApi.Responses;
+using Xtb.XApi;
+using Xtb.XApi.Responses;
 
-namespace XApiTest;
+namespace Xtb.XApiTest;
 
 public abstract class ExampleBase
 {

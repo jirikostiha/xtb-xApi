@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace XApi.Codes;
+namespace Xtb.XApi.Codes;
 
 /// <summary>
 /// Base class for all XApi codes.

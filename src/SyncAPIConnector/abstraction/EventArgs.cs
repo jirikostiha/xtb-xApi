@@ -1,9 +1,9 @@
 using System;
 using System.Net;
-using XApi.Records;
-using XApi.Records;
+using Xtb.XApi.Records;
+using Xtb.XApi.Records;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public class ExceptionEventArgs(Exception exception) : EventArgs
 {

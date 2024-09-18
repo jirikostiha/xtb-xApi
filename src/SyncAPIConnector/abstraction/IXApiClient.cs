@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using XApi.Codes;
-using XApi.Records;
-using XApi.Responses;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
+using Xtb.XApi.Responses;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public interface IXApiClientBase
 {

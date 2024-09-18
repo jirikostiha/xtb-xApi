@@ -6,10 +6,10 @@ using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using XApi.Commands;
-using XApi.Utils;
+using Xtb.XApi.Commands;
+using Xtb.XApi.Utils;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public class ApiConnector : Connector
 {

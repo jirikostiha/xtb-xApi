@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Nodes;
-using XApi.Records;
+using Xtb.XApi.Records;
 
-namespace XApi.Responses;
+namespace Xtb.XApi.Responses;
 
 public class AllSymbolsResponse : BaseResponse
 {

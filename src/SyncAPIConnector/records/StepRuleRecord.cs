@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using System.Linq;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 public record StepRuleRecord : IBaseResponseRecord
 {

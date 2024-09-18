@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("o:{Order}, o2:{Order2}, profit:{Profit}")]
 public record StreamingProfitRecord : IBaseResponseRecord, IPosition

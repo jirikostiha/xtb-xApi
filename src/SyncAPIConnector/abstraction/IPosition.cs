@@ -1,4 +1,4 @@
-﻿namespace XApi;
+﻿namespace Xtb.XApi;
 
 public interface IPosition
 {

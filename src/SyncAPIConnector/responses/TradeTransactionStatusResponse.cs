@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using XApi.Codes;
+using Xtb.XApi.Codes;
 
-namespace XApi.Responses;
+namespace Xtb.XApi.Responses;
 
 [DebuggerDisplay("order:{Order}")]
 public class TradeTransactionStatusResponse : BaseResponse

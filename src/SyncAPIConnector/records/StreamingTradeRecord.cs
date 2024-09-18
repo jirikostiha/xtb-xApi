@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
-using XApi.Codes;
+using Xtb.XApi.Codes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
 public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord

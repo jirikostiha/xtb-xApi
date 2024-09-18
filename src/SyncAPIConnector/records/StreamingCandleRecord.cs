@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
 public record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecord

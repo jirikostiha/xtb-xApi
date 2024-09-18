@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Text.Json.Nodes;
-using XApi.Codes;
+using Xtb.XApi.Codes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("o:{Order}, price:{Price}")]
 public record StreamingTradeStatusRecord : IBaseResponseRecord

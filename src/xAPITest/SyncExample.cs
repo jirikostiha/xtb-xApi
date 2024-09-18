@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using XApi;
-using XApi.Codes;
-using XApi.Records;
+using Xtb.XApi;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
 
-namespace XApiTest;
+namespace Xtb.XApiTest;
 
 public sealed class SyncExample : ExampleBase
 {

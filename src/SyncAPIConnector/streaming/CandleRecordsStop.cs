@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
-using XApi.Commands;
+using Xtb.XApi.Commands;
 
-namespace XApi.Streaming;
+namespace Xtb.XApi.Streaming;
 
 internal sealed class CandleRecordsStop(string symbol) : ICommand
 {

@@ -4,15 +4,15 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net.Security;
 
-using XApi.Utils;
-using XApi.Records;
-using XApi.Streaming;
+using Xtb.XApi.Utils;
+using Xtb.XApi.Records;
+using Xtb.XApi.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Net;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public class StreamingApiConnector : Connector
 {

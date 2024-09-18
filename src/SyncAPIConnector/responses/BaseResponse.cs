@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json.Nodes;
 
-namespace XApi.Responses;
+namespace Xtb.XApi.Responses;
 
 public class BaseResponse
 {

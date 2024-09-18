@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("balance:{Balance}, margin:{Margin}, equity:{Equity}")]
 public record StreamingBalanceRecord : IBaseResponseRecord

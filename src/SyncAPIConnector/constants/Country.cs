@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 /// <summary>
 /// Country group values.
