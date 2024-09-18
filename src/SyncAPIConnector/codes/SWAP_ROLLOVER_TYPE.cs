@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace XApi.Codes;
+namespace Xtb.XApi.Codes;
 
 public class SWAP_ROLLOVER_TYPE : BaseCode
 {

@@ -1,16 +1,16 @@
 ﻿
 using System;
-using System.Net.Sockets;
-using System.Threading;
-
-using xAPI.Records;
-using xAPI.Streaming;
-
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+using System.IO;
 using System.Net;
+using System.Net.Sockets;
+using System.Text.Json.Nodes;
+using System.Threading;
+using System.Threading.Tasks;
+using Xtb.XApi.Records;
+using Xtb.XApi.Streaming;
+using Xtb.XApi.Utils;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public class StreamingApiConnector : IConnectable
 {
@@ -101,7 +101,7 @@ public class StreamingApiConnector : IConnectable
     /// Event raised when read streamed message.
     /// </summary>
     public event EventHandler<ExceptionEventArgs>? StreamingErrorOccurred;
-    #endregion
+    #endregion Events
 
     /// <summary>
     /// Streaming connector.
@@ -291,6 +291,7 @@ public class StreamingApiConnector : IConnectable
     }
 
     #region subscribe, unsubscribe
+
     public void SubscribePrice(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
@@ -514,7 +515,8 @@ public class StreamingApiConnector : IConnectable
         var candleRecordsStop = new CandleRecordsStop(symbol);
         await Connector.SendMessageAsync(candleRecordsStop.ToString(), cancellationToken);
     }
-    #endregion
+
+    #endregion subscribe, unsubscribe
 
     protected virtual void OnStreamingErrorOccurred(Exception ex)
     {

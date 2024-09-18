@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.Json.Nodes;
 using System.Linq;
+using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}")]
 public record TradingHoursRecord : IBaseResponseRecord, ISymbol

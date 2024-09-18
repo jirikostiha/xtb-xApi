@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 /// <summary>
 /// Currency group values.

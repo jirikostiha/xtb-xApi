@@ -1,6 +1,6 @@
 using System.Text.Json.Nodes;
 
-namespace XApi.Commands;
+namespace Xtb.XApi.Commands;
 
 public class TradeTransactionCommand : BaseCommand
 {

@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("day:{DayOfWeek}, since:{FromTime}, until:{ToTime}")]
 public record HoursRecord : IBaseResponseRecord

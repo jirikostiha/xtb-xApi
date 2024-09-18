@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 public record StepRecord : IBaseResponseRecord
 {

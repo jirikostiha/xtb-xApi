@@ -1,6 +1,6 @@
 using System;
 
-namespace XApi.Responses;
+namespace Xtb.XApi.Responses;
 
 public class ServerTimeResponse : BaseResponse
 {

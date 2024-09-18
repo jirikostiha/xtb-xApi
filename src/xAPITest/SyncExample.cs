@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using xAPI;
-using xAPI.Codes;
-using xAPI.Records;
+using Xtb.XApi;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
 
-namespace XApiTest;
+namespace Xtb.XApiTest;
 
 public sealed class SyncExample : ExampleBase
 {
@@ -586,7 +586,6 @@ public sealed class SyncExample : ExampleBase
         {
             Fail(ex);
         }
-
 
         if (ShallOpenTrades)
         {

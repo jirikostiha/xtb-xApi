@@ -2,9 +2,9 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI;
+using Xtb.XApi;
 
-namespace XApiTest;
+namespace Xtb.XApiTest;
 
 internal static class Program
 {

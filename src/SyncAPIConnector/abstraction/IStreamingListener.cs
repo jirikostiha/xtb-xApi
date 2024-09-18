@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Records;
+using Xtb.XApi.Records;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public interface IStreamingListener
 {

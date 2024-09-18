@@ -1,9 +1,9 @@
 ﻿using System.Globalization;
 
-namespace XApi.Codes;
+namespace Xtb.XApi.Codes;
 
 /// <summary>
-/// Base class for all xAPI codes.
+/// Base class for all XApi codes.
 /// </summary>
 public class BaseCode
 {

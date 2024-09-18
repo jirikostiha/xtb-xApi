@@ -1,6 +1,6 @@
-using xAPI.Codes;
+using Xtb.XApi.Codes;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public static class TradeRecordExtensions
 {

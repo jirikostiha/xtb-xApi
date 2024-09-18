@@ -3,11 +3,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI;
-using xAPI.Codes;
-using xAPI.Records;
+using Xtb.XApi;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
 
-namespace XApiTest;
+namespace Xtb.XApiTest;
 
 public sealed class AsyncExample : ExampleBase
 {

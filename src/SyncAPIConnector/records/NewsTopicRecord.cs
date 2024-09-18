@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Text.Json.Nodes;
 
-namespace XApi.Records;
+namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Key}")]
 public record NewsTopicRecord : IBaseResponseRecord, INewsRecord

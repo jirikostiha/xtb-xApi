@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Nodes;
-using xAPI.Commands;
 
-namespace XApi.Streaming;
+namespace Xtb.XApi.Streaming;
 
 internal sealed class ProfitsStop : ICommand
 {

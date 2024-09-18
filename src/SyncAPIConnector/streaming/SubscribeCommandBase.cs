@@ -1,6 +1,4 @@
-﻿using xAPI.Commands;
-
-namespace XApi.Streaming;
+﻿namespace Xtb.XApi.Streaming;
 
 internal abstract class SubscribeCommandBase : ICommand
 {

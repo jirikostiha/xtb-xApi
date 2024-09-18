@@ -4,11 +4,11 @@ using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Codes;
-using xAPI.Records;
-using xAPI.Responses;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
+using Xtb.XApi.Responses;
 
-namespace XApi.Commands;
+namespace Xtb.XApi.Commands;
 
 public static class APICommandFactory
 {

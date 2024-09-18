@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace XApi.Utils;
+namespace Xtb.XApi.Utils;
 
 internal static class ExecuteWithTimeLimit
 {

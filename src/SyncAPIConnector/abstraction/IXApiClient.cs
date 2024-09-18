@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Codes;
-using xAPI.Records;
-using xAPI.Responses;
+using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
+using Xtb.XApi.Responses;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public interface IXApiClientBase
 {
     event EventHandler<EndpointEventArgs>? Connected;
+
     event EventHandler<EndpointEventArgs>? Redirected;
+
     event EventHandler? Disconnected;
 
     string AccountId { get; }

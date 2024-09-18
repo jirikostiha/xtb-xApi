@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using xAPI.Utils;
 
-namespace XApi;
+namespace Xtb.XApi;
 
 public class Connector : IClient, IDisposable
 {
@@ -69,7 +69,6 @@ public class Connector : IClient, IDisposable
     /// Maximum connection time. After that the connection attempt is immediately dropped.
     /// </summary>
     public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
-
 
     /// <summary>
     /// Maximum connection time. After that the connection attempt is immediately dropped.
