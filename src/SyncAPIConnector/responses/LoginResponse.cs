@@ -1,5 +1,5 @@
 using System.Text.Json.Nodes;
-using xAPI.Records;
+using XApi.Records;
 
 namespace XApi.Responses;
 

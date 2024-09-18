@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI;
+using XApi;
 
 namespace XApiTest;
 

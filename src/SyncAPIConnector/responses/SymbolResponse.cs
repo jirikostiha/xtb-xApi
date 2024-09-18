@@ -1,4 +1,4 @@
-using xAPI.Records;
+using XApi.Records;
 
 namespace XApi.Responses;
 

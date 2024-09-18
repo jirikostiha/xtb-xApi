@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using xAPI.Codes;
+using XApi.Codes;
 
 namespace XApi.Responses;
 

@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI;
-using xAPI.Codes;
-using xAPI.Records;
+using XApi;
+using XApi.Codes;
+using XApi.Records;
 
 namespace XApiTest;
 

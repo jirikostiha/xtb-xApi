@@ -1,6 +1,7 @@
 using System;
 using System.Net;
-using xAPI.Records;
+using XApi.Records;
+using XApi.Records;
 
 namespace XApi;
 

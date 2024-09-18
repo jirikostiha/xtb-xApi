@@ -4,9 +4,9 @@ using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Codes;
-using xAPI.Records;
-using xAPI.Responses;
+using XApi.Codes;
+using XApi.Records;
+using XApi.Responses;
 
 namespace XApi.Commands;
 

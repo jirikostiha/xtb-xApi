@@ -1,5 +1,5 @@
 ﻿using System;
-using xAPI.Codes;
+using XApi.Codes;
 
 namespace XApi;
 

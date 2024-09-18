@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Nodes;
-using xAPI.Commands;
+using XApi.Commands;
 
 namespace XApi.Streaming;
 

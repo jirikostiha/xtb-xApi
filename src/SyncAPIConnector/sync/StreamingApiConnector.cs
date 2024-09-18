@@ -4,9 +4,9 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Net.Security;
 
-using xAPI.Utils;
-using xAPI.Records;
-using xAPI.Streaming;
+using XApi.Utils;
+using XApi.Records;
+using XApi.Streaming;
 
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;

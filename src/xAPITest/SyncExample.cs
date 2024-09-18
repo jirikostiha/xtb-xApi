@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using xAPI;
-using xAPI.Codes;
-using xAPI.Records;
+using XApi;
+using XApi.Codes;
+using XApi.Records;
 
 namespace XApiTest;
 

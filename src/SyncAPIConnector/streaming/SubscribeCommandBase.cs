@@ -1,4 +1,4 @@
-﻿using xAPI.Commands;
+﻿using XApi.Commands;
 
 namespace XApi.Streaming;
 

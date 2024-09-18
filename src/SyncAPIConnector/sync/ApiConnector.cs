@@ -6,8 +6,8 @@ using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Commands;
-using xAPI.Utils;
+using XApi.Commands;
+using XApi.Utils;
 
 namespace XApi;
 

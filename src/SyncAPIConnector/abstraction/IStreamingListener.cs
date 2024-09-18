@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Records;
+using XApi.Records;
 
 namespace XApi;
 
