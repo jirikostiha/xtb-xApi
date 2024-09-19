@@ -13,14 +13,24 @@ namespace Xtb.XApi;
 
 public class ApiConnector : Connector
 {
-    #region Settings
-
     /// <summary>
     /// Delay between each command to the server.
     /// </summary>
     private const int COMMAND_TIME_SPACE = 200;
 
-    #endregion Settings
+    /// <summary>
+    /// Helper method to create a new instance based on address and ports.
+    /// </summary>
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="requestingPort">Port for requesting data.</param>
+    /// <param name="streamingPort">Port for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public static ApiConnector Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
+    {
+        var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
+        var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
+        return new ApiConnector(requestingEndpoint, streamingEndpoint, streamingListener);
+    }
 
     /// <summary>
     /// Streaming listener.
@@ -36,18 +46,6 @@ public class ApiConnector : Connector
     /// Lock object used to synchronize access to read/write socket operations.
     /// </summary>
     private readonly SemaphoreSlim _lock = new(1, 1);
-
-    /// <summary>
-    /// Creates new instance.
-    /// </summary>
-    /// <param name="address">Endpoint address.</param>
-    /// <param name="requestingPort">Port for requesting data.</param>
-    /// <param name="streamingPort">Port for streaming data.</param>
-    /// <param name="streamingListener">Streaming listener.</param>
-    public ApiConnector(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
-        : this(new IPEndPoint(IPAddress.Parse(address), requestingPort), new IPEndPoint(IPAddress.Parse(address), streamingPort))
-    {
-    }
 
     /// <summary>
     /// Creates new instance.

@@ -11,38 +11,41 @@ using Xtb.XApi.Responses;
 namespace Xtb.XApi;
 
 /// <summary>
-/// Xtb xapi client.
+/// Xtb XApi client.
 /// </summary>
 public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 {
-    private Credentials? _credentials;
-
     /// <summary>
-    /// Creates new instance.
+    /// Helper method to create a new instance based on address and ports.
     /// </summary>
     /// <param name="address">Endpoint address.</param>
     /// <param name="requestingPort">Port for requesting data.</param>
     /// <param name="streamingPort">Port for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public XApiClient(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
-        : this(
-              new IPEndPoint(IPAddress.Parse(address), requestingPort),
-              new IPEndPoint(IPAddress.Parse(address), streamingPort),
-              streamingListener)
+    public static XApiClient Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
     {
+        return new XApiClient(
+            ApiConnector.Create(address, requestingPort, streamingPort, streamingListener));
     }
 
     /// <summary>
-    /// Creates new instance.
+    /// Helper method to create a new instance based on endpoints.
     /// </summary>
     /// <param name="endpoint">Endpoint for requesting data.</param>
     /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public XApiClient(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
-        : this(new ApiConnector(endpoint, streamingEndpoint, streamingListener))
+    public static XApiClient Create(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
+        var apiConnector = new ApiConnector(endpoint, streamingEndpoint, streamingListener);
+        return new XApiClient(apiConnector);
     }
 
+    private Credentials? _credentials;
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
+    /// <param name="apiConnector"> Api connector. </param>
     public XApiClient(ApiConnector apiConnector)
     {
         ApiConnector = apiConnector;

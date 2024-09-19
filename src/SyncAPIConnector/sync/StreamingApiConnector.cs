@@ -17,20 +17,21 @@ public class StreamingApiConnector : Connector
     private Task? _streamingReaderTask;
 
     /// <summary>
-    /// Dedicated streaming listener.
-    /// </summary>
-    private readonly IStreamingListener? _streamingListener;
-
-    /// <summary>
-    /// Creates new instance.
+    /// Helper method to create a new instance based on address and port.
     /// </summary>
     /// <param name="address">Endpoint address.</param>
     /// <param name="port">Port for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(string address, int port, IStreamingListener? streamingListener = null)
-        : this(new IPEndPoint(IPAddress.Parse(address), port), streamingListener)
+    public static StreamingApiConnector Create(string address, int port, IStreamingListener? streamingListener = null)
     {
+        var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
+        return new StreamingApiConnector(endpoint, streamingListener);
     }
+
+    /// <summary>
+    /// Dedicated streaming listener.
+    /// </summary>
+    private readonly IStreamingListener? _streamingListener;
 
     /// <summary>
     /// Creates new instance.
