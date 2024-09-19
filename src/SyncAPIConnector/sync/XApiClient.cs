@@ -13,7 +13,7 @@ namespace Xtb.XApi;
 /// <summary>
 /// Xtb XApi client.
 /// </summary>
-public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
+public class XApiClient : IXApiClientSync, IXApiClientAsync
 {
     /// <summary>
     /// Helper method to create a new instance based on address and ports.
@@ -261,18 +261,4 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 
     public Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteNewsCommandAsync(ApiConnector, since, until, cancellationToken);
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            ApiConnector?.Dispose();
-        }
-    }
 }

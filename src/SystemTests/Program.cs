@@ -32,55 +32,55 @@ internal static class Program
 
     private static void RunSyncTest()
     {
-        using (var client = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
-        {
-            Console.WriteLine("----Sync test---");
-            var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
-            syncTest.Run();
-        }
+        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        var client = new XApiClient(apiConnector);
+
+        Console.WriteLine("----Sync test---");
+        var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
+        syncTest.Run();
     }
 
     private static void RunAsyncTest()
     {
-        using (var apiConnector = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        var client = new XApiClient(apiConnector);
+
+        Console.WriteLine();
+        Console.WriteLine("----Async test---");
+        Console.WriteLine("(esc) abort");
+        var asyncTest = new AsyncTest(client, _userId, _password);
+        using var tokenSource = new CancellationTokenSource();
+
+        var keyWaitTask = Task.Run(() =>
         {
-            Console.WriteLine();
-            Console.WriteLine("----Async test---");
-            Console.WriteLine("(esc) abort");
-            var asyncTest = new AsyncTest(apiConnector, _userId, _password);
-            using var tokenSource = new CancellationTokenSource();
-
-            var keyWaitTask = Task.Run(() =>
+            while (!tokenSource.Token.IsCancellationRequested)
             {
-                while (!tokenSource.Token.IsCancellationRequested)
+                if (Console.KeyAvailable)
                 {
-                    if (Console.KeyAvailable)
+                    var key = Console.ReadKey(intercept: true);
+                    if (key.Key == ConsoleKey.Escape)
                     {
-                        var key = Console.ReadKey(intercept: true);
-                        if (key.Key == ConsoleKey.Escape)
-                        {
-                            tokenSource.Cancel();
-                            Console.WriteLine("Operation aborted.");
-                            break;
-                        }
+                        tokenSource.Cancel();
+                        Console.WriteLine("Operation aborted.");
+                        break;
                     }
-                    Thread.Sleep(100);
                 }
-            });
+                Thread.Sleep(100);
+            }
+        });
 
-            try
-            {
-                asyncTest.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
-            }
-            catch (OperationCanceledException)
-            {
-                Console.WriteLine("Operation was canceled.");
-            }
-            finally
-            {
-                tokenSource.Cancel();
-                keyWaitTask.Wait();
-            }
+        try
+        {
+            asyncTest.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Operation was canceled.");
+        }
+        finally
+        {
+            tokenSource.Cancel();
+            keyWaitTask.Wait();
         }
     }
 }
