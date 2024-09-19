@@ -13,7 +13,7 @@ public class Connector : IDisposable
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
     /// </summary>
-    private const int TIMEOUT = 5000;
+    public const int DefaultConnectionTimeout = 5000;
 
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.
@@ -72,7 +72,7 @@ public class Connector : IDisposable
     /// <summary>
     /// Maximum connection time. After that the connection attempt is immediately dropped.
     /// </summary>
-    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(DefaultConnectionTimeout);
 
     /// <summary>
     /// True if connected to the remote server.
