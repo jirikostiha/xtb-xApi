@@ -17,7 +17,7 @@ public record TradeTransInfoRecord : ISymbol
         string symbol,
         double? volume,
         long? order,
-        string customComment,
+        string? customComment,
         DateTimeOffset? expiration)
     {
         Price = price;
@@ -33,7 +33,7 @@ public record TradeTransInfoRecord : ISymbol
         Expiration = expiration;
     }
 
-    public string CustomComment { get; init; }
+    public string? CustomComment { get; init; }
 
     public long? Order { get; init; }
 

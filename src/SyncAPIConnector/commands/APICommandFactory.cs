@@ -404,7 +404,7 @@ public static class APICommandFactory
             if (redirectCounter >= MAX_REDIRECTS)
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
-            connector.Redirect(new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort));
+            connector.Redirect(new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort ?? -1));
             redirectCounter++;
             loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
         }
@@ -434,7 +434,7 @@ public static class APICommandFactory
                 throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
 
             await connector.RedirectAsync(
-                new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort),
+                new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort ?? -1),
                 cancellationToken).ConfigureAwait(false);
             redirectCounter++;
             var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);

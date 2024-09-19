@@ -9,6 +9,9 @@ public class LoginResponse : BaseResponse
         : base(body)
     {
         var ob = JsonNode.Parse(body);
+        if (ob is null)
+            return;
+
         StreamSessionId = (string?)ob["streamSessionId"];
 
         if (ob["redirect"] is JsonObject redirectJSON)

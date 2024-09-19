@@ -85,7 +85,7 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync
 
     #endregion Events
 
-    public ApiConnector ApiConnector { get; set; }
+    public ApiConnector ApiConnector { get; }
 
     public StreamingApiConnector? Streaming => ApiConnector.Streaming;
 
@@ -245,11 +245,11 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync
     public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orders, cancellationToken);
 
-    public TradesHistoryResponse GetTradesHistory(DateTimeOffset? start, DateTimeOffset? end = null)
-        => APICommandFactory.ExecuteTradesHistoryCommand(ApiConnector, start, end);
+    public TradesHistoryResponse GetTradesHistory(DateTimeOffset? since, DateTimeOffset? until = null)
+        => APICommandFactory.ExecuteTradesHistoryCommand(ApiConnector, since, until);
 
-    public Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? start, DateTimeOffset? end = null, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteTradesHistoryCommandAsync(ApiConnector, start, end, cancellationToken);
+    public Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? since, DateTimeOffset? until = null, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteTradesHistoryCommandAsync(ApiConnector, since, until, cancellationToken);
 
     public CalendarResponse GetCalendar() => APICommandFactory.ExecuteCalendarCommand(ApiConnector);
 

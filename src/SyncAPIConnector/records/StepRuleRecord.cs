@@ -20,11 +20,11 @@ public record StepRuleRecord : IBaseResponseRecord
         Steps = new LinkedList<StepRecord>();
         if (value["steps"] != null)
         {
-            JsonArray jsonarray = value["steps"].AsArray();
-            foreach (JsonObject i in jsonarray.OfType<JsonObject>())
+            JsonArray jsonarray = value["steps"]?.AsArray() ?? [];
+            foreach (JsonObject jsonObj in jsonarray.OfType<JsonObject>())
             {
-                StepRecord rec = new StepRecord();
-                rec.FieldsFromJsonObject(i);
+                StepRecord rec = new();
+                rec.FieldsFromJsonObject(jsonObj);
                 Steps.AddLast(rec);
             }
         }

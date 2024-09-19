@@ -38,6 +38,11 @@ public class ApiConnector : Connector
     private readonly IStreamingListener? _streamingListener;
 
     /// <summary>
+    /// Streaming endpoint.
+    /// </summary>
+    private IPEndPoint _streamingEndpoint;
+
+    /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
     /// </summary>
     private long _lastCommandTimestamp;
@@ -56,6 +61,7 @@ public class ApiConnector : Connector
     public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
         : base(endpoint)
     {
+        _streamingEndpoint = streamingEndpoint;
         _streamingListener = streamingListener;
     }
 
@@ -131,7 +137,7 @@ public class ApiConnector : Connector
 
         Connected?.Invoke(this, new(endpoint));
 
-        Streaming = new StreamingApiConnector(endpoint, _streamingListener);
+        Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
     }
 
     /// <summary>
@@ -199,12 +205,14 @@ public class ApiConnector : Connector
 
         Connected?.Invoke(this, new(endpoint));
 
-        Streaming = new StreamingApiConnector(endpoint, _streamingListener);
+        Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
     }
 
     private void EstablishSecureConnection()
     {
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
         var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
         var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
 
         //sslStream.AuthenticateAsClient(server.Address);
@@ -223,7 +231,9 @@ public class ApiConnector : Connector
 
     private async Task EstablishSecureConnectionAsync()
     {
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
         var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
         var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
 
         await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
@@ -244,6 +254,7 @@ public class ApiConnector : Connector
             Disconnect(true);
 
         Endpoint = endpoint;
+        _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
         Connect();
     }
 
@@ -260,6 +271,7 @@ public class ApiConnector : Connector
             Disconnect(true);
 
         Endpoint = endpoint;
+        _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
         await ConnectAsync(true, cancellationToken).ConfigureAwait(false);
     }
 

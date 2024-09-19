@@ -73,7 +73,7 @@ public interface IXApiClientAsync : IXApiClientBase
 
     Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default);
 
-    Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? start, DateTimeOffset? end = null, CancellationToken cancellationToken = default);
+    Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? since, DateTimeOffset? until = null, CancellationToken cancellationToken = default);
 
     Task<CalendarResponse> GetCalendarAsync(CancellationToken cancellationToken = default);
 
