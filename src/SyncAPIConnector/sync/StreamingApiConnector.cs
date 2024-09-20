@@ -118,9 +118,9 @@ public class StreamingApiConnector : Connector
             throw new APICommunicationException("Stream already connected.");
         }
 
-        ApiSocket = new TcpClient();
+        TcpClient = new TcpClient();
         var endpoint = Endpoint;
-        ApiSocket.Connect(endpoint.Address, endpoint.Port);
+        TcpClient.Connect(endpoint.Address, endpoint.Port);
 
         _apiConnected = true;
 
@@ -131,14 +131,14 @@ public class StreamingApiConnector : Connector
 #pragma warning disable CA5359 // Do Not Disable Certificate Validation
             var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
 #pragma warning restore CA5359 // Do Not Disable Certificate Validation
-            var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
+            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
             ssl.AuthenticateAsClient(endpoint.Address.ToString());
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }
         else
         {
-            NetworkStream ns = ApiSocket.GetStream();
+            NetworkStream ns = TcpClient.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
         }
@@ -169,11 +169,11 @@ public class StreamingApiConnector : Connector
             throw new APICommunicationException("Stream already connected.");
         }
 
-        ApiSocket = new TcpClient();
+        TcpClient = new TcpClient();
         var endpoint = Endpoint;
         try
         {
-            await ApiSocket.ConnectAsync(endpoint.Address, endpoint.Port);
+            await TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
         }
         catch (OperationCanceledException)
         {
@@ -189,14 +189,14 @@ public class StreamingApiConnector : Connector
 #pragma warning disable CA5359 // Do Not Disable Certificate Validation
             var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
 #pragma warning restore CA5359 // Do Not Disable Certificate Validation
-            var ssl = new SslStream(ApiSocket.GetStream(), false, callback);
+            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
             await ssl.AuthenticateAsClientAsync(endpoint.Address.ToString());
             StreamWriter = new StreamWriter(ssl);
             StreamReader = new StreamReader(ssl);
         }
         else
         {
-            var networkStream = ApiSocket.GetStream();
+            var networkStream = TcpClient.GetStream();
             StreamWriter = new StreamWriter(networkStream);
             StreamReader = new StreamReader(networkStream);
         }

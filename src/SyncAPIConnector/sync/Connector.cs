@@ -1,10 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
@@ -57,7 +61,7 @@ public class Connector : IDisposable
     /// <summary>
     /// Socket that handles the connection.
     /// </summary>
-    protected TcpClient ApiSocket { get; set; }
+    protected TcpClient TcpClient { get; set; }
 
     /// <summary>
     /// Stream writer (for outgoing data).
@@ -255,6 +259,60 @@ public class Connector : IDisposable
         }
     }
 
+    protected void EstablishSecureConnection()
+    {
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
+        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
+
+        bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
+        {
+#if NET5_0_OR_GREATER
+            sslStream.AuthenticateAsClient(CreateAuthenticationOptions());
+#else
+            sslStream.AuthenticateAsClient(Endpoint.Address.ToString(), [], SslProtocols.None, false);
+#endif
+        });
+
+        if (!authenticated)
+            throw new APICommunicationException("Error during SSL handshaking (timed out?).");
+
+        StreamWriter = new StreamWriter(sslStream);
+        StreamReader = new StreamReader(sslStream);
+    }
+
+    protected async Task EstablishSecureConnectionAsync(CancellationToken cancellationToken = default)
+    {
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
+
+        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
+
+#if NETSTANDARD2_1_OR_GREATER
+        await sslStream.AuthenticateAsClientAsync(CreateAuthenticationOptions(), cancellationToken);
+#else
+        await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], SslProtocols.None, false);
+#endif
+
+        StreamWriter = new StreamWriter(sslStream);
+        StreamReader = new StreamReader(sslStream);
+    }
+
+#if (NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+    private SslClientAuthenticationOptions CreateAuthenticationOptions()
+    {
+        return new SslClientAuthenticationOptions()
+        {
+            TargetHost = Endpoint.Address.ToString(),
+            ClientCertificates = [],
+            EnabledSslProtocols = SslProtocols.None,
+            CertificateRevocationCheckMode = X509RevocationMode.NoCheck
+        };
+    }
+#endif
+
     /// <summary>
     /// Disconnects from the remote server.
     /// </summary>
@@ -265,7 +323,7 @@ public class Connector : IDisposable
         {
             StreamReader.Close();
             StreamWriter.Close();
-            ApiSocket.Close();
+            TcpClient.Close();
 
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
@@ -283,7 +341,7 @@ public class Connector : IDisposable
             {
                 StreamReader?.Dispose();
                 StreamWriter?.Dispose();
-                ApiSocket?.Dispose();
+                TcpClient?.Dispose();
                 _writeLock?.Dispose();
             }
 

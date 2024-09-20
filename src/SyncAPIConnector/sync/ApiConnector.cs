@@ -104,20 +104,20 @@ public class ApiConnector : Connector
             throw new APICommunicationException("No endpoint to connect to.");
 
         var endpoint = Endpoint;
-        ApiSocket = new TcpClient();
+        TcpClient = new TcpClient();
 
         bool connectionAttempted = false;
 
-        while (!connectionAttempted || !ApiSocket.Connected)
+        while (!connectionAttempted || !TcpClient.Connected)
         {
             // Try to connect asynchronously and wait for the result
-            IAsyncResult result = ApiSocket.BeginConnect(endpoint.Address, endpoint.Port, null, null);
+            IAsyncResult result = TcpClient.BeginConnect(endpoint.Address, endpoint.Port, null, null);
             connectionAttempted = result.AsyncWaitHandle.WaitOne(ConnectionTimeout, true);
 
             // If connection attempt failed (timeout) or not connected
-            if (!connectionAttempted || !ApiSocket.Connected)
+            if (!connectionAttempted || !TcpClient.Connected)
             {
-                ApiSocket.Close();
+                TcpClient.Close();
                 throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
             }
         }
@@ -128,7 +128,7 @@ public class ApiConnector : Connector
         }
         else
         {
-            NetworkStream ns = ApiSocket.GetStream();
+            NetworkStream ns = TcpClient.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
         }
@@ -151,7 +151,7 @@ public class ApiConnector : Connector
             throw new APICommunicationException("No server to connect to.");
 
         var endpoint = Endpoint;
-        ApiSocket = new TcpClient
+        TcpClient = new TcpClient
         {
             ReceiveTimeout = ConnectionTimeout.Milliseconds,
             SendTimeout = ConnectionTimeout.Milliseconds
@@ -159,44 +159,44 @@ public class ApiConnector : Connector
 
         bool connectionAttempted = false;
 
-        while (!connectionAttempted || !ApiSocket.Connected)
+        while (!connectionAttempted || !TcpClient.Connected)
         {
             try
             {
                 // Try to connect asynchronously and wait for the result
-                var connectTask = ApiSocket.ConnectAsync(endpoint.Address, endpoint.Port);
+                var connectTask = TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
                 var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
 
                 var completedTask = await Task.WhenAny(connectTask, timeoutTask);
 
-                connectionAttempted = completedTask == connectTask && ApiSocket.Connected;
+                connectionAttempted = completedTask == connectTask && TcpClient.Connected;
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    ApiSocket.Close();
+                    TcpClient.Close();
                     throw new OperationCanceledException(cancellationToken);
                 }
 
-                if (!connectionAttempted || !ApiSocket.Connected)
+                if (!connectionAttempted || !TcpClient.Connected)
                 {
-                    ApiSocket.Close();
+                    TcpClient.Close();
                     throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
                 }
             }
             catch
             {
-                ApiSocket.Close();
+                TcpClient.Close();
                 throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
             }
         }
 
         if (ShallUseSecureConnection)
         {
-            await EstablishSecureConnectionAsync();
+            await EstablishSecureConnectionAsync(cancellationToken);
         }
         else
         {
-            NetworkStream ns = ApiSocket.GetStream();
+            NetworkStream ns = TcpClient.GetStream();
             StreamWriter = new StreamWriter(ns);
             StreamReader = new StreamReader(ns);
         }
@@ -206,40 +206,6 @@ public class ApiConnector : Connector
         Connected?.Invoke(this, new(endpoint));
 
         Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
-    }
-
-    private void EstablishSecureConnection()
-    {
-#pragma warning disable CA5359 // Do Not Disable Certificate Validation
-        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-#pragma warning restore CA5359 // Do Not Disable Certificate Validation
-        var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
-
-        //sslStream.AuthenticateAsClient(server.Address);
-
-        bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
-        {
-            sslStream.AuthenticateAsClient(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
-        });
-
-        if (!authenticated)
-            throw new APICommunicationException("Error during SSL handshaking (timed out?).");
-
-        StreamWriter = new StreamWriter(sslStream);
-        StreamReader = new StreamReader(sslStream);
-    }
-
-    private async Task EstablishSecureConnectionAsync()
-    {
-#pragma warning disable CA5359 // Do Not Disable Certificate Validation
-        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-#pragma warning restore CA5359 // Do Not Disable Certificate Validation
-        var sslStream = new SslStream(ApiSocket.GetStream(), false, callback);
-
-        await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
-
-        StreamWriter = new StreamWriter(sslStream);
-        StreamReader = new StreamReader(sslStream);
     }
 
     /// <summary>
