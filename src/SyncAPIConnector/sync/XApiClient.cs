@@ -98,7 +98,7 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync
 
     public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        await ApiConnector.ConnectAsync(true, cancellationToken);
+        await ApiConnector.ConnectAsync(cancellationToken);
     }
 
     public void Disconnect()

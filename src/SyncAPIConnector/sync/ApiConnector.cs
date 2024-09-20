@@ -97,8 +97,7 @@ public class ApiConnector : Connector
     /// <summary>
     /// Connects to the remote server.
     /// </summary>
-    /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
-    public void Connect(bool lookForBackups = true)
+    public void Connect()
     {
         if (Endpoint == null)
             throw new APICommunicationException("No endpoint to connect to.");
@@ -143,9 +142,8 @@ public class ApiConnector : Connector
     /// <summary>
     /// Connects to the remote server.
     /// </summary>
-    /// <param name="lookForBackups">If false, no connection to backup servers will be made</param>
     /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task ConnectAsync(bool lookForBackups = true, CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (Endpoint == null)
             throw new APICommunicationException("No server to connect to.");
@@ -238,7 +236,7 @@ public class ApiConnector : Connector
 
         Endpoint = endpoint;
         _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
-        await ConnectAsync(true, cancellationToken).ConfigureAwait(false);
+        await ConnectAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
