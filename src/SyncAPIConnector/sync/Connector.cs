@@ -22,7 +22,7 @@ public class Connector : IDisposable
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.
     /// </summary>
-    private readonly SemaphoreSlim _writeLock = new(1, 1);
+    private readonly SemaphoreSlim _lock = new(1, 1);
 
     /// <summary>
     /// Creates new instance.
@@ -95,7 +95,7 @@ public class Connector : IDisposable
     /// <param name="message">Message to send</param>
     protected void WriteMessage(string message)
     {
-        _writeLock.Wait();
+        _lock.Wait();
         try
         {
             if (IsConnected)
@@ -121,7 +121,7 @@ public class Connector : IDisposable
         }
         finally
         {
-            _writeLock.Release();
+            _lock.Release();
         }
     }
 
@@ -132,7 +132,7 @@ public class Connector : IDisposable
     /// <param name="cancellationToken">Cancellation token to cancel the operation</param>
     protected async Task WriteMessageAsync(string message, CancellationToken cancellationToken = default)
     {
-        await _writeLock.WaitAsync(cancellationToken);
+        await _lock.WaitAsync(cancellationToken);
         try
         {
             if (IsConnected)
@@ -162,7 +162,7 @@ public class Connector : IDisposable
         }
         finally
         {
-            _writeLock.Release();
+            _lock.Release();
         }
     }
 
@@ -342,7 +342,7 @@ public class Connector : IDisposable
                 StreamReader?.Dispose();
                 StreamWriter?.Dispose();
                 TcpClient?.Dispose();
-                _writeLock?.Dispose();
+                _lock?.Dispose();
             }
 
             _disposed = true;
