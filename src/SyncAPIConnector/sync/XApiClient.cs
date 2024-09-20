@@ -11,38 +11,41 @@ using Xtb.XApi.Responses;
 namespace Xtb.XApi;
 
 /// <summary>
-/// Xtb xapi client.
+/// Xtb XApi client.
 /// </summary>
-public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
+public class XApiClient : IXApiClientSync, IXApiClientAsync
 {
-    private Credentials? _credentials;
-
     /// <summary>
-    /// Creates new instance.
+    /// Helper method to create a new instance based on address and ports.
     /// </summary>
     /// <param name="address">Endpoint address.</param>
     /// <param name="requestingPort">Port for requesting data.</param>
     /// <param name="streamingPort">Port for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public XApiClient(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
-        : this(
-              new IPEndPoint(IPAddress.Parse(address), requestingPort),
-              new IPEndPoint(IPAddress.Parse(address), streamingPort),
-              streamingListener)
+    public static XApiClient Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
     {
+        return new XApiClient(
+            ApiConnector.Create(address, requestingPort, streamingPort, streamingListener));
     }
 
     /// <summary>
-    /// Creates new instance.
+    /// Helper method to create a new instance based on endpoints.
     /// </summary>
     /// <param name="endpoint">Endpoint for requesting data.</param>
     /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public XApiClient(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
-        : this(new ApiConnector(endpoint, streamingEndpoint, streamingListener))
+    public static XApiClient Create(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
+        var apiConnector = new ApiConnector(endpoint, streamingEndpoint, streamingListener);
+        return new XApiClient(apiConnector);
     }
 
+    private Credentials? _credentials;
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
+    /// <param name="apiConnector"> Api connector. </param>
     public XApiClient(ApiConnector apiConnector)
     {
         ApiConnector = apiConnector;
@@ -82,7 +85,7 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 
     #endregion Events
 
-    public ApiConnector ApiConnector { get; set; }
+    public ApiConnector ApiConnector { get; }
 
     public StreamingApiConnector? Streaming => ApiConnector.Streaming;
 
@@ -242,11 +245,11 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
     public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orders, cancellationToken);
 
-    public TradesHistoryResponse GetTradesHistory(DateTimeOffset? start, DateTimeOffset? end = null)
-        => APICommandFactory.ExecuteTradesHistoryCommand(ApiConnector, start, end);
+    public TradesHistoryResponse GetTradesHistory(DateTimeOffset? since, DateTimeOffset? until = null)
+        => APICommandFactory.ExecuteTradesHistoryCommand(ApiConnector, since, until);
 
-    public Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? start, DateTimeOffset? end = null, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteTradesHistoryCommandAsync(ApiConnector, start, end, cancellationToken);
+    public Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? since, DateTimeOffset? until = null, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteTradesHistoryCommandAsync(ApiConnector, since, until, cancellationToken);
 
     public CalendarResponse GetCalendar() => APICommandFactory.ExecuteCalendarCommand(ApiConnector);
 
@@ -258,18 +261,4 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync, IDisposable
 
     public Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteNewsCommandAsync(ApiConnector, since, until, cancellationToken);
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            ApiConnector?.Dispose();
-        }
-    }
 }

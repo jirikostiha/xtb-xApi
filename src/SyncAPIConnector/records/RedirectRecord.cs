@@ -4,16 +4,16 @@ namespace Xtb.XApi.Records;
 
 public record RedirectRecord : IBaseResponseRecord
 {
-    public int MainPort { get; set; }
+    public int? MainPort { get; set; }
 
-    public int StreamingPort { get; set; }
+    public int? StreamingPort { get; set; }
 
     public string? Address { get; set; }
 
     public void FieldsFromJsonObject(JsonObject value)
     {
-        MainPort = (int)value["mainPort"];
-        StreamingPort = (int)value["streamingPort"];
+        MainPort = (int?)value["mainPort"];
+        StreamingPort = (int?)value["streamingPort"];
         Address = (string?)value["address"];
     }
 

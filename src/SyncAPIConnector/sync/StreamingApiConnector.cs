@@ -17,20 +17,21 @@ public class StreamingApiConnector : IConnectable
     private Task? _streamingReaderTask;
 
     /// <summary>
-    /// Dedicated streaming listener.
-    /// </summary>
-    private readonly IStreamingListener? _streamingListener;
-
-    /// <summary>
-    /// Creates new instance.
+    /// Helper method to create a new instance based on address and port.
     /// </summary>
     /// <param name="address">Endpoint address.</param>
     /// <param name="port">Port for streaming data.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(string address, int port, IStreamingListener? streamingListener = null)
-        : this(new IPEndPoint(IPAddress.Parse(address), port), streamingListener)
+    public static StreamingApiConnector Create(string address, int port, IStreamingListener? streamingListener = null)
     {
+        var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
+        return new StreamingApiConnector(endpoint, streamingListener);
     }
+
+    /// <summary>
+    /// Dedicated streaming listener.
+    /// </summary>
+    private readonly IStreamingListener? _streamingListener;
 
     /// <summary>
     /// Creates new instance.
@@ -128,6 +129,8 @@ public class StreamingApiConnector : IConnectable
         }
 
         Connector.Connect();
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
 
         if (_streamingReaderTask == null)
         {
@@ -149,6 +152,8 @@ public class StreamingApiConnector : IConnectable
         }
 
         await Connector.ConnectAsync(cancellationToken);
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
 
         if (_streamingReaderTask == null)
         {
@@ -179,23 +184,24 @@ public class StreamingApiConnector : IConnectable
     {
         try
         {
-            var message = await Connector.ReadMessageAsync(cancellationToken).ConfigureAwait(false);
+            var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false)
+                ?? throw new InvalidOperationException("Incoming streaming message is null.");
 
-            if (message == null)
-                throw new InvalidOperationException("Incoming streaming message is null.");
+            var responseBody = JsonNode.Parse(message)
+                ?? throw new InvalidOperationException("Result of incoming parsed streaming message is null.");
 
-            var responseBody = JsonNode.Parse(message);
-            if (responseBody is null)
-                throw new InvalidOperationException("Result of incoming parsed streaming message is null.");
+            var commandName = (responseBody["command"]?.ToString())
+                ?? throw new InvalidOperationException("Incoming streaming command is null.");
 
-            var commandName = responseBody["command"]?.ToString();
-            if (commandName == null)
-                throw new InvalidOperationException("Incoming streaming command is null.");
+            var jsonSubnode = responseBody["data"]
+                ?? throw new InvalidOperationException("Parsed json data object is null.");
+
+            var jsonDataObject = jsonSubnode.AsObject();
 
             if (commandName == StreamingCommandName.TickPrices)
             {
                 var tickRecord = new StreamingTickRecord();
-                tickRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                tickRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
@@ -205,7 +211,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.Trade)
             {
                 var tradeRecord = new StreamingTradeRecord();
-                tradeRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                tradeRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
@@ -215,7 +221,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.Balance)
             {
                 var balanceRecord = new StreamingBalanceRecord();
-                balanceRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                balanceRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
@@ -225,7 +231,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.TradeStatus)
             {
                 var tradeStatusRecord = new StreamingTradeStatusRecord();
-                tradeStatusRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                tradeStatusRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
@@ -235,7 +241,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.Profit)
             {
                 var profitRecord = new StreamingProfitRecord();
-                profitRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                profitRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
@@ -245,7 +251,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.News)
             {
                 var newsRecord = new StreamingNewsRecord();
-                newsRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                newsRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
@@ -255,7 +261,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.KeepAlive)
             {
                 var keepAliveRecord = new StreamingKeepAliveRecord();
-                keepAliveRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                keepAliveRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
@@ -265,7 +271,7 @@ public class StreamingApiConnector : IConnectable
             else if (commandName == StreamingCommandName.Candle)
             {
                 var candleRecord = new StreamingCandleRecord();
-                candleRecord.FieldsFromJsonObject(responseBody["data"].AsObject());
+                candleRecord.FieldsFromJsonObject(jsonDataObject);
 
                 if (_streamingListener != null)
                     await _streamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
@@ -294,7 +300,7 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribePrice(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null)
     {
-        var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
+        var tickPricesSubscribe = new TickPricesSubscribe(symbol, GetVerifiedSessionId(), minArrivalTime, maxLevel);
         Connector.SendMessage(tickPricesSubscribe.ToString());
     }
 
@@ -322,7 +328,7 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribeTrades()
     {
-        var tradeRecordsSubscribe = new TradeRecordsSubscribe(StreamSessionId);
+        var tradeRecordsSubscribe = new TradeRecordsSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(tradeRecordsSubscribe.ToString());
     }
 
@@ -334,7 +340,7 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribeBalance()
     {
-        var balanceRecordsSubscribe = new BalanceRecordsSubscribe(StreamSessionId);
+        var balanceRecordsSubscribe = new BalanceRecordsSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(balanceRecordsSubscribe.ToString());
     }
 
@@ -346,19 +352,19 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribeTradeStatus()
     {
-        var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(StreamSessionId);
+        var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(tradeStatusRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTradeStatus()
     {
-        var tradeStatusRecordsStop = new TradeRecordsSubscribe(StreamSessionId);
+        var tradeStatusRecordsStop = new TradeRecordsSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(tradeStatusRecordsStop.ToString());
     }
 
     public void SubscribeProfits()
     {
-        var profitsSubscribe = new ProfitsSubscribe(StreamSessionId);
+        var profitsSubscribe = new ProfitsSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(profitsSubscribe.ToString());
     }
 
@@ -370,7 +376,7 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribeNews()
     {
-        var newsSubscribe = new NewsSubscribe(StreamSessionId);
+        var newsSubscribe = new NewsSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(newsSubscribe.ToString());
     }
 
@@ -382,7 +388,7 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribeKeepAlive()
     {
-        var keepAliveSubscribe = new KeepAliveSubscribe(StreamSessionId);
+        var keepAliveSubscribe = new KeepAliveSubscribe(GetVerifiedSessionId());
         Connector.SendMessage(keepAliveSubscribe.ToString());
     }
 
@@ -394,7 +400,7 @@ public class StreamingApiConnector : IConnectable
 
     public void SubscribeCandles(string symbol)
     {
-        var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, StreamSessionId);
+        var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, GetVerifiedSessionId());
         Connector.SendMessage(candleRecordsSubscribe.ToString());
     }
 
@@ -406,7 +412,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribePriceAsync(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null, CancellationToken cancellationToken = default)
     {
-        var tickPricesSubscribe = new TickPricesSubscribe(symbol, StreamSessionId, minArrivalTime, maxLevel);
+        var tickPricesSubscribe = new TickPricesSubscribe(symbol, GetVerifiedSessionId(), minArrivalTime, maxLevel);
         await Connector.SendMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
     }
 
@@ -434,7 +440,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
-        var tradeRecordsSubscribe = new TradeRecordsSubscribe(StreamSessionId);
+        var tradeRecordsSubscribe = new TradeRecordsSubscribe(GetVerifiedSessionId());
         await Connector.SendMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
     }
 
@@ -446,7 +452,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
-        var balanceRecordsSubscribe = new BalanceRecordsSubscribe(StreamSessionId);
+        var balanceRecordsSubscribe = new BalanceRecordsSubscribe(GetVerifiedSessionId());
         await Connector.SendMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
     }
 
@@ -458,7 +464,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
-        var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(StreamSessionId);
+        var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(GetVerifiedSessionId());
         await Connector.SendMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
     }
 
@@ -470,7 +476,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
-        var profitsSubscribe = new ProfitsSubscribe(StreamSessionId);
+        var profitsSubscribe = new ProfitsSubscribe(GetVerifiedSessionId());
         await Connector.SendMessageAsync(profitsSubscribe.ToString(), cancellationToken);
     }
 
@@ -482,7 +488,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
-        var newsSubscribe = new NewsSubscribe(StreamSessionId);
+        var newsSubscribe = new NewsSubscribe(GetVerifiedSessionId());
         await Connector.SendMessageAsync(newsSubscribe.ToString(), cancellationToken);
     }
 
@@ -494,7 +500,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
-        var keepAliveSubscribe = new KeepAliveSubscribe(StreamSessionId);
+        var keepAliveSubscribe = new KeepAliveSubscribe(GetVerifiedSessionId());
         await Connector.SendMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
     }
 
@@ -506,7 +512,7 @@ public class StreamingApiConnector : IConnectable
 
     public async Task SubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
-        var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, StreamSessionId);
+        var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, GetVerifiedSessionId());
         await Connector.SendMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
     }
 
@@ -514,6 +520,14 @@ public class StreamingApiConnector : IConnectable
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
         await Connector.SendMessageAsync(candleRecordsStop.ToString(), cancellationToken);
+    }
+
+    private string GetVerifiedSessionId()
+    {
+        if (StreamSessionId == null)
+            throw new InvalidOperationException($"{nameof(StreamSessionId)} is null");
+
+        return StreamSessionId;
     }
 
     #endregion subscribe, unsubscribe

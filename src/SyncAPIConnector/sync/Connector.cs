@@ -3,10 +3,12 @@ using System.IO;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using xAPI.Utils;
+using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
@@ -15,7 +17,7 @@ public class Connector : IClient, IDisposable
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
     /// </summary>
-    public const int TIMEOUT = 5000;
+    public const int DefaultConnectionTimeout = 5000;
 
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.
@@ -68,7 +70,7 @@ public class Connector : IClient, IDisposable
     /// <summary>
     /// Maximum connection time. After that the connection attempt is immediately dropped.
     /// </summary>
-    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(DefaultConnectionTimeout);
 
     /// <summary>
     /// Maximum connection time. After that the connection attempt is immediately dropped.
@@ -187,7 +189,7 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public void SendMessage(string message)
     {
-        _lock.Wait();
+        await _lock.WaitAsync(cancellationToken);
         try
         {
             if (IsConnected)
@@ -243,6 +245,7 @@ public class Connector : IClient, IDisposable
         }
         catch (IOException ex)
         {
+            _lock.Release();
             throw new APICommunicationException($"Error while sending message:'{message.Substring(0, 250)}'", ex);
         }
     }
@@ -349,55 +352,60 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    /// <inheritdoc/>
-    public string SendMessageWaitResponse(string message)
+    protected void EstablishSecureConnection()
     {
-        _lock.Wait();
-        try
-        {
-            SendMessageInternal(message);
-            string response = ReadMessage();
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
+        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
 
-            if (string.IsNullOrEmpty(response))
-            {
-                Disconnect();
-                throw new APICommunicationException("Server not responding. Response has no value.");
-            }
-
-            return response;
-        }
-        finally
+        bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
         {
-            _lock.Release();
-        }
+#if NET5_0_OR_GREATER
+            sslStream.AuthenticateAsClient(CreateAuthenticationOptions());
+#else
+            sslStream.AuthenticateAsClient(Endpoint.Address.ToString(), [], SslProtocols.None, false);
+#endif
+        });
+
+        if (!authenticated)
+            throw new APICommunicationException("Error during SSL handshaking (timed out?).");
+
+        StreamWriter = new StreamWriter(sslStream);
+        StreamReader = new StreamReader(sslStream);
     }
 
-    /// <inheritdoc/>
-    public async Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default)
+    protected async Task EstablishSecureConnectionAsync(CancellationToken cancellationToken = default)
     {
-        await _lock.WaitAsync(cancellationToken);
-        try
-        {
-            await SendMessageInternalAsync(message, cancellationToken).ConfigureAwait(false);
-            var response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
+#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+#pragma warning restore CA5359 // Do Not Disable Certificate Validation
 
-            if (string.IsNullOrEmpty(response))
-            {
-                Disconnect();
-                throw new APICommunicationException("Server not responding. Response has no value.");
-            }
+        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
 
-            return response;
-        }
-        finally
-        {
-            _lock.Release();
-        }
+#if NETSTANDARD2_1_OR_GREATER
+        await sslStream.AuthenticateAsClientAsync(CreateAuthenticationOptions(), cancellationToken);
+#else
+        await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], SslProtocols.None, false);
+#endif
+
+        StreamWriter = new StreamWriter(sslStream);
+        StreamReader = new StreamReader(sslStream);
     }
 
+#if (NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+    private SslClientAuthenticationOptions CreateAuthenticationOptions()
+    {
+        return new SslClientAuthenticationOptions()
+        {
+            TargetHost = Endpoint.Address.ToString(),
+            ClientCertificates = [],
+            EnabledSslProtocols = SslProtocols.None,
+            CertificateRevocationCheckMode = X509RevocationMode.NoCheck
+        };
+    }
+#endif
 
-    /// <inheritdoc/>
-    public void Disconnect()
     {
         if (IsConnected)
         {

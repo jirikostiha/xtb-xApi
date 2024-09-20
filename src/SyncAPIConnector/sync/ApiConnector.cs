@@ -16,7 +16,24 @@ public class ApiConnector : IConnectable
     /// </summary>
     private const int COMMAND_TIME_SPACE = 200;
 
-    #endregion Settings
+    /// <summary>
+    /// Helper method to create a new instance based on address and ports.
+    /// </summary>
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="requestingPort">Port for requesting data.</param>
+    /// <param name="streamingPort">Port for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public static ApiConnector Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
+    {
+        var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
+        var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
+        return new ApiConnector(requestingEndpoint, streamingEndpoint, streamingListener);
+    }
+
+    /// <summary>
+    /// Streaming endpoint.
+    /// </summary>
+    private IPEndPoint _streamingEndpoint;
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -47,18 +64,6 @@ public class ApiConnector : IConnectable
         : this(new Connector(endpoint), new StreamingApiConnector(streamingEndpoint, streamingListener))
     {
     }
-    /// <param name="address">Endpoint address.</param>
-    /// <param name="requestingPort">Port for requesting data.</param>
-    /// <param name="streamingPort">Port for streaming data.</param>
-    /// <param name="streamingListener">Streaming listener.</param>
-    public ApiConnector(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
-        : this(new IPEndPoint(IPAddress.Parse(address), requestingPort), new IPEndPoint(IPAddress.Parse(address), streamingPort))
-    {
-    }
-
-    /// <summary>
-    /// Creates new instance.
-    /// </summary>
     /// <param name="connector">Underlaying client.</param>
     /// <param name="streamingConnector">Streaming client.</param>
     public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
@@ -66,6 +71,7 @@ public class ApiConnector : IConnectable
         : base(endpoint)
     {
         Client = connector;
+        _streamingEndpoint = streamingEndpoint;
         Streaming = streamingConnector;
     }
 
@@ -99,10 +105,8 @@ public class ApiConnector : IConnectable
     /// Streaming connector.
     /// </summary>
     public StreamingApiConnector? Streaming { get; private set; }
-
     /// <inheritdoc/>
     public bool IsConnected => Client.IsConnected;
-
     /// <inheritdoc/>
     public IPEndPoint Endpoint => Client.Endpoint;
 
@@ -110,12 +114,14 @@ public class ApiConnector : IConnectable
     public void Connect()
     {
         Client.Connect();
+        _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
     }
 
     /// <inheritdoc/>
     public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         await Client.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
     }
 
     /// <summary>

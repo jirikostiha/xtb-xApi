@@ -69,11 +69,11 @@ public record TradingHoursRecord : IBaseResponseRecord, ISymbol
         Quotes = new LinkedList<HoursRecord>();
         if (value["quotes"] != null)
         {
-            JsonArray jsonarray = value["quotes"].AsArray();
-            foreach (JsonObject i in jsonarray.OfType<JsonObject>())
+            JsonArray jsonarray = value["quotes"]?.AsArray() ?? [];
+            foreach (JsonObject jsonObj in jsonarray.OfType<JsonObject>())
             {
-                HoursRecord rec = new HoursRecord();
-                rec.FieldsFromJsonObject(i);
+                HoursRecord rec = new();
+                rec.FieldsFromJsonObject(jsonObj);
                 Quotes.AddLast(rec);
             }
         }
@@ -81,11 +81,11 @@ public record TradingHoursRecord : IBaseResponseRecord, ISymbol
         Trading = new LinkedList<HoursRecord>();
         if (value["trading"] != null)
         {
-            JsonArray jsonarray = value["trading"].AsArray();
-            foreach (JsonObject i in jsonarray.OfType<JsonObject>())
+            JsonArray jsonarray = value["trading"]?.AsArray() ?? [];
+            foreach (JsonObject jsonObj in jsonarray.OfType<JsonObject>())
             {
-                HoursRecord rec = new HoursRecord();
-                rec.FieldsFromJsonObject(i);
+                HoursRecord rec = new();
+                rec.FieldsFromJsonObject(jsonObj);
                 Trading.AddLast(rec);
             }
         }

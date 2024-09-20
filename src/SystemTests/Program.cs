@@ -32,22 +32,23 @@ internal static class Program
 
     private static void RunSyncTest()
     {
-        using (var client = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        var client = new XApiClient(apiConnector);
 
-        Console.WriteLine();
         Console.WriteLine("----Sync test---");
-            var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
-            syncTest.Run();
+        var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
+        syncTest.Run();
     }
 
     private static void RunAsyncTest()
     {
-        using (var apiConnector = new XApiClient(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        var client = new XApiClient(apiConnector);
 
         Console.WriteLine();
         Console.WriteLine("----Async test---");
         Console.WriteLine("(esc) abort");
-            var asyncTest = new AsyncTest(apiConnector, _userId, _password);
+        var asyncTest = new AsyncTest(client, _userId, _password);
         using var tokenSource = new CancellationTokenSource();
 
         var keyWaitTask = Task.Run(() =>
@@ -70,7 +71,7 @@ internal static class Program
 
         try
         {
-                asyncTest.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
+            asyncTest.RunAsync(tokenSource.Token).GetAwaiter().GetResult();
         }
         catch (OperationCanceledException)
         {

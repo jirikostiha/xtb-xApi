@@ -434,6 +434,7 @@ public static class APICommandFactory
 
         //    var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
         //    await connector.RedirectAsync(newServer, cancellationToken).ConfigureAwait(false);
+                new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort),
         //    redirectCounter++;
         //    var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
         //    loginResponse = new LoginResponse(jsonObj2.ToString());

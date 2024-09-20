@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.SystemTests", "xAPITest\Xtb.XApi.SystemTests.csproj", "{3F0B8C9E-EBFD-4A27-8080-D60418449217}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncAPIConnect", "SyncAPIConnector\SyncAPIConnect.csproj", "{E6BC484B-A042-4CA6-9079-E91136D92207}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{2D6B372D-4BBE-456D-B399-D07957698056}"
@@ -25,20 +23,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{CACC
 		..\.github\dependabot.yml = ..\.github\dependabot.yml
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.SystemTests", "SystemTests\Xtb.XApi.SystemTests.csproj", "{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3F0B8C9E-EBFD-4A27-8080-D60418449217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F0B8C9E-EBFD-4A27-8080-D60418449217}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F0B8C9E-EBFD-4A27-8080-D60418449217}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F0B8C9E-EBFD-4A27-8080-D60418449217}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E6BC484B-A042-4CA6-9079-E91136D92207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E6BC484B-A042-4CA6-9079-E91136D92207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6BC484B-A042-4CA6-9079-E91136D92207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6BC484B-A042-4CA6-9079-E91136D92207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
