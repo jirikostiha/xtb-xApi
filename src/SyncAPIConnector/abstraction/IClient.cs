@@ -1,26 +1,25 @@
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace xAPI
+namespace Xtb.XApi;
+
+/// <summary>
+/// Remote client interface.
+/// </summary>
+public interface IClient : IConnectable, ISender, IReceiver
 {
     /// <summary>
-    /// Remote client interface.
+    /// Send a message to the remote endpoint and wait for response.
     /// </summary>
-    public interface IClient : IConnectable, ISender, IReceiver
-    {
-        /// <summary>
-        /// Send a message to the remote endpoint and wait for response.
-        /// </summary>
-        /// <param name="message">Message to send.</param>
-        /// <returns>Response from the endpoint.</returns>
-        public string SendMessageWaitResponse(string message);
+    /// <param name="message">Message to send.</param>
+    /// <returns>Response from the endpoint.</returns>
+    public string SendMessageWaitResponse(string message);
 
-        /// <summary>
-        /// Send a message to the remote endpoint.
-        /// </summary>
-        /// <param name="message">A message to send.</param>
-        /// <param name="cancellationToken">Token to cancel operation.</param>
-        /// <returns>Response from the endpoint.</returns>
-        Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default);
-    }
+    /// <summary>
+    /// Send a message to the remote endpoint.
+    /// </summary>
+    /// <param name="message">A message to send.</param>
+    /// <param name="cancellationToken">Token to cancel operation.</param>
+    /// <returns>Response from the endpoint.</returns>
+    Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default);
 }

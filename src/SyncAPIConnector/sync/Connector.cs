@@ -48,11 +48,15 @@ public class Connector : IClient, IDisposable
     protected void OnConnected(IPEndPoint endpoint) => Connected?.Invoke(this, new(endpoint));
     #endregion Events
 
-    /// <summary>
-    /// Endpoint that the connection was established with.
+    /// <inheritdoc/>
     public IPEndPoint Endpoint { get; set; }
 
+    /// <summary>
+    /// Determines if secure connection shall be used.
+    /// </summary>
     public bool ShallUseSecureConnection { get; init; }
+
+    /// <summary>
     /// Socket that handles the connection.
     /// </summary>
     protected TcpClient TcpClient { get; set; }
@@ -73,14 +77,9 @@ public class Connector : IClient, IDisposable
     public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(DefaultConnectionTimeout);
 
     /// <summary>
-    /// Maximum connection time. After that the connection attempt is immediately dropped.
+    /// True if connected to the remote server.
     /// </summary>
-    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(TIMEOUT);
-
-    /// <inheritdoc/>
-    public IPEndPoint Endpoint { get; init; }
-
-    public bool ShallUseSecureConnection { get; init; }
+    protected volatile bool _apiConnected;
 
     /// <inheritdoc/>
     public bool IsConnected => TcpClient.Connected;
@@ -157,48 +156,15 @@ public class Connector : IClient, IDisposable
         OnConnected(Endpoint);
     }
 
-    private void EstablishSecureConnection()
-    {
-        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
-
-        bool authenticated = ExecuteWithTimeLimit.Execute(TimeSpan.FromMilliseconds(5000), () =>
-        {
-            sslStream.AuthenticateAsClient(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
-        });
-
-        if (!authenticated)
-            throw new APICommunicationException("Error during SSL handshaking (timed out?).");
-
-        StreamWriter = new StreamWriter(sslStream);
-        StreamReader = new StreamReader(sslStream);
-    }
-
-    //todo use token in higher .net versions
-    private async Task EstablishSecureConnectionAsync(CancellationToken cancellationToken = default)
-    {
-        var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-        var sslStream = new SslStream(TcpClient.GetStream(), false, callback);
-
-        await sslStream.AuthenticateAsClientAsync(Endpoint.Address.ToString(), [], System.Security.Authentication.SslProtocols.None, false);
-
-        StreamWriter = new StreamWriter(sslStream);
-        StreamReader = new StreamReader(sslStream);
-    }
-
     /// <inheritdoc/>
     public void SendMessage(string message)
     {
-        await _lock.WaitAsync(cancellationToken);
+        _lock.Wait();
         try
         {
             if (IsConnected)
             {
                 SendMessageInternal(message);
-#if NET8_0_OR_GREATER
-                    await StreamWriter.FlushAsync(cancellationToken).ConfigureAwait(false);
-#else
-#endif
             }
             else
             {
@@ -245,7 +211,6 @@ public class Connector : IClient, IDisposable
         }
         catch (IOException ex)
         {
-            _lock.Release();
             throw new APICommunicationException($"Error while sending message:'{message.Substring(0, 250)}'", ex);
         }
     }
@@ -255,7 +220,11 @@ public class Connector : IClient, IDisposable
         try
         {
             await StreamWriter.WriteLineAsync(message).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            await StreamWriter.FlushAsync(cancellationToken).ConfigureAwait(false);
+#else
             await StreamWriter.FlushAsync().ConfigureAwait(false);
+#endif
 
             MessageSent?.Invoke(this, new(message));
         }
@@ -265,8 +234,11 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    /// <inheritdoc/>
-    public string ReadMessage()
+    /// <summary>
+    /// Reads raw message from the remote server.
+    /// </summary>
+    /// <returns>Read message</returns>
+    protected string ReadMessage()
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -305,8 +277,11 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    /// <inheritdoc/>
-    public async Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Reads raw message from the remote server.
+    /// </summary>
+    /// <returns>Read message</returns>
+    protected async Task<string> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -406,13 +381,22 @@ public class Connector : IClient, IDisposable
     }
 #endif
 
+    /// <summary>
+    /// Disconnects from the remote server.
+    /// </summary>
+    /// <param name="silent">If true then no event will be triggered (used in redirect process)</param>
+    public void Disconnect(bool silent = false)
     {
         if (IsConnected)
         {
-            TcpClient.Client.Disconnect(true);
+            StreamReader.Close();
+            StreamWriter.Close();
+            TcpClient.Close();
 
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
+
+        _apiConnected = false;
     }
 
     private bool _disposed;

@@ -18,9 +18,6 @@ public static class APICommandFactory
     /// <summary> Application type. </summary>
     public const string AppType = "dotNET";
 
-    /// <summary> Application type. </summary>
-    public const string AppType = "dotNET";
-
     #region Command creators
 
     public static LoginCommand CreateLoginCommand(string userId, string password, string? appId = null, string? appName = null, bool prettyPrint = false)
@@ -424,21 +421,6 @@ public static class APICommandFactory
         var loginCommand = CreateLoginCommand(userId, password, appId, appName, false);
         var jsonObj = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
         var loginResponse = new LoginResponse(jsonObj.ToString());
-
-        //var redirectCounter = 0;
-
-        //while (loginResponse.RedirectRecord != null)
-        //{
-        //    if (redirectCounter >= MAX_REDIRECTS)
-        //        throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
-
-        //    var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-        //    await connector.RedirectAsync(newServer, cancellationToken).ConfigureAwait(false);
-                new IPEndPoint(IPAddress.Parse(loginResponse.RedirectRecord.Address), loginResponse.RedirectRecord.MainPort),
-        //    redirectCounter++;
-        //    var jsonObj2 = await connector.ExecuteCommandAsync(loginCommand, cancellationToken).ConfigureAwait(false);
-        //    loginResponse = new LoginResponse(jsonObj2.ToString());
-        //}
 
         if (loginResponse.StreamSessionId != null)
         {

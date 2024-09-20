@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using Xtb.XApi.Records;
-using xAPI.Sync;
 
 namespace Xtb.XApi;
 
