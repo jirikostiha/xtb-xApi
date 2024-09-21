@@ -25,6 +25,11 @@ public class Connector : IDisposable
     private readonly SemaphoreSlim _lock = new(1, 1);
 
     /// <summary>
+    /// True if connected to the remote server.
+    /// </summary>
+    private volatile bool _isConnected;
+
+    /// <summary>
     /// Creates new instance.
     /// </summary>
     public Connector(IPEndPoint endpoint)
@@ -56,6 +61,9 @@ public class Connector : IDisposable
     /// </summary>
     public IPEndPoint Endpoint { get; set; }
 
+    /// <summary>
+    /// Determines if secure connection shall be used.
+    /// </summary>
     public bool ShallUseSecureConnection { get; init; }
 
     /// <summary>
@@ -79,15 +87,14 @@ public class Connector : IDisposable
     public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(DefaultConnectionTimeout);
 
     /// <summary>
-    /// True if connected to the remote server.
-    /// </summary>
-    protected volatile bool _apiConnected;
-
-    /// <summary>
     /// Checks if socket is connected to the remote server.
     /// </summary>
     /// <returns>True if socket is connected, otherwise false</returns>
-    public bool IsConnected => _apiConnected;
+    public bool IsConnected
+    {
+        get { return _isConnected; }
+        protected set { _isConnected = value; }
+    }
 
     /// <summary>
     /// Writes raw message to the remote server.
@@ -328,7 +335,7 @@ public class Connector : IDisposable
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
 
-        _apiConnected = false;
+        _isConnected = false;
     }
 
     private bool _disposed;

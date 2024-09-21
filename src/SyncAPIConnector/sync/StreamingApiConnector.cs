@@ -122,7 +122,7 @@ public class StreamingApiConnector : Connector
         var endpoint = Endpoint;
         TcpClient.Connect(endpoint.Address, endpoint.Port);
 
-        _apiConnected = true;
+        IsConnected = true;
 
         Connected?.Invoke(this, new(endpoint));
 
@@ -180,7 +180,7 @@ public class StreamingApiConnector : Connector
             throw new APICommunicationException("Connection attempt was canceled.");
         }
 
-        _apiConnected = true;
+        IsConnected = true;
 
         Connected?.Invoke(this, new(endpoint));
 

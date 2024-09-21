@@ -9,8 +9,8 @@ namespace Xtb.XApi.Records;
 public record TradeTransInfoRecord : ISymbol
 {
     public TradeTransInfoRecord(
-        TRADE_OPERATION_TYPE tradeOperation,
-        TRADE_TRANSACTION_TYPE transactionType,
+        TRADE_OPERATION_TYPE? tradeOperation,
+        TRADE_TRANSACTION_TYPE? transactionType,
         double? price,
         double? sl,
         double? tp,
@@ -41,15 +41,15 @@ public record TradeTransInfoRecord : ISymbol
 
     public double? Sl { get; init; }
 
-    public string Symbol { get; init; }
+    public string? Symbol { get; init; }
 
     public double? Tp { get; init; }
 
     public double? Volume { get; init; }
 
-    public TRADE_OPERATION_TYPE TradeOperation { get; init; }
+    public TRADE_OPERATION_TYPE? TradeOperation { get; init; }
 
-    public TRADE_TRANSACTION_TYPE TransactionType { get; init; }
+    public TRADE_TRANSACTION_TYPE? TransactionType { get; init; }
 
     public DateTimeOffset? Expiration { get; init; }
 
@@ -57,8 +57,8 @@ public record TradeTransInfoRecord : ISymbol
     {
         JsonObject obj = new()
         {
-            { "cmd", TradeOperation.Code },
-            { "type", TransactionType.Code },
+            { "cmd", TradeOperation?.Code },
+            { "type", TransactionType?.Code },
             { "price", Price },
             { "sl", Sl },
             { "tp", Tp },

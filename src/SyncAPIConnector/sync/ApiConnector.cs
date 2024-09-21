@@ -29,18 +29,19 @@ public class ApiConnector : Connector
     {
         var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
         var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
-        return new ApiConnector(requestingEndpoint, streamingEndpoint, streamingListener);
+        return new ApiConnector(requestingEndpoint, new StreamingApiConnector(streamingEndpoint, streamingListener));
     }
 
     /// <summary>
-    /// Streaming listener.
+    /// Helper method to create a new instance based on endpoints.
     /// </summary>
-    private readonly IStreamingListener? _streamingListener;
-
-    /// <summary>
-    /// Streaming endpoint.
-    /// </summary>
-    private IPEndPoint _streamingEndpoint;
+    /// <param name="requestingEndpoint">Endpoint for requesting data.</param>
+    /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public static ApiConnector Create(IPEndPoint requestingEndpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+    {
+        return new ApiConnector(requestingEndpoint, new StreamingApiConnector(streamingEndpoint, streamingListener));
+    }
 
     /// <summary>
     /// Last command timestamp (used to calculate interval between each command).
@@ -56,13 +57,11 @@ public class ApiConnector : Connector
     /// Creates new instance.
     /// </summary>
     /// <param name="endpoint">Endpoint for requesting data.</param>
-    /// <param name="streamingEndpoint">Endpoint for streaming data.</param>
-    /// <param name="streamingListener">Streaming listener.</param>
-    public ApiConnector(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+    /// <param name="streamingConnector">streaming connector.</param>
+    public ApiConnector(IPEndPoint endpoint, StreamingApiConnector streamingConnector)
         : base(endpoint)
     {
-        _streamingEndpoint = streamingEndpoint;
-        _streamingListener = streamingListener;
+        Streaming = streamingConnector;
     }
 
     #region Events
@@ -87,7 +86,7 @@ public class ApiConnector : Connector
     /// <summary>
     /// Streaming connector.
     /// </summary>
-    public StreamingApiConnector? Streaming { get; private set; }
+    public StreamingApiConnector Streaming { get; private init; }
 
     /// <summary>
     /// Stream session id (given upon login).
@@ -132,11 +131,11 @@ public class ApiConnector : Connector
             StreamReader = new StreamReader(ns);
         }
 
-        _apiConnected = true;
+        IsConnected = true;
 
         Connected?.Invoke(this, new(endpoint));
 
-        Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
+        //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
     }
 
     /// <summary>
@@ -199,11 +198,11 @@ public class ApiConnector : Connector
             StreamReader = new StreamReader(ns);
         }
 
-        _apiConnected = true;
+        IsConnected = true;
 
         Connected?.Invoke(this, new(endpoint));
 
-        Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
+        //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
     }
 
     /// <summary>
@@ -218,7 +217,7 @@ public class ApiConnector : Connector
             Disconnect(true);
 
         Endpoint = endpoint;
-        _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
+        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
         Connect();
     }
 
@@ -235,7 +234,7 @@ public class ApiConnector : Connector
             Disconnect(true);
 
         Endpoint = endpoint;
-        _streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
+        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
         await ConnectAsync(cancellationToken).ConfigureAwait(false);
     }
 

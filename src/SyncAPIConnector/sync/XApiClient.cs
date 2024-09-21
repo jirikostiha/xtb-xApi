@@ -36,7 +36,8 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync
     /// <param name="streamingListener">Streaming listener.</param>
     public static XApiClient Create(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
-        var apiConnector = new ApiConnector(endpoint, streamingEndpoint, streamingListener);
+        var streamingApiConnector = new StreamingApiConnector(streamingEndpoint, streamingListener);
+        var apiConnector = new ApiConnector(endpoint, streamingApiConnector);
         return new XApiClient(apiConnector);
     }
 
@@ -87,7 +88,7 @@ public class XApiClient : IXApiClientSync, IXApiClientAsync
 
     public ApiConnector ApiConnector { get; }
 
-    public StreamingApiConnector? Streaming => ApiConnector.Streaming;
+    public StreamingApiConnector Streaming => ApiConnector.Streaming;
 
     public string AccountId => _credentials?.Login ?? string.Empty;
 

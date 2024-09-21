@@ -32,7 +32,7 @@ internal static class Program
 
     private static void RunSyncTest()
     {
-        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         var client = new XApiClient(apiConnector);
 
         Console.WriteLine("----Sync test---");
@@ -42,7 +42,7 @@ internal static class Program
 
     private static void RunAsyncTest()
     {
-        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         var client = new XApiClient(apiConnector);
 
         Console.WriteLine();
