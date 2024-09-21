@@ -1,7 +1,7 @@
 name: Build
 
 env:
-  sln-path: "./src/xAPI.sln"
+  sln-path: "./src/xtb.xapi.sln"
 
 on:
   workflow_dispatch:
