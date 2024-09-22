@@ -12,7 +12,7 @@ using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
-public class StreamingApiConnector : Connector
+public class StreamingApiConnector : Connector, IClient
 {
     private Task? _streamingReaderTask;
 
@@ -347,13 +347,13 @@ public class StreamingApiConnector : Connector
     public void SubscribePrice(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, GetVerifiedSessionId(), minArrivalTime, maxLevel);
-        WriteMessage(tickPricesSubscribe.ToString());
+        SendMessage(tickPricesSubscribe.ToString());
     }
 
     public void UnsubscribePrice(string symbol)
     {
         var tickPricesStop = new TickPricesStop(symbol);
-        WriteMessage(tickPricesStop.ToString());
+        SendMessage(tickPricesStop.ToString());
     }
 
     public void SubscribePrices(string[] symbols)
@@ -375,97 +375,97 @@ public class StreamingApiConnector : Connector
     public void SubscribeTrades()
     {
         var tradeRecordsSubscribe = new TradeRecordsSubscribe(GetVerifiedSessionId());
-        WriteMessage(tradeRecordsSubscribe.ToString());
+        SendMessage(tradeRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTrades()
     {
         var tradeRecordsStop = new TradeRecordsStop();
-        WriteMessage(tradeRecordsStop.ToString());
+        SendMessage(tradeRecordsStop.ToString());
     }
 
     public void SubscribeBalance()
     {
         var balanceRecordsSubscribe = new BalanceRecordsSubscribe(GetVerifiedSessionId());
-        WriteMessage(balanceRecordsSubscribe.ToString());
+        SendMessage(balanceRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeBalance()
     {
         var balanceRecordsStop = new BalanceRecordsStop();
-        WriteMessage(balanceRecordsStop.ToString());
+        SendMessage(balanceRecordsStop.ToString());
     }
 
     public void SubscribeTradeStatus()
     {
         var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(GetVerifiedSessionId());
-        WriteMessage(tradeStatusRecordsSubscribe.ToString());
+        SendMessage(tradeStatusRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeTradeStatus()
     {
         var tradeStatusRecordsStop = new TradeRecordsSubscribe(GetVerifiedSessionId());
-        WriteMessage(tradeStatusRecordsStop.ToString());
+        SendMessage(tradeStatusRecordsStop.ToString());
     }
 
     public void SubscribeProfits()
     {
         var profitsSubscribe = new ProfitsSubscribe(GetVerifiedSessionId());
-        WriteMessage(profitsSubscribe.ToString());
+        SendMessage(profitsSubscribe.ToString());
     }
 
     public void UnsubscribeProfits()
     {
         var profitsStop = new ProfitsStop();
-        WriteMessage(profitsStop.ToString());
+        SendMessage(profitsStop.ToString());
     }
 
     public void SubscribeNews()
     {
         var newsSubscribe = new NewsSubscribe(GetVerifiedSessionId());
-        WriteMessage(newsSubscribe.ToString());
+        SendMessage(newsSubscribe.ToString());
     }
 
     public void UnsubscribeNews()
     {
         var newsStop = new NewsStop();
-        WriteMessage(newsStop.ToString());
+        SendMessage(newsStop.ToString());
     }
 
     public void SubscribeKeepAlive()
     {
         var keepAliveSubscribe = new KeepAliveSubscribe(GetVerifiedSessionId());
-        WriteMessage(keepAliveSubscribe.ToString());
+        SendMessage(keepAliveSubscribe.ToString());
     }
 
     public void UnsubscribeKeepAlive()
     {
         var keepAliveStop = new KeepAliveStop();
-        WriteMessage(keepAliveStop.ToString());
+        SendMessage(keepAliveStop.ToString());
     }
 
     public void SubscribeCandles(string symbol)
     {
         var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, GetVerifiedSessionId());
-        WriteMessage(candleRecordsSubscribe.ToString());
+        SendMessage(candleRecordsSubscribe.ToString());
     }
 
     public void UnsubscribeCandles(string symbol)
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
-        WriteMessage(candleRecordsStop.ToString());
+        SendMessage(candleRecordsStop.ToString());
     }
 
     public async Task SubscribePriceAsync(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null, CancellationToken cancellationToken = default)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, GetVerifiedSessionId(), minArrivalTime, maxLevel);
-        await WriteMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribePriceAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var tickPricesStop = new TickPricesStop(symbol);
-        await WriteMessageAsync(tickPricesStop.ToString(), cancellationToken);
+        await SendMessageAsync(tickPricesStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribePricesAsync(string[] symbols, CancellationToken cancellationToken = default)
@@ -487,85 +487,85 @@ public class StreamingApiConnector : Connector
     public async Task SubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
         var tradeRecordsSubscribe = new TradeRecordsSubscribe(GetVerifiedSessionId());
-        await WriteMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
         var tradeRecordsStop = new TradeRecordsStop();
-        await WriteMessageAsync(tradeRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(tradeRecordsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
         var balanceRecordsSubscribe = new BalanceRecordsSubscribe(GetVerifiedSessionId());
-        await WriteMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
         var balanceRecordsStop = new BalanceRecordsStop();
-        await WriteMessageAsync(balanceRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(balanceRecordsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
         var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(GetVerifiedSessionId());
-        await WriteMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
         var tradeStatusRecordsStop = new TradeStatusRecordsStop();
-        await WriteMessageAsync(tradeStatusRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(tradeStatusRecordsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
         var profitsSubscribe = new ProfitsSubscribe(GetVerifiedSessionId());
-        await WriteMessageAsync(profitsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(profitsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
         var profitsStop = new ProfitsStop();
-        await WriteMessageAsync(profitsStop.ToString(), cancellationToken);
+        await SendMessageAsync(profitsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
         var newsSubscribe = new NewsSubscribe(GetVerifiedSessionId());
-        await WriteMessageAsync(newsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(newsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
         var newsStop = new NewsStop();
-        await WriteMessageAsync(newsStop.ToString(), cancellationToken);
+        await SendMessageAsync(newsStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
         var keepAliveSubscribe = new KeepAliveSubscribe(GetVerifiedSessionId());
-        await WriteMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
         var keepAliveStop = new KeepAliveStop();
-        await WriteMessageAsync(keepAliveStop.ToString(), cancellationToken);
+        await SendMessageAsync(keepAliveStop.ToString(), cancellationToken);
     }
 
     public async Task SubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, GetVerifiedSessionId());
-        await WriteMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
+        await SendMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
     }
 
     public async Task UnsubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
-        await WriteMessageAsync(candleRecordsStop.ToString(), cancellationToken);
+        await SendMessageAsync(candleRecordsStop.ToString(), cancellationToken);
     }
 
     private string GetVerifiedSessionId()

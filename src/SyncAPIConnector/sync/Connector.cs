@@ -12,7 +12,7 @@ using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
-public class Connector : IDisposable
+public class Connector : ISender, IReceiver, IDisposable
 {
     /// <summary>
     /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
@@ -100,7 +100,7 @@ public class Connector : IDisposable
     /// Writes raw message to the remote server.
     /// </summary>
     /// <param name="message">Message to send</param>
-    protected void WriteMessage(string message)
+    public void SendMessage(string message)
     {
         _lock.Wait();
         try
@@ -137,7 +137,7 @@ public class Connector : IDisposable
     /// </summary>
     /// <param name="message">Message to send</param>
     /// <param name="cancellationToken">Cancellation token to cancel the operation</param>
-    protected async Task WriteMessageAsync(string message, CancellationToken cancellationToken = default)
+    public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
     {
         await _lock.WaitAsync(cancellationToken);
         try
@@ -177,7 +177,7 @@ public class Connector : IDisposable
     /// Reads raw message from the remote server.
     /// </summary>
     /// <returns>Read message</returns>
-    protected string ReadMessage()
+    public string? ReadMessage()
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -220,7 +220,7 @@ public class Connector : IDisposable
     /// Reads raw message from the remote server.
     /// </summary>
     /// <returns>Read message</returns>
-    protected async Task<string> ReadMessageAsync(CancellationToken cancellationToken = default)
+    public async Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -323,8 +323,7 @@ public class Connector : IDisposable
     /// <summary>
     /// Disconnects from the remote server.
     /// </summary>
-    /// <param name="silent">If true then no event will be triggered (used in redirect process)</param>
-    public void Disconnect(bool silent = false)
+    public void Disconnect()
     {
         if (IsConnected)
         {

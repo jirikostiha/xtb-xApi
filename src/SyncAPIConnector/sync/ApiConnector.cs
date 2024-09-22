@@ -11,7 +11,7 @@ using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
-public class ApiConnector : Connector
+public class ApiConnector : Connector, IClient
 {
     /// <summary>
     /// Delay between each command to the server.
@@ -286,7 +286,7 @@ public class ApiConnector : Connector
                 Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
             }
 
-            WriteMessage(message);
+            SendMessage(message);
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
@@ -356,7 +356,7 @@ public class ApiConnector : Connector
                 await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
             }
 
-            await WriteMessageAsync(message, cancellationToken).ConfigureAwait(false);
+            await SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
