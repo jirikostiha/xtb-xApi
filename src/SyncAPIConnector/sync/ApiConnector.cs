@@ -214,7 +214,7 @@ public class ApiConnector : Connector, IClient
         Redirected?.Invoke(this, new(endpoint));
 
         if (IsConnected)
-            Disconnect(true);
+            Disconnect();
 
         Endpoint = endpoint;
         Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
@@ -231,7 +231,7 @@ public class ApiConnector : Connector, IClient
         Redirected?.Invoke(this, new(endpoint));
 
         if (IsConnected)
-            Disconnect(true);
+            Disconnect();
 
         Endpoint = endpoint;
         Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
