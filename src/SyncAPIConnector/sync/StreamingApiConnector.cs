@@ -103,45 +103,15 @@ public class StreamingApiConnector : Connector, IClient
     /// </summary>
     public string? StreamSessionId { get; set; }
 
-    /// <summary>
-    /// Connect to the streaming.
-    /// </summary>
-    public void Connect()
+    /// <inheritdoc/>
+    public override void Connect()
     {
         if (StreamSessionId == null)
         {
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        if (IsConnected)
-        {
-            throw new APICommunicationException("Stream already connected.");
-        }
-
-        TcpClient = new TcpClient();
-        var endpoint = Endpoint;
-        TcpClient.Connect(endpoint.Address, endpoint.Port);
-
-        IsConnected = true;
-
-        Connected?.Invoke(this, new(endpoint));
-
-        if (ShallUseSecureConnection)
-        {
-#pragma warning disable CA5359 // Do Not Disable Certificate Validation
-            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-#pragma warning restore CA5359 // Do Not Disable Certificate Validation
-            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
-            ssl.AuthenticateAsClient(endpoint.Address.ToString());
-            StreamWriter = new StreamWriter(ssl);
-            StreamReader = new StreamReader(ssl);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+        base.Connect();
 
         if (_streamingReaderTask == null)
         {
@@ -157,49 +127,63 @@ public class StreamingApiConnector : Connector, IClient
     /// <summary>
     /// Connect to the streaming.
     /// </summary>
-    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    //    public void Connect()
+    //    {
+    //        if (StreamSessionId == null)
+    //        {
+    //            throw new APICommunicationException("No session exists. Please login first.");
+    //        }
+
+    //        if (IsConnected)
+    //        {
+    //            throw new APICommunicationException("Stream already connected.");
+    //        }
+
+    //        TcpClient = new TcpClient();
+    //        var endpoint = Endpoint;
+    //        TcpClient.Connect(endpoint.Address, endpoint.Port);
+
+    //        //IsConnected = true;
+
+    //        Connected?.Invoke(this, new(endpoint));
+
+    //        if (ShallUseSecureConnection)
+    //        {
+    //#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+    //            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+    //#pragma warning restore CA5359 // Do Not Disable Certificate Validation
+    //            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
+    //            ssl.AuthenticateAsClient(endpoint.Address.ToString());
+    //            StreamWriter = new StreamWriter(ssl);
+    //            StreamReader = new StreamReader(ssl);
+    //        }
+    //        else
+    //        {
+    //            NetworkStream ns = TcpClient.GetStream();
+    //            StreamWriter = new StreamWriter(ns);
+    //            StreamReader = new StreamReader(ns);
+    //        }
+
+    //        if (_streamingReaderTask == null)
+    //        {
+    //            CreateAndRunNewStreamingReaderTask(default);
+    //        }
+    //        else if (_streamingReaderTask.IsCompleted || _streamingReaderTask.IsFaulted || _streamingReaderTask.IsCanceled)
+    //        {
+    //            _streamingReaderTask = null;
+    //            CreateAndRunNewStreamingReaderTask(default);
+    //        }
+    //    }
+
+    /// <inheritdoc/>
+    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)
         {
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        if (IsConnected)
-        {
-            throw new APICommunicationException("Stream already connected.");
-        }
-
-        TcpClient = new TcpClient();
-        var endpoint = Endpoint;
-        try
-        {
-            await TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
-        }
-        catch (OperationCanceledException)
-        {
-            throw new APICommunicationException("Connection attempt was canceled.");
-        }
-
-        IsConnected = true;
-
-        Connected?.Invoke(this, new(endpoint));
-
-        if (ShallUseSecureConnection)
-        {
-#pragma warning disable CA5359 // Do Not Disable Certificate Validation
-            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
-#pragma warning restore CA5359 // Do Not Disable Certificate Validation
-            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
-            await ssl.AuthenticateAsClientAsync(endpoint.Address.ToString());
-            StreamWriter = new StreamWriter(ssl);
-            StreamReader = new StreamReader(ssl);
-        }
-        else
-        {
-            var networkStream = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(networkStream);
-            StreamReader = new StreamReader(networkStream);
-        }
+        await base.ConnectAsync(cancellationToken);
 
         if (_streamingReaderTask == null)
         {
@@ -211,6 +195,65 @@ public class StreamingApiConnector : Connector, IClient
             CreateAndRunNewStreamingReaderTask(cancellationToken);
         }
     }
+
+
+    /// <summary>
+    /// Connect to the streaming.
+    /// </summary>
+    //    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    //    {
+    //        if (StreamSessionId == null)
+    //        {
+    //            throw new APICommunicationException("No session exists. Please login first.");
+    //        }
+
+    //        if (IsConnected)
+    //        {
+    //            throw new APICommunicationException("Stream already connected.");
+    //        }
+
+    //        TcpClient = new TcpClient();
+    //        var endpoint = Endpoint;
+    //        try
+    //        {
+    //            await TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
+    //        }
+    //        catch (OperationCanceledException)
+    //        {
+    //            throw new APICommunicationException("Connection attempt was canceled.");
+    //        }
+
+    //        IsConnected = true;
+
+    //        Connected?.Invoke(this, new(endpoint));
+
+    //        if (ShallUseSecureConnection)
+    //        {
+    //#pragma warning disable CA5359 // Do Not Disable Certificate Validation
+    //            var callback = new RemoteCertificateValidationCallback(SslHelper.TrustAllCertificatesCallback);
+    //#pragma warning restore CA5359 // Do Not Disable Certificate Validation
+    //            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
+    //            await ssl.AuthenticateAsClientAsync(endpoint.Address.ToString());
+    //            StreamWriter = new StreamWriter(ssl);
+    //            StreamReader = new StreamReader(ssl);
+    //        }
+    //        else
+    //        {
+    //            var networkStream = TcpClient.GetStream();
+    //            StreamWriter = new StreamWriter(networkStream);
+    //            StreamReader = new StreamReader(networkStream);
+    //        }
+
+    //        if (_streamingReaderTask == null)
+    //        {
+    //            CreateAndRunNewStreamingReaderTask(cancellationToken);
+    //        }
+    //        else if (_streamingReaderTask.IsCompleted || _streamingReaderTask.IsFaulted || _streamingReaderTask.IsCanceled)
+    //        {
+    //            _streamingReaderTask = null;
+    //            CreateAndRunNewStreamingReaderTask(cancellationToken);
+    //        }
+    //    }
 
     private void CreateAndRunNewStreamingReaderTask(CancellationToken cancellationToken)
     {

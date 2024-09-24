@@ -49,11 +49,6 @@ public class ApiConnector : Connector, IClient
     private long _lastCommandTimestamp;
 
     /// <summary>
-    /// Lock object used to synchronize access to read/write socket operations.
-    /// </summary>
-    private readonly SemaphoreSlim _lock = new(1, 1);
-
-    /// <summary>
     /// Creates new instance.
     /// </summary>
     /// <param name="endpoint">Endpoint for requesting data.</param>
@@ -96,114 +91,114 @@ public class ApiConnector : Connector, IClient
     /// <summary>
     /// Connects to the remote server.
     /// </summary>
-    public void Connect()
-    {
-        if (Endpoint == null)
-            throw new APICommunicationException("No endpoint to connect to.");
+    //public void Connect()
+    //{
+    //    if (Endpoint == null)
+    //        throw new APICommunicationException("No endpoint to connect to.");
 
-        var endpoint = Endpoint;
-        TcpClient = new TcpClient();
+    //    var endpoint = Endpoint;
+    //    TcpClient = new TcpClient();
 
-        bool connectionAttempted = false;
+    //    bool connectionAttempted = false;
 
-        while (!connectionAttempted || !TcpClient.Connected)
-        {
-            // Try to connect asynchronously and wait for the result
-            IAsyncResult result = TcpClient.BeginConnect(endpoint.Address, endpoint.Port, null, null);
-            connectionAttempted = result.AsyncWaitHandle.WaitOne(ConnectionTimeout, true);
+    //    while (!connectionAttempted || !TcpClient.Connected)
+    //    {
+    //        // Try to connect asynchronously and wait for the result
+    //        IAsyncResult result = TcpClient.BeginConnect(endpoint.Address, endpoint.Port, null, null);
+    //        connectionAttempted = result.AsyncWaitHandle.WaitOne(ConnectionTimeout, true);
 
-            // If connection attempt failed (timeout) or not connected
-            if (!connectionAttempted || !TcpClient.Connected)
-            {
-                TcpClient.Close();
-                throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
-            }
-        }
+    //        // If connection attempt failed (timeout) or not connected
+    //        if (!connectionAttempted || !TcpClient.Connected)
+    //        {
+    //            TcpClient.Close();
+    //            throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
+    //        }
+    //    }
 
-        if (ShallUseSecureConnection)
-        {
-            EstablishSecureConnection();
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+    //    if (ShallUseSecureConnection)
+    //    {
+    //        EstablishSecureConnection();
+    //    }
+    //    else
+    //    {
+    //        NetworkStream ns = TcpClient.GetStream();
+    //        StreamWriter = new StreamWriter(ns);
+    //        StreamReader = new StreamReader(ns);
+    //    }
 
-        IsConnected = true;
+    //    IsConnected = true;
 
-        Connected?.Invoke(this, new(endpoint));
+    //    Connected?.Invoke(this, new(endpoint));
 
-        //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
-    }
+    //    //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
+    //}
 
     /// <summary>
     /// Connects to the remote server.
     /// </summary>
     /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task ConnectAsync(CancellationToken cancellationToken = default)
-    {
-        if (Endpoint == null)
-            throw new APICommunicationException("No server to connect to.");
+    //public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    //{
+    //    if (Endpoint == null)
+    //        throw new APICommunicationException("No server to connect to.");
 
-        var endpoint = Endpoint;
-        TcpClient = new TcpClient
-        {
-            ReceiveTimeout = ConnectionTimeout.Milliseconds,
-            SendTimeout = ConnectionTimeout.Milliseconds
-        };
+    //    var endpoint = Endpoint;
+    //    TcpClient = new TcpClient
+    //    {
+    //        ReceiveTimeout = ConnectionTimeout.Milliseconds,
+    //        SendTimeout = ConnectionTimeout.Milliseconds
+    //    };
 
-        bool connectionAttempted = false;
+    //    bool connectionAttempted = false;
 
-        while (!connectionAttempted || !TcpClient.Connected)
-        {
-            try
-            {
-                // Try to connect asynchronously and wait for the result
-                var connectTask = TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
-                var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
+    //    while (!connectionAttempted || !TcpClient.Connected)
+    //    {
+    //        try
+    //        {
+    //            // Try to connect asynchronously and wait for the result
+    //            var connectTask = TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
+    //            var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
 
-                var completedTask = await Task.WhenAny(connectTask, timeoutTask);
+    //            var completedTask = await Task.WhenAny(connectTask, timeoutTask);
 
-                connectionAttempted = completedTask == connectTask && TcpClient.Connected;
+    //            connectionAttempted = completedTask == connectTask && TcpClient.Connected;
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    TcpClient.Close();
-                    throw new OperationCanceledException(cancellationToken);
-                }
+    //            if (cancellationToken.IsCancellationRequested)
+    //            {
+    //                TcpClient.Close();
+    //                throw new OperationCanceledException(cancellationToken);
+    //            }
 
-                if (!connectionAttempted || !TcpClient.Connected)
-                {
-                    TcpClient.Close();
-                    throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
-                }
-            }
-            catch
-            {
-                TcpClient.Close();
-                throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
-            }
-        }
+    //            if (!connectionAttempted || !TcpClient.Connected)
+    //            {
+    //                TcpClient.Close();
+    //                throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
+    //            }
+    //        }
+    //        catch
+    //        {
+    //            TcpClient.Close();
+    //            throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
+    //        }
+    //    }
 
-        if (ShallUseSecureConnection)
-        {
-            await EstablishSecureConnectionAsync(cancellationToken);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+    //    if (ShallUseSecureConnection)
+    //    {
+    //        await EstablishSecureConnectionAsync(cancellationToken);
+    //    }
+    //    else
+    //    {
+    //        NetworkStream ns = TcpClient.GetStream();
+    //        StreamWriter = new StreamWriter(ns);
+    //        StreamReader = new StreamReader(ns);
+    //    }
 
-        IsConnected = true;
+    //    IsConnected = true;
 
-        Connected?.Invoke(this, new(endpoint));
+    //    Connected?.Invoke(this, new(endpoint));
 
-        //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
-    }
+    //    //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
+    //}
 
     /// <summary>
     /// Redirects to the given server.
@@ -249,8 +244,17 @@ public class ApiConnector : Connector, IClient
         {
             var request = command.ToJSONString();
 
+            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            long interval = currentTimestamp - _lastCommandTimestamp;
+            // If interval between now and last command is less than minimum command time space - wait
+            if (interval < COMMAND_TIME_SPACE)
+            {
+                Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
+            }
+
             CommandExecuting?.Invoke(this, new(command));
-            var response = ExecuteCommand(request);
+            var response = SendMessageWaitResponse(request);
+            _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
             if (parsedResponse is null)
@@ -263,46 +267,6 @@ public class ApiConnector : Connector, IClient
         catch (Exception ex)
         {
             throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
-        }
-    }
-
-    /// <summary>
-    /// Executes given command and receives response (withholding API inter-command timeout).
-    /// </summary>
-    /// <param name="message">Command to execute</param>
-    /// <returns>Response from the server</returns>
-    public string ExecuteCommand(string message)
-    {
-        _lock.Wait();
-        try
-        {
-            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            long interval = currentTimestamp - _lastCommandTimestamp;
-
-            // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
-            {
-                Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
-            }
-
-            SendMessage(message);
-
-            _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            string? response = ReadMessage();
-
-            if (string.IsNullOrEmpty(response))
-            {
-                Disconnect();
-                throw new APICommunicationException("Server not responding. Response has no value.");
-            }
-
-            return response!;
-        }
-        finally
-        {
-            _lock.Release();
         }
     }
 
@@ -318,8 +282,17 @@ public class ApiConnector : Connector, IClient
         {
             var request = command.ToJSONString();
 
+            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+            long interval = currentTimestamp - _lastCommandTimestamp;
+            // If interval between now and last command is less than minimum command time space - wait
+            if (interval < COMMAND_TIME_SPACE)
+            {
+                await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
+            }
+
             CommandExecuting?.Invoke(this, new(command));
-            var response = await ExecuteCommandAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
+            _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
             if (parsedResponse is null)
@@ -335,47 +308,6 @@ public class ApiConnector : Connector, IClient
         }
     }
 
-    /// <summary>
-    /// Executes given command and receives response (withholding API inter-command timeout).
-    /// </summary>
-    /// <param name="message">Command to execute</param>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    /// <returns>Response from the server</returns>
-    internal async Task<string> ExecuteCommandAsync(string message, CancellationToken cancellationToken = default)
-    {
-        await _lock.WaitAsync(cancellationToken);
-        try
-        {
-            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            long interval = currentTimestamp - _lastCommandTimestamp;
-
-            // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
-            {
-                await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
-            }
-
-            await SendMessageAsync(message, cancellationToken).ConfigureAwait(false);
-
-            _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-
-            string? response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
-
-            if (string.IsNullOrEmpty(response))
-            {
-                Disconnect();
-                throw new APICommunicationException("Server not responding. Response has no value.");
-            }
-
-            return response!;
-        }
-        finally
-        {
-            _lock.Release();
-        }
-    }
-
     private bool _disposed;
 
     protected override void Dispose(bool disposing)
@@ -385,7 +317,6 @@ public class ApiConnector : Connector, IClient
             if (disposing)
             {
                 Streaming?.Dispose();
-                _lock.Dispose();
             }
 
             base.Dispose(disposing);
