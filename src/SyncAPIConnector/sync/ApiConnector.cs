@@ -290,7 +290,7 @@ public class ApiConnector : Connector, IClient
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            string response = ReadMessage();
+            string? response = ReadMessage();
 
             if (string.IsNullOrEmpty(response))
             {
@@ -298,7 +298,7 @@ public class ApiConnector : Connector, IClient
                 throw new APICommunicationException("Server not responding. Response has no value.");
             }
 
-            return response;
+            return response!;
         }
         finally
         {
@@ -360,7 +360,7 @@ public class ApiConnector : Connector, IClient
 
             _lastCommandTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-            string response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
+            string? response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(response))
             {
@@ -368,7 +368,7 @@ public class ApiConnector : Connector, IClient
                 throw new APICommunicationException("Server not responding. Response has no value.");
             }
 
-            return response;
+            return response!;
         }
         finally
         {
