@@ -43,6 +43,17 @@ public sealed class AsyncTest : TestBase
             Fail(ex, true);
         }
 
+        Action("Ping");
+        try
+        {
+            var response = await Client.PingAsync(cancellationToken);
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
+        }
+
         Action($"Dropping connection");
         try
         {

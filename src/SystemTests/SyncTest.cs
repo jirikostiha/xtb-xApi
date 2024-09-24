@@ -35,10 +35,22 @@ public sealed class SyncTest : TestBase
         {
             Client.Connect();
             Pass();
+            Detail($"endpoint:{Client.ApiConnector.Endpoint}");
         }
         catch (Exception ex)
         {
             Fail(ex, true);
+        }
+
+        Action("Ping");
+        try
+        {
+            var response = Client.Ping();
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
         }
 
         Action($"Dropping connection");
@@ -57,6 +69,7 @@ public sealed class SyncTest : TestBase
         {
             Client.Connect();
             Pass();
+            Detail($"endpoint:{Client.ApiConnector.Endpoint}");
         }
         catch (Exception ex)
         {
