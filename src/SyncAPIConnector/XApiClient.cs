@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Xtb.XApi;
 using Xtb.XApi.Codes;
 using Xtb.XApi.Commands;
 using Xtb.XApi.Records;
