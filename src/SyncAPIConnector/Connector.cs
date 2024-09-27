@@ -16,11 +16,6 @@ namespace Xtb.XApi;
 public class Connector : IClient, IDisposable
 {
     /// <summary>
-    /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
-    /// </summary>
-    public const int DefaultConnectionTimeout = 5000;
-
-    /// <summary>
     /// Lock object used to synchronize access to write socket operations.
     /// </summary>
     private readonly SemaphoreSlim _lock = new(1, 1);
@@ -28,8 +23,9 @@ public class Connector : IClient, IDisposable
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    public Connector(IPEndPoint endpoint)
+    public Connector(IPEndPoint endpoint, ConnectorOptions? _options = null)
     {
+        Options = _options ?? ConnectorOptions.Default;
         Endpoint = endpoint;
     }
 
@@ -55,9 +51,9 @@ public class Connector : IClient, IDisposable
     public IPEndPoint Endpoint { get; set; }
 
     /// <summary>
-    /// Determines if secure connection shall be used.
+    /// Options.
     /// </summary>
-    public bool ShallUseSecureConnection { get; init; }
+    protected ConnectorOptions Options { get; init; }
 
     /// <summary>
     /// Socket that handles the connection.
@@ -74,22 +70,22 @@ public class Connector : IClient, IDisposable
     /// </summary>
     protected StreamReader StreamReader { get; set; }
 
-    /// <summary>
-    /// Maximum connection time. After that the connection attempt is immediately dropped.
-    /// </summary>
-    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(DefaultConnectionTimeout);
-
     /// <inheritdoc/>
     public bool IsConnected => TcpClient.Connected;
+
+    private TcpClient CreateTcpClient()
+    {
+        return new TcpClient
+        {
+            ReceiveTimeout = Options.ReceiveTimeout.Milliseconds,
+            SendTimeout = Options.SendTimeout.Milliseconds
+        };
+    }
 
     /// <inheritdoc/>
     public virtual void Connect()
     {
-        TcpClient = new TcpClient
-        {
-            ReceiveTimeout = ConnectionTimeout.Milliseconds,
-            SendTimeout = ConnectionTimeout.Milliseconds
-        };
+        TcpClient = CreateTcpClient();
 
         try
         {
@@ -100,7 +96,7 @@ public class Connector : IClient, IDisposable
             throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (ShallUseSecureConnection)
+        if (Options.ShallUseSecureConnection)
         {
             EstablishSecureConnection();
         }
@@ -162,16 +158,12 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public virtual async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        TcpClient = new TcpClient
-        {
-            ReceiveTimeout = ConnectionTimeout.Milliseconds,
-            SendTimeout = ConnectionTimeout.Milliseconds
-        };
+        TcpClient = CreateTcpClient();
 
         try
         {
             var connectTask = TcpClient.ConnectAsync(Endpoint.Address, Endpoint.Port);
-            var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
+            var timeoutTask = Task.Delay(Options.ReceiveTimeout, cancellationToken);
 
             var completedTask = await Task.WhenAny(connectTask, timeoutTask).ConfigureAwait(false);
 
@@ -185,7 +177,7 @@ public class Connector : IClient, IDisposable
             throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (ShallUseSecureConnection)
+        if (Options.ShallUseSecureConnection)
         {
             await EstablishSecureConnectionAsync(cancellationToken);
         }
