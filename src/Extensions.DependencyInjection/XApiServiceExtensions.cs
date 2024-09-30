@@ -15,7 +15,7 @@ public static class XApiServiceExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     /// <param name="setupAction">
-    /// The <see cref="Action{MemoryCacheOptions}"/> to configure the provided <see cref="MemoryCacheOptions"/>.
+    /// The <see cref="Action{AddXApiClientOptions}"/> to configure the provided <see cref="AddXApiClientOptions"/>.
     /// </param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
     public static IServiceCollection AddXApiClient(this IServiceCollection services, Action<AddXApiClientOptions> setupAction)
@@ -30,18 +30,37 @@ public static class XApiServiceExtensions
         setupAction(options);
         services.Configure(setupAction);
 
+        var xapiClient = XApiClient.Create(options.Address, options.MainPort, options.StreamingPort, options.StreamingListener);
+        services.TryAdd(ServiceDescriptor.Singleton(xapiClient));
+        services.TryAdd(ServiceDescriptor.Singleton<IXApiClientAsync>(provider => xapiClient));
 
-        services.TryAdd(ServiceDescriptor.Singleton<IClient, Connector>());
-        var streamingApiConnector = StreamingApiConnector.Create(options.Host, options.StreamingPort, options.StreamingListener);
-        services.TryAdd(ServiceDescriptor.Singleton(streamingApiConnector));
-        services.TryAdd(ServiceDescriptor.Singleton(new ApiConnector()));
+        return services;
+    }
 
-        services.TryAdd(ServiceDescriptor.Singleton<IXApiClientAsync, XApiClient>(new XApiClient()));
+    /// <summary>
+    /// Adds a ... to the <see cref="IServiceCollection" />.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
+    /// <param name="setupAction">
+    /// The <see cref="Action{AddXApiClientOptions}"/> to configure the provided <see cref="AddXApiClientOptions"/>.
+    /// </param>
+    /// <param name="key">The service key. </param>
+    /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
+    public static IServiceCollection AddXApiClient(this IServiceCollection services, string key, Action<AddXApiClientOptions> setupAction)
+    {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(services);
+#else
+        _ = services ?? throw new ArgumentNullException(nameof(services));
+#endif
 
+        var options = new AddXApiClientOptions();
+        setupAction(options);
+        services.Configure(setupAction);
 
-        //services.AddOptions();
-        //services.TryAdd(ServiceDescriptor.Singleton<IDistributedCache, MemoryDistributedCache>());
-        //services.Configure(setupAction); ??
+        var xapiClient = XApiClient.Create(options.Address, options.MainPort, options.StreamingPort, options.StreamingListener);
+        services.TryAddKeyedSingleton(key, ServiceDescriptor.Singleton(xapiClient));
+        services.TryAddKeyedSingleton(key, ServiceDescriptor.Singleton<IXApiClientAsync>(provider => xapiClient));
 
         return services;
     }

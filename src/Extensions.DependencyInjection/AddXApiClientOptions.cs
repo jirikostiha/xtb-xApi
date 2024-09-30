@@ -4,7 +4,7 @@ namespace Xtb.XApi.Extensions.DependencyInjection;
 
 public record AddXApiClientOptions //: IOptions<AddXApiClientOptions> NO
 {
-    public string Host { get; set; }
+    public string Address { get; set; }
 
     public int MainPort { get; set; }
 
