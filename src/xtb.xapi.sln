@@ -25,6 +25,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{CACC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.SystemTests", "SystemTests\Xtb.XApi.SystemTests.csproj", "{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.UnitTests", "UnitTests\Xtb.XApi.UnitTests.csproj", "{84A4454D-B5D9-47E3-A373-6AE80A085FEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
