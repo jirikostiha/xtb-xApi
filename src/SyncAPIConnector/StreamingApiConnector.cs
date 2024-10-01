@@ -12,7 +12,7 @@ using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
-public class StreamingApiConnector : Connector, IClient
+public class StreamingApiConnector : Connector
 {
     private Task? _streamingReaderTask;
 
@@ -45,11 +45,6 @@ public class StreamingApiConnector : Connector, IClient
     }
 
     #region Events
-
-    /// <summary>
-    /// Event raised when a connection is established.
-    /// </summary>
-    public event EventHandler<EndpointEventArgs>? Connected;
 
     /// <summary>
     /// Event raised when a tick record is received.

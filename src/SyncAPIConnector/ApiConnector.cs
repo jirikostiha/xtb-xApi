@@ -11,7 +11,7 @@ using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
-public class ApiConnector : Connector, IClient
+public class ApiConnector : Connector
 {
     /// <summary>
     /// Delay between each command to the server.
@@ -60,11 +60,6 @@ public class ApiConnector : Connector, IClient
     }
 
     #region Events
-
-    /// <summary>
-    /// Event raised when a connection is established.
-    /// </summary>
-    public event EventHandler<EndpointEventArgs>? Connected;
 
     /// <summary>
     /// Event raised when a connection is redirected.
