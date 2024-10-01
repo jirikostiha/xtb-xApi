@@ -6,7 +6,6 @@ using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi;
 using Xtb.XApi.Commands;
 using Xtb.XApi.Utils;
 
@@ -88,118 +87,6 @@ public class ApiConnector : Connector, IClient
     /// Stream session id (given upon login).
     /// </summary>
     public string? StreamSessionId { get; }
-
-    /// <summary>
-    /// Connects to the remote server.
-    /// </summary>
-    //public void Connect()
-    //{
-    //    if (Endpoint == null)
-    //        throw new APICommunicationException("No endpoint to connect to.");
-
-    //    var endpoint = Endpoint;
-    //    TcpClient = new TcpClient();
-
-    //    bool connectionAttempted = false;
-
-    //    while (!connectionAttempted || !TcpClient.Connected)
-    //    {
-    //        // Try to connect asynchronously and wait for the result
-    //        IAsyncResult result = TcpClient.BeginConnect(endpoint.Address, endpoint.Port, null, null);
-    //        connectionAttempted = result.AsyncWaitHandle.WaitOne(ConnectionTimeout, true);
-
-    //        // If connection attempt failed (timeout) or not connected
-    //        if (!connectionAttempted || !TcpClient.Connected)
-    //        {
-    //            TcpClient.Close();
-    //            throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
-    //        }
-    //    }
-
-    //    if (ShallUseSecureConnection)
-    //    {
-    //        EstablishSecureConnection();
-    //    }
-    //    else
-    //    {
-    //        NetworkStream ns = TcpClient.GetStream();
-    //        StreamWriter = new StreamWriter(ns);
-    //        StreamReader = new StreamReader(ns);
-    //    }
-
-    //    IsConnected = true;
-
-    //    Connected?.Invoke(this, new(endpoint));
-
-    //    //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
-    //}
-
-    /// <summary>
-    /// Connects to the remote server.
-    /// </summary>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    //public async Task ConnectAsync(CancellationToken cancellationToken = default)
-    //{
-    //    if (Endpoint == null)
-    //        throw new APICommunicationException("No server to connect to.");
-
-    //    var endpoint = Endpoint;
-    //    TcpClient = new TcpClient
-    //    {
-    //        ReceiveTimeout = ConnectionTimeout.Milliseconds,
-    //        SendTimeout = ConnectionTimeout.Milliseconds
-    //    };
-
-    //    bool connectionAttempted = false;
-
-    //    while (!connectionAttempted || !TcpClient.Connected)
-    //    {
-    //        try
-    //        {
-    //            // Try to connect asynchronously and wait for the result
-    //            var connectTask = TcpClient.ConnectAsync(endpoint.Address, endpoint.Port);
-    //            var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
-
-    //            var completedTask = await Task.WhenAny(connectTask, timeoutTask);
-
-    //            connectionAttempted = completedTask == connectTask && TcpClient.Connected;
-
-    //            if (cancellationToken.IsCancellationRequested)
-    //            {
-    //                TcpClient.Close();
-    //                throw new OperationCanceledException(cancellationToken);
-    //            }
-
-    //            if (!connectionAttempted || !TcpClient.Connected)
-    //            {
-    //                TcpClient.Close();
-    //                throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
-    //            }
-    //        }
-    //        catch
-    //        {
-    //            TcpClient.Close();
-    //            throw new APICommunicationException($"Cannot connect to:{endpoint.Address}:{endpoint.Port}");
-    //        }
-    //    }
-
-    //    if (ShallUseSecureConnection)
-    //    {
-    //        await EstablishSecureConnectionAsync(cancellationToken);
-    //    }
-    //    else
-    //    {
-    //        NetworkStream ns = TcpClient.GetStream();
-    //        StreamWriter = new StreamWriter(ns);
-    //        StreamReader = new StreamReader(ns);
-    //    }
-
-    //    IsConnected = true;
-
-    //    Connected?.Invoke(this, new(endpoint));
-
-    //    //Streaming = new StreamingApiConnector(_streamingEndpoint, _streamingListener);
-    //}
 
     /// <summary>
     /// Redirects to the given server.
