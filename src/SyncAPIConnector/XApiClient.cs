@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi;
 using Xtb.XApi.Codes;
 using Xtb.XApi.Commands;
 using Xtb.XApi.Records;
@@ -14,7 +13,7 @@ namespace Xtb.XApi;
 /// <summary>
 /// Xtb XApi client.
 /// </summary>
-public class XApiClient : IXApiClient
+public class XApiClient : IXApiClient, IDisposable
 {
     /// <summary>
     /// Helper method to create a new instance based on address and ports.
@@ -25,8 +24,12 @@ public class XApiClient : IXApiClient
     /// <param name="streamingListener">Streaming listener.</param>
     public static XApiClient Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
     {
-        return new XApiClient(
-            ApiConnector.Create(address, requestingPort, streamingPort, streamingListener));
+        var apiConnector = ApiConnector.Create(address, requestingPort, streamingPort, streamingListener);
+
+        return new XApiClient(apiConnector)
+        {
+            IsApiConnectorOwner = true
+        };
     }
 
     /// <summary>
@@ -39,7 +42,11 @@ public class XApiClient : IXApiClient
     {
         var streamingApiConnector = new StreamingApiConnector(streamingEndpoint, streamingListener);
         var apiConnector = new ApiConnector(endpoint, streamingApiConnector);
-        return new XApiClient(apiConnector);
+
+        return new XApiClient(apiConnector)
+        {
+            IsApiConnectorOwner = true
+        };
     }
 
     private Credentials? _credentials;
@@ -51,6 +58,7 @@ public class XApiClient : IXApiClient
     public XApiClient(ApiConnector apiConnector)
     {
         ApiConnector = apiConnector;
+        IsApiConnectorOwner = false;
     }
 
     #region Events
@@ -88,6 +96,8 @@ public class XApiClient : IXApiClient
     #endregion Events
 
     public ApiConnector ApiConnector { get; }
+
+    internal bool IsApiConnectorOwner { get; init; }
 
     public StreamingApiConnector Streaming => ApiConnector.Streaming;
 
@@ -263,4 +273,31 @@ public class XApiClient : IXApiClient
 
     public Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteNewsCommandAsync(ApiConnector, since, until, cancellationToken);
+
+    private bool _disposed;
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                if (IsApiConnectorOwner)
+                    ApiConnector?.Dispose();
+            }
+
+            _disposed = true;
+        }
+    }
+
+    ~XApiClient()
+    {
+        Dispose(false);
+    }
 }
