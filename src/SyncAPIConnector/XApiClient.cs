@@ -14,7 +14,7 @@ namespace Xtb.XApi;
 /// <summary>
 /// Xtb XApi client.
 /// </summary>
-public class XApiClient : IXApiClientSync, IXApiClientAsync
+public class XApiClient : IXApiClient
 {
     /// <summary>
     /// Helper method to create a new instance based on address and ports.

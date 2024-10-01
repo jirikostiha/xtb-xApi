@@ -8,18 +8,8 @@ using Xtb.XApi.Responses;
 
 namespace Xtb.XApi;
 
-public interface IXApiClientBase
-{
-    event EventHandler<EndpointEventArgs>? Connected;
-
-    event EventHandler<EndpointEventArgs>? Redirected;
-
-    event EventHandler? Disconnected;
-
-    string AccountId { get; }
-
-    StreamingApiConnector Streaming { get; }
-}
+public interface IXApiClient : IXApiClientSync, IXApiClientAsync
+{ }
 
 public interface IXApiClientAsync : IXApiClientBase
 {
@@ -137,4 +127,17 @@ public interface IXApiClientSync : IXApiClientBase
     CalendarResponse GetCalendar();
 
     NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until = null);
+}
+
+public interface IXApiClientBase
+{
+    event EventHandler<EndpointEventArgs>? Connected;
+
+    event EventHandler<EndpointEventArgs>? Redirected;
+
+    event EventHandler? Disconnected;
+
+    string AccountId { get; }
+
+    StreamingApiConnector Streaming { get; }
 }
