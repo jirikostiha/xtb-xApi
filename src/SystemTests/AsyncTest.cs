@@ -8,7 +8,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.SystemTests;
 
-public sealed class AsyncTest : TestBase
+public sealed class AsyncTest : XApiClientTestBase
 {
     public AsyncTest(XApiClient client, string user, string password, string? messageFolder = null)
         : base(client, user, password, messageFolder)

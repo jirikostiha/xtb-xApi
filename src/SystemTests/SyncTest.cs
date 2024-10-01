@@ -6,7 +6,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.SystemTests;
 
-public sealed class SyncTest : TestBase
+public sealed class SyncTest : XApiClientTestBase
 {
     public SyncTest(XApiClient client, string user, string password, string? messageFolder = null)
         : base(client, user, password, messageFolder)
