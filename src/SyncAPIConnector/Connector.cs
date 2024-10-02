@@ -14,6 +14,12 @@ namespace Xtb.XApi;
 
 public class Connector : IClient, IDisposable
 {
+    public static Connector Create(string address, int port)
+    {
+        var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
+        return new Connector(endpoint);
+    }
+
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.
     /// </summary>
