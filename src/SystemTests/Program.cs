@@ -23,11 +23,21 @@ internal static class Program
 
     private static void Main(string[] args)
     {
+        RunConnectorTest();
         RunSyncTest();
         RunAsyncTest();
 
         Console.WriteLine("Done.");
         Console.Read();
+    }
+
+    private static async void RunConnectorTest()
+    {
+        using var connector = new Connector(DemoRequestingEndpoint);
+
+        Console.WriteLine("----Connector test---");
+        var connectorTest = new ConnectorTest(connector, _userId, _password);
+        connectorTest.Run();
     }
 
     private static void RunSyncTest()

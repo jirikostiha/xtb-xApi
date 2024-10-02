@@ -36,6 +36,24 @@ public abstract class TestBase
         if (response is null || response.Status == true)
         {
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("OK");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"Error: {response.ErrCode}, {response.ErrorDescr}");
+        }
+
+        Console.ForegroundColor = oc;
+    }
+
+    protected static void Pass(string? response)
+    {
+        var oc = Console.ForegroundColor;
+
+        if (response is null || response.Contains("status:ok"))
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
 
             Console.WriteLine("OK");
         }
@@ -43,7 +61,9 @@ public abstract class TestBase
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
 
-            Console.WriteLine($"Error: {response.ErrCode}, {response.ErrorDescr}");
+            var errorCode = "";
+            var errorDesc = "";
+            Console.WriteLine($"Error: {errorCode}, {errorDesc}");
         }
 
         Console.ForegroundColor = oc;
