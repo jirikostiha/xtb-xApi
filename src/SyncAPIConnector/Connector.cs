@@ -101,16 +101,7 @@ public class Connector : IClient, IDisposable
             throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (Options.ShallUseSecureConnection)
-        {
-            EstablishSecureConnection();
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+        EstablishSecureConnection();
 
         OnConnected(Endpoint);
     }
@@ -137,16 +128,7 @@ public class Connector : IClient, IDisposable
             throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (Options.ShallUseSecureConnection)
-        {
-            await EstablishSecureConnectionAsync(cancellationToken);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+        await EstablishSecureConnectionAsync(cancellationToken);
 
         OnConnected(Endpoint);
     }

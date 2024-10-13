@@ -23,9 +23,4 @@ public record ConnectorOptions
     /// Maximum send connection time.
     /// </summary>
     public TimeSpan SendTimeout { get; set; }
-
-    /// <summary>
-    /// Determine if secure connection shall be used.
-    /// </summary>
-    public bool ShallUseSecureConnection { get; set; }
 }
