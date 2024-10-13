@@ -53,3 +53,8 @@ For example like this:
 ## Usage
 
 For usage see [example code](./src/SystemTests/Program.cs ), [official page](http://developers.xstore.pro/) and [official documentation](http://developers.xstore.pro/documentation/)
+
+
+## License
+
+Project is under [MIT](./LICENSE) license.

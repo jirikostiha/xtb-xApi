@@ -27,6 +27,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.SystemTests", "Sys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.UnitTests", "UnitTests\Xtb.XApi.UnitTests.csproj", "{84A4454D-B5D9-47E3-A373-6AE80A085FEB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{12D2B3B2-9C30-4008-B796-830E969219BE}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\ISSUE_TEMPLATE\bug_report.md = ..\.github\ISSUE_TEMPLATE\bug_report.md
+		..\.github\ISSUE_TEMPLATE\feature_request.md = ..\.github\ISSUE_TEMPLATE\feature_request.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CACC852B-E3CC-4663-99D3-2E5A19D04F45} = {2D6B372D-4BBE-456D-B399-D07957698056}
+		{12D2B3B2-9C30-4008-B796-830E969219BE} = {2D6B372D-4BBE-456D-B399-D07957698056}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DCBF53F7-BA38-49D4-A679-3424CC0A4664}
