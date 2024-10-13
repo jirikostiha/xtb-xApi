@@ -31,7 +31,7 @@ internal static class Program
         Console.Read();
     }
 
-    private static async void RunConnectorTest()
+    private static void RunConnectorTest()
     {
         using var connector = new Connector(DemoRequestingEndpoint);
 

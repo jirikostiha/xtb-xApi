@@ -51,7 +51,7 @@ public abstract class TestBase
     {
         var oc = Console.ForegroundColor;
 
-        if (response is null || response.Contains("status:ok"))
+        if (response is null || response.Contains("\"status\":true"))
         {
             Console.ForegroundColor = ConsoleColor.Green;
 

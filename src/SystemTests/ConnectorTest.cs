@@ -92,7 +92,6 @@ public sealed class ConnectorTest : TestBase
         $$"""
         {
             "command": "ping",
-            "pretyPrint": false,
             "arguments": {},
             "customTag": "1"
         }
@@ -102,7 +101,6 @@ public sealed class ConnectorTest : TestBase
         $$"""
         {
             "command": "getVersion",
-            "pretyPrint": null,
             "arguments": {},
             "customTag": "2"
         }
