@@ -53,3 +53,14 @@ For example like this:
 ## Usage
 
 For usage see [example code](./src/SystemTests/Program.cs ), [official page](http://developers.xstore.pro/) and [official documentation](http://developers.xstore.pro/documentation/)
+
+
+## Contributing
+
+For bug report create an [issue](https://github.com/jirikostiha/xtb-xApi/issues/new/choose).  
+For new idea create an [issue](https://github.com/jirikostiha/xtb-xApi/issues/new/choose).  
+
+
+## License
+
+Project is under [MIT](./LICENSE) license.
