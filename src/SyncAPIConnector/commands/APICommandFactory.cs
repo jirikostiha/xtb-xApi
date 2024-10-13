@@ -31,8 +31,6 @@ public static class APICommandFactory
         {
             { "userId", userId },
             { "password", password },
-            { "type", AppType },
-            { "version", Version },
         };
 
         if (appId != null)

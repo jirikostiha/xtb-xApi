@@ -49,12 +49,16 @@ public abstract class BaseCommand : ICommand
     public virtual string ToJSONString()
     {
         JsonObject obj = new()
+            {
+                { "command", CommandName },
+                { "arguments", Arguments },
+                { "customTag", CustomTag }
+            };
+
+        if (!(PrettyPrint ?? false))
         {
-            { "command", CommandName },
-            { "prettyPrint", PrettyPrint },
-            { "arguments", Arguments },
-            { "customTag", CustomTag }
-        };
+            obj.Add("prettyPrint", PrettyPrint);
+        }
 
         return obj.ToString();
     }
