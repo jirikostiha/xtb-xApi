@@ -55,7 +55,7 @@ public abstract class BaseCommand : ICommand
                 { "customTag", CustomTag }
             };
 
-        if (!(PrettyPrint ?? false))
+        if (PrettyPrint.HasValue && PrettyPrint.Value)
         {
             obj.Add("prettyPrint", PrettyPrint);
         }
