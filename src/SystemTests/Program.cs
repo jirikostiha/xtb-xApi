@@ -45,6 +45,7 @@ internal static class Program
         using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         var client = new XApiClient(apiConnector);
 
+        Console.WriteLine();
         Console.WriteLine("----Sync test---");
         var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
         syncTest.Run();

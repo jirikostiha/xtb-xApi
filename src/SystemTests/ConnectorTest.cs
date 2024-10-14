@@ -26,6 +26,7 @@ public sealed class ConnectorTest : TestBase
         {
             Client.Connect();
             Pass();
+            Detail($"endpoint:{Client.Endpoint}");
         }
         catch (Exception ex)
         {
@@ -35,7 +36,7 @@ public sealed class ConnectorTest : TestBase
         Action("Ping");
         try
         {
-            var response = Client.SendMessageWaitResponse(pingRequest);
+            var response = Client.SendMessageWaitResponse(_pingRequest);
             Pass(response);
         }
         catch (Exception ex)
@@ -59,6 +60,7 @@ public sealed class ConnectorTest : TestBase
         {
             Client.Connect();
             Pass();
+            Detail($"endpoint:{Client.Endpoint}");
         }
         catch (Exception ex)
         {
@@ -68,7 +70,7 @@ public sealed class ConnectorTest : TestBase
         Action("Ping");
         try
         {
-            var response = Client.SendMessageWaitResponse(pingRequest);
+            var response = Client.SendMessageWaitResponse(_pingRequest);
             Pass(response);
         }
         catch (Exception ex)
@@ -79,7 +81,7 @@ public sealed class ConnectorTest : TestBase
         Action("Getting version");
         try
         {
-            var response = Client.SendMessageWaitResponse(versionRequest);
+            var response = Client.SendMessageWaitResponse(_versionRequest);
             Pass(response);
         }
         catch (Exception ex)
@@ -88,7 +90,7 @@ public sealed class ConnectorTest : TestBase
         }
     }
 
-    private string pingRequest =
+    private const string _pingRequest =
         $$"""
         {
             "command": "ping",
@@ -97,7 +99,7 @@ public sealed class ConnectorTest : TestBase
         }
         """;
 
-    private string versionRequest =
+    private const string _versionRequest =
         $$"""
         {
             "command": "getVersion",
