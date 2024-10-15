@@ -14,11 +14,11 @@ public class ConnectorTest
     }
 
     [Fact]
-    public void SendMessageAsync_WhenDisconnected_Exception()
+    public async Task SendMessageAsync_WhenDisconnected_Exception()
     {
         var client = new Connector(new IPEndPoint(IPAddress.Loopback, 5921));
 
-        Assert.ThrowsAsync<APICommunicationException>(async () => await client.SendMessageAsync("abc"));
+        await Assert.ThrowsAsync<APICommunicationException>(async () => await client.SendMessageAsync("abc"));
     }
 
     [Fact]
