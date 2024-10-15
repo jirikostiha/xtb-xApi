@@ -30,4 +30,4 @@ jobs:
         run: dotnet restore "${{ env.sln-path }}"
 
       - name: Build debug
-        run: dotnet build "${{ env.sln-path }}" --no-restore
+        run: dotnet build "${{ env.sln-path }}" --no-restore -c Debug
