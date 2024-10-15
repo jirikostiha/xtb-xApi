@@ -14,8 +14,36 @@ This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wra
 It is based on xApi version 2.5.0.  
 In the beginning there were mostly additive changes with some necessary exceptions and now there are many improvements and changes in original code.  
 
+
+## Setup
+
+Add [nuget package](https://www.nuget.org/packages/SyncAPIConnect) to the project.  
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SyncAPIConnect" Version="2.5.X" />
+  </ItemGroup>
+</Project>
+```
+
+## Usage
+
+```csharp
+var client = XApiClient.Create("81.2.190.163", 5112, 5113);
+await client.ConnectAsync();
+await client.LoginAsync(new Credentials("login", "password"));
+var openTrades = await client.GetTradesAsync(true);
+```
+
+For usage see [example code](./src/SystemTests/Program.cs ), [official page](http://developers.xstore.pro/) and [api documentation](http://developers.xstore.pro/documentation/)
+
+
 ## Changelog
 
+2.5.19 various refactoring, minor fixes and changes, unit tests  
 2.5.18 XApiClient as main api providing class  
 2.5.17 time arguments instead of long, reduced memory footprint (long->int)  
 2.5.16 async cancelation, time members, various small changes  
@@ -34,25 +62,6 @@ In the beginning there were mostly additive changes with some necessary exceptio
 2.5.3 timeout handling, trading examples  
 2.5.2 new csproj format, set netstandard2.0  
 2.5.1 cleaned linked binaries and set nuget dependencies
-
-## Setup
-
-Add [nuget package](https://www.nuget.org/packages/SyncAPIConnect) to the project.  
-For example like this:
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="SyncAPIConnect" Version="2.5.X" />
-  </ItemGroup>
-</Project>
-```
-
-## Usage
-
-For usage see [example code](./src/SystemTests/Program.cs ), [official page](http://developers.xstore.pro/) and [official documentation](http://developers.xstore.pro/documentation/)
 
 
 ## License
