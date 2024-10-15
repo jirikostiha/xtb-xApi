@@ -137,7 +137,7 @@ public interface IXApiClientBase
 
     event EventHandler? Disconnected;
 
-    string AccountId { get; }
+    string? AccountId { get; }
 
     StreamingApiConnector Streaming { get; }
 }

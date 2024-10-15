@@ -76,7 +76,7 @@ public class Connector : IClient, IDisposable
     protected StreamReader StreamReader { get; set; }
 
     /// <inheritdoc/>
-    public bool IsConnected => TcpClient.Connected;
+    public bool IsConnected => TcpClient?.Connected ?? false;
 
     private TcpClient CreateTcpClient()
     {

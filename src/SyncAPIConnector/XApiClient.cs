@@ -101,7 +101,7 @@ public class XApiClient : IXApiClient, IDisposable
 
     public StreamingApiConnector Streaming => ApiConnector.Streaming;
 
-    public string AccountId => _credentials?.Login ?? string.Empty;
+    public string? AccountId => _credentials?.Login;
 
     public void Connect()
     {

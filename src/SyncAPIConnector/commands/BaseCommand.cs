@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
+[DebuggerDisplay("{CommandName}")]
 public abstract class BaseCommand : ICommand
 {
     protected internal bool? PrettyPrint { get; set; }
