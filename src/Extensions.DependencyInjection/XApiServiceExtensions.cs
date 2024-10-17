@@ -15,7 +15,7 @@ public static class XApiServiceExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     /// <param name="setupAction">
-    /// The <see cref="Action{AddXApiClientOptions}"/> to configure the provided <see cref="AddXApiClientOptions"/>.
+    /// The <see cref="Action{XApiClientOptions}"/> to configure the provided <see cref="XApiClientOptions"/>.
     /// </param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
     public static IServiceCollection AddXApiClient(this IServiceCollection services, Action<XApiClientOptions> setupAction)
@@ -44,7 +44,7 @@ public static class XApiServiceExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     /// <param name="setupAction">
-    /// The <see cref="Action{AddXApiClientOptions}"/> to configure the provided <see cref="XApiClientOptions"/>.
+    /// The <see cref="Action{XApiClientOptions}"/> to configure the provided <see cref="XApiClientOptions"/>.
     /// </param>
     /// <param name="key">The service key. </param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
@@ -61,8 +61,8 @@ public static class XApiServiceExtensions
         services.Configure(setupAction);
 
         var xapiClient = XApiClient.Create(options.Address, options.MainPort, options.StreamingPort, options.StreamingListener);
-        services.TryAddKeyedSingleton(key, ServiceDescriptor.Singleton(xapiClient));
-        services.TryAddKeyedSingleton(key, ServiceDescriptor.Singleton<IXApiClientAsync>(provider => xapiClient));
+        services.TryAdd(ServiceDescriptor.KeyedSingleton(key, xapiClient));
+        services.TryAdd(ServiceDescriptor.KeyedSingleton<IXApiClient>(key, xapiClient));
         services.TryAdd(ServiceDescriptor.KeyedSingleton<IXApiClientSync>(key, xapiClient));
         services.TryAdd(ServiceDescriptor.KeyedSingleton<IXApiClientAsync>(key, xapiClient));
 
