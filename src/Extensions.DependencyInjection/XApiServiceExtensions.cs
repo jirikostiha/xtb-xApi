@@ -15,10 +15,10 @@ public static class XApiServiceExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     /// <param name="setupAction">
-    /// The <see cref="Action{AddXApiClientOptions}"/> to configure the provided <see cref="AddXApiClientOptions"/>.
+    /// The <see cref="Action{XApiClientOptions}"/> to configure the provided <see cref="XApiClientServiceOptions"/>.
     /// </param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
-    public static IServiceCollection AddXApiClient(this IServiceCollection services, Action<XApiClientOptions> setupAction)
+    public static IServiceCollection AddXApiClient(this IServiceCollection services, Action<XApiClientServiceOptions> setupAction)
     {
 #if NET7_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(services);
@@ -26,7 +26,7 @@ public static class XApiServiceExtensions
         _ = services ?? throw new ArgumentNullException(nameof(services));
 #endif
 
-        var options = new XApiClientOptions();
+        var options = new XApiClientServiceOptions();
         setupAction(options);
         services.Configure(setupAction);
 
@@ -44,11 +44,11 @@ public static class XApiServiceExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add services to.</param>
     /// <param name="setupAction">
-    /// The <see cref="Action{AddXApiClientOptions}"/> to configure the provided <see cref="XApiClientOptions"/>.
+    /// The <see cref="Action{XApiClientOptions}"/> to configure the provided <see cref="XApiClientServiceOptions"/>.
     /// </param>
     /// <param name="key">The service key. </param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
-    public static IServiceCollection AddXApiClient(this IServiceCollection services, string key, Action<XApiClientOptions> setupAction)
+    public static IServiceCollection AddXApiClient(this IServiceCollection services, string key, Action<XApiClientServiceOptions> setupAction)
     {
 #if NET7_0_OR_GREATER
         ArgumentNullException.ThrowIfNull(services);
@@ -56,13 +56,13 @@ public static class XApiServiceExtensions
         _ = services ?? throw new ArgumentNullException(nameof(services));
 #endif
 
-        var options = new XApiClientOptions();
+        var options = new XApiClientServiceOptions();
         setupAction(options);
         services.Configure(setupAction);
 
         var xapiClient = XApiClient.Create(options.Address, options.MainPort, options.StreamingPort, options.StreamingListener);
-        services.TryAddKeyedSingleton(key, ServiceDescriptor.Singleton(xapiClient));
-        services.TryAddKeyedSingleton(key, ServiceDescriptor.Singleton<IXApiClientAsync>(provider => xapiClient));
+        services.TryAdd(ServiceDescriptor.KeyedSingleton(key, xapiClient));
+        services.TryAdd(ServiceDescriptor.KeyedSingleton<IXApiClient>(key, xapiClient));
         services.TryAdd(ServiceDescriptor.KeyedSingleton<IXApiClientSync>(key, xapiClient));
         services.TryAdd(ServiceDescriptor.KeyedSingleton<IXApiClientAsync>(key, xapiClient));
 
