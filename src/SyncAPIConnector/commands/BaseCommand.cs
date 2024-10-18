@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
@@ -51,11 +52,15 @@ public abstract class BaseCommand : ICommand
     public virtual string ToJSONString()
     {
         JsonObject obj = new()
-            {
-                { "command", CommandName },
-                { "arguments", Arguments },
-                { "customTag", CustomTag }
-            };
+        {
+            { "command", CommandName },
+            { "customTag", CustomTag }
+        };
+
+        if (Arguments.Count != 0)
+        {
+            obj.Add("arguments", Arguments);
+        }
 
         if (PrettyPrint.HasValue && PrettyPrint.Value)
         {
