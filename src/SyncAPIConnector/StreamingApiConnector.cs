@@ -36,11 +36,12 @@ public class StreamingApiConnector : IConnectable
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    /// <param name="endpoint">Endpoint for streaming data.</param>
+    /// <param name="connector">Underlaying client.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
-        : base(endpoint)
+    public StreamingApiConnector(IClient connector, IStreamingListener? streamingListener = null)
     {
+        Connector = connector;
+        _streamingListener = streamingListener;
     }
 
     #region Events
@@ -118,6 +119,7 @@ public class StreamingApiConnector : IConnectable
     public IPEndPoint Endpoint => Connector.Endpoint;
 
     /// <inheritdoc/>
+    public void Connect()
     {
         if (StreamSessionId == null)
         {
@@ -138,7 +140,7 @@ public class StreamingApiConnector : IConnectable
     }
 
     /// <inheritdoc/>
-    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)
         {
@@ -176,7 +178,7 @@ public class StreamingApiConnector : IConnectable
     {
         try
         {
-            var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false)
+            var message = await Connector.ReadMessageAsync(cancellationToken).ConfigureAwait(false)
                 ?? throw new InvalidOperationException("Incoming streaming message is null.");
 
             var responseBody = JsonNode.Parse(message)

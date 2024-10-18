@@ -10,8 +10,8 @@ using Xtb.XApi.Commands;
 using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
-
-public class ApiConnector : Connector
+//New
+public class ApiConnector : IConnectable, IDisposable
 {
     /// <summary>
     /// Delay between each command to the server.
@@ -29,7 +29,7 @@ public class ApiConnector : Connector
     {
         var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
         var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
-        return new ApiConnector(requestingEndpoint, new StreamingApiConnector(streamingEndpoint, streamingListener));
+        return new ApiConnector(new Connector(requestingEndpoint), new StreamingApiConnector(streamingEndpoint, streamingListener));
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class ApiConnector : Connector
     /// <param name="streamingListener">Streaming listener.</param>
     public static ApiConnector Create(IPEndPoint requestingEndpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
-        return new ApiConnector(requestingEndpoint, new StreamingApiConnector(streamingEndpoint, streamingListener));
+        return new ApiConnector(new Connector(requestingEndpoint), new StreamingApiConnector(streamingEndpoint, streamingListener));
     }
 
     /// <summary>
@@ -51,10 +51,9 @@ public class ApiConnector : Connector
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    /// <param name="endpoint">Endpoint for requesting data.</param>
+    /// <param name="connector">Underlaying client.</param>
     /// <param name="streamingConnector">streaming connector.</param>
-    public ApiConnector(IPEndPoint endpoint, StreamingApiConnector streamingConnector)
-        : base(endpoint)
+    public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
     {
         Streaming = streamingConnector;
     }
@@ -76,12 +75,32 @@ public class ApiConnector : Connector
     /// <summary>
     /// Streaming connector.
     /// </summary>
-    public StreamingApiConnector Streaming { get; private init; }
+    public IClient Connector { get; private set; }
+
+    /// <inheritdoc/>
+    public bool IsConnected => Connector.IsConnected;
+    /// <inheritdoc/>
+    public IPEndPoint Endpoint => Connector.Endpoint;
 
     /// <summary>
-    /// Stream session id (given upon login).
+    /// Streaming connector.
     /// </summary>
-    public string? StreamSessionId { get; }
+    public StreamingApiConnector Streaming { get; private init; }
+
+    /// <inheritdoc/>
+    public void Connect()
+    {
+        Connector.Connect();
+        //_streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
+    }
+
+    /// <inheritdoc/>
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    {
+        await Connector.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        //_streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
+    }
+
 
     /// <summary>
     /// Redirects to the given server.
@@ -92,11 +111,10 @@ public class ApiConnector : Connector
         Redirected?.Invoke(this, new(endpoint));
 
         if (IsConnected)
-            Disconnect();
+            Connector.Disconnect();
 
-        Endpoint = endpoint;
         Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
-        Connect();
+        Connector.Connect();
     }
 
     /// <summary>
@@ -136,7 +154,7 @@ public class ApiConnector : Connector
             }
 
             CommandExecuting?.Invoke(this, new(command));
-            var response = SendMessageWaitResponse(request);
+            var response = Connector.SendMessageWaitResponse(request);
             _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
@@ -174,7 +192,7 @@ public class ApiConnector : Connector
             }
 
             CommandExecuting?.Invoke(this, new(command));
-            var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await Connector.SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
             _lastCommandTimestamp = currentTimestamp;
 
             var parsedResponse = JsonNode.Parse(response);
@@ -193,16 +211,25 @@ public class ApiConnector : Connector
 
     private bool _disposed;
 
-    protected override void Dispose(bool disposing)
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected void Dispose(bool disposing)
     {
         if (!_disposed)
         {
             if (disposing)
             {
-                Streaming?.Dispose();
+                if (Connector is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+                //Streaming?.Dispose();
             }
-
-            base.Dispose(disposing);
 
             _disposed = true;
         }

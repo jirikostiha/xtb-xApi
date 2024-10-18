@@ -9,7 +9,7 @@ using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
-public class ApiConnector : IConnectable
+public class ApiConnector2 : IConnectable
 {
     /// <summary>
     /// Delay between each command to the server.
