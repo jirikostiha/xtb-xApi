@@ -437,6 +437,7 @@ public class Connector : IClient, IDisposable
         }
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         Dispose(true);

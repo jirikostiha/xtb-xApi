@@ -282,6 +282,7 @@ public class XApiClient : IXApiClient, IDisposable
 
     private bool _disposed;
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         Dispose(true);
