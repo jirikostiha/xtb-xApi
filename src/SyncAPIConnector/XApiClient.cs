@@ -139,11 +139,17 @@ public class XApiClient : IXApiClient, IDisposable
     public Task<ServerTimeResponse> GetServerTimeAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteServerTimeCommandAsync(ApiConnector, cancellationToken);
 
+    public LoginResponse Login(string login, string password, string? appId = null, string? appName = null)
+      => Login(new Credentials(login, password, appId, appName));
+
     public LoginResponse Login(Credentials credentials)
     {
         _credentials = credentials;
         return APICommandFactory.ExecuteLoginCommand(ApiConnector, credentials);
     }
+
+    public Task<LoginResponse> LoginAsync(string login, string password, string? appId = null, string? appName = null, CancellationToken cancellationToken = default)
+        => LoginAsync(new Credentials(login, password, appId, appName), cancellationToken);
 
     public Task<LoginResponse> LoginAsync(Credentials credentials, CancellationToken cancellationToken = default)
     {
@@ -213,17 +219,17 @@ public class XApiClient : IXApiClient, IDisposable
     public ChartRangeResponse GetChartRange(ChartRangeInfoRecord rangeInfoRecord)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, rangeInfoRecord);
 
-    public Task<ChartRangeResponse> GetChartRangeAsync(ChartRangeInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, rangeInfoRecord, cancellationToken);
-
     public ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, symbol, period, since, until, 0);
 
-    public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, until, 0, cancellationToken);
-
     public ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, int ticks)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, symbol, period, since, default, ticks);
+
+    public Task<ChartRangeResponse> GetChartRangeAsync(ChartRangeInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, rangeInfoRecord, cancellationToken);
+
+    public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, until, 0, cancellationToken);
 
     public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, int ticks, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, default, ticks, cancellationToken);
@@ -231,11 +237,11 @@ public class XApiClient : IXApiClient, IDisposable
     public ChartLastResponse GetChartLast(ChartLastInfoRecord rangeInfoRecord)
         => APICommandFactory.ExecuteChartLastCommand(ApiConnector, rangeInfoRecord);
 
-    public Task<ChartLastResponse> GetChartLastAsync(ChartLastInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteChartLastCommandAsync(ApiConnector, rangeInfoRecord, cancellationToken);
-
     public ChartLastResponse GetChartLast(string symbol, PERIOD period, DateTimeOffset since)
         => APICommandFactory.ExecuteChartLastCommand(ApiConnector, symbol, period, since);
+
+    public Task<ChartLastResponse> GetChartLastAsync(ChartLastInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteChartLastCommandAsync(ApiConnector, rangeInfoRecord, cancellationToken);
 
     public Task<ChartLastResponse> GetChartLastAsync(string symbol, PERIOD period, DateTimeOffset since, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartLastCommandAsync(ApiConnector, symbol, period, since, cancellationToken);
