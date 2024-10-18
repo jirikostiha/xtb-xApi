@@ -14,10 +14,11 @@ namespace Xtb.XApi;
 
 public class Connector : IClient, IDisposable
 {
-    /// <summary>
-    /// Default maximum connection time (in milliseconds). After that the connection attempt is immediately dropped.
-    /// </summary>
-    public const int DefaultConnectionTimeout = 5000;
+    public static Connector Create(string address, int port)
+    {
+        var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
+        return new Connector(endpoint);
+    }
 
     /// <summary>
     /// Lock object used to synchronize access to write socket operations.
@@ -27,8 +28,9 @@ public class Connector : IClient, IDisposable
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    public Connector(IPEndPoint endpoint)
+    public Connector(IPEndPoint endpoint, ConnectorOptions? _options = null)
     {
+        Options = _options ?? ConnectorOptions.Default;
         Endpoint = endpoint;
     }
 
@@ -48,13 +50,15 @@ public class Connector : IClient, IDisposable
     protected void OnConnected(IPEndPoint endpoint) => Connected?.Invoke(this, new(endpoint));
     #endregion Events
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Endpoint that the connection was established with.
+    /// </summary>
     public IPEndPoint Endpoint { get; set; }
 
     /// <summary>
-    /// Determines if secure connection shall be used.
+    /// Options.
     /// </summary>
-    public bool ShallUseSecureConnection { get; init; }
+    protected ConnectorOptions Options { get; init; }
 
     /// <summary>
     /// Socket that handles the connection.
@@ -71,27 +75,22 @@ public class Connector : IClient, IDisposable
     /// </summary>
     protected StreamReader StreamReader { get; set; }
 
-    /// <summary>
-    /// Maximum connection time. After that the connection attempt is immediately dropped.
-    /// </summary>
-    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(DefaultConnectionTimeout);
-
-    /// <summary>
-    /// True if connected to the remote server.
-    /// </summary>
-    protected volatile bool _apiConnected;
-
     /// <inheritdoc/>
-    public bool IsConnected => TcpClient.Connected;
+    public bool IsConnected => TcpClient?.Connected ?? false;
+
+    private TcpClient CreateTcpClient()
+    {
+        return new TcpClient
+        {
+            ReceiveTimeout = Options.ReceiveTimeout.Milliseconds,
+            SendTimeout = Options.SendTimeout.Milliseconds
+        };
+    }
 
     /// <inheritdoc/>
     public virtual void Connect()
     {
-        TcpClient = new TcpClient
-        {
-            ReceiveTimeout = ConnectionTimeout.Milliseconds,
-            SendTimeout = ConnectionTimeout.Milliseconds
-        };
+        TcpClient = CreateTcpClient();
 
         try
         {
@@ -102,16 +101,7 @@ public class Connector : IClient, IDisposable
             throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (ShallUseSecureConnection)
-        {
-            EstablishSecureConnection();
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+        EstablishSecureConnection();
 
         OnConnected(Endpoint);
     }
@@ -119,16 +109,12 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public virtual async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        TcpClient = new TcpClient
-        {
-            ReceiveTimeout = ConnectionTimeout.Milliseconds,
-            SendTimeout = ConnectionTimeout.Milliseconds
-        };
+        TcpClient = CreateTcpClient();
 
         try
         {
             var connectTask = TcpClient.ConnectAsync(Endpoint.Address, Endpoint.Port);
-            var timeoutTask = Task.Delay(ConnectionTimeout, cancellationToken);
+            var timeoutTask = Task.Delay(Options.ReceiveTimeout, cancellationToken);
 
             var completedTask = await Task.WhenAny(connectTask, timeoutTask).ConfigureAwait(false);
 
@@ -142,16 +128,7 @@ public class Connector : IClient, IDisposable
             throw new APICommunicationException($"Connection to {Endpoint} failed.", ex);
         }
 
-        if (ShallUseSecureConnection)
-        {
-            await EstablishSecureConnectionAsync(cancellationToken);
-        }
-        else
-        {
-            NetworkStream ns = TcpClient.GetStream();
-            StreamWriter = new StreamWriter(ns);
-            StreamReader = new StreamReader(ns);
-        }
+        await EstablishSecureConnectionAsync(cancellationToken);
 
         OnConnected(Endpoint);
     }
@@ -238,7 +215,7 @@ public class Connector : IClient, IDisposable
     /// Reads raw message from the remote server.
     /// </summary>
     /// <returns>Read message</returns>
-    protected string ReadMessage()
+    public string? ReadMessage()
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -281,7 +258,7 @@ public class Connector : IClient, IDisposable
     /// Reads raw message from the remote server.
     /// </summary>
     /// <returns>Read message</returns>
-    protected async Task<string> ReadMessageAsync(CancellationToken cancellationToken = default)
+    public async Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
         var result = new StringBuilder();
         char lastChar = ' ';
@@ -324,6 +301,52 @@ public class Connector : IClient, IDisposable
         {
             Disconnect();
             throw new APICommunicationException("Disconnected from server.", ex);
+        }
+    }
+
+    /// <inheritdoc/>
+    public string SendMessageWaitResponse(string message)
+    {
+        _lock.Wait();
+        try
+        {
+            SendMessageInternal(message);
+            string? response = ReadMessage();
+
+            if (string.IsNullOrEmpty(response))
+            {
+                Disconnect();
+                throw new APICommunicationException("Server not responding. Response has no value.");
+            }
+
+            return response!;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default)
+    {
+        await _lock.WaitAsync(cancellationToken);
+        try
+        {
+            await SendMessageInternalAsync(message, cancellationToken).ConfigureAwait(false);
+            string? response = await ReadMessageAsync(cancellationToken).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(response))
+            {
+                Disconnect();
+                throw new APICommunicationException("Server not responding. Response has no value.");
+            }
+
+            return response!;
+        }
+        finally
+        {
+            _lock.Release();
         }
     }
 
@@ -384,8 +407,7 @@ public class Connector : IClient, IDisposable
     /// <summary>
     /// Disconnects from the remote server.
     /// </summary>
-    /// <param name="silent">If true then no event will be triggered (used in redirect process)</param>
-    public void Disconnect(bool silent = false)
+    public void Disconnect()
     {
         if (IsConnected)
         {
@@ -395,8 +417,6 @@ public class Connector : IClient, IDisposable
 
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
-
-        _apiConnected = false;
     }
 
     private bool _disposed;
@@ -417,6 +437,7 @@ public class Connector : IClient, IDisposable
         }
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         Dispose(true);
