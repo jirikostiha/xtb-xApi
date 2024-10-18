@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Globalization;
-using System.IO;
 using System.Threading.Tasks;
 using Xtb.XApi.Responses;
 
@@ -8,46 +6,12 @@ namespace Xtb.XApi.SystemTests;
 
 public abstract class TestBase
 {
-    protected TestBase(XApiClient client, string user, string password, string? messageFolder = null)
+    protected TestBase(string user, string password)
     {
-        Client = client;
         Credentials = new Credentials(user, password);
-        MessageFolder = messageFolder;
-
-        if (messageFolder != null)
-        {
-            Client.MessageReceived += Connector_MessageReceived;
-            client.MessageSent += Connector_MessageSent;
-        }
-    }
-
-    private void Connector_MessageSent(object? sender, MessageEventArgs e)
-    {
-        if (MessageFolder != null)
-        {
-            Directory.CreateDirectory(MessageFolder);
-            var fileName = $"sent_{TimeProvider.System.GetUtcNow().ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}.json";
-            File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
-        }
-    }
-
-    private void Connector_MessageReceived(object? sender, MessageEventArgs e)
-    {
-        if (MessageFolder != null)
-        {
-            Directory.CreateDirectory(MessageFolder);
-            var fileName = $"sent_{TimeProvider.System.GetUtcNow().ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}.json";
-            File.WriteAllText(Path.Combine(MessageFolder, fileName), e.Message);
-        }
     }
 
     protected Credentials Credentials { get; set; }
-
-    protected XApiClient Client { get; set; }
-
-    protected string? MessageFolder { get; set; }
-
-    public bool ShallOpenTrades { get; set; }
 
     protected static void Stage(string name)
     {
@@ -72,6 +36,24 @@ public abstract class TestBase
         if (response is null || response.Status == true)
         {
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("OK");
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"Error: {response.ErrCode}, {response.ErrorDescr}");
+        }
+
+        Console.ForegroundColor = oc;
+    }
+
+    protected static void Pass(string? response)
+    {
+        var oc = Console.ForegroundColor;
+
+        if (response is null || response.Contains("\"status\":true"))
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
 
             Console.WriteLine("OK");
         }
@@ -79,7 +61,9 @@ public abstract class TestBase
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
 
-            Console.WriteLine($"Error: {response.ErrCode}, {response.ErrorDescr}");
+            var errorCode = "";
+            var errorDesc = "";
+            Console.WriteLine($"Error: {errorCode}, {errorDesc}");
         }
 
         Console.ForegroundColor = oc;

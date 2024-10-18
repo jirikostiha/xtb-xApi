@@ -2,15 +2,10 @@
 
 public record Credentials
 {
-    public Credentials(string login, string password)
+    public Credentials(string login, string password, string? appId = null, string? appName = null)
     {
         Login = login;
         Password = password;
-    }
-
-    public Credentials(string login, string password, string appId, string appName)
-        : this(login, password)
-    {
         AppId = appId;
         AppName = appName;
     }

@@ -1,7 +1,7 @@
 name: Build
 
 env:
-  sln-path: "./src/xAPI.sln"
+  sln-path: "./src/xtb.xapi.sln"
 
 on:
   workflow_dispatch:
@@ -30,4 +30,7 @@ jobs:
         run: dotnet restore "${{ env.sln-path }}"
 
       - name: Build debug
-        run: dotnet build "${{ env.sln-path }}" --no-restore
+        run: dotnet build "${{ env.sln-path }}" --no-restore -c Debug
+
+      - name: Test
+        run: dotnet test "${{ env.sln-path }}" --no-build --logger "trx;LogFileName=test-results.trx" || true

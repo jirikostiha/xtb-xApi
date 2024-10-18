@@ -8,7 +8,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.SystemTests;
 
-public sealed class AsyncTest : TestBase
+public sealed class AsyncTest : XApiClientTestBase
 {
     public AsyncTest(XApiClient client, string user, string password, string? messageFolder = null)
         : base(client, user, password, messageFolder)
@@ -41,6 +41,17 @@ public sealed class AsyncTest : TestBase
         catch (Exception ex)
         {
             Fail(ex, true);
+        }
+
+        Action("Ping");
+        try
+        {
+            var response = await Client.PingAsync(cancellationToken);
+            Pass(response);
+        }
+        catch (Exception ex)
+        {
+            Fail(ex);
         }
 
         Action($"Dropping connection");

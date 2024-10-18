@@ -23,6 +23,7 @@ internal static class Program
 
     private static void Main(string[] args)
     {
+        RunConnectorTest();
         RunSyncTest();
         RunAsyncTest();
 
@@ -30,11 +31,21 @@ internal static class Program
         Console.Read();
     }
 
+    private static void RunConnectorTest()
+    {
+        using var connector = new Connector(DemoRequestingEndpoint);
+
+        Console.WriteLine("----Connector test---");
+        var connectorTest = new ConnectorTest(connector, _userId, _password);
+        connectorTest.Run();
+    }
+
     private static void RunSyncTest()
     {
-        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         var client = new XApiClient(apiConnector);
 
+        Console.WriteLine();
         Console.WriteLine("----Sync test---");
         var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
         syncTest.Run();
@@ -42,7 +53,7 @@ internal static class Program
 
     private static void RunAsyncTest()
     {
-        using var apiConnector = new ApiConnector(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         var client = new XApiClient(apiConnector);
 
         Console.WriteLine();

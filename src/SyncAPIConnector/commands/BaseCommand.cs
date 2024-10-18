@@ -1,7 +1,10 @@
+using System.Diagnostics;
+using System.Linq;
 using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
+[DebuggerDisplay("{CommandName}")]
 public abstract class BaseCommand : ICommand
 {
     protected internal bool? PrettyPrint { get; set; }
@@ -51,10 +54,18 @@ public abstract class BaseCommand : ICommand
         JsonObject obj = new()
         {
             { "command", CommandName },
-            { "prettyPrint", PrettyPrint },
-            { "arguments", Arguments },
             { "customTag", CustomTag }
         };
+
+        if (Arguments.Count != 0)
+        {
+            obj.Add("arguments", Arguments);
+        }
+
+        if (PrettyPrint.HasValue && PrettyPrint.Value)
+        {
+            obj.Add("prettyPrint", PrettyPrint);
+        }
 
         return obj.ToString();
     }

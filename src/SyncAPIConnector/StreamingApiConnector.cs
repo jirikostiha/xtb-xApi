@@ -57,8 +57,6 @@ public class StreamingApiConnector : IConnectable
         add => Connector.Disconnected += value;
         remove => Connector.Disconnected -= value;
     }
-
-    /// <summary>
     /// Event raised when a tick record is received.
     /// </summary>
     public event EventHandler<TickReceivedEventArgs>? TickReceived;
@@ -109,9 +107,8 @@ public class StreamingApiConnector : IConnectable
     /// </summary>
     protected IClient Connector { get; private set; }
 
-    /// <summary>
+    /// <inheritdoc/>
     /// Stream session id (member of login response). Should be set after the successful login.
-    /// </summary>
     public string? StreamSessionId { get; set; }
 
     /// <inheritdoc/>
@@ -121,7 +118,6 @@ public class StreamingApiConnector : IConnectable
     public IPEndPoint Endpoint => Connector.Endpoint;
 
     /// <inheritdoc/>
-    public void Connect()
     {
         if (StreamSessionId == null)
         {
@@ -129,8 +125,6 @@ public class StreamingApiConnector : IConnectable
         }
 
         Connector.Connect();
-#pragma warning disable CA5359 // Do Not Disable Certificate Validation
-            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
 
         if (_streamingReaderTask == null)
         {
@@ -144,7 +138,7 @@ public class StreamingApiConnector : IConnectable
     }
 
     /// <inheritdoc/>
-    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)
         {
@@ -152,8 +146,6 @@ public class StreamingApiConnector : IConnectable
         }
 
         await Connector.ConnectAsync(cancellationToken);
-#pragma warning disable CA5359 // Do Not Disable Certificate Validation
-            var ssl = new SslStream(TcpClient.GetStream(), false, callback);
 
         if (_streamingReaderTask == null)
         {

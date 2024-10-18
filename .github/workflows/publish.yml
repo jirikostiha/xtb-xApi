@@ -1,7 +1,7 @@
 name: Publish
 
 env:
-  sln-path: "./src/xAPI.sln"
+  sln-path: "./src/xtb.xapi.sln"
   package-dir: "packages"
 
 on:
