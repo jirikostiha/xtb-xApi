@@ -135,7 +135,7 @@ public class ApiConnector : Connector
     {
         try
         {
-            var request = command.ToJSONString();
+            var request = command.ToJsonString();
 
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             long interval = currentTimestamp - _lastCommandTimestamp;
@@ -173,7 +173,7 @@ public class ApiConnector : Connector
     {
         try
         {
-            var request = command.ToJSONString();
+            var request = command.ToJsonString();
 
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             long interval = currentTimestamp - _lastCommandTimestamp;

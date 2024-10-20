@@ -11,7 +11,7 @@ public class LogoutCommand : BaseCommand
     {
     }
 
-    public override string ToJSONString()
+    public override string ToJsonString()
     {
         JsonObject obj = new()
         {

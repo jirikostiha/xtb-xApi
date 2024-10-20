@@ -49,7 +49,7 @@ public abstract class BaseCommand : ICommand
         return true;
     }
 
-    public virtual string ToJSONString()
+    public virtual string ToJsonString()
     {
         JsonObject obj = new()
         {
