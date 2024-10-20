@@ -84,23 +84,27 @@ public class ApiConnector : Connector
     public string? StreamSessionId { get; }
 
     /// <summary>
-    /// Redirects to the given server.
+    /// Redirects to the given endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint to redirect to.</param>
     public void Redirect(IPEndPoint endpoint)
     {
-        Redirected?.Invoke(this, new(endpoint));
-
         if (IsConnected)
             Disconnect();
 
         Endpoint = endpoint;
-        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
         Connect();
+
+        if (Streaming is not null)
+        {
+            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
+        }
+
+        Redirected?.Invoke(this, new(endpoint));
     }
 
     /// <summary>
-    /// Redirects to the given server.
+    /// Redirects to the given endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint to redirect to.</param>
     /// <param name="cancellationToken">Token to cancel operation.</param>
@@ -112,8 +116,14 @@ public class ApiConnector : Connector
             Disconnect();
 
         Endpoint = endpoint;
-        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
         await ConnectAsync(cancellationToken).ConfigureAwait(false);
+
+        if (Streaming is not null)
+        {
+            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
+        }
+
+        Redirected?.Invoke(this, new(endpoint));
     }
 
     /// <summary>
