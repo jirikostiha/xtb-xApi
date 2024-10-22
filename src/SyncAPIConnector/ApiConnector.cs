@@ -149,10 +149,8 @@ public class ApiConnector : Connector
             var response = SendMessageWaitResponse(request);
             _lastCommandTimestamp = currentTimestamp;
 
-            var parsedResponse = JsonNode.Parse(response);
-            if (parsedResponse is null)
-                throw new InvalidOperationException("Parsed command response is null.");
-
+            var parsedResponse = JsonNode.Parse(response)
+                ?? throw new InvalidOperationException("Parsed command response is null.");
             var jsonObj = parsedResponse.AsObject();
 
             return jsonObj;
