@@ -136,6 +136,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public void SendMessage(string message)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         _lock.Wait();
         try
         {
@@ -158,6 +161,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         await _lock.WaitAsync(cancellationToken);
         try
         {
@@ -217,6 +223,9 @@ public class Connector : IClient, IDisposable
     /// <returns>Read message</returns>
     public string? ReadMessage()
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         var result = new StringBuilder();
         char lastChar = ' ';
 
@@ -260,6 +269,9 @@ public class Connector : IClient, IDisposable
     /// <returns>Read message</returns>
     public async Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         var result = new StringBuilder();
         char lastChar = ' ';
 
@@ -307,6 +319,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public string SendMessageWaitResponse(string message)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         _lock.Wait();
         try
         {
@@ -330,6 +345,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public async Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         await _lock.WaitAsync(cancellationToken);
         try
         {
