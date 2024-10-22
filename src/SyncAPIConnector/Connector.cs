@@ -95,6 +95,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public virtual void Connect()
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         TcpClient = CreateTcpClient();
 
         try
@@ -114,6 +117,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public virtual async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         TcpClient = CreateTcpClient();
 
         try
@@ -432,6 +438,9 @@ public class Connector : IClient, IDisposable
     /// </summary>
     public void Disconnect()
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         if (IsConnected)
         {
             StreamReader.Close();
