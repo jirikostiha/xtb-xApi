@@ -201,6 +201,9 @@ public class ApiConnector : Connector
         }
     }
 
+    /// <inheritdoc/>
+    public override string ToString() => $"{base.ToString()}";
+
     private bool _disposed;
 
     protected override void Dispose(bool disposing)

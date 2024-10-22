@@ -419,6 +419,9 @@ public class Connector : IClient, IDisposable
         }
     }
 
+    /// <inheritdoc/>
+    public override string ToString() => $"{Endpoint?.ToString() ?? "no endpoint"}, {(IsConnected ? "connected" : "disconnected")}";
+
     private bool _disposed;
 
     protected virtual void Dispose(bool disposing)

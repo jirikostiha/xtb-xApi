@@ -518,6 +518,9 @@ public class StreamingApiConnector : Connector
         }
     }
 
+    /// <inheritdoc/>
+    public override string ToString() => $"{base.ToString()}, {StreamSessionId ?? "no session"}";
+
     private bool _disposed;
 
     protected override void Dispose(bool disposing)
