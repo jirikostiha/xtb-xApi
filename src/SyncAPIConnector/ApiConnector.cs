@@ -1,23 +1,14 @@
 using System;
-using System.IO;
 using System.Net;
-using System.Net.Security;
-using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Xtb.XApi.Commands;
-using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 //New
 public class ApiConnector : IConnectable, IDisposable
 {
-    /// <summary>
-    /// Delay between each command to the server.
-    /// </summary>
-    private const int COMMAND_TIME_SPACE = 200;
-
     /// <summary>
     /// Helper method to create a new instance based on address and ports.
     /// </summary>
@@ -73,6 +64,11 @@ public class ApiConnector : IConnectable, IDisposable
     #endregion Events
 
     /// <summary>
+    /// Delay.between commands.
+    /// </summary>
+    public TimeSpan CommandDelay { get; set; } = TimeSpan.FromMilliseconds(200);
+
+    /// <summary>
     /// Streaming connector.
     /// </summary>
     public IClient Connector { get; private set; }
@@ -103,22 +99,26 @@ public class ApiConnector : IConnectable, IDisposable
 
 
     /// <summary>
-    /// Redirects to the given server.
+    /// Redirects to the given endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint to redirect to.</param>
     public void Redirect(IPEndPoint endpoint)
     {
-        Redirected?.Invoke(this, new(endpoint));
-
         if (IsConnected)
             Connector.Disconnect();
 
-        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
         Connector.Connect();
+
+        if (Streaming is not null)
+        {
+            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
+        }
+
+        Redirected?.Invoke(this, new(endpoint));
     }
 
     /// <summary>
-    /// Redirects to the given server.
+    /// Redirects to the given endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint to redirect to.</param>
     /// <param name="cancellationToken">Token to cancel operation.</param>
@@ -130,8 +130,14 @@ public class ApiConnector : IConnectable, IDisposable
             Disconnect();
 
         Endpoint = endpoint;
-        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
         await ConnectAsync(cancellationToken).ConfigureAwait(false);
+
+        if (Streaming is not null)
+        {
+            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
+        }
+
+        Redirected?.Invoke(this, new(endpoint));
     }
 
     /// <summary>
@@ -143,24 +149,22 @@ public class ApiConnector : IConnectable, IDisposable
     {
         try
         {
-            var request = command.ToJSONString();
+            var request = command.ToJsonString();
 
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             long interval = currentTimestamp - _lastCommandTimestamp;
             // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
+            if (interval < CommandDelay.TotalMilliseconds)
             {
-                Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
+                Thread.Sleep((int)(CommandDelay.TotalMilliseconds - interval));
             }
 
             CommandExecuting?.Invoke(this, new(command));
             var response = Connector.SendMessageWaitResponse(request);
             _lastCommandTimestamp = currentTimestamp;
 
-            var parsedResponse = JsonNode.Parse(response);
-            if (parsedResponse is null)
-                throw new InvalidOperationException("Parsed command response is null.");
-
+            var parsedResponse = JsonNode.Parse(response)
+                ?? throw new InvalidOperationException("Parsed command response is null.");
             var jsonObj = parsedResponse.AsObject();
 
             return jsonObj;
@@ -181,14 +185,14 @@ public class ApiConnector : IConnectable, IDisposable
     {
         try
         {
-            var request = command.ToJSONString();
+            var request = command.ToJsonString();
 
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             long interval = currentTimestamp - _lastCommandTimestamp;
             // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
+            if (interval < CommandDelay.TotalMilliseconds)
             {
-                await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
+                await Task.Delay((int)(CommandDelay.TotalMilliseconds - interval), cancellationToken);
             }
 
             CommandExecuting?.Invoke(this, new(command));
@@ -208,6 +212,9 @@ public class ApiConnector : IConnectable, IDisposable
             throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
         }
     }
+
+    /// <inheritdoc/>
+    public override string ToString() => $"{base.ToString()}";
 
     private bool _disposed;
 

@@ -13,7 +13,7 @@ public class CommissionDefCommand : BaseCommand
     {
     }
 
-    public override string ToJSONString()
+    public override string ToJsonString()
     {
         JsonObject obj = new()
         {

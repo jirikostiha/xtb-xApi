@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
@@ -8,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xtb.XApi.Records;
 using Xtb.XApi.Streaming;
-using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
@@ -537,6 +535,9 @@ public class StreamingApiConnector : IConnectable
             throw new APICommunicationException("Read streaming message failed.", ex);
         }
     }
+
+    /// <inheritdoc/>
+    public override string ToString() => $"{base.ToString()}, {StreamSessionId ?? "no session"}";
 
     public void Disconnect() => Connector.Disconnect();
 }

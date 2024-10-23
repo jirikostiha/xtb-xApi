@@ -14,6 +14,11 @@ namespace Xtb.XApi;
 
 public class Connector : IClient, IDisposable
 {
+    /// <summary>
+    /// Helper method to create a new instance based on address and port.
+    /// </summary>
+    /// <param name="address">Endpoint address.</param>
+    /// <param name="port">Endpoint port.</param>
     public static Connector Create(string address, int port)
     {
         var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
@@ -63,17 +68,17 @@ public class Connector : IClient, IDisposable
     /// <summary>
     /// Socket that handles the connection.
     /// </summary>
-    protected TcpClient TcpClient { get; set; }
+    protected TcpClient TcpClient { get; set; } = new TcpClient();
 
     /// <summary>
     /// Stream writer (for outgoing data).
     /// </summary>
-    protected StreamWriter StreamWriter { get; set; }
+    protected StreamWriter StreamWriter { get; set; } = StreamWriter.Null;
 
     /// <summary>
     /// Stream reader (for incoming data).
     /// </summary>
-    protected StreamReader StreamReader { get; set; }
+    protected StreamReader StreamReader { get; set; } = StreamReader.Null;
 
     /// <inheritdoc/>
     public bool IsConnected => TcpClient?.Connected ?? false;
@@ -90,6 +95,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public virtual void Connect()
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         TcpClient = CreateTcpClient();
 
         try
@@ -109,6 +117,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public virtual async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         TcpClient = CreateTcpClient();
 
         try
@@ -136,6 +147,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public void SendMessage(string message)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         _lock.Wait();
         try
         {
@@ -158,6 +172,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         await _lock.WaitAsync(cancellationToken);
         try
         {
@@ -177,7 +194,7 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    public void SendMessageInternal(string message)
+    protected void SendMessageInternal(string message)
     {
         try
         {
@@ -192,7 +209,7 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    public async Task SendMessageInternalAsync(string message, CancellationToken cancellationToken = default)
+    protected async Task SendMessageInternalAsync(string message, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -217,6 +234,9 @@ public class Connector : IClient, IDisposable
     /// <returns>Read message</returns>
     public string? ReadMessage()
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         var result = new StringBuilder();
         char lastChar = ' ';
 
@@ -260,6 +280,9 @@ public class Connector : IClient, IDisposable
     /// <returns>Read message</returns>
     public async Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         var result = new StringBuilder();
         char lastChar = ' ';
 
@@ -307,6 +330,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public string SendMessageWaitResponse(string message)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         _lock.Wait();
         try
         {
@@ -330,6 +356,9 @@ public class Connector : IClient, IDisposable
     /// <inheritdoc/>
     public async Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default)
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         await _lock.WaitAsync(cancellationToken);
         try
         {
@@ -409,6 +438,9 @@ public class Connector : IClient, IDisposable
     /// </summary>
     public void Disconnect()
     {
+        if (_disposed)
+            throw new ObjectDisposedException(ToString());
+
         if (IsConnected)
         {
             StreamReader.Close();
@@ -418,6 +450,9 @@ public class Connector : IClient, IDisposable
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
     }
+
+    /// <inheritdoc/>
+    public override string ToString() => $"{Endpoint?.ToString() ?? "no endpoint"}, {(IsConnected ? "connected" : "disconnected")}";
 
     private bool _disposed;
 
