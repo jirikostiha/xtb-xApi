@@ -63,6 +63,17 @@ public interface IXApiClientAsync : IXApiClientBase
     Task<LoginResponse> LoginAsync(Credentials credentials, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Asynchronously logs in to the API.
+    /// </summary>
+    /// <param name="userId">The user ID used to log in.</param>
+    /// <param name="password">The password used to log in.</param>
+    /// <param name="appId">Optional. The application ID for the login request.</param>
+    /// <param name="appName">Optional. The application name for the login request.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task<LoginResponse> LoginAsync(string userId, string password, string? appId = null, string? appName = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Asynchronously logs out from the API.
     /// </summary>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
@@ -293,6 +304,16 @@ public interface IXApiClientSync : IXApiClientBase
     /// <param name="credentials">The credentials used to log in.</param>
     /// <returns>The response from the login command.</returns>
     LoginResponse Login(Credentials credentials);
+
+    /// <summary>
+    /// Logs in to the API.
+    /// </summary>
+    /// <param name="userId">The user ID used to log in.</param>
+    /// <param name="password">The password used to log in.</param>
+    /// <param name="appId">Optional. The application ID for the login request.</param>
+    /// <param name="appName">Optional. The application name for the login request.</param>
+    /// <returns>The response from the login command.</returns>
+    LoginResponse Login(string userId, string password, string? appId = null, string? appName = null);
 
     /// <summary>
     /// Logs out from the API.

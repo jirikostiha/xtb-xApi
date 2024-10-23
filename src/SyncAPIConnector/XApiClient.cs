@@ -130,499 +130,236 @@ public class XApiClient : IXApiClient, IDisposable
     /// </summary>
     public string? AccountId => _credentials?.Login;
 
-    /// <summary>
-    /// Connects the client to the API.
-    /// </summary>
+    /// <inheritdoc/>
     public void Connect()
     {
         ApiConnector.Connect();
     }
 
-    /// <summary>
-    /// Asynchronously connects the client to the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <inheritdoc/>
     public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         await ApiConnector.ConnectAsync(cancellationToken);
     }
 
-    /// <summary>
-    /// Disconnects the client from the API.
-    /// </summary>
+    /// <inheritdoc/>
     public void Disconnect()
     {
         ApiConnector.Disconnect();
     }
 
-    /// <summary>
-    /// Asynchronously disconnects the client from the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <inheritdoc/>
     public Task DisconnectAsync(CancellationToken cancellationToken = default)
     {
         ApiConnector.Disconnect();
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Sends a ping command to the API.
-    /// </summary>
-    /// <returns>The response from the ping command.</returns>
+    /// <inheritdoc/>
     public PingResponse Ping() => APICommandFactory.ExecutePingCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously sends a ping command to the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response from the ping command.</returns>
+    /// <inheritdoc/>
     public Task<PingResponse> PingAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecutePingCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the version of the API.
-    /// </summary>
-    /// <returns>The response containing the version information.</returns>
+    /// <inheritdoc/>
     public VersionResponse GetVersion()
         => APICommandFactory.ExecuteVersionCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously retrieves the version of the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the version information.</returns>
+    /// <inheritdoc/>
     public Task<VersionResponse> GetVersionAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteVersionCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the current server time.
-    /// </summary>
-    /// <returns>The response containing the server time information.</returns>
+    /// <inheritdoc/>
     public ServerTimeResponse GetServerTime()
         => APICommandFactory.ExecuteServerTimeCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously retrieves the current server time.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the server time information.</returns>
+    /// <inheritdoc/>
     public Task<ServerTimeResponse> GetServerTimeAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteServerTimeCommandAsync(ApiConnector, cancellationToken);
 
-
-    /// <summary>
-    /// Logs in to the API using the specified credentials.
-    /// </summary>
-    /// <param name="credentials">The credentials used to log in.</param>
-    /// <returns>The response from the login command.</returns>
+    /// <inheritdoc/>
     public LoginResponse Login(Credentials credentials)
     {
         _credentials = credentials;
         return APICommandFactory.ExecuteLoginCommand(ApiConnector, credentials);
     }
 
-    /// <summary>
-    /// Asynchronously logs in to the API using the specified credentials.
-    /// </summary>
-    /// <param name="credentials">The credentials used to log in.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response from the login command.</returns>
+    /// <inheritdoc/>
+    public LoginResponse Login(string userId, string password, string? appId = null, string? appName = null)
+        => Login(new Credentials(userId, password, appId, appName));
+
+    /// <inheritdoc/>
     public Task<LoginResponse> LoginAsync(Credentials credentials, CancellationToken cancellationToken = default)
     {
         _credentials = credentials;
         return APICommandFactory.ExecuteLoginCommandAsync(ApiConnector, credentials, cancellationToken);
     }
 
-    /// <summary>
-    /// Logs out from the API.
-    /// </summary>
-    /// <returns>The response from the logout command.</returns>
+    /// <inheritdoc/>
+    public Task<LoginResponse> LoginAsync(string userId, string password, string? appId = null, string? appName = null, CancellationToken cancellationToken = default)
+        => LoginAsync(new Credentials(userId, password, appId, appName), cancellationToken);
+
+    /// <inheritdoc/>
     public LogoutResponse Logout() => APICommandFactory.ExecuteLogoutCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously logs out from the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response from the logout command.</returns>
+    /// <inheritdoc/>
     public Task<LogoutResponse> LogoutAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteLogoutCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the current user data from the API.
-    /// </summary>
-    /// <returns>The response containing the current user's data.</returns>
+    /// <inheritdoc/>
     public CurrentUserDataResponse GetCurrentUserData() => APICommandFactory.ExecuteCurrentUserDataCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously retrieves the current user data from the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the current user's data.</returns>
+    /// <inheritdoc/>
     public Task<CurrentUserDataResponse> GetCurrentUserDataAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteCurrentUserDataCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves commission definition for a given symbol and volume.
-    /// </summary>
-    /// <param name="symbol">The symbol for which the commission is requested.</param>
-    /// <param name="volume">The volume to be traded.</param>
-    /// <returns>The response containing commission details.</returns>
+    /// <inheritdoc/>
     public CommissionDefResponse GetCommissionDef(string symbol, double? volume)
         => APICommandFactory.ExecuteCommissionDefCommand(ApiConnector, symbol, volume);
 
-    /// <summary>
-    /// Asynchronously retrieves commission definition for a given symbol and volume.
-    /// </summary>
-    /// <param name="symbol">The symbol for which the commission is requested.</param>
-    /// <param name="volume">The volume to be traded.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing commission details.</returns>
+    /// <inheritdoc/>
     public Task<CommissionDefResponse> GetCommissionDefAsync(string symbol, double? volume, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteCommissionDefCommandAsync(ApiConnector, symbol, volume, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the margin level from the API.
-    /// </summary>
-    /// <returns>The response containing margin level details.</returns>
+    /// <inheritdoc/>
     public MarginLevelResponse GetMarginLevel() => APICommandFactory.ExecuteMarginLevelCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously retrieves the margin level from the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing margin level details.</returns>
+    /// <inheritdoc/>
     public Task<MarginLevelResponse> GetMarginLevelAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteMarginLevelCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves margin trade details for a specified symbol and volume.
-    /// </summary>
-    /// <param name="symbol">The symbol to retrieve margin trade details for.</param>
-    /// <param name="volume">The volume to be traded.</param>
-    /// <returns>The response containing margin trade details.</returns>
+    /// <inheritdoc/>
     public MarginTradeResponse GetMarginTrade(string symbol, double? volume)
         => APICommandFactory.ExecuteMarginTradeCommand(ApiConnector, symbol, volume);
 
-    /// <summary>
-    /// Asynchronously retrieves margin trade details for a specified symbol and volume.
-    /// </summary>
-    /// <param name="symbol">The symbol to retrieve margin trade details for.</param>
-    /// <param name="volume">The volume to be traded.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing margin trade details.</returns>
+    /// <inheritdoc/>
     public Task<MarginTradeResponse> GetMarginTradeAsync(string symbol, double? volume, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteMarginTradeCommandAsync(ApiConnector, symbol, volume, cancellationToken);
 
-    /// <summary>
-    /// Calculates the profit for a trade based on various parameters.
-    /// </summary>
-    /// <param name="symbol">The symbol for the trade.</param>
-    /// <param name="volume">The volume to be traded.</param>
-    /// <param name="tradeOperation">The type of trade operation (buy/sell).</param>
-    /// <param name="openPrice">The opening price of the trade.</param>
-    /// <param name="closePrice">The closing price of the trade.</param>
-    /// <returns>The response containing the profit calculation details.</returns>
+    /// <inheritdoc/>
     public ProfitCalculationResponse GetProfitCalculation(string symbol, double? volume, TRADE_OPERATION_TYPE tradeOperation, double? openPrice, double? closePrice)
         => APICommandFactory.ExecuteProfitCalculationCommand(ApiConnector, symbol, volume, tradeOperation, openPrice, closePrice);
 
-    /// <summary>
-    /// Asynchronously calculates the profit for a trade based on various parameters.
-    /// </summary>
-    /// <param name="symbol">The symbol for the trade.</param>
-    /// <param name="volume">The volume to be traded.</param>
-    /// <param name="tradeOperation">The type of trade operation (buy/sell).</param>
-    /// <param name="openPrice">The opening price of the trade.</param>
-    /// <param name="closePrice">The closing price of the trade.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the profit calculation details.</returns>
+    /// <inheritdoc/>
     public Task<ProfitCalculationResponse> GetProfitCalculationAsync(string symbol, double? volume, TRADE_OPERATION_TYPE tradeOperation, double? openPrice, double? closePrice, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteProfitCalculationCommandAsync(ApiConnector, symbol, volume, tradeOperation, openPrice, closePrice, cancellationToken);
 
-    /// <summary>
-    /// Retrieves market information for a given symbol.
-    /// </summary>
-    /// <param name="symbol">The symbol to retrieve market information for.</param>
-    /// <returns>The response containing market information for the specified symbol.</returns>
+    /// <inheritdoc/>
     public SymbolResponse GetMarketInfo(string symbol) => APICommandFactory.ExecuteSymbolCommand(ApiConnector, symbol);
 
-    /// <summary>
-    /// Asynchronously retrieves market information for a given symbol.
-    /// </summary>
-    /// <param name="symbol">The symbol to retrieve market information for.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing market information for the specified symbol.</returns>
+    /// <inheritdoc/>
     public Task<SymbolResponse> GetMarketInfoAsync(string symbol, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteSymbolCommandAsync(ApiConnector, symbol, cancellationToken);
 
-    /// <summary>
-    /// Retrieves information for all symbols available on the API.
-    /// </summary>
-    /// <returns>The response containing information for all available symbols.</returns>
+    /// <inheritdoc/>
     public AllSymbolsResponse GetAllSymbols() => APICommandFactory.ExecuteAllSymbolsCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously retrieves information for all symbols available on the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing information for all available symbols.</returns>
+    /// <inheritdoc/>
     public Task<AllSymbolsResponse> GetAllSymbolsAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteAllSymbolsCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves symbol information for a specific symbol.
-    /// </summary>
-    /// <param name="symbol">The symbol to retrieve information for.</param>
-    /// <returns>The response containing the symbol's information.</returns>
+    /// <inheritdoc/>
     public SymbolResponse GetSymbol(string symbol) => APICommandFactory.ExecuteSymbolCommand(ApiConnector, symbol);
 
-    /// <summary>
-    /// Asynchronously retrieves symbol information for a specific symbol.
-    /// </summary>
-    /// <param name="symbol">The symbol to retrieve information for.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the symbol's information.</returns>
+    /// <inheritdoc/>
     public Task<SymbolResponse> GetSymbolAsync(string symbol, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteSymbolCommandAsync(ApiConnector, symbol, cancellationToken);
 
-    /// <summary>
-    /// Retrieves trading hours information for a list of symbols.
-    /// </summary>
-    /// <param name="symbols">An array of symbols to retrieve trading hours for.</param>
-    /// <returns>The response containing trading hours information.</returns>
+    /// <inheritdoc/>
     public TradingHoursResponse GetTradingHours(string[] symbols) => APICommandFactory.ExecuteTradingHoursCommand(ApiConnector, symbols);
 
-    /// <summary>
-    /// Asynchronously retrieves trading hours information for a list of symbols.
-    /// </summary>
-    /// <param name="symbols">An array of symbols to retrieve trading hours for.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing trading hours information.</returns>
     public Task<TradingHoursResponse> GetTradingHoursAsync(string[] symbols, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradingHoursCommandAsync(ApiConnector, symbols, cancellationToken);
 
-    /// <summary>
-    /// Retrieves tick prices for a given set of symbols.
-    /// </summary>
-    /// <param name="symbols">An array of symbols to retrieve tick prices for.</param>
-    /// <param name="level">The level of detail for the tick prices.</param>
-    /// <param name="time">Optional parameter to specify the time for retrieving tick prices.</param>
-    /// <returns>The response containing tick prices.</returns>
+    /// <inheritdoc/>
     public TickPricesResponse GetTickPrices(string[] symbols, int level, DateTimeOffset? time = null)
         => APICommandFactory.ExecuteTickPricesCommand(ApiConnector, symbols, level, time);
 
-    /// <summary>
-    /// Asynchronously retrieves tick prices for a given set of symbols.
-    /// </summary>
-    /// <param name="symbols">An array of symbols to retrieve tick prices for.</param>
-    /// <param name="level">The level of detail for the tick prices.</param>
-    /// <param name="time">Optional parameter to specify the time for retrieving tick prices.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing tick prices.</returns>
+    /// <inheritdoc/>
     public Task<TickPricesResponse> GetTickPricesAsync(string[] symbols, int level, DateTimeOffset? time = null, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTickPricesCommandAsync(ApiConnector, symbols, level, time, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the chart range data for the specified chart range information.
-    /// </summary>
-    /// <param name="rangeInfoRecord">The chart range information.</param>
-    /// <returns>The response containing the chart range data.</returns>
     public ChartRangeResponse GetChartRange(ChartRangeInfoRecord rangeInfoRecord)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, rangeInfoRecord);
 
-    /// <summary>
-    /// Retrieves the chart range data for a specific symbol, period, and date range.
-    /// </summary>
-    /// <param name="symbol">The symbol for which to retrieve chart range data.</param>
-    /// <param name="period">The period for the chart range.</param>
-    /// <param name="since">The starting date and time for the chart range.</param>
-    /// <param name="until">The ending date and time for the chart range.</param>
-    /// <returns>The response containing the chart range data.</returns>
+    /// <inheritdoc/>
     public ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, symbol, period, since, until, 0);
 
-    /// <summary>
-    /// Retrieves the chart range data for a specific symbol, period, and number of ticks.
-    /// </summary>
-    /// <param name="symbol">The symbol for which to retrieve chart range data.</param>
-    /// <param name="period">The period for the chart range.</param>
-    /// <param name="since">The starting date and time for the chart range.</param>
-    /// <param name="ticks">The number of ticks to retrieve for the chart range.</param>
-    /// <returns>The response containing the chart range data.</returns>
+    /// <inheritdoc/>
     public ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, int ticks)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, symbol, period, since, default, ticks);
 
-    /// <summary>
-    /// Asynchronously retrieves the chart range data for the specified chart range information.
-    /// </summary>
-    /// <param name="rangeInfoRecord">The chart range information.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the chart range data.</returns>
+    /// <inheritdoc/>
     public Task<ChartRangeResponse> GetChartRangeAsync(ChartRangeInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, rangeInfoRecord, cancellationToken);
 
-    /// <summary>
-    /// Asynchronously retrieves the chart range data for a specific symbol, period, and date range.
-    /// </summary>
-    /// <param name="symbol">The symbol for which to retrieve chart range data.</param>
-    /// <param name="period">The period for the chart range.</param>
-    /// <param name="since">The starting date and time for the chart range.</param>
-    /// <param name="until">The ending date and time for the chart range.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the chart range data.</returns>
+    /// <inheritdoc/>
     public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, DateTimeOffset until, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, until, 0, cancellationToken);
 
-    /// <summary>
-    /// Asynchronously retrieves the chart range data for a specific symbol, period, and number of ticks.
-    /// </summary>
-    /// <param name="symbol">The symbol for which to retrieve chart range data.</param>
-    /// <param name="period">The period for the chart range.</param>
-    /// <param name="since">The starting date and time for the chart range.</param>
-    /// <param name="ticks">The number of ticks to retrieve for the chart range.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the chart range data.</returns>
+    /// <inheritdoc/>
     public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, int ticks, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, default, ticks, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the last chart data for the specified chart range information.
-    /// </summary>
-    /// <param name="rangeInfoRecord">The chart range information.</param>
-    /// <returns>The response containing the last chart data.</returns>
     public ChartLastResponse GetChartLast(ChartLastInfoRecord rangeInfoRecord)
         => APICommandFactory.ExecuteChartLastCommand(ApiConnector, rangeInfoRecord);
 
-    /// <summary>
-    /// Retrieves the last chart data for a specific symbol and period since a specified date and time.
-    /// </summary>
-    /// <param name="symbol">The symbol for which to retrieve the last chart data.</param>
-    /// <param name="period">The period for the chart data.</param>
-    /// <param name="since">The starting date and time for the chart data.</param>
-    /// <returns>The response containing the last chart data.</returns>
+    /// <inheritdoc/>
     public ChartLastResponse GetChartLast(string symbol, PERIOD period, DateTimeOffset since)
         => APICommandFactory.ExecuteChartLastCommand(ApiConnector, symbol, period, since);
 
-    /// <summary>
-    /// Asynchronously retrieves the last chart data for the specified chart range information.
-    /// </summary>
-    /// <param name="rangeInfoRecord">The chart range information.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the last chart data.</returns>
+    /// <inheritdoc/>
     public Task<ChartLastResponse> GetChartLastAsync(ChartLastInfoRecord rangeInfoRecord, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartLastCommandAsync(ApiConnector, rangeInfoRecord, cancellationToken);
 
-    /// <summary>
-    /// Asynchronously retrieves the last chart data for a specific symbol and period since a specified date and time.
-    /// </summary>
-    /// <param name="symbol">The symbol for which to retrieve the last chart data.</param>
-    /// <param name="period">The period for the chart data.</param>
-    /// <param name="since">The starting date and time for the chart data.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the last chart data.</returns>
+    /// <inheritdoc/>
     public Task<ChartLastResponse> GetChartLastAsync(string symbol, PERIOD period, DateTimeOffset since, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartLastCommandAsync(ApiConnector, symbol, period, since, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the list of trades, filtered by whether they are open only or include closed trades.
-    /// </summary>
-    /// <param name="openOnly">If true, retrieves only open trades. If false, retrieves all trades.</param>
-    /// <returns>The response containing the list of trades.</returns>
+    /// <inheritdoc/>
     public TradesResponse GetTrades(bool openOnly) => APICommandFactory.ExecuteTradesCommand(ApiConnector, openOnly);
 
-    /// <summary>
-    /// Asynchronously retrieves the list of trades, filtered by whether they are open only or include closed trades.
-    /// </summary>
-    /// <param name="openOnly">If true, retrieves only open trades. If false, retrieves all trades.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the list of trades.</returns>
     public Task<TradesResponse> GetTradesAsync(bool openOnly, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradesCommandAsync(ApiConnector, openOnly, cancellationToken);
 
-    /// <summary>
-    /// Retrieves a trade transaction based on the provided trade transaction information.
-    /// </summary>
-    /// <param name="tradeTransInfoRecord">The trade transaction information record.</param>
-    /// <returns>The response containing the trade transaction data.</returns>
+    /// <inheritdoc/>
     public TradeTransactionResponse GetTradeTransaction(TradeTransInfoRecord tradeTransInfoRecord)
         => APICommandFactory.ExecuteTradeTransactionCommand(ApiConnector, tradeTransInfoRecord);
 
-    /// <summary>
-    /// Asynchronously retrieves a trade transaction based on the provided trade transaction information.
-    /// </summary>
-    /// <param name="tradeTransInfoRecord">The trade transaction information record.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the trade transaction data.</returns>
+    /// <inheritdoc/>
     public Task<TradeTransactionResponse> GetTradeTransactionAsync(TradeTransInfoRecord tradeTransInfoRecord, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeTransactionCommandAsync(ApiConnector, tradeTransInfoRecord, cancellationToken);
 
-    /// <summary>
-    /// Retrieves trade records for the provided list of orders.
-    /// </summary>
-    /// <param name="orders">A linked list of order IDs for which to retrieve trade records.</param>
-    /// <returns>The response containing the trade records.</returns>
+    /// <inheritdoc/>
     public TradeRecordsResponse GetTradeRecords(LinkedList<long?> orders)
         => APICommandFactory.ExecuteTradeRecordsCommand(ApiConnector, orders);
 
-    /// <summary>
-    /// Asynchronously retrieves trade records for the provided list of orders.
-    /// </summary>
-    /// <param name="orders">A linked list of order IDs for which to retrieve trade records.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the trade records.</returns>
+    /// <inheritdoc/>
     public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orders, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the trade history within a specified time range.
-    /// </summary>
-    /// <param name="since">The start date and time of the trade history period. If null, the history will start from the earliest available point.</param>
-    /// <param name="until">The end date and time of the trade history period. If null, the history will end at the latest available point.</param>
-    /// <returns>The response containing the trade history within the specified time range.</returns>
+    /// <inheritdoc/>
     public TradesHistoryResponse GetTradesHistory(DateTimeOffset? since, DateTimeOffset? until = null)
         => APICommandFactory.ExecuteTradesHistoryCommand(ApiConnector, since, until);
 
-    /// <summary>
-    /// Asynchronously retrieves the trade history within a specified time range.
-    /// </summary>
-    /// <param name="since">The start date and time of the trade history period. If null, the history will start from the earliest available point.</param>
-    /// <param name="until">The end date and time of the trade history period. If null, the history will end at the latest available point.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the trade history within the specified time range.</returns>
+    /// <inheritdoc/>
     public Task<TradesHistoryResponse> GetTradesHistoryAsync(DateTimeOffset? since, DateTimeOffset? until = null, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradesHistoryCommandAsync(ApiConnector, since, until, cancellationToken);
 
-    /// <summary>
-    /// Retrieves the calendar events from the API.
-    /// </summary>
-    /// <returns>The response containing the calendar events.</returns>
+    /// <inheritdoc/>
     public CalendarResponse GetCalendar() => APICommandFactory.ExecuteCalendarCommand(ApiConnector);
 
-    /// <summary>
-    /// Asynchronously retrieves the calendar events from the API.
-    /// </summary>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the calendar events.</returns>
+    /// <inheritdoc/>
     public Task<CalendarResponse> GetCalendarAsync(CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteCalendarCommandAsync(ApiConnector, cancellationToken);
 
-    /// <summary>
-    /// Retrieves news articles within a specified time range.
-    /// </summary>
-    /// <param name="since">The start date and time for retrieving news. If null, the news will be retrieved from the earliest available point.</param>
-    /// <param name="until">The end date and time for retrieving news. If null, the news will be retrieved until the latest available point.</param>
-    /// <returns>The response containing the news articles within the specified time range.</returns>
+    /// <inheritdoc/>
     public NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until = null)
         => APICommandFactory.ExecuteNewsCommand(ApiConnector, since, until);
 
-    /// <summary>
-    /// Asynchronously retrieves news articles within a specified time range.
-    /// </summary>
-    /// <param name="since">The start date and time for retrieving news. If null, the news will be retrieved from the earliest available point.</param>
-    /// <param name="until">The end date and time for retrieving news. If null, the news will be retrieved until the latest available point.</param>
-    /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A task representing the response containing the news articles within the specified time range.</returns>
+    /// <inheritdoc/>
     public Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteNewsCommandAsync(ApiConnector, since, until, cancellationToken);
 
