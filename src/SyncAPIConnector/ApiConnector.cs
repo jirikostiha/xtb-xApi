@@ -1,23 +1,14 @@
 using System;
-using System.IO;
 using System.Net;
-using System.Net.Security;
-using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Xtb.XApi.Commands;
-using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
 public class ApiConnector : Connector
 {
-    /// <summary>
-    /// Delay between each command to the server.
-    /// </summary>
-    private const int COMMAND_TIME_SPACE = 200;
-
     /// <summary>
     /// Helper method to create a new instance based on address and ports.
     /// </summary>
@@ -72,6 +63,11 @@ public class ApiConnector : Connector
     public event EventHandler<CommandEventArgs>? CommandExecuting;
 
     #endregion Events
+
+    /// <summary>
+    /// Delay.between commands.
+    /// </summary>
+    public TimeSpan CommandDelay { get; set; } = TimeSpan.FromMilliseconds(200);
 
     /// <summary>
     /// Streaming connector.
@@ -140,9 +136,9 @@ public class ApiConnector : Connector
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             long interval = currentTimestamp - _lastCommandTimestamp;
             // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
+            if (interval < CommandDelay.TotalMilliseconds)
             {
-                Thread.Sleep((int)(COMMAND_TIME_SPACE - interval));
+                Thread.Sleep((int)(CommandDelay.TotalMilliseconds - interval));
             }
 
             CommandExecuting?.Invoke(this, new(command));
@@ -176,9 +172,9 @@ public class ApiConnector : Connector
             long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
             long interval = currentTimestamp - _lastCommandTimestamp;
             // If interval between now and last command is less than minimum command time space - wait
-            if (interval < COMMAND_TIME_SPACE)
+            if (interval < CommandDelay.TotalMilliseconds)
             {
-                await Task.Delay((int)(COMMAND_TIME_SPACE - interval), cancellationToken);
+                await Task.Delay((int)(CommandDelay.TotalMilliseconds - interval), cancellationToken);
             }
 
             CommandExecuting?.Invoke(this, new(command));

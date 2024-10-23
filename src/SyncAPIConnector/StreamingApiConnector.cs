@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Net;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Xtb.XApi.Records;
 using Xtb.XApi.Streaming;
-using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;
 
