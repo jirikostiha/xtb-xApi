@@ -46,4 +46,10 @@ public interface IConnectable
     /// Disconnects client from the remote server.
     /// </summary>
     void Disconnect();
+
+    /// <summary>
+    /// Disconnects client async from the remote endpoint.
+    /// </summary>
+    /// <param name="cancellationToken">Token to cancel operation.</param>
+    Task DisconnectAsync(CancellationToken cancellationToken = default);
 }

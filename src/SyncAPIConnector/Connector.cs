@@ -452,6 +452,13 @@ public class Connector : IClient, IDisposable
     }
 
     /// <inheritdoc/>
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        Disconnect();
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc/>
     public override string ToString() => $"{Endpoint?.ToString() ?? "no endpoint"}, {(IsConnected ? "connected" : "disconnected")}";
 
     private bool _disposed;
