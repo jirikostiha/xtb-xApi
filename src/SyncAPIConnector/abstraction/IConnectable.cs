@@ -11,28 +11,28 @@ namespace Xtb.XApi;
 public interface IConnectable
 {
     /// <summary>
-    /// Event raised when the client connects to the server.
+    /// Event raised when the client connects to the endpoint.
     /// </summary>
     event EventHandler<EndpointEventArgs>? Connected;
 
     /// <summary>
-    /// Event raised when the client disconnects from the server.
+    /// Event raised when the client disconnects from the endpoint.
     /// </summary>
     event EventHandler? Disconnected;
 
     /// <summary>
-    /// Connection endpoint.
+    /// Endpoint that the connection was established with.
     /// </summary>
     public IPEndPoint Endpoint { get; }
 
     /// <summary>
-    /// Indicates whether the client is connected to the server.
+    /// Indicates whether the client is connected to the endpoint.
     /// </summary>
     /// <returns>True if connected, otherwise false</returns>
     bool IsConnected { get; }
 
     /// <summary>
-    /// Connect client to the remote server.
+    /// Connect client to the remote endpoint.
     /// </summary>
     void Connect();
 
@@ -43,7 +43,7 @@ public interface IConnectable
     Task ConnectAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Disconnects client from the remote server.
+    /// Disconnects client from the remote endpoint.
     /// </summary>
     void Disconnect();
 
