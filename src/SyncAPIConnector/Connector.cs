@@ -484,3 +484,60 @@ public class Connector : IClient, IDisposable
         Dispose(false);
     }
 }
+
+public class NullConnector : IClient
+{
+    public IPEndPoint Endpoint => throw new NotImplementedException();
+
+    public bool IsConnected => throw new NotImplementedException();
+
+    public event EventHandler<EndpointEventArgs>? Connected;
+    public event EventHandler? Disconnected;
+    public event EventHandler<MessageEventArgs>? MessageSent;
+    public event EventHandler<MessageEventArgs>? MessageReceived;
+
+    public void Connect()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task ConnectAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Disconnect()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string? ReadMessage()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SendMessage(string message)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string SendMessageWaitResponse(string message)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<string> SendMessageWaitResponseAsync(string message, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+}

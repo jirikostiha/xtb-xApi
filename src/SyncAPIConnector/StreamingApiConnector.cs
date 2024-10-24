@@ -23,7 +23,8 @@ public class StreamingApiConnector : IConnectable
     public static StreamingApiConnector Create(string address, int port, IStreamingListener? streamingListener = null)
     {
         var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
-        return new StreamingApiConnector(endpoint, streamingListener);
+        var client = new Connector(endpoint);
+        return new StreamingApiConnector(client, streamingListener);
     }
 
     /// <summary>
