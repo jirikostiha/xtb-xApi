@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Xtb.XApi.Commands;
 
 namespace Xtb.XApi;
-//New
+
 public class ApiConnector : IConnectable, IDisposable
 {
     /// <summary>
@@ -46,6 +46,7 @@ public class ApiConnector : IConnectable, IDisposable
     /// <param name="streamingConnector">streaming connector.</param>
     public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
     {
+        Connector = connector;
         Streaming = streamingConnector;
     }
 
@@ -60,6 +61,8 @@ public class ApiConnector : IConnectable, IDisposable
     /// Event raised when a command is being executed.
     /// </summary>
     public event EventHandler<CommandEventArgs>? CommandExecuting;
+    public event EventHandler<EndpointEventArgs>? Connected;
+    public event EventHandler? Disconnected;
 
     #endregion Events
 
@@ -75,6 +78,7 @@ public class ApiConnector : IConnectable, IDisposable
 
     /// <inheritdoc/>
     public bool IsConnected => Connector.IsConnected;
+
     /// <inheritdoc/>
     public IPEndPoint Endpoint => Connector.Endpoint;
 
@@ -102,43 +106,43 @@ public class ApiConnector : IConnectable, IDisposable
     /// Redirects to the given endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint to redirect to.</param>
-    public void Redirect(IPEndPoint endpoint)
-    {
-        if (IsConnected)
-            Connector.Disconnect();
+    //public void Redirect(IPEndPoint endpoint)
+    //{
+    //    if (IsConnected)
+    //        Connector.Disconnect();
 
-        Connector.Connect();
+    //    Connector.Connect();
 
-        if (Streaming is not null)
-        {
-            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
-        }
+    //    if (Streaming is not null)
+    //    {
+    //        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
+    //    }
 
-        Redirected?.Invoke(this, new(endpoint));
-    }
+    //    Redirected?.Invoke(this, new(endpoint));
+    //}
 
     /// <summary>
     /// Redirects to the given endpoint.
     /// </summary>
     /// <param name="endpoint">Endpoint to redirect to.</param>
     /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task RedirectAsync(IPEndPoint endpoint, CancellationToken cancellationToken = default)
-    {
-        Redirected?.Invoke(this, new(endpoint));
+    //public async Task RedirectAsync(IPEndPoint endpoint, CancellationToken cancellationToken = default)
+    //{
+    //    Redirected?.Invoke(this, new(endpoint));
 
-        if (IsConnected)
-            Disconnect();
+    //    if (IsConnected)
+    //        Disconnect();
 
-        Endpoint = endpoint;
-        await ConnectAsync(cancellationToken).ConfigureAwait(false);
+    //    Endpoint = endpoint;
+    //    await ConnectAsync(cancellationToken).ConfigureAwait(false);
 
-        if (Streaming is not null)
-        {
-            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
-        }
+    //    if (Streaming is not null)
+    //    {
+    //        Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
+    //    }
 
-        Redirected?.Invoke(this, new(endpoint));
-    }
+    //    Redirected?.Invoke(this, new(endpoint));
+    //}
 
     /// <summary>
     /// Executes given command and receives response (withholding API inter-command timeout).
@@ -214,6 +218,18 @@ public class ApiConnector : IConnectable, IDisposable
     }
 
     /// <inheritdoc/>
+    public void Disconnect()
+    {
+        Connector.Disconnect();
+    }
+
+    /// <inheritdoc/>
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        return Connector.DisconnectAsync(cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public override string ToString() => $"{base.ToString()}";
 
     private bool _disposed;
@@ -225,7 +241,7 @@ public class ApiConnector : IConnectable, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
     {
         if (!_disposed)
         {

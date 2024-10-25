@@ -90,24 +90,6 @@ public class XApiClient : IXApiClient, IDisposable
         remove { ApiConnector.Disconnected -= value; }
     }
 
-    /// <summary>
-    /// Occurs when a message is received from the API.
-    /// </summary>
-    public event EventHandler<MessageEventArgs>? MessageReceived
-    {
-        add { ApiConnector.MessageReceived += value; }
-        remove { ApiConnector.MessageReceived -= value; }
-    }
-
-    /// <summary>
-    /// Occurs when a message is sent to the API.
-    /// </summary>
-    public event EventHandler<MessageEventArgs>? MessageSent
-    {
-        add { ApiConnector.MessageSent += value; }
-        remove { ApiConnector.MessageSent -= value; }
-    }
-
     #endregion Events
 
     /// <summary>

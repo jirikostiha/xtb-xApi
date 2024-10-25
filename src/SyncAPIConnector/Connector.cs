@@ -508,6 +508,11 @@ public class NullConnector : IClient
         throw new NotImplementedException();
     }
 
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public string? ReadMessage()
     {
         throw new NotImplementedException();

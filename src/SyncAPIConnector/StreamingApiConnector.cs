@@ -10,7 +10,7 @@ using Xtb.XApi.Streaming;
 
 namespace Xtb.XApi;
 
-public class StreamingApiConnector : IConnectable
+public class StreamingApiConnector : IConnectable, IDisposable
 {
     private Task? _streamingReaderTask;
 
@@ -57,6 +57,8 @@ public class StreamingApiConnector : IConnectable
         add => Connector.Disconnected += value;
         remove => Connector.Disconnected -= value;
     }
+
+    /// <summary>
     /// Event raised when a tick record is received.
     /// </summary>
     public event EventHandler<TickReceivedEventArgs>? TickReceived;
@@ -107,8 +109,9 @@ public class StreamingApiConnector : IConnectable
     /// </summary>
     protected IClient Connector { get; private set; }
 
-    /// <inheritdoc/>
+    /// <summary>
     /// Stream session id (member of login response). Should be set after the successful login.
+    /// </summary>
     public string? StreamSessionId { get; set; }
 
     /// <inheritdoc/>
@@ -538,7 +541,41 @@ public class StreamingApiConnector : IConnectable
     }
 
     /// <inheritdoc/>
+    public void Disconnect() => Connector.Disconnect();
+
+    /// <inheritdoc/>
+    public Task DisconnectAsync(CancellationToken cancellationToken = default) => Connector.DisconnectAsync(cancellationToken);
+
+    /// <inheritdoc/>
     public override string ToString() => $"{base.ToString()}, {StreamSessionId ?? "no session"}";
 
-    public void Disconnect() => Connector.Disconnect();
+    private bool _disposed;
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                if (Connector is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+            }
+
+            _disposed = true;
+        }
+    }
+
+    ~StreamingApiConnector()
+    {
+        Dispose(false);
+    }
 }
