@@ -56,11 +56,6 @@ public class Connector : IClient, IDisposable
     #endregion Events
 
     /// <summary>
-    /// Endpoint that the connection was established with.
-    /// </summary>
-    public IPEndPoint Endpoint { get; set; }
-
-    /// <summary>
     /// Options.
     /// </summary>
     protected ConnectorOptions Options { get; init; }
@@ -79,6 +74,9 @@ public class Connector : IClient, IDisposable
     /// Stream reader (for incoming data).
     /// </summary>
     protected StreamReader StreamReader { get; set; } = StreamReader.Null;
+
+    /// <inheritdoc/>
+    public IPEndPoint Endpoint { get; internal protected set; }
 
     /// <inheritdoc/>
     public bool IsConnected => TcpClient?.Connected ?? false;
@@ -228,10 +226,7 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    /// <summary>
-    /// Reads raw message from the remote server.
-    /// </summary>
-    /// <returns>Read message</returns>
+    /// <inheritdoc/>
     public string? ReadMessage()
     {
         if (_disposed)
@@ -274,10 +269,7 @@ public class Connector : IClient, IDisposable
         }
     }
 
-    /// <summary>
-    /// Reads raw message from the remote server.
-    /// </summary>
-    /// <returns>Read message</returns>
+    /// <inheritdoc/>
     public async Task<string?> ReadMessageAsync(CancellationToken cancellationToken = default)
     {
         if (_disposed)
@@ -433,9 +425,7 @@ public class Connector : IClient, IDisposable
     }
 #endif
 
-    /// <summary>
-    /// Disconnects from the remote server.
-    /// </summary>
+    /// <inheritdoc/>
     public void Disconnect()
     {
         if (_disposed)
@@ -449,6 +439,13 @@ public class Connector : IClient, IDisposable
 
             Disconnected?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    /// <inheritdoc/>
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        Disconnect();
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc/>

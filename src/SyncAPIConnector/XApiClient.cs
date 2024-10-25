@@ -151,8 +151,7 @@ public class XApiClient : IXApiClient, IDisposable
     /// <inheritdoc/>
     public Task DisconnectAsync(CancellationToken cancellationToken = default)
     {
-        ApiConnector.Disconnect();
-        return Task.CompletedTask;
+        return ApiConnector.DisconnectAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
