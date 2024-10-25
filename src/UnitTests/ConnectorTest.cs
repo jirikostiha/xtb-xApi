@@ -39,6 +39,22 @@ public class ConnectorTest
     }
 
     [Fact]
+    public void SendMessageWaitResponse_WhenDisconnected_Exception()
+    {
+        var client = new Connector(new IPEndPoint(IPAddress.Loopback, 5921));
+
+        Assert.Throws<APICommunicationException>(() => client.SendMessageWaitResponse("abc"));
+    }
+
+    [Fact]
+    public async Task SendMessageWaitResponseAsync_WhenDisconnected_Exception()
+    {
+        var client = new Connector(new IPEndPoint(IPAddress.Loopback, 5921));
+
+        await Assert.ThrowsAsync<APICommunicationException>(async () => await client.SendMessageWaitResponseAsync("abc"));
+    }
+
+    [Fact]
     public void Disconnect_WhenDisconnected_ShouldNotInvokeDisconnectedEvent()
     {
         var client = new Connector(new IPEndPoint(IPAddress.Loopback, 5921));
@@ -112,6 +128,15 @@ public class ConnectorTest
 
         client.Dispose();
         Assert.Throws<ObjectDisposedException>(client.Disconnect);
+    }
+
+    [Fact]
+    public async Task DisconnectAsync_WhenDisposed_Exception()
+    {
+        var client = new Connector(new IPEndPoint(IPAddress.Loopback, 5921));
+
+        client.Dispose();
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await client.DisconnectAsync());
     }
     #endregion dispose
 }
