@@ -484,6 +484,9 @@ public interface IXApiClientSync : IXApiClientBase
     NewsResponse GetNews(DateTimeOffset? since, DateTimeOffset? until = null);
 }
 
+/// <summary>
+/// Base Xtb XApi client interface for handling connections and performing API requests.
+/// </summary>
 public interface IXApiClientBase
 {
     /// <summary>
