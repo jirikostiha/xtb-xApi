@@ -23,8 +23,23 @@ public class StreamingApiConnector : IConnectable, IDisposable
     public static StreamingApiConnector Create(string address, int port, IStreamingListener? streamingListener = null)
     {
         var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
+
+        return Create(endpoint, streamingListener);
+    }
+
+    /// <summary>
+    /// Helper method to create a new instance based on address and port.
+    /// </summary>
+    /// <param name="endpoint">Endpoint for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public static StreamingApiConnector Create(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
+    {
         var client = new Connector(endpoint);
-        return new StreamingApiConnector(client, streamingListener);
+
+        return new StreamingApiConnector(client, streamingListener)
+        {
+            IsConnectorOwner = true
+        };
     }
 
     /// <summary>
@@ -108,6 +123,11 @@ public class StreamingApiConnector : IConnectable, IDisposable
     /// Streaming connector.
     /// </summary>
     protected IClient Connector { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the connector is owned.
+    /// </summary>
+    internal bool IsConnectorOwner { get; init; }
 
     /// <summary>
     /// Stream session id (member of login response). Should be set after the successful login.
@@ -564,9 +584,9 @@ public class StreamingApiConnector : IConnectable, IDisposable
         {
             if (disposing)
             {
-                if (Connector is IDisposable disposable)
+                if (IsConnectorOwner && Connector is IDisposable disposableConnetor)
                 {
-                    disposable.Dispose();
+                    disposableConnetor.Dispose();
                 }
             }
 

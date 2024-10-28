@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Xtb.XApi.Codes;
 using Xtb.XApi.Records;
 
@@ -221,6 +222,7 @@ public sealed class SyncTest : XApiClientTestBase
         try
         {
             var response = Client.GetTickPrices(["US500"], 0,
+                TimeProvider.System.GetUtcNow());
             Pass(response);
             Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }

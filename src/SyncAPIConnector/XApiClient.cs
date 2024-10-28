@@ -25,24 +25,23 @@ public class XApiClient : IXApiClient, IDisposable
     /// <returns>A new instance of <see cref="XApiClient"/>.</returns>
     public static XApiClient Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
     {
-        var apiConnector = ApiConnector.Create(address, requestingPort, streamingPort, streamingListener);
-        return new XApiClient(apiConnector)
-        {
-            IsApiConnectorOwner = true
-        };
+        var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
+        var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
+
+        return Create(requestingEndpoint, streamingEndpoint, streamingListener);
     }
 
     /// <summary>
     /// Creates a new <see cref="XApiClient"/> instance using the provided endpoints.
     /// </summary>
-    /// <param name="endpoint">The endpoint for requesting data.</param>
+    /// <param name="requestingEndpoint">The endpoint for requesting data.</param>
     /// <param name="streamingEndpoint">The endpoint for streaming data.</param>
     /// <param name="streamingListener">Optional streaming listener for handling streamed data.</param>
     /// <returns>A new instance of <see cref="XApiClient"/>.</returns>
-    public static XApiClient Create(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+    public static XApiClient Create(IPEndPoint requestingEndpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
-        var streamingApiConnector = new StreamingApiConnector(streamingEndpoint, streamingListener);
-        var apiConnector = new ApiConnector(endpoint, streamingApiConnector);
+        var apiConnector = ApiConnector.Create(requestingEndpoint, streamingEndpoint, streamingListener);
+
         return new XApiClient(apiConnector)
         {
             IsApiConnectorOwner = true
@@ -52,13 +51,12 @@ public class XApiClient : IXApiClient, IDisposable
     private Credentials? _credentials;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XApiClient"/> class using the specified <see cref="ApiConnector"/>.
+    /// Initializes a new instance of the <see cref="XApiClient"/> class.
     /// </summary>
     /// <param name="apiConnector">An instance of <see cref="ApiConnector"/> to manage the connection.</param>
     public XApiClient(ApiConnector apiConnector)
     {
         ApiConnector = apiConnector;
-        IsApiConnectorOwner = false;
     }
 
     #region Events

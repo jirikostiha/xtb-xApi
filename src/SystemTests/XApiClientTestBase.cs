@@ -14,8 +14,8 @@ public abstract class XApiClientTestBase : TestBase
 
         if (messageFolder != null)
         {
-            Client.MessageReceived += Connector_MessageReceived;
-            Client.MessageSent += Connector_MessageSent;
+            Client.ApiConnector.Connector.MessageReceived += Connector_MessageReceived;
+            Client.ApiConnector.Connector.MessageSent += Connector_MessageSent;
         }
     }
 

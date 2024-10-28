@@ -20,7 +20,8 @@ public class ApiConnector : IConnectable, IDisposable
     {
         var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
         var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
-        return new ApiConnector(new Connector(requestingEndpoint), new StreamingApiConnector(streamingEndpoint, streamingListener));
+
+        return Create(requestingEndpoint, streamingEndpoint);
     }
 
     /// <summary>
@@ -31,7 +32,14 @@ public class ApiConnector : IConnectable, IDisposable
     /// <param name="streamingListener">Streaming listener.</param>
     public static ApiConnector Create(IPEndPoint requestingEndpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
-        return new ApiConnector(new Connector(requestingEndpoint), new StreamingApiConnector(streamingEndpoint, streamingListener));
+        var requestingConnector = new Connector(requestingEndpoint);
+        var streamingApiConnector = StreamingApiConnector.Create(streamingEndpoint, streamingListener);
+
+        return new ApiConnector(requestingConnector, streamingApiConnector)
+        {
+            IsConnectorOwner = true,
+            IsStreamingApiConnectorOwner = true
+        };
     }
 
     /// <summary>
@@ -76,6 +84,11 @@ public class ApiConnector : IConnectable, IDisposable
     /// </summary>
     public IClient Connector { get; private set; }
 
+    /// <summary>
+    /// Indicates whether the connector is owned.
+    /// </summary>
+    internal bool IsConnectorOwner { get; init; }
+
     /// <inheritdoc/>
     public bool IsConnected => Connector.IsConnected;
 
@@ -86,6 +99,11 @@ public class ApiConnector : IConnectable, IDisposable
     /// Streaming connector.
     /// </summary>
     public StreamingApiConnector Streaming { get; private init; }
+
+    /// <summary>
+    /// Indicates whether the streaming api connector is owned.
+    /// </summary>
+    internal bool IsStreamingApiConnectorOwner { get; init; }
 
     /// <inheritdoc/>
     public void Connect()
@@ -247,14 +265,18 @@ public class ApiConnector : IConnectable, IDisposable
         {
             if (disposing)
             {
-                if (Connector is IDisposable disposable)
+                if (IsConnectorOwner && Connector is IDisposable disposableConnetor)
                 {
-                    disposable.Dispose();
+                    disposableConnetor.Dispose();
                 }
-                //Streaming?.Dispose();
-            }
 
-            _disposed = true;
+                if (IsStreamingApiConnectorOwner && Streaming is IDisposable disposableStreming)
+                {
+                    disposableStreming.Dispose();
+                }
+
+                _disposed = true;
+            }
         }
     }
 
