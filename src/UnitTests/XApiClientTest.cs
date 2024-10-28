@@ -7,13 +7,13 @@ public class XApiClientTest
 {
     private IClient _connector1;
     private IClient _connector2;
-    private IXApiClient _xclient;
+    private IXApiClient _xapiclient;
 
     public XApiClientTest()
     {
         _connector1 = Substitute.For<IClient>();
         _connector2 = Substitute.For<IClient>();
-        _xclient = new XApiClient(new ApiConnector(_connector1, new StreamingApiConnector(_connector2)));
+        _xapiclient = new XApiClient(new ApiConnector(_connector1, new StreamingApiConnector(_connector2)));
     }
 
     [Fact]
@@ -32,8 +32,8 @@ public class XApiClientTest
     {
         var stopwatch = Stopwatch.StartNew();
 
-        _xclient.GetSymbol("US500");
-        _xclient.GetSymbol("US500");
+        _xapiclient.GetSymbol("US500");
+        _xapiclient.GetSymbol("US500");
 
         stopwatch.Stop();
         Assert.True(stopwatch.Elapsed.TotalMilliseconds > 400);

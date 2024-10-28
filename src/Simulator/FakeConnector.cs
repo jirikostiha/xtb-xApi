@@ -6,19 +6,27 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Xtb.XApi.Commands;
+using Xtb.XApi.Streaming;
 
 namespace Xtb.XApi.Simulation;
 
 /// <summary>
-/// Fake client responding as server.
+/// Fake connector responding as server.
 /// </summary>
-public class FakeClientServer : IClient
+public class FakeConnector : IClient
 {
     private readonly JsonMessageGenerator _messageGenerator;
 
-    public FakeClientServer()
+    private readonly Timer _timer;
+
+    public FakeConnector(JsonMessageGenerator? jsonMessageGenerator = null)
     {
-        _messageGenerator = new JsonMessageGenerator();
+        _messageGenerator = jsonMessageGenerator ?? new JsonMessageGenerator();
+
+        _timer = new Timer(async _ =>
+        {
+            await ComposeFakeStreamingMessage();
+        }, null, Timeout.Infinite, 1000);
     }
 
     public event EventHandler<EndpointEventArgs>? Connected;
@@ -30,18 +38,27 @@ public class FakeClientServer : IClient
 
     public bool IsConnected { get; set; }
 
+    public bool ReceiveStreamingMessagesPeriodically { get; set; }
+
     public Dictionary<string, string> AllSymbols { get; private set; } = [];
     public Dictionary<long, object> AllTrades { get; private set; } = [];
     public Dictionary<long, object> TradesHistory { get; private set; } = [];
 
+    public HashSet<string> SubscribedCommands { get; set; } = [];
+
     public void Connect()
     {
-        ConnectAsync().GetAwaiter().GetResult();
+        IsConnected = true;
+
+        if (ReceiveStreamingMessagesPeriodically)
+        {
+            _timer.Change(TimeSpan.Zero, TimeSpan.FromSeconds(1));
+        }
     }
 
     public Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        IsConnected = true;
+        Connect();
         return Task.CompletedTask;
     }
 
@@ -53,6 +70,82 @@ public class FakeClientServer : IClient
     public Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
     {
         MessageSent?.Invoke(this, new MessageEventArgs(message));
+
+        var data = JsonNode.Parse(message);
+        var command = (string?)data["command"];
+        var arguments = data["arguments"];
+        var sessionId = data["streamSessionId"];
+
+        if (sessionId is not null)
+        {
+            switch (command)
+            {
+                case "get" + StreamingCommandName.KeepAlive:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.KeepAlive:
+                    SubscribedCommands.Remove(StreamingCommandName.KeepAlive);
+                    break;
+
+                case "get" + StreamingCommandName.Balance:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.Balance:
+                    SubscribedCommands.Remove(StreamingCommandName.Balance);
+                    break;
+
+                case "get" + StreamingCommandName.Profit:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.Profit:
+                    SubscribedCommands.Remove(StreamingCommandName.Profit);
+                    break;
+
+                case "get" + StreamingCommandName.TickPrices:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.TickPrices:
+                    SubscribedCommands.Remove(StreamingCommandName.TickPrices);
+                    break;
+
+                case "get" + StreamingCommandName.Candle:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.Candle:
+                    SubscribedCommands.Remove(StreamingCommandName.Candle);
+                    break;
+
+                case "get" + StreamingCommandName.TradeStatus:
+                    SubscribedCommands.Remove(StreamingCommandName.TradeStatus);
+                    break;
+
+                case "stop" + StreamingCommandName.TradeStatus:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "get" + StreamingCommandName.Trade:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.Trade:
+                    SubscribedCommands.Remove(StreamingCommandName.Trade);
+                    break;
+
+                case "get" + StreamingCommandName.News:
+                    SubscribedCommands.Add(command);
+                    break;
+
+                case "stop" + StreamingCommandName.News:
+                    SubscribedCommands.Remove(StreamingCommandName.News);
+                    break;
+            }
+        }
+
         return Task.CompletedTask;
     }
 
@@ -163,12 +256,18 @@ public class FakeClientServer : IClient
                 }
 
             case TradesCommand.Name:
-                result = _messageGenerator.GetTradesResponse();
-                break;
+                {
+                    var symbols = arguments["symbols"].AsArray().Select(symbol => symbol.ToString()).ToArray();
+                    result = _messageGenerator.GetTradesResponse(symbols);
+                    break;
+                }
 
             case TradesHistoryCommand.Name:
-                result = _messageGenerator.GetTradesHistoryResponse();
-                break;
+                {
+                    var symbols = arguments["symbols"].AsArray().Select(symbol => symbol.ToString()).ToArray();
+                    result = _messageGenerator.GetTradesHistoryResponse(symbols);
+                    break;
+                }
 
             case TradeTransactionCommand.Name:
                 {
@@ -192,7 +291,7 @@ public class FakeClientServer : IClient
 
             case MarginLevelCommand.Name:
                 {
-                    result = _messageGenerator.GetMarginLevelResponse();
+                    result = _messageGenerator.GetMarginLevelResponse("USD");
                     break;
                 }
 
@@ -216,8 +315,68 @@ public class FakeClientServer : IClient
         return await Task.FromResult(result);
     }
 
+    public void ComposeFakeStreamingMessage()
+    {
+        string command = string.Empty;
+        switch (command)
+        {
+            case StreamingCommandName.KeepAlive:
+                {
+                    _messageGenerator.GetStreamingKeepAliveResponse();
+                    break;
+                }
+
+            case StreamingCommandName.Balance:
+                {
+                    _messageGenerator.GetStreamingBalanceResponse();
+                    break;
+                }
+
+            case StreamingCommandName.Profit:
+                {
+                    _messageGenerator.GetStreamingProfitsRecord();
+                    break;
+                }
+
+            case StreamingCommandName.TickPrices:
+                {
+                    break;
+                }
+
+            case StreamingCommandName.Candle:
+                {
+                    _messageGenerator.GetStreamingCandlesResponse("");
+                    break;
+                }
+
+            case StreamingCommandName.TradeStatus:
+                {
+                    _messageGenerator.GetStreamingTradeStatusResponse();
+                    break;
+                }
+
+            case StreamingCommandName.Trade:
+                {
+                    _messageGenerator.GetStreamingTradesResponse("");
+                    break;
+                }
+
+            case StreamingCommandName.News:
+                {
+                    //_messageGenerator.GetStreamingN("");
+                    break;
+                }
+        }
+    }
+
     public void Disconnect()
     {
         IsConnected = false;
+    }
+
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        IsConnected = false;
+        return Task.CompletedTask;
     }
 }

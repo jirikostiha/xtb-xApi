@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Simulator\Xtb.XApi.Simulation.csproj" />
     <ProjectReference Include="..\SyncAPIConnector\SyncAPIConnect.csproj" />
   </ItemGroup>
 
