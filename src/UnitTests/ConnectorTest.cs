@@ -6,6 +6,7 @@ namespace Xtb.XApi.UnitTests;
 public class ConnectorTest
 {
     #region disconnection
+
     [Fact]
     public void SendMessage_WhenDisconnected_Exception()
     {
@@ -65,9 +66,11 @@ public class ConnectorTest
 
         disconnectedHandler.DidNotReceive().Invoke(Arg.Any<object>(), Arg.Any<EventArgs>());
     }
+
     #endregion disconnection
 
     #region dispose
+
     [Fact]
     public void Connect_WhenDisposed_Exception()
     {
@@ -76,6 +79,7 @@ public class ConnectorTest
         client.Dispose();
         Assert.Throws<ObjectDisposedException>(client.Connect);
     }
+
     [Fact]
     public async Task ConnectAsync_WhenDisposed_Exception()
     {
@@ -138,5 +142,6 @@ public class ConnectorTest
         client.Dispose();
         await Assert.ThrowsAsync<ObjectDisposedException>(async () => await client.DisconnectAsync());
     }
+
     #endregion dispose
 }

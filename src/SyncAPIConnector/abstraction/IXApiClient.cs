@@ -263,7 +263,6 @@ public interface IXApiClientAsync : IXApiClientBase
     Task<NewsResponse> GetNewsAsync(DateTimeOffset? since, DateTimeOffset? until, CancellationToken cancellationToken = default);
 }
 
-
 /// <summary>
 /// Synchronous version of xtb XApi client.
 /// </summary>
@@ -278,7 +277,6 @@ public interface IXApiClientSync : IXApiClientBase
     /// Disconnects the client from the API.
     /// </summary>
     void Disconnect();
-
 
     /// <summary>
     /// Sends a ping command to the API.
@@ -422,7 +420,6 @@ public interface IXApiClientSync : IXApiClientBase
     /// <param name="ticks">The number of ticks to retrieve for the chart range.</param>
     /// <returns>The response containing the chart range data.</returns>
     ChartRangeResponse GetChartRange(string symbol, PERIOD period, DateTimeOffset since, int ticks);
-
 
     /// <summary>
     /// Retrieves the last chart data for the specified chart range information.

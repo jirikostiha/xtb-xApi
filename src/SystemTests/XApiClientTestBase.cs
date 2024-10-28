@@ -1,6 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
-using System;
 
 namespace Xtb.XApi.SystemTests;
 

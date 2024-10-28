@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Linq;
 using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
