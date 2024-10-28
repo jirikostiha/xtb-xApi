@@ -390,6 +390,11 @@ public static class APICommandFactory
         var jsonObj = connector.ExecuteCommand(loginCommand);
         var loginResponse = new LoginResponse(jsonObj.ToString());
 
+        if (loginResponse.StreamSessionId != null)
+        {
+            connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
+        }
+
         //var redirectCounter = 0;
 
         //while (loginResponse.RedirectRecord != null)
