@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Xtb.XApi;
 
@@ -13,7 +13,7 @@ public interface IClient : IConnectable, ISender, IReceiver
     /// </summary>
     /// <param name="message">Message to send.</param>
     /// <returns>Response from the endpoint.</returns>
-    public string SendMessageWaitResponse(string message);
+    string SendMessageWaitResponse(string message);
 
     /// <summary>
     /// Send a message to the remote endpoint.

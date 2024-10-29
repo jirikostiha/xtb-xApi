@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +39,7 @@ public class Connector : IClient, IDisposable
     }
 
     #region Events
+
     /// <inheritdoc/>
     public event EventHandler<EndpointEventArgs>? Connected;
 
@@ -53,6 +53,7 @@ public class Connector : IClient, IDisposable
     public event EventHandler? Disconnected;
 
     protected void OnConnected(IPEndPoint endpoint) => Connected?.Invoke(this, new(endpoint));
+
     #endregion Events
 
     /// <summary>

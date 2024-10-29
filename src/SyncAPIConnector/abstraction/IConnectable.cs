@@ -23,7 +23,7 @@ public interface IConnectable
     /// <summary>
     /// Endpoint that the connection was established with.
     /// </summary>
-    public IPEndPoint Endpoint { get; }
+    IPEndPoint Endpoint { get; }
 
     /// <summary>
     /// Indicates whether the client is connected to the endpoint.
