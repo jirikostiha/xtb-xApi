@@ -50,8 +50,34 @@ public class XApiClient : IXApiClient, IDisposable
 
     private Credentials? _credentials;
 
+
     /// <summary>
-    /// Initializes a new instance of the <see cref="XApiClient"/> class.
+    /// Create new instance.
+    /// </summary>
+    /// <param name="requestingConnector">Underlaying client.</param>
+    /// <param name="streamingConnector">streaming connector.</param>
+    public XApiClient(IClient requestingConnector, IClient streamingConnector)
+        : this(
+              new ApiConnector(requestingConnector, new StreamingApiConnector(streamingConnector))
+              {
+                  IsStreamingApiConnectorOwner = true
+              })
+    {
+    }
+
+    /// <summary>
+    /// Create new instance.
+    /// </summary>
+    /// <param name="connector">Underlaying client.</param>
+    /// <param name="streamingConnector">streaming connector.</param>
+    public XApiClient(IClient connector, StreamingApiConnector streamingConnector)
+        : this(new ApiConnector(connector, streamingConnector))
+    {
+        IsApiConnectorOwner = true;
+    }
+
+    /// <summary>
+    /// Create a new instance.
     /// </summary>
     /// <param name="apiConnector">An instance of <see cref="ApiConnector"/> to manage the connection.</param>
     public XApiClient(ApiConnector apiConnector)

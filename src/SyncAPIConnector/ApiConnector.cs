@@ -50,6 +50,17 @@ public class ApiConnector : IConnectable, IDisposable
     /// <summary>
     /// Creates new instance.
     /// </summary>
+    /// <param name="requestingConnector">Underlaying connector for requests.</param>
+    /// <param name="streamingConnector">streaming connector.</param>
+    public ApiConnector(IClient requestingConnector, IClient streamingConnector)
+        : this(requestingConnector, new StreamingApiConnector(streamingConnector))
+    {
+        IsStreamingApiConnectorOwner = true;
+    }
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
     /// <param name="connector">Underlaying client.</param>
     /// <param name="streamingConnector">streaming connector.</param>
     public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
