@@ -7,59 +7,66 @@ namespace Xtb.XApi.SystemTests;
 
 internal static class Program
 {
+    public const string HostIPAddressString = "81.2.190.163";
     public const int DemoRequestingPort = 5124;
     public const int DemoStreamingPort = 5125;
     public const int RealRequestingPort = 5112;
     public const int RealStreamingPort = 5113;
 
-    public static IPAddress Address => IPAddress.Parse("81.2.190.163");
-    public static IPEndPoint DemoRequestingEndpoint => new(Address, DemoRequestingPort);
-    public static IPEndPoint DemoStreamingEndpoint => new(Address, DemoStreamingPort);
-    public static IPEndPoint RealRequestingEndpoint => new(Address, RealRequestingPort);
-    public static IPEndPoint RealStreamingEndpoint => new(Address, RealStreamingPort);
+    public static IPAddress HostIPAddress => IPAddress.Parse(HostIPAddressString);
+    public static IPEndPoint DemoRequestingEndpoint => new(HostIPAddress, DemoRequestingPort);
+    public static IPEndPoint DemoStreamingEndpoint => new(HostIPAddress, DemoStreamingPort);
+    public static IPEndPoint RealRequestingEndpoint => new(HostIPAddress, RealRequestingPort);
+    public static IPEndPoint RealStreamingEndpoint => new(HostIPAddress, RealStreamingPort);
 
     private static string _userId = "16697884";
     private static string _password = "xoh11724";
 
     private static void Main(string[] args)
     {
-        RunConnectorTest();
-        RunSyncTest();
-        RunAsyncTest();
+        using (var connector = new Connector(DemoRequestingEndpoint))
+        {
+            RunConnectorTest(connector);
+        }
 
-        Console.WriteLine("Done.");
+        Console.WriteLine();
+
+        using (var xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        {
+            RunSyncTest(xApiClient);
+        }
+
+        Console.WriteLine();
+
+        using (var xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        {
+            RunAsyncTest(xApiClient);
+        }
+
+        Console.WriteLine("**** Done ****");
         Console.Read();
     }
 
-    private static void RunConnectorTest()
+    private static void RunConnectorTest(Connector connector)
     {
-        using var connector = new Connector(DemoRequestingEndpoint);
-
         Console.WriteLine("----Connector test---");
         var connectorTest = new ConnectorTest(connector, _userId, _password);
         connectorTest.Run();
     }
 
-    private static void RunSyncTest()
+    private static void RunSyncTest(XApiClient xApiClient)
     {
-        using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
-        var client = new XApiClient(apiConnector);
-
         Console.WriteLine();
         Console.WriteLine("----Sync test---");
-        var syncTest = new SyncTest(client, _userId, _password, @"\messages\");
+        var syncTest = new SyncTest(xApiClient, _userId, _password, @"\messages\");
         syncTest.Run();
     }
 
-    private static void RunAsyncTest()
+    private static void RunAsyncTest(XApiClient xApiClient)
     {
-        using var apiConnector = ApiConnector.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
-        var client = new XApiClient(apiConnector);
-
-        Console.WriteLine();
         Console.WriteLine("----Async test---");
         Console.WriteLine("(esc) abort");
-        var asyncTest = new AsyncTest(client, _userId, _password);
+        var asyncTest = new AsyncTest(xApiClient, _userId, _password);
         using var tokenSource = new CancellationTokenSource();
 
         var keyWaitTask = Task.Run(() =>
