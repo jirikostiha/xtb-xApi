@@ -6,17 +6,12 @@ namespace Xtb.XApi.SystemTests;
 
 public abstract class XApiClientTestBase : TestBase
 {
-    protected XApiClientTestBase(XApiClient client, string user, string password, string? messageFolder = null)
+    private string? _messageFolder;
+
+    protected XApiClientTestBase(XApiClient client, string user, string password)
         : base(user, password)
     {
         Client = client;
-        MessageFolder = messageFolder;
-
-        if (messageFolder != null)
-        {
-            Client.ApiConnector.Connector.MessageReceived += Connector_MessageReceived;
-            Client.ApiConnector.Connector.MessageSent += Connector_MessageSent;
-        }
     }
 
     private void Connector_MessageSent(object? sender, MessageEventArgs e)
@@ -39,7 +34,24 @@ public abstract class XApiClientTestBase : TestBase
         }
     }
 
-    protected string? MessageFolder { get; set; }
+    public string? MessageFolder
+    {
+        get => _messageFolder;
+        set
+        {
+            _messageFolder = value;
+            if (value == null)
+            {
+                Client.ApiConnector.Connector.MessageReceived -= Connector_MessageReceived;
+                Client.ApiConnector.Connector.MessageSent -= Connector_MessageSent;
+            }
+            else
+            {
+                Client.ApiConnector.Connector.MessageReceived += Connector_MessageReceived;
+                Client.ApiConnector.Connector.MessageSent += Connector_MessageSent;
+            }
+        }
+    }
 
     protected XApiClient Client { get; set; }
 

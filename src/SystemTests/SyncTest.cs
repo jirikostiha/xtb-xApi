@@ -9,13 +9,16 @@ namespace Xtb.XApi.SystemTests;
 
 public sealed class SyncTest : XApiClientTestBase
 {
-    public SyncTest(XApiClient client, string user, string password, string? messageFolder = null)
-        : base(client, user, password, messageFolder)
+    public SyncTest(XApiClient client, string user, string password)
+        : base(client, user, password)
     {
     }
 
     public void Run()
     {
+        if (ShallLogTime)
+            Time.Start();
+
         ConnectionStage();
         AuthenticationStage();
         AccountInfoStage();
@@ -25,6 +28,9 @@ public sealed class SyncTest : XApiClientTestBase
         TradingStage();
         TradingStage();
         TradingHistoryStage();
+
+        if (ShallLogTime)
+            Time.Stop();
     }
 
     public void ConnectionStage()

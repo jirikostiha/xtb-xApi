@@ -24,12 +24,12 @@ internal static class Program
 
     private static void Main(string[] args)
     {
-        using (var connector = new Connector(DemoRequestingEndpoint))
-        {
-            RunConnectorTest(connector);
-        }
+        //using (var connector = new Connector(DemoRequestingEndpoint))
+        //{
+        //    RunConnectorTest(connector);
+        //}
 
-        Console.WriteLine();
+        //Console.WriteLine();
 
         using (var xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
@@ -58,7 +58,10 @@ internal static class Program
     {
         Console.WriteLine();
         Console.WriteLine("----Sync test---");
-        var syncTest = new SyncTest(xApiClient, _userId, _password, @"\messages\");
+        var syncTest = new SyncTest(xApiClient, _userId, _password)
+        {
+            ShallLogTime = true
+        };
         syncTest.Run();
     }
 
@@ -66,7 +69,12 @@ internal static class Program
     {
         Console.WriteLine("----Async test---");
         Console.WriteLine("(esc) abort");
-        var asyncTest = new AsyncTest(xApiClient, _userId, _password);
+        var asyncTest = new AsyncTest(xApiClient, _userId, _password)
+        {
+            MessageFolder = @"\messages\",
+            ShallLogTime = true
+        };
+
         using var tokenSource = new CancellationTokenSource();
 
         var keyWaitTask = Task.Run(() =>
