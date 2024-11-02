@@ -15,9 +15,9 @@ public abstract class TestBase
 
     protected Credentials Credentials { get; set; }
 
-    public bool ShallLogTime {  get; set; }
+    public bool ShallLogTime { get; set; }
 
-    public int ActionExecutionDelay {  get; set; }
+    public int ActionExecutionDelay { get; set; }
 
     public Stopwatch Time { get; } = new();
 
