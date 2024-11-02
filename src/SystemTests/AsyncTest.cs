@@ -10,13 +10,16 @@ namespace Xtb.XApi.SystemTests;
 
 public sealed class AsyncTest : XApiClientTestBase
 {
-    public AsyncTest(XApiClient client, string user, string password, string? messageFolder = null)
-        : base(client, user, password, messageFolder)
+    public AsyncTest(XApiClient client, string user, string password)
+        : base(client, user, password)
     {
     }
 
     public async Task RunAsync(CancellationToken cancellationToken)
     {
+        if (ShallLogTime)
+            Time.Start();
+
         await ConnectionStage(cancellationToken);
         await AuthenticationStage(cancellationToken);
         await AccountInfoStage(cancellationToken);
@@ -26,6 +29,9 @@ public sealed class AsyncTest : XApiClientTestBase
         await TradingStage(cancellationToken);
         await TradingStage(cancellationToken);
         await TradingHistoryStage(cancellationToken);
+
+        if (ShallLogTime)
+            Time.Stop();
     }
 
     public async Task ConnectionStage(CancellationToken cancellationToken)

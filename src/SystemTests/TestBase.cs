@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 using Xtb.XApi.Responses;
 
@@ -13,6 +15,12 @@ public abstract class TestBase
 
     protected Credentials Credentials { get; set; }
 
+    public bool ShallLogTime {  get; set; }
+
+    public int ActionExecutionDelay {  get; set; }
+
+    public Stopwatch Time { get; } = new();
+
     protected static void Stage(string name)
     {
         var oc = Console.ForegroundColor;
@@ -23,27 +31,37 @@ public abstract class TestBase
         Console.ForegroundColor = oc;
     }
 
-    protected static void Action(string name)
+    protected void Action(string name)
     {
-        Task.Delay(200);
+        Task.Delay(ActionExecutionDelay);
+        if (ShallLogTime)
+            Console.Write(Time.Elapsed);
+
         Console.Write($"  {name}...");
     }
 
-    protected static void Pass(BaseResponse? response = null)
+    protected void Pass(BaseResponse? response = null)
     {
         var oc = Console.ForegroundColor;
 
         if (response is null || response.Status == true)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("OK");
+            Console.Write("OK  ");
         }
         else
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"Error: {response.ErrCode}, {response.ErrorDescr}");
+            Console.Write($"Error: {response.ErrCode}, {response.ErrorDescr}  ");
         }
 
+        if (ShallLogTime)
+        {
+            Console.ForegroundColor = oc;
+            Console.Write(Time.Elapsed);
+        }
+
+        Console.WriteLine();
         Console.ForegroundColor = oc;
     }
 
