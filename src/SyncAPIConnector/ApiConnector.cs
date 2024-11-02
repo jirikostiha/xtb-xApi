@@ -109,7 +109,7 @@ public class ApiConnector : Connector
         Redirected?.Invoke(this, new(endpoint));
 
         if (IsConnected)
-            Disconnect();
+            await DisconnectAsync(cancellationToken).ConfigureAwait(false);
 
         Endpoint = endpoint;
         await ConnectAsync(cancellationToken).ConfigureAwait(false);
@@ -133,17 +133,11 @@ public class ApiConnector : Connector
         {
             var request = command.ToJsonString();
 
-            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            long interval = currentTimestamp - _lastCommandTimestamp;
-            // If interval between now and last command is less than minimum command time space - wait
-            if (interval < CommandDelay.TotalMilliseconds)
-            {
-                Thread.Sleep((int)(CommandDelay.TotalMilliseconds - interval));
-            }
+            EnforceCommandDelay();
 
             CommandExecuting?.Invoke(this, new(command));
             var response = SendMessageWaitResponse(request);
-            _lastCommandTimestamp = currentTimestamp;
+            _lastCommandTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
             var parsedResponse = JsonNode.Parse(response)
                 ?? throw new InvalidOperationException("Parsed command response is null.");
@@ -154,6 +148,17 @@ public class ApiConnector : Connector
         catch (Exception ex)
         {
             throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
+        }
+    }
+
+    private void EnforceCommandDelay()
+    {
+        long currentTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        long interval = currentTimestamp - _lastCommandTimestamp;
+
+        if (interval < CommandDelay.TotalMilliseconds)
+        {
+            Thread.Sleep((int)(CommandDelay.TotalMilliseconds - interval));
         }
     }
 
@@ -169,17 +174,12 @@ public class ApiConnector : Connector
         {
             var request = command.ToJsonString();
 
-            long currentTimestamp = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
-            long interval = currentTimestamp - _lastCommandTimestamp;
-            // If interval between now and last command is less than minimum command time space - wait
-            if (interval < CommandDelay.TotalMilliseconds)
-            {
-                await Task.Delay((int)(CommandDelay.TotalMilliseconds - interval), cancellationToken);
-            }
+            await EnforceCommandDelayAsync();
 
             CommandExecuting?.Invoke(this, new(command));
             var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
-            _lastCommandTimestamp = currentTimestamp;
+            _lastCommandTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
+
 
             var parsedResponse = JsonNode.Parse(response);
             if (parsedResponse is null)
@@ -192,6 +192,17 @@ public class ApiConnector : Connector
         catch (Exception ex)
         {
             throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
+        }
+    }
+
+    private async Task EnforceCommandDelayAsync()
+    {
+        long currentTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        long interval = currentTimestamp - _lastCommandTimestamp;
+
+        if (interval < CommandDelay.TotalMilliseconds)
+        {
+            await Task.Delay((int)(CommandDelay.TotalMilliseconds - interval));
         }
     }
 
