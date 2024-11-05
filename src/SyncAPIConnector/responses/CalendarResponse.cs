@@ -17,7 +17,7 @@ public class CalendarResponse : BaseResponse
         if (ReturnData is null)
             return;
 
-        foreach (JsonObject e in ReturnData.AsArray().OfType<JsonObject>())
+        foreach (var e in ReturnData.AsArray().OfType<JsonObject>())
         {
             var record = new CalendarRecord();
             record.FieldsFromJsonObject(e);

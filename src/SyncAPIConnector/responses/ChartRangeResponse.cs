@@ -22,9 +22,9 @@ public class ChartRangeResponse : BaseResponse
         var arr = ob["rateInfos"]?.AsArray();
         if (arr != null)
         {
-            foreach (JsonObject e in arr.OfType<JsonObject>())
+            foreach (var e in arr.OfType<JsonObject>())
             {
-                RateInfoRecord record = new RateInfoRecord();
+                var record = new RateInfoRecord();
                 record.FieldsFromJsonObject(e);
                 RateInfos.AddLast(record);
             }

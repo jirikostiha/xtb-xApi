@@ -23,7 +23,7 @@ public class ChartLastResponse : BaseResponse
         {
             foreach (var e in arr.OfType<JsonObject>())
             {
-                RateInfoRecord record = new RateInfoRecord();
+                var record = new RateInfoRecord();
                 record.FieldsFromJsonObject(e);
                 RateInfos.AddLast(record);
             }
