@@ -16,7 +16,7 @@ public record TradeTransInfoRecord : ISymbol
         double? tp,
         string symbol,
         double? volume,
-        long? order,
+        long? orderId,
         string? customComment,
         DateTimeOffset? expiration)
     {
@@ -25,7 +25,7 @@ public record TradeTransInfoRecord : ISymbol
         Tp = tp;
         Symbol = symbol;
         Volume = volume;
-        Order = order;
+        OrderId = orderId;
         CustomComment = customComment;
 
         TradeOperation = tradeOperation;
@@ -35,7 +35,7 @@ public record TradeTransInfoRecord : ISymbol
 
     public string? CustomComment { get; init; }
 
-    public long? Order { get; init; }
+    public long? OrderId { get; init; }
 
     public double? Price { get; init; }
 
@@ -64,7 +64,7 @@ public record TradeTransInfoRecord : ISymbol
             { "tp", Tp },
             { "symbol", Symbol },
             { "volume", Volume },
-            { "order", Order },
+            { "order", OrderId },
             { "customComment", CustomComment },
             { "expiration", Expiration?.ToUnixTimeMilliseconds() },
         };

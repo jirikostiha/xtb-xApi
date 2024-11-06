@@ -4,14 +4,14 @@ using Xtb.XApi.Codes;
 
 namespace Xtb.XApi.Records;
 
-[DebuggerDisplay("o:{Order}, price:{Price}")]
+[DebuggerDisplay("o:{OrderId}, price:{Price}")]
 public record StreamingTradeStatusRecord : IBaseResponseRecord
 {
     public string? CustomComment { get; set; }
 
     public string? Message { get; set; }
 
-    public long? Order { get; set; }
+    public long? OrderId { get; set; }
 
     public double? Price { get; set; }
 
@@ -21,7 +21,7 @@ public record StreamingTradeStatusRecord : IBaseResponseRecord
     {
         CustomComment = (string?)value["customComment"];
         Message = (string?)value["message"];
-        Order = (long?)value["order"];
+        OrderId = (long?)value["order"];
         Price = (double?)value["price"];
 
         var requestStatusCode = (int?)value["requestStatus"];

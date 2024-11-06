@@ -332,12 +332,12 @@ public class XApiClient : IXApiClient, IDisposable
         => APICommandFactory.ExecuteTradeTransactionCommandAsync(ApiConnector, tradeTransInfoRecord, cancellationToken);
 
     /// <inheritdoc/>
-    public TradeRecordsResponse GetTradeRecords(LinkedList<long?> orders)
-        => APICommandFactory.ExecuteTradeRecordsCommand(ApiConnector, orders);
+    public TradeRecordsResponse GetTradeRecords(LinkedList<long?> orderIds)
+        => APICommandFactory.ExecuteTradeRecordsCommand(ApiConnector, orderIds);
 
     /// <inheritdoc/>
-    public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default)
-        => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orders, cancellationToken);
+    public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orderIds, CancellationToken cancellationToken = default)
+        => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orderIds, cancellationToken);
 
     /// <inheritdoc/>
     public TradesHistoryResponse GetTradesHistory(DateTimeOffset? since, DateTimeOffset? until = null)

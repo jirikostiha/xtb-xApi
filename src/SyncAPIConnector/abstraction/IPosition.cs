@@ -2,9 +2,9 @@
 
 public interface IPosition
 {
-    long? Order { get; }
+    long? OrderId { get; }
 
-    long? Order2 { get; }
+    long? Order2Id { get; }
 
-    long? Position { get; }
+    long? PositionId { get; }
 }

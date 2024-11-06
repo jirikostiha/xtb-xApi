@@ -578,15 +578,15 @@ public sealed class SyncTest : XApiClientTestBase
                     tp: null,
                     symbol: "US500",
                     volume: 0.1,
-                    order: null,
+                    orderId: null,
                     customComment: "opened by test",
                     expiration: null);
 
                 // Warning: Opening trade. Make sure you have set up demo account!
                 var response = Client.GetTradeTransaction(trade);
                 Pass(response);
-                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
-                orderId = response?.Order;
+                Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                orderId = response?.OrderId;
             }
             catch (Exception ex)
             {
@@ -619,14 +619,14 @@ public sealed class SyncTest : XApiClientTestBase
                     tp: null,
                     symbol: "US500",
                     volume: 0.2,
-                    order: orderId,
+                    orderId: orderId,
                     customComment: "modified by test",
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
                 var response = Client.GetTradeTransaction(trade);
                 Pass(response);
-                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
             catch (Exception ex)
             {
@@ -659,14 +659,14 @@ public sealed class SyncTest : XApiClientTestBase
                     tp: null,
                     symbol: "US500",
                     volume: null,
-                    order: orderId,
+                    orderId: orderId,
                     customComment: "closed by test",
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
                 var response = Client.GetTradeTransaction(trade);
                 Pass(response);
-                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
             catch (Exception ex)
             {

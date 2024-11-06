@@ -163,10 +163,10 @@ public static class APICommandFactory
         return new TickPricesCommand(args, prettyPrint);
     }
 
-    public static TradeRecordsCommand CreateTradeRecordsCommand(LinkedList<long?> orders, bool prettyPrint = false)
+    public static TradeRecordsCommand CreateTradeRecordsCommand(LinkedList<long?> orderIds, bool prettyPrint = false)
     {
         JsonObject args = [];
-        JsonArray arr = [.. orders];
+        JsonArray arr = [.. orderIds];
         args.Add("orders", arr);
 
         return new TradeRecordsCommand(args, prettyPrint);
@@ -189,24 +189,24 @@ public static class APICommandFactory
         double? tp,
         string symbol,
         double? volume,
-        long? order,
+        long? orderId,
         string customComment,
         DateTimeOffset? expiration,
         bool prettyPrint = false)
     {
         JsonObject args = new()
         {
-            { "tradeTransInfo", new TradeTransInfoRecord(tradeOperation, transactionType, price, sl, tp, symbol, volume, order, customComment, expiration).ToJsonObject() }
+            { "tradeTransInfo", new TradeTransInfoRecord(tradeOperation, transactionType, price, sl, tp, symbol, volume, orderId, customComment, expiration).ToJsonObject() }
         };
 
         return new TradeTransactionCommand(args, prettyPrint);
     }
 
-    public static TradeTransactionStatusCommand CreateTradeTransactionStatusCommand(long? order, bool prettyPrint = false)
+    public static TradeTransactionStatusCommand CreateTradeTransactionStatusCommand(long? orderId, bool prettyPrint = false)
     {
         JsonObject args = new()
         {
-            { "order", order }
+            { "order", orderId }
         };
 
         return new TradeTransactionStatusCommand(args, prettyPrint);
@@ -655,17 +655,17 @@ public static class APICommandFactory
         return new TickPricesResponse(jsonObj.ToString());
     }
 
-    public static TradeRecordsResponse ExecuteTradeRecordsCommand(ApiConnector connector, LinkedList<long?> orders, bool prettyPrint = false)
+    public static TradeRecordsResponse ExecuteTradeRecordsCommand(ApiConnector connector, LinkedList<long?> orderIds, bool prettyPrint = false)
     {
-        var command = CreateTradeRecordsCommand(orders, prettyPrint);
+        var command = CreateTradeRecordsCommand(orderIds, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
 
         return new TradeRecordsResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(ApiConnector connector, LinkedList<long?> orders, CancellationToken cancellationToken = default)
+    public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(ApiConnector connector, LinkedList<long?> orderIds, CancellationToken cancellationToken = default)
     {
-        var command = CreateTradeRecordsCommand(orders);
+        var command = CreateTradeRecordsCommand(orderIds);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
 
         return new TradeRecordsResponse(jsonObj.ToString());
@@ -687,12 +687,12 @@ public static class APICommandFactory
         double? tp,
         string symbol,
         double? volume,
-        long? order,
+        long? orderId,
         string customComment,
         DateTimeOffset? expiration,
         bool prettyPrint = false)
     {
-        var command = CreateTradeTransactionCommand(tradeOperation, transactionType, price, sl, tp, symbol, volume, order, customComment, expiration, prettyPrint);
+        var command = CreateTradeTransactionCommand(tradeOperation, transactionType, price, sl, tp, symbol, volume, orderId, customComment, expiration, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
 
         return new TradeTransactionResponse(jsonObj.ToString());
@@ -716,30 +716,30 @@ public static class APICommandFactory
         double? tp,
         string symbol,
         double? volume,
-        long? order,
+        long? orderId,
         string customComment,
         DateTimeOffset? expiration,
         CancellationToken cancellationToken = default)
     {
-        var command = CreateTradeTransactionCommand(tradeOperation, transactionType, price, sl, tp, symbol, volume, order, customComment, expiration);
+        var command = CreateTradeTransactionCommand(tradeOperation, transactionType, price, sl, tp, symbol, volume, orderId, customComment, expiration);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
 
         return new TradeTransactionResponse(jsonObj.ToString());
     }
 
-    public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(ApiConnector connector, long? order, bool prettyPrint = false)
+    public static TradeTransactionStatusResponse ExecuteTradeTransactionStatusCommand(ApiConnector connector, long? orderId, bool prettyPrint = false)
     {
-        var command = CreateTradeTransactionStatusCommand(order, prettyPrint);
+        var command = CreateTradeTransactionStatusCommand(orderId, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
 
         return new TradeTransactionStatusResponse(jsonObj.ToString());
     }
 
     public static async Task<TradeTransactionStatusResponse> ExecuteTradeTransactionStatusCommandAsync(ApiConnector connector,
-        long? order,
+        long? orderId,
         CancellationToken cancellationToken = default)
     {
-        var command = CreateTradeTransactionStatusCommand(order);
+        var command = CreateTradeTransactionStatusCommand(orderId);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
 
         return new TradeTransactionStatusResponse(jsonObj.ToString());
