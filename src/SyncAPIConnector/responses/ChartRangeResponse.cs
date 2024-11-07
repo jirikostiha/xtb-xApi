@@ -26,12 +26,12 @@ public class ChartRangeResponse : BaseResponse
             {
                 var record = new RateInfoRecord();
                 record.FieldsFromJsonObject(e);
-                RateInfos.AddLast(record);
+                RateInfoRecords.AddLast(record);
             }
         }
     }
 
     public int? Digits { get; init; }
 
-    public LinkedList<RateInfoRecord> RateInfos { get; init; } = [];
+    public LinkedList<RateInfoRecord> RateInfoRecords { get; init; } = [];
 }

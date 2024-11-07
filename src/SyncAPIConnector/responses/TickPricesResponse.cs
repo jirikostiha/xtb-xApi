@@ -25,9 +25,9 @@ public class TickPricesResponse : BaseResponse
         {
             var record = new TickRecord();
             record.FieldsFromJsonObject(e);
-            Ticks.AddLast(record);
+            TickRecords.AddLast(record);
         }
     }
 
-    public LinkedList<TickRecord>? Ticks { get; init; } = [];
+    public LinkedList<TickRecord>? TickRecords { get; init; } = [];
 }
