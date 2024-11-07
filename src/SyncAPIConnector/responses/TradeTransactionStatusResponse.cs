@@ -1,10 +1,11 @@
 using System.Diagnostics;
 using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
 [DebuggerDisplay("orderId:{OrderId}")]
-public class TradeTransactionStatusResponse : BaseResponse
+public class TradeTransactionStatusResponse : BaseResponse, ITradeStatusRecord
 {
     public TradeTransactionStatusResponse()
         : base()

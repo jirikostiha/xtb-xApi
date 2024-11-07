@@ -5,7 +5,7 @@ using Xtb.XApi.Codes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("o:{OrderId}, price:{Price}")]
-public record StreamingTradeStatusRecord : IBaseResponseRecord
+public record StreamingTradeStatusRecord : IBaseResponseRecord, ITradeStatusRecord
 {
     public string? CustomComment { get; set; }
 
