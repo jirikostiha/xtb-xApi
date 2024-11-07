@@ -15,9 +15,9 @@ public class SymbolResponse : BaseResponse
             return;
 
         var ob = ReturnData.AsObject();
-        Symbol = new SymbolRecord();
-        Symbol.FieldsFromJsonObject(ob);
+        SymbolRecord = new SymbolRecord();
+        SymbolRecord.FieldsFromJsonObject(ob);
     }
 
-    public SymbolRecord? Symbol { get; init; }
+    public SymbolRecord? SymbolRecord { get; init; }
 }

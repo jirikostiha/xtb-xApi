@@ -18,7 +18,7 @@ public class SpreadsResponse : BaseResponse
             return;
 
         var arr = ReturnData.AsArray();
-        foreach (JsonObject e in arr.OfType<JsonObject>())
+        foreach (var e in arr.OfType<JsonObject>())
         {
             var record = new SpreadRecord();
             record.FieldsFromJsonObject(e);

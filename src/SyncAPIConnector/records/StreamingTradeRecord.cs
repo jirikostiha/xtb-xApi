@@ -22,11 +22,11 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 
     public double? OpenPrice { get; set; }
 
-    public long? Order { get; set; }
+    public long? OrderId { get; set; }
 
-    public long? Order2 { get; set; }
+    public long? Order2Id { get; set; }
 
-    public long? Position { get; set; }
+    public long? PositionId { get; set; }
 
     public double? Profit { get; set; }
 
@@ -63,9 +63,9 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         CustomComment = (string?)value["customComment"];
         MarginRate = (double?)value["margin_rate"];
         OpenPrice = (double?)value["open_price"];
-        Order = (long?)value["order"];
-        Order2 = (long?)value["order2"];
-        Position = (long?)value["position"];
+        OrderId = (long?)value["order"];
+        Order2Id = (long?)value["order2"];
+        PositionId = (long?)value["position"];
         Profit = (double?)value["profit"];
         Sl = (double?)value["sl"];
         State = (string?)value["state"];
@@ -103,9 +103,9 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         CustomComment = other.CustomComment;
         MarginRate = other.MarginRate;
         OpenPrice = other.OpenPrice;
-        Order = other.Order;
-        Order2 = other.Order2;
-        Position = other.Position;
+        OrderId = other.OrderId;
+        Order2Id = other.Order2Id;
+        PositionId = other.PositionId;
         Profit = other.Profit;
         Sl = other.Sl;
         Storage = other.Storage;
@@ -130,9 +130,9 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         MarginRate = other.MarginRate;
         OpenPrice = other.OpenPrice;
         OpenTime = other.OpenTime;
-        Order = other.Order;
-        Order2 = other.Order2;
-        Position = other.Position;
+        OrderId = other.OrderId;
+        Order2Id = other.Order2Id;
+        PositionId = other.PositionId;
         Profit = other.Profit;
         Sl = other.Sl;
         State = other.State;
@@ -157,9 +157,9 @@ public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
         MarginRate = null;
         OpenPrice = null;
         OpenTime = null;
-        Order = null;
-        Order2 = null;
-        Position = null;
+        OrderId = null;
+        Order2Id = null;
+        PositionId = null;
         Profit = null;
         Sl = null;
         State = null;

@@ -18,7 +18,7 @@ public class AllSymbolsResponse : BaseResponse
             return;
 
         var symbolRecordsArray = ReturnData.AsArray();
-        foreach (JsonObject e in symbolRecordsArray.OfType<JsonObject>())
+        foreach (var e in symbolRecordsArray.OfType<JsonObject>())
         {
             var symbolRecord = new SymbolRecord();
             symbolRecord.FieldsFromJsonObject(e);

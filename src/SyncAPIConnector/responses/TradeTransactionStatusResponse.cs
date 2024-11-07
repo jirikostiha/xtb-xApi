@@ -3,7 +3,7 @@ using Xtb.XApi.Codes;
 
 namespace Xtb.XApi.Responses;
 
-[DebuggerDisplay("order:{Order}")]
+[DebuggerDisplay("orderId:{OrderId}")]
 public class TradeTransactionStatusResponse : BaseResponse
 {
     public TradeTransactionStatusResponse()
@@ -21,7 +21,7 @@ public class TradeTransactionStatusResponse : BaseResponse
         Bid = (double?)ob["bid"];
         CustomComment = (string?)ob["customComment"];
         Message = (string?)ob["message"];
-        Order = (long?)ob["order"];
+        OrderId = (long?)ob["order"];
 
         var requestStatusCode = (int?)ob["requestStatus"];
         RequestStatus = requestStatusCode.HasValue ? new REQUEST_STATUS(requestStatusCode.Value) : null;
@@ -35,7 +35,7 @@ public class TradeTransactionStatusResponse : BaseResponse
 
     public string? Message { get; init; }
 
-    public long? Order { get; init; }
+    public long? OrderId { get; init; }
 
     public REQUEST_STATUS? RequestStatus { get; init; }
 }

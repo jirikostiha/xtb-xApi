@@ -205,7 +205,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetSymbol("US500");
             Pass(response);
-            Detail(response?.Symbol?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.SymbolRecord?.Bid?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -230,7 +230,7 @@ public sealed class SyncTest : XApiClientTestBase
             var response = Client.GetTickPrices(["US500"], 0,
                 TimeProvider.System.GetUtcNow());
             Pass(response);
-            Detail(response?.Ticks?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TickRecords?.FirstOrDefault()?.High?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -248,7 +248,7 @@ public sealed class SyncTest : XApiClientTestBase
             var response = Client.GetChartLast("US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
-            Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.RateInfoRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -262,7 +262,7 @@ public sealed class SyncTest : XApiClientTestBase
                 TimeProvider.System.GetUtcNow().AddDays(-20),
                 TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
-            Detail(response?.RateInfos?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.RateInfoRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -579,15 +579,15 @@ public sealed class SyncTest : XApiClientTestBase
                     tp: null,
                     symbol: "US500",
                     volume: 0.1,
-                    order: null,
+                    orderId: null,
                     customComment: "opened by test",
                     expiration: null);
 
                 // Warning: Opening trade. Make sure you have set up demo account!
                 var response = Client.GetTradeTransaction(trade);
                 Pass(response);
-                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
-                orderId = response?.Order;
+                Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                orderId = response?.OrderId;
             }
             catch (Exception ex)
             {
@@ -620,14 +620,14 @@ public sealed class SyncTest : XApiClientTestBase
                     tp: null,
                     symbol: "US500",
                     volume: 0.2,
-                    order: orderId,
+                    orderId: orderId,
                     customComment: "modified by test",
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
                 var response = Client.GetTradeTransaction(trade);
                 Pass(response);
-                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
             catch (Exception ex)
             {
@@ -660,14 +660,14 @@ public sealed class SyncTest : XApiClientTestBase
                     tp: null,
                     symbol: "US500",
                     volume: null,
-                    order: orderId,
+                    orderId: orderId,
                     customComment: "closed by test",
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
                 var response = Client.GetTradeTransaction(trade);
                 Pass(response);
-                Detail(response?.Order?.ToString(CultureInfo.InvariantCulture) ?? "-");
+                Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
             catch (Exception ex)
             {

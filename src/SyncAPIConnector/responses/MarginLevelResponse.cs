@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class MarginLevelResponse : BaseResponse
+public class MarginLevelResponse : BaseResponse, IBalance
 {
     public MarginLevelResponse()
         : base()

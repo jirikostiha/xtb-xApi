@@ -230,12 +230,12 @@ public interface IXApiClientAsync : IXApiClientBase
     Task<TradeTransactionResponse> GetTradeTransactionAsync(TradeTransInfoRecord tradeTransInfoRecord, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously retrieves trade records for the provided list of orders.
+    /// Asynchronously retrieves trade records for the provided list of order ids.
     /// </summary>
-    /// <param name="orders">A linked list of order IDs for which to retrieve trade records.</param>
+    /// <param name="orderIds">A linked list of order IDs for which to retrieve trade records.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A task representing the response containing the trade records.</returns>
-    Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orders, CancellationToken cancellationToken = default);
+    Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orderIds, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously retrieves the trade history within a specified time range.
@@ -452,11 +452,11 @@ public interface IXApiClientSync : IXApiClientBase
     TradeTransactionResponse GetTradeTransaction(TradeTransInfoRecord tradeTransInfoRecord);
 
     /// <summary>
-    /// Retrieves trade records for the provided list of orders.
+    /// Retrieves trade records for the provided list of order ids.
     /// </summary>
-    /// <param name="orders">A linked list of order IDs for which to retrieve trade records.</param>
+    /// <param name="orderIds">A linked list of order ids for which to retrieve trade records.</param>
     /// <returns>The response containing the trade records.</returns>
-    TradeRecordsResponse GetTradeRecords(LinkedList<long?> orders);
+    TradeRecordsResponse GetTradeRecords(LinkedList<long?> orderIds);
 
     /// <summary>
     /// Retrieves the trade history within a specified time range.

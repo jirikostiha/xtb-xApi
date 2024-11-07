@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Xtb.XApi.Responses;
 
-[DebuggerDisplay("order:{Order}")]
+[DebuggerDisplay("orderId:{OrderId}")]
 public class TradeTransactionResponse : BaseResponse
 {
     public TradeTransactionResponse()
@@ -16,8 +16,8 @@ public class TradeTransactionResponse : BaseResponse
             return;
 
         var ob = ReturnData.AsObject();
-        Order = (long?)ob["order"];
+        OrderId = (long?)ob["order"];
     }
 
-    public long? Order { get; init; }
+    public long? OrderId { get; init; }
 }

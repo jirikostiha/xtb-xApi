@@ -18,7 +18,7 @@ public class StepRulesResponse : BaseResponse
             return;
 
         var arr = ReturnData.AsArray();
-        foreach (JsonObject e in arr.OfType<JsonObject>())
+        foreach (var e in arr.OfType<JsonObject>())
         {
             var record = new StepRuleRecord();
             record.FieldsFromJsonObject(e);

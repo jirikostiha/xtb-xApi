@@ -26,11 +26,11 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
 
     public double? OpenPrice { get; set; }
 
-    public long? Order { get; set; }
+    public long? OrderId { get; set; }
 
-    public long? Order2 { get; set; }
+    public long? Order2Id { get; set; }
 
-    public long? Position { get; set; }
+    public long? PositionId { get; set; }
 
     public double? Profit { get; set; }
 
@@ -67,9 +67,9 @@ public record TradeRecord : IBaseResponseRecord, ITradeRecord
         Digits = (int?)value["digits"];
         MarginRate = (double?)value["margin_rate"];
         OpenPrice = (double?)value["open_price"];
-        Order = (long?)value["order"];
-        Order2 = (long?)value["order2"];
-        Position = (long?)value["position"];
+        OrderId = (long?)value["order"];
+        Order2Id = (long?)value["order2"];
+        PositionId = (long?)value["position"];
         Profit = (double?)value["profit"];
         Sl = (double?)value["sl"];
         Storage = (double?)value["storage"];

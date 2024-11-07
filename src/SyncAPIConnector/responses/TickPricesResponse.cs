@@ -21,13 +21,13 @@ public class TickPricesResponse : BaseResponse
 
         var ob = ReturnData.AsObject();
         var arr = ob["quotations"]?.AsArray();
-        foreach (JsonObject e in arr.OfType<JsonObject>())
+        foreach (var e in arr.OfType<JsonObject>())
         {
             var record = new TickRecord();
             record.FieldsFromJsonObject(e);
-            Ticks.AddLast(record);
+            TickRecords.AddLast(record);
         }
     }
 
-    public LinkedList<TickRecord>? Ticks { get; init; } = [];
+    public LinkedList<TickRecord>? TickRecords { get; init; } = [];
 }

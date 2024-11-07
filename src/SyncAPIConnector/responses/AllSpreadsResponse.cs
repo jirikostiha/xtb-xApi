@@ -17,7 +17,7 @@ public class AllSpreadsResponse : BaseResponse
             return;
 
         var symbolRecords = ReturnData.AsArray();
-        foreach (JsonObject e in symbolRecords.OfType<JsonObject>())
+        foreach (var e in symbolRecords.OfType<JsonObject>())
         {
             var spreadRecord = new SpreadRecord();
             spreadRecord.FieldsFromJsonObject(e);
