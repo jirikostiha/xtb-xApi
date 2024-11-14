@@ -29,7 +29,7 @@ public interface ITradeRecord : ISymbol, IPosition
 
     DateTimeOffset? OpenTime { get; }
 
-    double? Profit { get; }
+    double? Profit { get; set; }
 
     double? Sl { get; }
 
