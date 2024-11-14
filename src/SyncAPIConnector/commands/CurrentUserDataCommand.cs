@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class CurrentUserDataCommand : BaseCommand
+public sealed class CurrentUserDataCommand : BaseCommand
 {
     public const string Name = "getCurrentUserData";
 

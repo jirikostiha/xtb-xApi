@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class ProfitCalculationCommand : BaseCommand
+public sealed class ProfitCalculationCommand : BaseCommand
 {
     public const string Name = "getProfitCalculation";
 

@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class ChartLastCommand : BaseCommand
+public sealed class ChartLastCommand : BaseCommand
 {
     public const string Name = "getChartLastRequest";
 

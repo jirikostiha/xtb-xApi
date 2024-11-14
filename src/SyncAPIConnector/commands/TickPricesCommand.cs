@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class TickPricesCommand : BaseCommand
+public sealed class TickPricesCommand : BaseCommand
 {
     public const string Name = "getTickPrices";
 

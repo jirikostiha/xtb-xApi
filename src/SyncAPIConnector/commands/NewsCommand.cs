@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class NewsCommand : BaseCommand
+public sealed class NewsCommand : BaseCommand
 {
     public const string Name = "getNews";
 

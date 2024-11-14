@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class CommissionDefCommand : BaseCommand
+public sealed class CommissionDefCommand : BaseCommand
 {
     public const string Name = "getCommissionDef";
 

@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class CalendarCommand : BaseCommand
+public sealed class CalendarCommand : BaseCommand
 {
     public const string Name = "getCalendar";
 

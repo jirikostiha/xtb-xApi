@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class ChartRangeCommand : BaseCommand
+public sealed class ChartRangeCommand : BaseCommand
 {
     public const string Name = "getChartRangeRequest";
 

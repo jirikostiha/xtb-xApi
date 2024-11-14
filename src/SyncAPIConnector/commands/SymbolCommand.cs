@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class SymbolCommand : BaseCommand
+public sealed class SymbolCommand : BaseCommand
 {
     public const string Name = "getSymbol";
 

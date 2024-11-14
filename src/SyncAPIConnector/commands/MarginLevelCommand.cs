@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class MarginLevelCommand : BaseCommand
+public sealed class MarginLevelCommand : BaseCommand
 {
     public const string Name = "getMarginLevel";
 

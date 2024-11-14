@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class ServerTimeCommand : BaseCommand
+public sealed class ServerTimeCommand : BaseCommand
 {
     public const string Name = "getServerTime";
 

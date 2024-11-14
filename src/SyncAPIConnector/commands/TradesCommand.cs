@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class TradesCommand : BaseCommand
+public sealed class TradesCommand : BaseCommand
 {
     public const string Name = "getTrades";
 

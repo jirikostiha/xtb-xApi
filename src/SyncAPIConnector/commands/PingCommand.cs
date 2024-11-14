@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class PingCommand : BaseCommand
+public sealed class PingCommand : BaseCommand
 {
     public const string Name = "ping";
 

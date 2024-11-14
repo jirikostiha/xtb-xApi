@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class VersionCommand : BaseCommand
+public sealed class VersionCommand : BaseCommand
 {
     public const string Name = "getVersion";
 

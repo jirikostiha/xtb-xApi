@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Commands;
 
-public class AllSymbolsCommand : BaseCommand
+public sealed class AllSymbolsCommand : BaseCommand
 {
     public const string Name = "getAllSymbols";
 

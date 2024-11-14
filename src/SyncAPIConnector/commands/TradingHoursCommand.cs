@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class TradingHoursCommand : BaseCommand
+public sealed class TradingHoursCommand : BaseCommand
 {
     public const string Name = "getTradingHours";
 

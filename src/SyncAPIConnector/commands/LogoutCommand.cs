@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class LogoutCommand : BaseCommand
+public sealed class LogoutCommand : BaseCommand
 {
     public const string Name = "logout";
 

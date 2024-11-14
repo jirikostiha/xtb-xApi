@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Commands;
 
-public class MarginTradeCommand : BaseCommand
+public sealed class MarginTradeCommand : BaseCommand
 {
     public const string Name = "getMarginTrade";
 
