@@ -76,7 +76,7 @@ public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
     public double? TickValue { get; set; }
 
-    public int? CalssType { get; set; }
+    public int? ClassType { get; set; }
 
     public MARGIN_MODE? MarginMode { get; set; }
 
@@ -91,12 +91,6 @@ public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
     public DateTimeOffset? ExpirationTime { get; set; }
 
     public DateTimeOffset? Time { get; set; }
-
-    /// <summary>
-    /// Indicates if market is cfd stock market.
-    /// It is based on symbol name as xtb is using it to distinguish between stocks and cfd stocks.
-    /// </summary>
-    public bool IsCfdStock => Symbol is not null && Symbol.EndsWith("_4", StringComparison.InvariantCulture);
 
     public void FieldsFromJsonObject(JsonObject value)
     {
@@ -119,7 +113,7 @@ public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
         Precision = (int?)value["precision"];
         StopsLevel = (int?)value["stopsLevel"];
         Symbol = (string?)value["symbol"];
-        CalssType = (int?)value["type"];
+        ClassType = (int?)value["type"];
         ContractSize = (long?)value["contractSize"];
         InitialMargin = (int?)value["initialMargin"];
         MarginHedged = (int?)value["marginHedged"];
