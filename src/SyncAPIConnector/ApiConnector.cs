@@ -180,7 +180,6 @@ public class ApiConnector : Connector
             var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
             _lastCommandTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
-
             var parsedResponse = JsonNode.Parse(response);
             if (parsedResponse is null)
                 throw new InvalidOperationException("Parsed command response is null.");
