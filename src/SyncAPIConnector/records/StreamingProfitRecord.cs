@@ -18,8 +18,8 @@ public sealed record StreamingProfitRecord : IBaseResponseRecord, IPosition
     {
         Profit = (double?)value["profit"];
         OrderId = (long?)value["order"];
-        Order2Id = (long?)value["order2"]; //todo check
-        PositionId = (long?)value["position"]; //todo check
+        Order2Id = (long?)value["order2"];
+        PositionId = (long?)value["position"];
     }
 
     public void UpdateBy(StreamingProfitRecord other)

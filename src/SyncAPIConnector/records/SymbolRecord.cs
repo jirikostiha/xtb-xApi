@@ -76,7 +76,7 @@ public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 
     public double? TickValue { get; set; }
 
-    public int? Type { get; set; } //todo
+    public int? CalssType { get; set; }
 
     public MARGIN_MODE? MarginMode { get; set; }
 
@@ -119,7 +119,7 @@ public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
         Precision = (int?)value["precision"];
         StopsLevel = (int?)value["stopsLevel"];
         Symbol = (string?)value["symbol"];
-        Type = (int?)value["type"];
+        CalssType = (int?)value["type"];
         ContractSize = (long?)value["contractSize"];
         InitialMargin = (int?)value["initialMargin"];
         MarginHedged = (int?)value["marginHedged"];
