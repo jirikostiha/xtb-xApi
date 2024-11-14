@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, value:{Value}")]
-public record SpreadRecord : IBaseResponseRecord, ISymbol
+public sealed record SpreadRecord : IBaseResponseRecord, ISymbol
 {
     public int? Precision { get; set; }
 

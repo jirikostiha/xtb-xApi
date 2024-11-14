@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("o:{OrderId}, o2:{Order2Id}, profit:{Profit}")]
-public record StreamingProfitRecord : IBaseResponseRecord, IPosition
+public sealed record StreamingProfitRecord : IBaseResponseRecord, IPosition
 {
     public long? OrderId { get; set; }
 

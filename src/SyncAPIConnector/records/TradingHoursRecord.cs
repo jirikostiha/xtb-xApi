@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}")]
-public record TradingHoursRecord : IBaseResponseRecord, ISymbol
+public sealed record TradingHoursRecord : IBaseResponseRecord, ISymbol
 {
     public LinkedList<HoursRecord> Quotes { get; set; } = [];
 
@@ -24,7 +24,7 @@ public record TradingHoursRecord : IBaseResponseRecord, ISymbol
     /// <c>false</c> if it is not;
     /// <c>null</c> if the Quotes collection is <c>null</c>.
     /// </returns>
-    public virtual bool? IsInQuotesHours(DateTimeOffset time)
+    public bool? IsInQuotesHours(DateTimeOffset time)
     {
         if (Quotes is null)
             return null;
@@ -48,7 +48,7 @@ public record TradingHoursRecord : IBaseResponseRecord, ISymbol
     /// <c>false</c> if it is not;
     /// <c>null</c> if the Trading collection is <c>null</c>.
     /// </returns>
-    public virtual bool? IsInTradingHours(DateTimeOffset time)
+    public bool? IsInTradingHours(DateTimeOffset time)
     {
         if (Trading is null)
             return null;

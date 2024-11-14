@@ -6,7 +6,7 @@ using Xtb.XApi.Codes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}")]
-public record ChartLastInfoRecord
+public sealed record ChartLastInfoRecord
 {
     public ChartLastInfoRecord(string symbol, PERIOD period, DateTimeOffset? start)
     {
@@ -21,7 +21,7 @@ public record ChartLastInfoRecord
 
     public DateTimeOffset? Start { get; init; }
 
-    public virtual JsonObject ToJsonObject()
+    public JsonObject ToJsonObject()
     {
         JsonObject obj = new()
         {

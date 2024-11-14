@@ -1,11 +1,10 @@
 using System.Text.Json.Nodes;
-
-namespace Xtb.XApi.Records;
-
 using System;
 using System.Diagnostics;
 
-public record RateInfoRecord : IBaseResponseRecord, ICandleRecord
+namespace Xtb.XApi.Records;
+
+public sealed record RateInfoRecord : IBaseResponseRecord, ICandleRecord
 {
     public DateTimeOffset? StartTime { get; set; }
 

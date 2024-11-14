@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("day:{DayOfWeek}, since:{FromTime}, until:{ToTime}")]
-public record HoursRecord : IBaseResponseRecord
+public sealed record HoursRecord : IBaseResponseRecord
 {
     public DayOfWeek? DayOfWeek { get; set; }
 

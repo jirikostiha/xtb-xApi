@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Records;
 
-public record StepRuleRecord : IBaseResponseRecord
+public sealed record StepRuleRecord : IBaseResponseRecord
 {
     public int? Id { get; set; }
 

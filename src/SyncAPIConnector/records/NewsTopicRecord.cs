@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Key}")]
-public record NewsTopicRecord : IBaseResponseRecord, INewsRecord
+public sealed record NewsTopicRecord : IBaseResponseRecord, INewsRecord
 {
     public string? Body { get; set; }
 

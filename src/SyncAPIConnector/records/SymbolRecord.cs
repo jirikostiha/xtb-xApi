@@ -6,7 +6,7 @@ using Xtb.XApi.Codes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
-public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
+public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
 {
     public double? Ask { get; set; }
 
@@ -96,7 +96,7 @@ public record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
     /// Indicates if market is cfd stock market.
     /// It is based on symbol name as xtb is using it to distinguish between stocks and cfd stocks.
     /// </summary>
-    public virtual bool IsCfdStock => Symbol is not null && Symbol.EndsWith("_4", StringComparison.InvariantCulture);
+    public bool IsCfdStock => Symbol is not null && Symbol.EndsWith("_4", StringComparison.InvariantCulture);
 
     public void FieldsFromJsonObject(JsonObject value)
     {

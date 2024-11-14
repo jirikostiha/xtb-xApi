@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Country}, impact:{Impact}")]
-public record CalendarRecord : IBaseResponseRecord
+public sealed record CalendarRecord : IBaseResponseRecord
 {
     public string? Country { get; set; }
 

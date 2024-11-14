@@ -6,7 +6,7 @@ using Xtb.XApi.Codes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
-public record TradeTransInfoRecord : ISymbol
+public sealed record TradeTransInfoRecord : ISymbol
 {
     public TradeTransInfoRecord(
         TRADE_OPERATION_TYPE? tradeOperation,
@@ -53,7 +53,7 @@ public record TradeTransInfoRecord : ISymbol
 
     public DateTimeOffset? Expiration { get; init; }
 
-    public virtual JsonObject ToJsonObject()
+    public JsonObject ToJsonObject()
     {
         JsonObject obj = new()
         {

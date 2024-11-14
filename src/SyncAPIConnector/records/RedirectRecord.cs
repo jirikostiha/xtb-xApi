@@ -2,7 +2,7 @@
 
 namespace Xtb.XApi.Records;
 
-public record RedirectRecord : IBaseResponseRecord
+public sealed record RedirectRecord : IBaseResponseRecord
 {
     public int? MainPort { get; set; }
 

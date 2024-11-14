@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Time}")]
-public record StreamingKeepAliveRecord : IBaseResponseRecord
+public sealed record StreamingKeepAliveRecord : IBaseResponseRecord
 {
     public DateTimeOffset? Time { get; set; }
 

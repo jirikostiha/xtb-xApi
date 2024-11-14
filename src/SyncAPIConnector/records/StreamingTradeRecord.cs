@@ -6,7 +6,7 @@ using Xtb.XApi.Codes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}")]
-public record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
+public sealed record StreamingTradeRecord : IBaseResponseRecord, ITradeRecord
 {
     public double? ClosePrice { get; set; }
 

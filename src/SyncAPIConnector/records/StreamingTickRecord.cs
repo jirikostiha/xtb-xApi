@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, ask:{Ask}, bid:{Bid}")]
-public record StreamingTickRecord : IBaseResponseRecord, ITickRecord
+public sealed record StreamingTickRecord : IBaseResponseRecord, ITickRecord
 {
     public double? Ask { get; set; }
 
