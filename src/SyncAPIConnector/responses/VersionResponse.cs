@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class VersionResponse : BaseResponse
+public sealed class VersionResponse : BaseResponse
 {
     public VersionResponse()
         : base()

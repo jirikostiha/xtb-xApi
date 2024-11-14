@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class AllSymbolsResponse : BaseResponse
+public sealed class AllSymbolsResponse : BaseResponse
 {
     public AllSymbolsResponse()
         : base()

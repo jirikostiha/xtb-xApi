@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class ProfitCalculationResponse : BaseResponse
+public sealed class ProfitCalculationResponse : BaseResponse
 {
     public ProfitCalculationResponse()
         : base()

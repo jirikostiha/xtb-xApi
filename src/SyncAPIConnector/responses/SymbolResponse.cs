@@ -2,7 +2,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class SymbolResponse : BaseResponse
+public sealed class SymbolResponse : BaseResponse
 {
     public SymbolResponse()
         : base()

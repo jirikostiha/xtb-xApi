@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class ConfirmRequotedResponse : BaseResponse
+public sealed class ConfirmRequotedResponse : BaseResponse
 {
     public ConfirmRequotedResponse()
         : base()

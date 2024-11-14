@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class MarginTradeResponse : BaseResponse
+public sealed class MarginTradeResponse : BaseResponse
 {
     public MarginTradeResponse()
         : base()

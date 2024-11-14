@@ -7,7 +7,7 @@ using Xtb.XApi.Records;
 namespace Xtb.XApi.Responses;
 
 [DebuggerDisplay("ticks:{Ticks.Count}")]
-public class TickPricesResponse : BaseResponse
+public sealed class TickPricesResponse : BaseResponse
 {
     public TickPricesResponse()
         : base()

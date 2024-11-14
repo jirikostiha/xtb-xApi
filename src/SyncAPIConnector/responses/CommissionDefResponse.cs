@@ -2,7 +2,7 @@ using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Responses;
 
-public class CommissionDefResponse : BaseResponse
+public sealed class CommissionDefResponse : BaseResponse
 {
     public CommissionDefResponse()
         : base()

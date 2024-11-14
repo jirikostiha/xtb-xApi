@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class TradingHoursResponse : BaseResponse
+public sealed class TradingHoursResponse : BaseResponse
 {
     public TradingHoursResponse()
         : base()

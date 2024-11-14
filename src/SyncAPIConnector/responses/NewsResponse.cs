@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class NewsResponse : BaseResponse
+public sealed class NewsResponse : BaseResponse
 {
     public NewsResponse()
         : base()

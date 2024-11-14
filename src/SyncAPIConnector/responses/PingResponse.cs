@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class PingResponse : BaseResponse
+public sealed class PingResponse : BaseResponse
 {
     public PingResponse()
         : base()

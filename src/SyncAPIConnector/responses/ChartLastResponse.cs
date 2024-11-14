@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class ChartLastResponse : BaseResponse
+public sealed class ChartLastResponse : BaseResponse
 {
     public ChartLastResponse()
         : base()

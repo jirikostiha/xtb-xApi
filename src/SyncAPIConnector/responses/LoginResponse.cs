@@ -3,7 +3,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class LoginResponse : BaseResponse
+public sealed class LoginResponse : BaseResponse
 {
     public LoginResponse(string body)
         : base(body)

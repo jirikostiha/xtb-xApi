@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class ChartRangeResponse : BaseResponse
+public sealed class ChartRangeResponse : BaseResponse
 {
     public ChartRangeResponse()
         : base()

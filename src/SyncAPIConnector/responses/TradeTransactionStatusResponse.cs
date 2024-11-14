@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 namespace Xtb.XApi.Responses;
 
 [DebuggerDisplay("orderId:{OrderId}")]
-public class TradeTransactionStatusResponse : BaseResponse, ITradeStatusRecord
+public sealed class TradeTransactionStatusResponse : BaseResponse, ITradeStatusRecord
 {
     public TradeTransactionStatusResponse()
         : base()

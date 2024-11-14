@@ -2,7 +2,7 @@ using System;
 
 namespace Xtb.XApi.Responses;
 
-public class ServerTimeResponse : BaseResponse
+public sealed class ServerTimeResponse : BaseResponse
 {
     public ServerTimeResponse()
         : base()

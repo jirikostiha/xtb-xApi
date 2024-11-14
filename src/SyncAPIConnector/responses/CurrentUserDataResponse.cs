@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public class CurrentUserDataResponse : BaseResponse
+public sealed class CurrentUserDataResponse : BaseResponse
 {
     public CurrentUserDataResponse()
         : base()

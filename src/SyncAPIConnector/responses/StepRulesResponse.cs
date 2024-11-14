@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class StepRulesResponse : BaseResponse
+public sealed class StepRulesResponse : BaseResponse
 {
     public StepRulesResponse()
         : base()

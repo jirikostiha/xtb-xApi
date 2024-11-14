@@ -7,7 +7,7 @@ using Xtb.XApi.Records;
 namespace Xtb.XApi.Responses;
 
 [DebuggerDisplay("trades:{TradeRecords.Count}")]
-public class TradesHistoryResponse : BaseResponse
+public sealed class TradesHistoryResponse : BaseResponse
 {
     public TradesHistoryResponse()
         : base()

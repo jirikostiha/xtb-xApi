@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace Xtb.XApi.Responses;
 
 [DebuggerDisplay("orderId:{OrderId}")]
-public class TradeTransactionResponse : BaseResponse
+public sealed class TradeTransactionResponse : BaseResponse
 {
     public TradeTransactionResponse()
         : base()

@@ -5,7 +5,7 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-public class AllSpreadsResponse : BaseResponse
+public sealed class AllSpreadsResponse : BaseResponse
 {
     public AllSpreadsResponse()
         : base()
