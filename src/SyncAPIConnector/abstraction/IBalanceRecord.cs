@@ -1,6 +1,6 @@
 ﻿namespace Xtb.XApi;
 
-public interface IBalance
+public interface IBalanceRecord
 {
     double? Balance { get; }
 

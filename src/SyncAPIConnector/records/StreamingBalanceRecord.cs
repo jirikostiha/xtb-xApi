@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("balance:{Balance}, margin:{Margin}, equity:{Equity}")]
-public sealed record StreamingBalanceRecord : IBaseResponseRecord, IBalance
+public sealed record StreamingBalanceRecord : IBaseResponseRecord, IBalanceRecord
 {
     public double? Balance { get; set; }
 
