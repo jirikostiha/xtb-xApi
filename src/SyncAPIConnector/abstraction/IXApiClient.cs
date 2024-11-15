@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Xtb.XApi.Codes;
@@ -510,4 +511,14 @@ public interface IXApiClientBase
     /// Streaming api connector for handling streaming data.
     /// </summary>
     StreamingApiConnector Streaming { get; }
+
+    /// <summary>
+    /// Endpoint for requesting data.
+    /// </summary>
+    IPEndPoint RequestingEndpoint { get; }
+
+    /// <summary>
+    /// Endpoint for streaming data.
+    /// </summary>
+    IPEndPoint StreamingEndpoint { get; }
 }

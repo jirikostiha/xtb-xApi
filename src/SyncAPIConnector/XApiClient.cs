@@ -131,6 +131,12 @@ public class XApiClient : IXApiClient, IDisposable
     public string? AccountId => _credentials?.Login;
 
     /// <inheritdoc/>
+    public IPEndPoint RequestingEndpoint => ApiConnector.Endpoint;
+
+    /// <inheritdoc/>
+    public IPEndPoint StreamingEndpoint => Streaming.Endpoint;
+
+    /// <inheritdoc/>
     public void Connect()
     {
         ApiConnector.Connect();

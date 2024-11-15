@@ -77,7 +77,7 @@ public class Connector : IClient, IDisposable
     protected StreamReader StreamReader { get; set; } = StreamReader.Null;
 
     /// <inheritdoc/>
-    public IPEndPoint Endpoint { get; internal protected set; }
+    public IPEndPoint Endpoint { get; protected internal set; }
 
     /// <inheritdoc/>
     public bool IsConnected => TcpClient?.Connected ?? false;
