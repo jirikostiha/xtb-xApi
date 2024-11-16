@@ -168,7 +168,7 @@ public sealed class AsyncTest : XApiClientTestBase
         {
             var response = await Client.GetCurrentUserDataAsync(cancellationToken);
             Pass(response);
-            Detail(response.Currency);
+            Detail(response.CurrentUserDataRecord?.Currency);
         }
         catch (Exception ex)
         {
@@ -180,7 +180,7 @@ public sealed class AsyncTest : XApiClientTestBase
         {
             var response = await Client.GetMarginLevelAsync(cancellationToken);
             Pass(response);
-            Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.MarginLevelRecord?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -592,7 +592,7 @@ public sealed class AsyncTest : XApiClientTestBase
                     expiration: null);
 
                 // Warning: Opening trade. Make sure you have set up demo account!
-                var response = await Client.GetTradeTransactionAsync(trade, cancellationToken);
+                var response = await Client.SetTradeTransactionAsync(trade, cancellationToken);
                 Pass(response);
                 Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
                 orderId = response?.OrderId;
@@ -633,7 +633,7 @@ public sealed class AsyncTest : XApiClientTestBase
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
-                var response = await Client.GetTradeTransactionAsync(trade, cancellationToken);
+                var response = await Client.SetTradeTransactionAsync(trade, cancellationToken);
                 Pass(response);
                 Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
@@ -673,7 +673,7 @@ public sealed class AsyncTest : XApiClientTestBase
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
-                var response = await Client.GetTradeTransactionAsync(trade, cancellationToken);
+                var response = await Client.SetTradeTransactionAsync(trade, cancellationToken);
                 Pass(response);
                 Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }

@@ -168,7 +168,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetCurrentUserData();
             Pass(response);
-            Detail(response.Currency);
+            Detail(response.CurrentUserDataRecord?.Currency);
         }
         catch (Exception ex)
         {
@@ -180,7 +180,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetMarginLevel();
             Pass(response);
-            Detail(response?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.MarginLevelRecord?.MarginLevel?.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -583,7 +583,7 @@ public sealed class SyncTest : XApiClientTestBase
                     expiration: null);
 
                 // Warning: Opening trade. Make sure you have set up demo account!
-                var response = Client.GetTradeTransaction(trade);
+                var response = Client.SetTradeTransaction(trade);
                 Pass(response);
                 Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
                 orderId = response?.OrderId;
@@ -624,7 +624,7 @@ public sealed class SyncTest : XApiClientTestBase
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
-                var response = Client.GetTradeTransaction(trade);
+                var response = Client.SetTradeTransaction(trade);
                 Pass(response);
                 Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
@@ -664,7 +664,7 @@ public sealed class SyncTest : XApiClientTestBase
                     expiration: null);
 
                 // Warning: Make sure you have set up demo account!
-                var response = Client.GetTradeTransaction(trade);
+                var response = Client.SetTradeTransaction(trade);
                 Pass(response);
                 Detail(response?.OrderId?.ToString(CultureInfo.InvariantCulture) ?? "-");
             }
