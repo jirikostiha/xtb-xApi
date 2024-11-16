@@ -5,7 +5,7 @@ using Xtb.XApi.Codes;
 
 namespace Xtb.XApi.Records;
 
-[DebuggerDisplay("{Symbol}, pos:{Position}, o:{Order}, o2:{Order2}, profit:{Profit}, volume:{Volume}")]
+[DebuggerDisplay("{Symbol}, pos:{PositionId}, o:{OrderId}, o2:{Order2Id}, profit:{Profit}, volume:{Volume}")]
 public sealed record TradeRecord : IBaseResponseRecord, ITradeRecord
 {
     public double? ClosePrice { get; set; }

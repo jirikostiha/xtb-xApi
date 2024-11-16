@@ -5,7 +5,7 @@ using Xtb.XApi.Codes;
 
 namespace Xtb.XApi.Records;
 
-[DebuggerDisplay("{Symbol}, order:{Order}, volume:{Volume}")]
+[DebuggerDisplay("{Symbol}, order:{OrderId}, volume:{Volume}")]
 public sealed record TradeTransInfoRecord : ISymbol
 {
     public TradeTransInfoRecord(

@@ -1,6 +1,6 @@
 namespace Xtb.XApi.Responses;
 
-public sealed class MarginLevelResponse : BaseResponse, IBalanceRecord
+public sealed class MarginLevelResponse : BaseResponse
 {
     public MarginLevelResponse()
         : base()
@@ -13,26 +13,9 @@ public sealed class MarginLevelResponse : BaseResponse, IBalanceRecord
             return;
 
         var ob = ReturnData.AsObject();
-        Balance = (double?)ob["balance"];
-        Equity = (double?)ob["equity"];
-        Currency = (string?)ob["currency"];
-        Margin = (double?)ob["margin"];
-        MarginFree = (double?)ob["margin_free"];
-        MarginLevel = (double?)ob["margin_level"];
-        Credit = (double?)ob["credit"];
+        MarginLevelRecord = new();
+        MarginLevelRecord.FieldsFromJsonObject(ob);
     }
 
-    public double? Balance { get; init; }
-
-    public double? Equity { get; init; }
-
-    public string? Currency { get; init; }
-
-    public double? Margin { get; init; }
-
-    public double? MarginFree { get; init; }
-
-    public double? MarginLevel { get; init; }
-
-    public double? Credit { get; init; }
+    public MarginLevelRecord? MarginLevelRecord { get; init; }
 }

@@ -1,11 +1,6 @@
-using System.Diagnostics;
-using Xtb.XApi.Codes;
-using Xtb.XApi.Records;
-
 namespace Xtb.XApi.Responses;
 
-[DebuggerDisplay("orderId:{OrderId}")]
-public sealed class TradeTransactionStatusResponse : BaseResponse, ITradeStatusRecord
+public sealed class TradeTransactionStatusResponse : BaseResponse
 {
     public TradeTransactionStatusResponse()
         : base()
@@ -18,25 +13,9 @@ public sealed class TradeTransactionStatusResponse : BaseResponse, ITradeStatusR
             return;
 
         var ob = ReturnData.AsObject();
-        Ask = (double?)ob["ask"];
-        Bid = (double?)ob["bid"];
-        CustomComment = (string?)ob["customComment"];
-        Message = (string?)ob["message"];
-        OrderId = (long?)ob["order"];
-
-        var requestStatusCode = (int?)ob["requestStatus"];
-        RequestStatus = requestStatusCode.HasValue ? new REQUEST_STATUS(requestStatusCode.Value) : null;
+        TradeTransactionStatusRecord = new();
+        TradeTransactionStatusRecord.FieldsFromJsonObject(ob);
     }
 
-    public double? Ask { get; init; }
-
-    public double? Bid { get; init; }
-
-    public string? CustomComment { get; init; }
-
-    public string? Message { get; init; }
-
-    public long? OrderId { get; init; }
-
-    public REQUEST_STATUS? RequestStatus { get; init; }
+    public TradeTransactionStatusRecord? TradeTransactionStatusRecord { get; init; }
 }

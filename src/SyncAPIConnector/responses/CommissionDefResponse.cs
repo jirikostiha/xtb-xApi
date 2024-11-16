@@ -1,5 +1,3 @@
-using System.Text.Json.Nodes;
-
 namespace Xtb.XApi.Responses;
 
 public sealed class CommissionDefResponse : BaseResponse
@@ -13,7 +11,7 @@ public sealed class CommissionDefResponse : BaseResponse
         if (ReturnData is null)
             return;
 
-        JsonObject rd = ReturnData.AsObject();
+        var rd = ReturnData.AsObject();
         Commission = (double?)rd["commission"];
         RateOfExchange = (double?)rd["rateOfExchange"];
     }
