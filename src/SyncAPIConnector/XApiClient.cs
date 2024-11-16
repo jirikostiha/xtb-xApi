@@ -274,6 +274,7 @@ public class XApiClient : IXApiClient, IDisposable
     /// <inheritdoc/>
     public TradingHoursResponse GetTradingHours(string[] symbols) => APICommandFactory.ExecuteTradingHoursCommand(ApiConnector, symbols);
 
+    /// <inheritdoc/>
     public Task<TradingHoursResponse> GetTradingHoursAsync(string[] symbols, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradingHoursCommandAsync(ApiConnector, symbols, cancellationToken);
 
@@ -285,6 +286,7 @@ public class XApiClient : IXApiClient, IDisposable
     public Task<TickPricesResponse> GetTickPricesAsync(string[] symbols, int level, DateTimeOffset? time = null, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTickPricesCommandAsync(ApiConnector, symbols, level, time, cancellationToken);
 
+    /// <inheritdoc/>
     public ChartRangeResponse GetChartRange(ChartRangeInfoRecord rangeInfoRecord)
         => APICommandFactory.ExecuteChartRangeCommand(ApiConnector, rangeInfoRecord);
 
@@ -308,6 +310,7 @@ public class XApiClient : IXApiClient, IDisposable
     public Task<ChartRangeResponse> GetChartRangeAsync(string symbol, PERIOD period, DateTimeOffset since, int ticks, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteChartRangeCommandAsync(ApiConnector, symbol, period, since, default, ticks, cancellationToken);
 
+    /// <inheritdoc/>
     public ChartLastResponse GetChartLast(ChartLastInfoRecord rangeInfoRecord)
         => APICommandFactory.ExecuteChartLastCommand(ApiConnector, rangeInfoRecord);
 
@@ -326,15 +329,16 @@ public class XApiClient : IXApiClient, IDisposable
     /// <inheritdoc/>
     public TradesResponse GetTrades(bool openOnly) => APICommandFactory.ExecuteTradesCommand(ApiConnector, openOnly);
 
+    /// <inheritdoc/>
     public Task<TradesResponse> GetTradesAsync(bool openOnly, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradesCommandAsync(ApiConnector, openOnly, cancellationToken);
 
     /// <inheritdoc/>
-    public TradeTransactionResponse GetTradeTransaction(TradeTransInfoRecord tradeTransInfoRecord)
+    public TradeTransactionResponse SetTradeTransaction(TradeTransInfoRecord tradeTransInfoRecord)
         => APICommandFactory.ExecuteTradeTransactionCommand(ApiConnector, tradeTransInfoRecord);
 
     /// <inheritdoc/>
-    public Task<TradeTransactionResponse> GetTradeTransactionAsync(TradeTransInfoRecord tradeTransInfoRecord, CancellationToken cancellationToken = default)
+    public Task<TradeTransactionResponse> SetTradeTransactionAsync(TradeTransInfoRecord tradeTransInfoRecord, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeTransactionCommandAsync(ApiConnector, tradeTransInfoRecord, cancellationToken);
 
     /// <inheritdoc/>
