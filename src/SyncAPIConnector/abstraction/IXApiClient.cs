@@ -223,7 +223,7 @@ public interface IXApiClientAsync : IXApiClientBase
     Task<TradesResponse> GetTradesAsync(bool openOnly, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Asynchronously send a trade transaction based on the provided trade transaction information.
+    /// Asynchronously open, close, set or modify trade transaction based on the provided trade transaction information.
     /// </summary>
     /// <param name="tradeTransInfoRecord">The trade transaction information record.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
@@ -446,7 +446,7 @@ public interface IXApiClientSync : IXApiClientBase
     TradesResponse GetTrades(bool openOnly);
 
     /// <summary>
-    /// Send a trade transaction based on the provided trade transaction information.
+    /// Open, close, set or modify a trade transaction based on the provided trade transaction information.
     /// </summary>
     /// <param name="tradeTransInfoRecord">The trade transaction information record.</param>
     /// <returns>The response containing the trade transaction data.</returns>
