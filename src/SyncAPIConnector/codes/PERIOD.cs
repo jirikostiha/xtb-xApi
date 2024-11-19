@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 
 namespace Xtb.XApi.Codes;
@@ -29,8 +30,11 @@ public class PERIOD : BaseCode
     {
     }
 
-    /// <summary> Converts to human friendly string. </summary>
-    public string? ToFriendlyString() =>
+    /// <summary> Converts to TimeSpan. </summary>
+    public TimeSpan ToTimeSpan() => TimeSpan.FromMinutes(Code);
+
+    /// <summary> Converts to Alphanumeric Time Interval Notation string. </summary>
+    public string? ToAtin() =>
         Code switch
         {
             M1_CODE => "M1",
