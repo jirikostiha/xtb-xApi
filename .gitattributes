@@ -23,7 +23,7 @@
 *.{bat,[bB][aA][tT]} text eol=crlf
 
 # Languages
-*.cs    text diff=csharp
+*.cs    text diff=csharp eol=crlf
 *.vb    text
 *.resx  text
 *.c     text
@@ -78,7 +78,7 @@
 *.fsproj text merge=union
 *.dbproj text merge=union
 *.props  text merge=union
-*.sln    text merge=union eol=crlf 
+*.sln    text merge=union eol=crlf
 
 # Images
 *.bmp  binary
