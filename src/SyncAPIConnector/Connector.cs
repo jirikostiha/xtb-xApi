@@ -183,7 +183,7 @@ public class Connector : IClient, IDisposable
             }
             else
             {
-                Disconnect();
+                await DisconnectAsync(cancellationToken);
                 throw new APICommunicationException("Error while sending the data (socket disconnected).");
             }
         }
@@ -305,7 +305,7 @@ public class Connector : IClient, IDisposable
 
             if (line == null)
             {
-                Disconnect();
+                await DisconnectAsync(cancellationToken);
                 throw new APICommunicationException("Disconnected from server. No data in stream.");
             }
 
@@ -315,7 +315,7 @@ public class Connector : IClient, IDisposable
         }
         catch (Exception ex)
         {
-            Disconnect();
+            await DisconnectAsync(cancellationToken);
             throw new APICommunicationException("Disconnected from server.", ex);
         }
     }
@@ -360,7 +360,7 @@ public class Connector : IClient, IDisposable
 
             if (string.IsNullOrEmpty(response))
             {
-                Disconnect();
+                await DisconnectAsync(cancellationToken);
                 throw new APICommunicationException("Server not responding. Response has no value.");
             }
 
@@ -413,7 +413,7 @@ public class Connector : IClient, IDisposable
         StreamReader = new StreamReader(sslStream);
     }
 
-#if (NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
     private SslClientAuthenticationOptions CreateAuthenticationOptions()
     {
         return new SslClientAuthenticationOptions()
