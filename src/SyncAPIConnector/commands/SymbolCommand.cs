@@ -8,7 +8,7 @@ public sealed class SymbolCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["symbol"];
 
-    public SymbolCommand(JsonObject arguments, bool prettyPrint)
+    public SymbolCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

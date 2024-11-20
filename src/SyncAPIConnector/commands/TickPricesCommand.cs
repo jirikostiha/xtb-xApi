@@ -8,7 +8,7 @@ public sealed class TickPricesCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["level", "symbols", "timestamp"];
 
-    public TickPricesCommand(JsonObject arguments, bool prettyPrint)
+    public TickPricesCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

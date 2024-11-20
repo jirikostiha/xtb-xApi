@@ -8,7 +8,7 @@ public sealed class NewsCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["start", "end"];
 
-    public NewsCommand(JsonObject body, bool prettyPrint)
+    public NewsCommand(JsonObject body, bool prettyPrint = false)
         : base(body, prettyPrint)
     {
     }

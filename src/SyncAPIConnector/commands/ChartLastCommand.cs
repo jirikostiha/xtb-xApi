@@ -8,7 +8,7 @@ public sealed class ChartLastCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["info"];
 
-    public ChartLastCommand(JsonObject arguments, bool prettyPrint)
+    public ChartLastCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

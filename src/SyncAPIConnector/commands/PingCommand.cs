@@ -5,7 +5,7 @@ public sealed class PingCommand : BaseCommand
     public const string Name = "ping";
 
     public PingCommand()
-        : base([], false)
+        : base()
     {
     }
 

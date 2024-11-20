@@ -7,7 +7,7 @@ public sealed class LogoutCommand : BaseCommand
     public const string Name = "logout";
 
     public LogoutCommand()
-        : base([], false)
+        : base()
     {
     }
 

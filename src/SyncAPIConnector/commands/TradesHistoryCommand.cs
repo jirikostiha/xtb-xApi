@@ -8,7 +8,7 @@ public sealed class TradesHistoryCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["start", "end"];
 
-    public TradesHistoryCommand(JsonObject arguments, bool prettyPrint)
+    public TradesHistoryCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

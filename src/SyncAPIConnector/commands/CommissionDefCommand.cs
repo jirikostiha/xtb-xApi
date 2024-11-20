@@ -8,7 +8,7 @@ public sealed class CommissionDefCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["symbol", "volume"];
 
-    public CommissionDefCommand(JsonObject arguments, bool prettyPrint)
+    public CommissionDefCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }
@@ -18,7 +18,6 @@ public sealed class CommissionDefCommand : BaseCommand
         JsonObject obj = new()
         {
             { "command", CommandName },
-            { "prettyPrint", PrettyPrint },
             { "arguments", Arguments },
             { "extended", true }
         };

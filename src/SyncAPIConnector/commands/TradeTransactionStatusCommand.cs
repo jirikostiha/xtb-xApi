@@ -8,7 +8,7 @@ public sealed class TradeTransactionStatusCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["orders"];
 
-    public TradeTransactionStatusCommand(JsonObject arguments, bool prettyPrint)
+    public TradeTransactionStatusCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

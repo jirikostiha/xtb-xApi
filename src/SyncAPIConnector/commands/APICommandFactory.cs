@@ -248,7 +248,7 @@ public static class APICommandFactory
 
     public static AllSymbolsResponse ExecuteAllSymbolsCommand(ApiConnector connector, bool prettyPrint = false)
     {
-        var commnad = new AllSymbolsCommand();
+        var commnad = new AllSymbolsCommand(prettyPrint);
         var jsonObj = connector.ExecuteCommand(commnad);
 
         return new AllSymbolsResponse(jsonObj.ToString());
@@ -601,7 +601,7 @@ public static class APICommandFactory
 
     public static StepRulesResponse ExecuteStepRulesCommand(ApiConnector connector, bool prettyPrint = false)
     {
-        var command = new StepRulesCommand();
+        var command = new StepRulesCommand(prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
 
         return new StepRulesResponse(jsonObj.ToString());

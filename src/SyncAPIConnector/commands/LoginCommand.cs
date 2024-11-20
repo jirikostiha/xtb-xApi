@@ -8,7 +8,7 @@ public sealed class LoginCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["userId", "password"];
 
-    public LoginCommand(JsonObject arguments, bool prettyPrint)
+    public LoginCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

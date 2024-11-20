@@ -8,7 +8,7 @@ public sealed class MarginTradeCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["symbol", "volume"];
 
-    public MarginTradeCommand(JsonObject arguments, bool prettyPrint)
+    public MarginTradeCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

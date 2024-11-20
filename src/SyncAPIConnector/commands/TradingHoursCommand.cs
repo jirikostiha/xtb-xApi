@@ -8,7 +8,7 @@ public sealed class TradingHoursCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["symbols"];
 
-    public TradingHoursCommand(JsonObject arguments, bool prettyPrint)
+    public TradingHoursCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }

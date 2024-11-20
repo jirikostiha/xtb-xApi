@@ -5,7 +5,7 @@ public sealed class ServerTimeCommand : BaseCommand
     public const string Name = "getServerTime";
 
     public ServerTimeCommand()
-        : base([], false)
+        : base()
     {
     }
 

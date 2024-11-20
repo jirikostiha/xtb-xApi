@@ -8,7 +8,7 @@ public sealed class ProfitCalculationCommand : BaseCommand
 
     public static readonly string[] RequiredArgs = ["cmd", "symbol", "volume", "openPrice", "closePrice"];
 
-    public ProfitCalculationCommand(JsonObject arguments, bool prettyPrint)
+    public ProfitCalculationCommand(JsonObject arguments, bool prettyPrint = false)
         : base(arguments, prettyPrint)
     {
     }
