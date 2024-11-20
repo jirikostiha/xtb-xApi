@@ -23,7 +23,7 @@ public abstract class BaseCommand : ICommand
 
         CustomTag = customTag;
 
-        ValidateArguments();
+        _ = ValidateArguments();
     }
 
     public abstract string CommandName { get; }

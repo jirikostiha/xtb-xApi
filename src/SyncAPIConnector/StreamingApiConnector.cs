@@ -283,7 +283,7 @@ public class StreamingApiConnector : Connector
 
     public void SubscribePrices(string[] symbols)
     {
-        foreach (string symbol in symbols)
+        foreach (var symbol in symbols)
         {
             SubscribePrice(symbol);
         }
@@ -291,7 +291,7 @@ public class StreamingApiConnector : Connector
 
     public void UnsubscribePrices(string[] symbols)
     {
-        foreach (string symbol in symbols)
+        foreach (var symbol in symbols)
         {
             UnsubscribePrice(symbol);
         }
@@ -495,10 +495,8 @@ public class StreamingApiConnector : Connector
 
     private string GetVerifiedSessionId()
     {
-        if (StreamSessionId == null)
-            throw new InvalidOperationException($"{nameof(StreamSessionId)} is null");
-
-        return StreamSessionId;
+        return StreamSessionId
+            ?? throw new InvalidOperationException($"{nameof(StreamSessionId)} is null");
     }
 
     #endregion subscribe, unsubscribe
