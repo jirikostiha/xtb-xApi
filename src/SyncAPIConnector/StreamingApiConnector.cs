@@ -26,11 +26,6 @@ public class StreamingApiConnector : Connector
     }
 
     /// <summary>
-    /// Dedicated streaming listener.
-    /// </summary>
-    private readonly IStreamingListener? _streamingListener;
-
-    /// <summary>
     /// Creates new instance.
     /// </summary>
     /// <param name="endpoint">Endpoint for streaming data.</param>
@@ -38,7 +33,7 @@ public class StreamingApiConnector : Connector
     public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
         : base(endpoint)
     {
-        _streamingListener = streamingListener;
+        StreamingListener = streamingListener;
     }
 
     #region Events
@@ -94,6 +89,11 @@ public class StreamingApiConnector : Connector
     /// Stream session id (member of login response). Should be set after the successful login.
     /// </summary>
     public string? StreamSessionId { get; set; }
+
+    /// <summary>
+    /// Dedicated streaming listener.
+    /// </summary>
+    public IStreamingListener? StreamingListener { get; }
 
     /// <inheritdoc/>
     public override void Connect()
@@ -174,8 +174,8 @@ public class StreamingApiConnector : Connector
                 var tickRecord = new StreamingTickRecord();
                 tickRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveTickRecordAsync(tickRecord, cancellationToken).ConfigureAwait(false);
 
                 TickReceived?.Invoke(this, new(tickRecord));
             }
@@ -184,8 +184,8 @@ public class StreamingApiConnector : Connector
                 var tradeRecord = new StreamingTradeRecord();
                 tradeRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveTradeRecordAsync(tradeRecord, cancellationToken).ConfigureAwait(false);
 
                 TradeReceived?.Invoke(this, new(tradeRecord));
             }
@@ -194,8 +194,8 @@ public class StreamingApiConnector : Connector
                 var balanceRecord = new StreamingBalanceRecord();
                 balanceRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveBalanceRecordAsync(balanceRecord, cancellationToken).ConfigureAwait(false);
 
                 BalanceReceived?.Invoke(this, new(balanceRecord));
             }
@@ -204,8 +204,8 @@ public class StreamingApiConnector : Connector
                 var tradeStatusRecord = new StreamingTradeStatusRecord();
                 tradeStatusRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveTradeStatusRecordAsync(tradeStatusRecord, cancellationToken).ConfigureAwait(false);
 
                 TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
             }
@@ -214,8 +214,8 @@ public class StreamingApiConnector : Connector
                 var profitRecord = new StreamingProfitRecord();
                 profitRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveProfitRecordAsync(profitRecord, cancellationToken).ConfigureAwait(false);
 
                 ProfitReceived?.Invoke(this, new(profitRecord));
             }
@@ -224,8 +224,8 @@ public class StreamingApiConnector : Connector
                 var newsRecord = new StreamingNewsRecord();
                 newsRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveNewsRecordAsync(newsRecord, cancellationToken).ConfigureAwait(false);
 
                 NewsReceived?.Invoke(this, new(newsRecord));
             }
@@ -234,8 +234,8 @@ public class StreamingApiConnector : Connector
                 var keepAliveRecord = new StreamingKeepAliveRecord();
                 keepAliveRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveKeepAliveRecordAsync(keepAliveRecord, cancellationToken).ConfigureAwait(false);
 
                 KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
             }
@@ -244,8 +244,8 @@ public class StreamingApiConnector : Connector
                 var candleRecord = new StreamingCandleRecord();
                 candleRecord.FieldsFromJsonObject(jsonDataObject);
 
-                if (_streamingListener != null)
-                    await _streamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
+                if (StreamingListener != null)
+                    await StreamingListener.ReceiveCandleRecordAsync(candleRecord, cancellationToken).ConfigureAwait(false);
 
                 CandleReceived?.Invoke(this, new(candleRecord));
             }
