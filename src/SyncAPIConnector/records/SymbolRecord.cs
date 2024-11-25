@@ -6,7 +6,7 @@ using Xtb.XApi.Codes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, {CategoryName}, {Currency}, {GroupName}")]
-public sealed record SymbolRecord : IBaseResponseRecord, ISymbol, ITick
+public sealed record SymbolRecord : IBaseResponseRecord, IHasSymbol, ITick
 {
     public double? Ask { get; set; }
 

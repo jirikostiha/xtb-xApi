@@ -5,7 +5,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}, low:{Low}, high:{High}")]
-public sealed record StreamingCandleRecord : IBaseResponseRecord, ISymbol, ICandleRecord
+public sealed record StreamingCandleRecord : IBaseResponseRecord, IHasSymbol, ICandleRecord
 {
     public double? Close { get; set; }
 

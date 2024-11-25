@@ -3,7 +3,7 @@ using Xtb.XApi.Codes;
 
 namespace Xtb.XApi;
 
-public interface ITradeRecord : ISymbol, IPosition
+public interface ITradeRecord : IHasSymbol, IPosition
 {
     double? ClosePrice { get; }
 

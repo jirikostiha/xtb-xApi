@@ -7,7 +7,7 @@ using System.Text.Json.Nodes;
 namespace Xtb.XApi.Records;
 
 [DebuggerDisplay("{Symbol}")]
-public sealed record TradingHoursRecord : IBaseResponseRecord, ISymbol
+public sealed record TradingHoursRecord : IBaseResponseRecord, IHasSymbol
 {
     public LinkedList<HoursRecord> Quotes { get; set; } = [];
 

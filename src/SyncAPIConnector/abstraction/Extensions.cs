@@ -31,6 +31,6 @@ public static class TradeRecordExtensions
     /// Indicates if market is cfd stock market.
     /// It is based on symbol name as xtb is using it to distinguish between stocks and cfd stocks.
     /// </summary>
-    public static bool IsCfdStock(this ISymbol symbol) =>
+    public static bool IsCfdStock(this IHasSymbol symbol) =>
         symbol?.Symbol is not null && symbol.Symbol.EndsWith("_4", StringComparison.InvariantCulture);
 }

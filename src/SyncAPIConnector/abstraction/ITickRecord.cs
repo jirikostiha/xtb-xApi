@@ -1,6 +1,6 @@
 ﻿namespace Xtb.XApi;
 
-public interface ITickRecord : ISymbol, ITick
+public interface ITickRecord : IHasSymbol, ITick
 {
     int? AskVolume { get; }
 

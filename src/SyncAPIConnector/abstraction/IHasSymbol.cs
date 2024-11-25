@@ -1,6 +1,6 @@
 ﻿namespace Xtb.XApi;
 
-public interface ISymbol
+public interface IHasSymbol
 {
     string? Symbol { get; }
 }
