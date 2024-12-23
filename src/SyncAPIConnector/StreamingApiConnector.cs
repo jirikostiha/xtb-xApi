@@ -153,6 +153,7 @@ public class StreamingApiConnector : Connector
     /// </summary>
     private async Task ReadStreamMessageAsync(CancellationToken cancellationToken = default)
     {
+        string? commandName = null;
         try
         {
             var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false)
@@ -161,7 +162,7 @@ public class StreamingApiConnector : Connector
             var responseBody = JsonNode.Parse(message)
                 ?? throw new InvalidOperationException("Result of incoming parsed streaming message is null.");
 
-            var commandName = (responseBody["command"]?.ToString())
+            commandName = (responseBody["command"]?.ToString())
                 ?? throw new InvalidOperationException("Incoming streaming command is null.");
 
             var jsonSubnode = responseBody["data"]
@@ -263,7 +264,7 @@ public class StreamingApiConnector : Connector
         }
         catch (Exception ex)
         {
-            OnStreamingErrorOccurred(ex);
+            OnStreamingErrorOccurred(ex, commandName);
         }
     }
 
@@ -501,15 +502,15 @@ public class StreamingApiConnector : Connector
 
     #endregion subscribe, unsubscribe
 
-    protected virtual void OnStreamingErrorOccurred(Exception ex)
+    protected virtual void OnStreamingErrorOccurred(Exception ex, string? dataType = null)
     {
-        var args = new ExceptionEventArgs(ex);
+        var args = new ExceptionEventArgs(ex, dataType);
         StreamingErrorOccurred?.Invoke(this, args);
 
         if (!args.Handled)
         {
             // If the exception was not handled, rethrow it
-            throw new APICommunicationException("Read streaming message failed.", ex);
+            throw new APICommunicationException($"Read streaming message of '{dataType}' type failed.", ex);
         }
     }
 

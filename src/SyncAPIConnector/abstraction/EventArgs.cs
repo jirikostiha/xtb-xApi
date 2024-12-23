@@ -4,9 +4,11 @@ using Xtb.XApi.Records;
 
 namespace Xtb.XApi;
 
-public class ExceptionEventArgs(Exception exception) : EventArgs
+public class ExceptionEventArgs(Exception exception, string? dataType = null) : EventArgs
 {
     public Exception Exception { get; } = exception;
+
+    public string? DataType { get; set; } = dataType;
 
     public bool Handled { get; set; }
 }
