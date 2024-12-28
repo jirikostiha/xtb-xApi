@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <Version>2.5.22</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XApiClient\Xtb.XApiClient.csproj" />
+  </ItemGroup>
+
+</Project>

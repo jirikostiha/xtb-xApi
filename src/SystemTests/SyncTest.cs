@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using Xtb.XApi.Model;
+using Xtb.XApiClient.Model;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApiClient.SystemTests;
 
 public sealed class SyncTest : XApiClientTestBase
 {
-    public SyncTest(XApiClient client, string user, string password)
+    public SyncTest(XClient client, string user, string password)
         : base(client, user, password)
     {
     }

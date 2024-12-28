@@ -1,7 +1,7 @@
 using NSubstitute;
 using System.Diagnostics;
 
-namespace Xtb.XApi.UnitTests;
+namespace Xtb.XApiClient.UnitTests;
 
 public class XApiClientTest
 {
@@ -13,13 +13,13 @@ public class XApiClientTest
     {
         _requestingConnector = Substitute.For<IClient>();
         _streamingConnector = Substitute.For<IClient>();
-        _xclient = new XApiClient(new ApiConnector(_requestingConnector, new StreamingApiConnector(_streamingConnector)));
+        _xclient = new XClient(new ApiConnector(_requestingConnector, new StreamingApiConnector(_streamingConnector)));
     }
 
     [Fact]
     public void Create()
     {
-        var xclient = XApiClient.Create("81.2.190.163", 5112, 5113);
+        var xclient = XClient.Create("81.2.190.163", 5112, 5113);
 
         Assert.NotNull(xclient.ApiConnector);
         Assert.NotNull(xclient.ApiConnector.Endpoint);

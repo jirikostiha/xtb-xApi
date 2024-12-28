@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApiClient.SystemTests;
 
 public sealed class ConnectorTest : TestBase
 {

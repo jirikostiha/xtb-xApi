@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApiClient.SystemTests;
 
 internal static class Program
 {
@@ -31,14 +31,14 @@ internal static class Program
 
         //Console.WriteLine();
 
-        using (var xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        using (var xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
             RunSyncTest(xApiClient);
         }
 
         Console.WriteLine();
 
-        using (var xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        using (var xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
         {
             RunAsyncTest(xApiClient);
         }
@@ -54,11 +54,11 @@ internal static class Program
         connectorTest.Run();
     }
 
-    private static void RunSyncTest(XApiClient xApiClient)
+    private static void RunSyncTest(XClient xClient)
     {
         Console.WriteLine();
         Console.WriteLine("----Sync test---");
-        var syncTest = new SyncTest(xApiClient, _userId, _password)
+        var syncTest = new SyncTest(xClient, _userId, _password)
         {
             ShallLogTime = true,
             ShallOpenTrades = false,
@@ -66,11 +66,11 @@ internal static class Program
         syncTest.Run();
     }
 
-    private static void RunAsyncTest(XApiClient xApiClient)
+    private static void RunAsyncTest(XClient xClient)
     {
         Console.WriteLine("----Async test---");
         Console.WriteLine("(esc) abort");
-        var asyncTest = new AsyncTest(xApiClient, _userId, _password)
+        var asyncTest = new AsyncTest(xClient, _userId, _password)
         {
             MessageFolder = @"\messages\",
             ShallLogTime = true,

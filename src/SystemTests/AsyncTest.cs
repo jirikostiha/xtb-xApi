@@ -3,13 +3,13 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi.Model;
+using Xtb.XApiClient.Model;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApiClient.SystemTests;
 
 public sealed class AsyncTest : XApiClientTestBase
 {
-    public AsyncTest(XApiClient client, string user, string password)
+    public AsyncTest(XClient client, string user, string password)
         : base(client, user, password)
     {
     }

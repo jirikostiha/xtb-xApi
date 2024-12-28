@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using Xtb.XApi.Model;
+using Xtb.XApiClient.Model;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApiClient.SystemTests;
 
 public abstract class XApiClientTestBase : TestBase
 {
     private string? _messageFolder;
 
-    protected XApiClientTestBase(XApiClient client, string user, string password)
+    protected XApiClientTestBase(XClient client, string user, string password)
         : base(user, password)
     {
         Client = client;
@@ -54,7 +54,7 @@ public abstract class XApiClientTestBase : TestBase
         }
     }
 
-    protected XApiClient Client { get; set; }
+    protected XClient Client { get; set; }
 
     public bool ShallOpenTrades { get; set; }
 }
