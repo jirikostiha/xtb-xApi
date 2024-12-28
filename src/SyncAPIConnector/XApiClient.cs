@@ -50,7 +50,32 @@ public class XApiClient : IXApiClient, IDisposable
 
     private Credentials? _credentials;
 
+
+    /// <summary>
     /// Create a new instance.
+    /// </summary>
+    /// <param name="requestingConnector">Underlaying client.</param>
+    /// <param name="streamingConnector">streaming connector.</param>
+    public XApiClient(IClient requestingConnector, IClient streamingConnector)
+        : this(
+              new ApiConnector(requestingConnector, new StreamingApiConnector(streamingConnector))
+              {
+                  IsStreamingApiConnectorOwner = true
+              })
+    {
+    }
+
+    /// <summary>
+    /// Create new instance.
+    /// </summary>
+    /// <param name="connector">Underlaying client.</param>
+    /// <param name="streamingConnector">streaming connector.</param>
+    public XApiClient(IClient connector, StreamingApiConnector streamingConnector)
+        : this(new ApiConnector(connector, streamingConnector))
+    {
+        IsApiConnectorOwner = true;
+    }
+
     /// <summary>
     /// Create a new instance.
     /// </summary>
@@ -58,39 +83,7 @@ public class XApiClient : IXApiClient, IDisposable
     public XApiClient(ApiConnector apiConnector)
     {
         ApiConnector = apiConnector;
-        IsApiConnectorOwner = false;
     }
-
-    #region Events
-
-    /// <summary>
-    /// Occurs when the client is connected to the API.
-    /// </summary>
-    public event EventHandler<EndpointEventArgs>? Connected
-    {
-        add { ApiConnector.Connected += value; }
-        remove { ApiConnector.Connected -= value; }
-    }
-
-    /// <summary>
-    /// Occurs when the client is redirected to a new endpoint.
-    /// </summary>
-    public event EventHandler<EndpointEventArgs>? Redirected
-    {
-        add { ApiConnector.Redirected += value; }
-        remove { ApiConnector.Redirected -= value; }
-    }
-
-    /// <summary>
-    /// Occurs when the client is disconnected from the API.
-    /// </summary>
-    public event EventHandler? Disconnected
-    {
-        add { ApiConnector.Disconnected += value; }
-        remove { ApiConnector.Disconnected -= value; }
-    }
-
-    #endregion Events
 
     /// <summary>
     /// Gets the API connector used by the client.
