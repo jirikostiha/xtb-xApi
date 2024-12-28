@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Xtb.XApi.Model;
 using Xtb.XApi.Utils;
 
 namespace Xtb.XApi;

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using Xtb.XApi.Codes;
-using Xtb.XApi.Records;
+using Xtb.XApi.Model;
 
 namespace Xtb.XApi.SystemTests;
 

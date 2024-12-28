@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Xtb.XApi.Responses;
+using Xtb.XApi.Model;
 
 namespace Xtb.XApi.SystemTests;
 

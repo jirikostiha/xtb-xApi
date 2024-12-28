@@ -5,8 +5,7 @@ using System.Net.Sockets;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi.Records;
-using Xtb.XApi.Streaming;
+using Xtb.XApi.Model;
 
 namespace Xtb.XApi;
 
