@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="\src\SyncAPIConnector\package_icon.png " alt="SyncAPIConnect" width="50"/>
+  <img src="\src\XApiClient\package_icon.png " alt="Xtb.XApiClient" width="50"/>
 </p>
 
-# SyncAPIConnect - Xtb xApi client  
+# xtb xApiClient  
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/jirikostiha/xtb-xApi)
 ![GitHub code size](https://img.shields.io/github/languages/code-size/jirikostiha/xtb-xApi)
-![Nuget](https://img.shields.io/nuget/dt/SyncAPIConnect)  
+![Nuget](https://img.shields.io/nuget/dt/Xtb.XApiClient)  
 [![Build](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/build.yml)
 [![Code Lint](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml/badge.svg)](https://github.com/jirikostiha/xtb-xApi/actions/workflows/lint-code.yml)
 
@@ -14,17 +14,18 @@ This project is fork of [.Net xApi wrapper](http://developers.xstore.pro/api/wra
 It is based on xApi version 2.5.0.  
 In the beginning there were mostly additive changes with some necessary exceptions and now there are many improvements and changes in original code.  
 
+SyncAPIConnect
 
 ## Setup
 
-Add [nuget package](https://www.nuget.org/packages/SyncAPIConnect) to the project.  
+Add [nuget package](https://www.nuget.org/packages/Xtb.XApiClient) to the project.  
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SyncAPIConnect" Version="2.5.X" />
+    <PackageReference Include="Xtb.XApiClient" Version="2.5.X" />
   </ItemGroup>
 </Project>
 ```
@@ -32,7 +33,7 @@ Add [nuget package](https://www.nuget.org/packages/SyncAPIConnect) to the projec
 ## Usage
 
 ```csharp
-var client = XApiClient.Create("81.2.190.163", 5112, 5113);
+var client = XClient.Create("81.2.190.163", 5112, 5113);
 await client.ConnectAsync();
 await client.LoginAsync(new Credentials("accountId", "password"));
 var openTrades = await client.GetTradesAsync(true);
@@ -43,6 +44,7 @@ For usage see [example code](./src/SystemTests/Program.cs ), [official page](htt
 
 ## Changelog
 
+**SyncAPIConnect** package renamed to **Xtb.XApiClient**  
 2.5.22 separated records from responses, pretty print fixes, minor changes  
 2.5.21 more consistent names, performance improvements  
 2.5.20 various refactoring, improvements  
