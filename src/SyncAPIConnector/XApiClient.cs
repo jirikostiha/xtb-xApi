@@ -25,24 +25,23 @@ public class XApiClient : IXApiClient, IDisposable
     /// <returns>A new instance of <see cref="XApiClient"/>.</returns>
     public static XApiClient Create(string address, int requestingPort, int streamingPort, IStreamingListener? streamingListener = null)
     {
-        var apiConnector = ApiConnector.Create(address, requestingPort, streamingPort, streamingListener);
-        return new XApiClient(apiConnector)
-        {
-            IsApiConnectorOwner = true
-        };
+        var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
+        var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
+
+        return Create(requestingEndpoint, streamingEndpoint, streamingListener);
     }
 
     /// <summary>
     /// Creates a new <see cref="XApiClient"/> instance using the provided endpoints.
     /// </summary>
-    /// <param name="endpoint">The endpoint for requesting data.</param>
+    /// <param name="requestingEndpoint">The endpoint for requesting data.</param>
     /// <param name="streamingEndpoint">The endpoint for streaming data.</param>
     /// <param name="streamingListener">Optional streaming listener for handling streamed data.</param>
     /// <returns>A new instance of <see cref="XApiClient"/>.</returns>
-    public static XApiClient Create(IPEndPoint endpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
+    public static XApiClient Create(IPEndPoint requestingEndpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
-        var streamingApiConnector = new StreamingApiConnector(streamingEndpoint, streamingListener);
-        var apiConnector = new ApiConnector(endpoint, streamingApiConnector);
+        var apiConnector = ApiConnector.Create(requestingEndpoint, streamingEndpoint, streamingListener);
+
         return new XApiClient(apiConnector)
         {
             IsApiConnectorOwner = true
@@ -51,8 +50,9 @@ public class XApiClient : IXApiClient, IDisposable
 
     private Credentials? _credentials;
 
+    /// Create a new instance.
     /// <summary>
-    /// Initializes a new instance of the <see cref="XApiClient"/> class using the specified <see cref="ApiConnector"/>.
+    /// Create a new instance.
     /// </summary>
     /// <param name="apiConnector">An instance of <see cref="ApiConnector"/> to manage the connection.</param>
     public XApiClient(ApiConnector apiConnector)
@@ -88,24 +88,6 @@ public class XApiClient : IXApiClient, IDisposable
     {
         add { ApiConnector.Disconnected += value; }
         remove { ApiConnector.Disconnected -= value; }
-    }
-
-    /// <summary>
-    /// Occurs when a message is received from the API.
-    /// </summary>
-    public event EventHandler<MessageEventArgs>? MessageReceived
-    {
-        add { ApiConnector.MessageReceived += value; }
-        remove { ApiConnector.MessageReceived -= value; }
-    }
-
-    /// <summary>
-    /// Occurs when a message is sent to the API.
-    /// </summary>
-    public event EventHandler<MessageEventArgs>? MessageSent
-    {
-        add { ApiConnector.MessageSent += value; }
-        remove { ApiConnector.MessageSent -= value; }
     }
 
     #endregion Events

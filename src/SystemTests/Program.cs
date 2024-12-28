@@ -60,7 +60,8 @@ internal static class Program
         Console.WriteLine("----Sync test---");
         var syncTest = new SyncTest(xApiClient, _userId, _password)
         {
-            ShallLogTime = true
+            ShallLogTime = true,
+            ShallOpenTrades = false,
         };
         syncTest.Run();
     }
@@ -72,7 +73,8 @@ internal static class Program
         var asyncTest = new AsyncTest(xApiClient, _userId, _password)
         {
             MessageFolder = @"\messages\",
-            ShallLogTime = true
+            ShallLogTime = true,
+            ShallOpenTrades = false,
         };
 
         using var tokenSource = new CancellationTokenSource();

@@ -42,13 +42,13 @@ public abstract class XApiClientTestBase : TestBase
             _messageFolder = value;
             if (value == null)
             {
-                Client.MessageReceived -= Connector_MessageReceived;
-                Client.MessageSent -= Connector_MessageSent;
+                Client.ApiConnector.MessageReceived -= Connector_MessageReceived;
+                Client.ApiConnector.MessageSent -= Connector_MessageSent;
             }
             else
             {
-                Client.MessageReceived += Connector_MessageReceived;
-                Client.MessageSent += Connector_MessageSent;
+                Client.ApiConnector.MessageReceived += Connector_MessageReceived;
+                Client.ApiConnector.MessageSent += Connector_MessageSent;
             }
         }
     }

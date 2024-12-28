@@ -34,7 +34,7 @@ Add [nuget package](https://www.nuget.org/packages/SyncAPIConnect) to the projec
 ```csharp
 var client = XApiClient.Create("81.2.190.163", 5112, 5113);
 await client.ConnectAsync();
-await client.LoginAsync(new Credentials("login", "password"));
+await client.LoginAsync(new Credentials("accountId", "password"));
 var openTrades = await client.GetTradesAsync(true);
 ```
 
