@@ -5,8 +5,8 @@ using System.Net;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi.Commands;
-using Xtb.XApi.Streaming;
+using Xtb.XApiClient;
+using Xtb.XApiClient.Model;
 
 namespace Xtb.XApi.Simulation;
 

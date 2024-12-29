@@ -1,4 +1,6 @@
-﻿namespace Xtb.XApi.Simulation;
+﻿using Xtb.XApiClient.Content;
+
+namespace Xtb.XApi.Simulation;
 
 public record CalendarGeneratingOptions
 {

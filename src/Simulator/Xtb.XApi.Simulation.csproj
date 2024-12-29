@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SyncAPIConnector\SyncAPIConnect.csproj" />
+    <ProjectReference Include="..\XApiClient\Xtb.XApiClient.csproj" />
   </ItemGroup>
 
 </Project>

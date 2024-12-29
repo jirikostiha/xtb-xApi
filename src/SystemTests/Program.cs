@@ -23,7 +23,7 @@ internal static class Program
     private static string _userId = "16697884";
     private static string _password = "xoh11724";
 
-    public static bool UseSimulation {  get; set; }
+    public static bool UseSimulation { get; set; }
 
     private static void Main(string[] args)
     {
@@ -34,15 +34,15 @@ internal static class Program
 
         //Console.WriteLine();
 
-        using (var xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        XClient xApiClient = null;
         if (UseSimulation)
         {
             var fakeConnector = new FakeConnector() { };
-            xApiClient = new XApiClient(fakeConnector, fakeConnector);
+            xApiClient = new XClient(fakeConnector, fakeConnector);
         }
         else
         {
-            xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
+            xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         }
         using (xApiClient)
         {
@@ -51,14 +51,14 @@ internal static class Program
 
         Console.WriteLine();
 
-        using (var xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        if (UseSimulation)
         {
             var fakeConnector = new FakeConnector() { };
-            xApiClient = new XApiClient(fakeConnector, fakeConnector);
+            xApiClient = new XClient(fakeConnector, fakeConnector);
         }
         else
         {
-            xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
+            xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
         }
         using (xApiClient)
         {

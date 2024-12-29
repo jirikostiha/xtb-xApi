@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Xtb.XApi.Simulation;
+using Xtb.XApiClient;
 
 namespace Xtb.XApi.UnitTests;
 
@@ -13,6 +14,6 @@ public class XApiClientFakeTest
     {
         _connector1 = new FakeConnector();
         _connector2 = new FakeConnector();
-        _xapiclient = new XApiClient(new ApiConnector(_connector1, new StreamingApiConnector(_connector2)));
+        _xapiclient = new XClient(new ApiConnector(_connector1, new StreamingApiConnector(_connector2)));
     }
 }
