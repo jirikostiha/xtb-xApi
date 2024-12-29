@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Xtb.XApi.Simulation;
 
 namespace Xtb.XApiClient.SystemTests;
 
@@ -22,6 +23,8 @@ internal static class Program
     private static string _userId = "16697884";
     private static string _password = "xoh11724";
 
+    public static bool UseSimulation {  get; set; }
+
     private static void Main(string[] args)
     {
         //using (var connector = new Connector(DemoRequestingEndpoint))
@@ -32,6 +35,16 @@ internal static class Program
         //Console.WriteLine();
 
         using (var xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        if (UseSimulation)
+        {
+            var fakeConnector = new FakeConnector() { };
+            xApiClient = new XApiClient(fakeConnector, fakeConnector);
+        }
+        else
+        {
+            xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        }
+        using (xApiClient)
         {
             RunSyncTest(xApiClient);
         }
@@ -39,6 +52,15 @@ internal static class Program
         Console.WriteLine();
 
         using (var xApiClient = XClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint))
+        {
+            var fakeConnector = new FakeConnector() { };
+            xApiClient = new XApiClient(fakeConnector, fakeConnector);
+        }
+        else
+        {
+            xApiClient = XApiClient.Create(DemoRequestingEndpoint, DemoStreamingEndpoint);
+        }
+        using (xApiClient)
         {
             RunAsyncTest(xApiClient);
         }

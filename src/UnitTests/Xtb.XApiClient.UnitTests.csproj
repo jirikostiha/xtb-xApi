@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XApiClient\Xtb.XApiClient.csproj" />
+    <ProjectReference Include="..\Simulator\Xtb.XApi.Simulation.csproj" />
+    <ProjectReference Include="..\SyncAPIConnector\SyncAPIConnect.csproj" />
   </ItemGroup>
 
   <ItemGroup>
