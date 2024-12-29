@@ -24,6 +24,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApiClient.SystemTests", "SystemTests\Xtb.XApiClient.SystemTests.csproj", "{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.Simulation", "Simulator\Xtb.XApi.Simulation.csproj", "{38D603CB-4AA0-4E6C-8517-966B67F58566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.Extensions.DependencyInjection", "Extensions.DependencyInjection\Xtb.XApi.Extensions.DependencyInjection.csproj", "{9C29601D-CF3D-4850-9349-BD975FE99667}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{12D2B3B2-9C30-4008-B796-830E969219BE}"
 	ProjectSection(SolutionItems) = preProject
@@ -42,6 +43,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtb.XApiClient", "XApiClient\Xtb.XApiClient.csproj", "{3F050248-20A0-461E-80F1-E5FB186DE0C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtb.XApiClient.UnitTests", "UnitTests\Xtb.XApiClient.UnitTests.csproj", "{8FE887B9-92DD-4F0C-A9D1-098119704591}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.Examples", "Examples\Xtb.XApi.Examples.csproj", "{7D1382E8-AA25-4868-928A-8623515D93BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,14 @@ Global
 		{38D603CB-4AA0-4E6C-8517-966B67F58566}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38D603CB-4AA0-4E6C-8517-966B67F58566}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38D603CB-4AA0-4E6C-8517-966B67F58566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C29601D-CF3D-4850-9349-BD975FE99667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C29601D-CF3D-4850-9349-BD975FE99667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C29601D-CF3D-4850-9349-BD975FE99667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C29601D-CF3D-4850-9349-BD975FE99667}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D1382E8-AA25-4868-928A-8623515D93BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D1382E8-AA25-4868-928A-8623515D93BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D1382E8-AA25-4868-928A-8623515D93BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D1382E8-AA25-4868-928A-8623515D93BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
