@@ -33,4 +33,10 @@ public static class TradeRecordExtensions
     /// </summary>
     public static bool IsCfdStock(this IHasSymbol symbol) =>
         symbol?.Symbol is not null && symbol.Symbol.EndsWith("_4", StringComparison.InvariantCulture);
+
+    /// <summary>
+    /// Net profit is gross profit minus fees for storage (swap + rollover)
+    /// </summary>
+    public static double? NetProfit(this ITradeRecord trade) =>
+        trade.Profit + trade.Storage;
 }
