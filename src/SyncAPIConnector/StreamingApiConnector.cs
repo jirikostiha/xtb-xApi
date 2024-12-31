@@ -37,6 +37,11 @@ public class StreamingApiConnector : Connector
     }
 
     #region Events
+    /// <summary>
+    /// Event raised when a command is being executed.
+    /// </summary>
+    public event EventHandler<CommandEventArgs>? CommandExecuting;
+
 
     /// <summary>
     /// Event raised when a tick record is received.
@@ -170,6 +175,8 @@ public class StreamingApiConnector : Connector
 
             var jsonDataObject = jsonSubnode.AsObject();
 
+            //event streaming data received
+
             if (commandName == StreamingCommandName.TickPrices)
             {
                 var tickRecord = new StreamingTickRecord();
@@ -268,18 +275,57 @@ public class StreamingApiConnector : Connector
         }
     }
 
+    /// <summary>
+    /// Executes given command without response.
+    /// </summary>
+    /// <param name="command">Command to execute</param>
+    public void ExecuteCommand(ICommand command)
+    {
+        try
+        {
+            var request = command.ToString();
+
+            CommandExecuting?.Invoke(this, new(command));
+            SendMessage(request);
+        }
+        catch (Exception ex)
+        {
+            throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
+        }
+    }
+
+    /// <summary>
+    /// Executes given command without response.
+    /// </summary>
+    /// <param name="command">Command to execute</param>
+    /// <param name="cancellationToken">Token to cancel operation.</param>
+    public async Task ExecuteCommandAsync(ICommand command, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var request = command.ToString();
+
+            CommandExecuting?.Invoke(this, new(command));
+            await SendMessageAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            throw new APICommunicationException($"Problem with executing command:'{command.CommandName}'", ex);
+        }
+    }
+
     #region subscribe, unsubscribe
 
     public void SubscribePrice(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, GetVerifiedSessionId(), minArrivalTime, maxLevel);
-        SendMessage(tickPricesSubscribe.ToString());
+        ExecuteCommand(tickPricesSubscribe);
     }
 
     public void UnsubscribePrice(string symbol)
     {
         var tickPricesStop = new TickPricesStop(symbol);
-        SendMessage(tickPricesStop.ToString());
+        ExecuteCommand(tickPricesStop);
     }
 
     public void SubscribePrices(string[] symbols)
@@ -301,19 +347,19 @@ public class StreamingApiConnector : Connector
     public void SubscribeTrades()
     {
         var tradeRecordsSubscribe = new TradeRecordsSubscribe(GetVerifiedSessionId());
-        SendMessage(tradeRecordsSubscribe.ToString());
+        ExecuteCommand(tradeRecordsSubscribe);
     }
 
     public void UnsubscribeTrades()
     {
         var tradeRecordsStop = new TradeRecordsStop();
-        SendMessage(tradeRecordsStop.ToString());
+        ExecuteCommand(tradeRecordsStop);
     }
 
     public void SubscribeBalance()
     {
         var balanceRecordsSubscribe = new BalanceRecordsSubscribe(GetVerifiedSessionId());
-        SendMessage(balanceRecordsSubscribe.ToString());
+        ExecuteCommand(balanceRecordsSubscribe);
     }
 
     public void UnsubscribeBalance()
@@ -325,73 +371,73 @@ public class StreamingApiConnector : Connector
     public void SubscribeTradeStatus()
     {
         var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(GetVerifiedSessionId());
-        SendMessage(tradeStatusRecordsSubscribe.ToString());
+        ExecuteCommand(tradeStatusRecordsSubscribe);
     }
 
     public void UnsubscribeTradeStatus()
     {
         var tradeStatusRecordsStop = new TradeRecordsSubscribe(GetVerifiedSessionId());
-        SendMessage(tradeStatusRecordsStop.ToString());
+        ExecuteCommand(tradeStatusRecordsStop);
     }
 
     public void SubscribeProfits()
     {
         var profitsSubscribe = new ProfitsSubscribe(GetVerifiedSessionId());
-        SendMessage(profitsSubscribe.ToString());
+        ExecuteCommand(profitsSubscribe);
     }
 
     public void UnsubscribeProfits()
     {
         var profitsStop = new ProfitsStop();
-        SendMessage(profitsStop.ToString());
+        ExecuteCommand(profitsStop);
     }
 
     public void SubscribeNews()
     {
         var newsSubscribe = new NewsSubscribe(GetVerifiedSessionId());
-        SendMessage(newsSubscribe.ToString());
+        ExecuteCommand(newsSubscribe);
     }
 
     public void UnsubscribeNews()
     {
         var newsStop = new NewsStop();
-        SendMessage(newsStop.ToString());
+        ExecuteCommand(newsStop);
     }
 
     public void SubscribeKeepAlive()
     {
         var keepAliveSubscribe = new KeepAliveSubscribe(GetVerifiedSessionId());
-        SendMessage(keepAliveSubscribe.ToString());
+        ExecuteCommand(keepAliveSubscribe);
     }
 
     public void UnsubscribeKeepAlive()
     {
         var keepAliveStop = new KeepAliveStop();
-        SendMessage(keepAliveStop.ToString());
+        ExecuteCommand(keepAliveStop);
     }
 
     public void SubscribeCandles(string symbol)
     {
         var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, GetVerifiedSessionId());
-        SendMessage(candleRecordsSubscribe.ToString());
+        ExecuteCommand(candleRecordsSubscribe);
     }
 
     public void UnsubscribeCandles(string symbol)
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
-        SendMessage(candleRecordsStop.ToString());
+        ExecuteCommand(candleRecordsStop);
     }
 
     public async Task SubscribePriceAsync(string symbol, DateTimeOffset? minArrivalTime = null, int? maxLevel = null, CancellationToken cancellationToken = default)
     {
         var tickPricesSubscribe = new TickPricesSubscribe(symbol, GetVerifiedSessionId(), minArrivalTime, maxLevel);
-        await SendMessageAsync(tickPricesSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(tickPricesSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribePriceAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var tickPricesStop = new TickPricesStop(symbol);
-        await SendMessageAsync(tickPricesStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(tickPricesStop, cancellationToken);
     }
 
     public async Task SubscribePricesAsync(string[] symbols, CancellationToken cancellationToken = default)
@@ -413,85 +459,85 @@ public class StreamingApiConnector : Connector
     public async Task SubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
         var tradeRecordsSubscribe = new TradeRecordsSubscribe(GetVerifiedSessionId());
-        await SendMessageAsync(tradeRecordsSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(tradeRecordsSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeTradesAsync(CancellationToken cancellationToken = default)
     {
         var tradeRecordsStop = new TradeRecordsStop();
-        await SendMessageAsync(tradeRecordsStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(tradeRecordsStop, cancellationToken);
     }
 
     public async Task SubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
         var balanceRecordsSubscribe = new BalanceRecordsSubscribe(GetVerifiedSessionId());
-        await SendMessageAsync(balanceRecordsSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(balanceRecordsSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeBalanceAsync(CancellationToken cancellationToken = default)
     {
         var balanceRecordsStop = new BalanceRecordsStop();
-        await SendMessageAsync(balanceRecordsStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(balanceRecordsStop, cancellationToken);
     }
 
     public async Task SubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
         var tradeStatusRecordsSubscribe = new TradeStatusRecordsSubscribe(GetVerifiedSessionId());
-        await SendMessageAsync(tradeStatusRecordsSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(tradeStatusRecordsSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeTradeStatusAsync(CancellationToken cancellationToken = default)
     {
         var tradeStatusRecordsStop = new TradeStatusRecordsStop();
-        await SendMessageAsync(tradeStatusRecordsStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(tradeStatusRecordsStop, cancellationToken);
     }
 
     public async Task SubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
         var profitsSubscribe = new ProfitsSubscribe(GetVerifiedSessionId());
-        await SendMessageAsync(profitsSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(profitsSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeProfitsAsync(CancellationToken cancellationToken = default)
     {
         var profitsStop = new ProfitsStop();
-        await SendMessageAsync(profitsStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(profitsStop, cancellationToken);
     }
 
     public async Task SubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
         var newsSubscribe = new NewsSubscribe(GetVerifiedSessionId());
-        await SendMessageAsync(newsSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(newsSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeNewsAsync(CancellationToken cancellationToken = default)
     {
         var newsStop = new NewsStop();
-        await SendMessageAsync(newsStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(newsStop, cancellationToken);
     }
 
     public async Task SubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
         var keepAliveSubscribe = new KeepAliveSubscribe(GetVerifiedSessionId());
-        await SendMessageAsync(keepAliveSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(keepAliveSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeKeepAliveAsync(CancellationToken cancellationToken = default)
     {
         var keepAliveStop = new KeepAliveStop();
-        await SendMessageAsync(keepAliveStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(keepAliveStop, cancellationToken);
     }
 
     public async Task SubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var candleRecordsSubscribe = new CandleRecordsSubscribe(symbol, GetVerifiedSessionId());
-        await SendMessageAsync(candleRecordsSubscribe.ToString(), cancellationToken);
+        await ExecuteCommandAsync(candleRecordsSubscribe, cancellationToken);
     }
 
     public async Task UnsubscribeCandlesAsync(string symbol, CancellationToken cancellationToken = default)
     {
         var candleRecordsStop = new CandleRecordsStop(symbol);
-        await SendMessageAsync(candleRecordsStop.ToString(), cancellationToken);
+        await ExecuteCommandAsync(candleRecordsStop, cancellationToken);
     }
 
     private string GetVerifiedSessionId()
