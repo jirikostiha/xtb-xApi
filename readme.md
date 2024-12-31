@@ -43,6 +43,7 @@ For usage see [example code](./src/SystemTests/Program.cs ), [official page](htt
 
 ## Changelog
 
+2.5.23 new events, remove redirection, other minor changes  
 2.5.22 separated records from responses, pretty print fixes, minor changes  
 2.5.21 more consistent names, performance improvements  
 2.5.20 various refactoring, improvements  
