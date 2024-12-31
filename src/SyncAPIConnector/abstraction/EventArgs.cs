@@ -28,6 +28,11 @@ public class EndpointEventArgs(IPEndPoint endpoint) : EventArgs
     public IPEndPoint EndPoint { get; } = endpoint;
 }
 
+public class StreamingDataReceivedEventArgs(string dataType) : EventArgs
+{
+    public string DataType { get; } = dataType;
+}
+
 public class TickReceivedEventArgs(StreamingTickRecord tickRecord) : EventArgs
 {
     public StreamingTickRecord TickRecord { get; } = tickRecord;

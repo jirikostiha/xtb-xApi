@@ -3,9 +3,9 @@
 namespace Xtb.XApi.Streaming;
 
 /// <summary>
-/// Names of streaming commands.
+/// Names of streaming data types.
 /// </summary>
-public static class StreamingCommandName
+public static class StreamingDataType
 {
     public const string KeepAlive = "keepAlive";
     public const string Balance = "balance";

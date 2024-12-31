@@ -42,6 +42,10 @@ public class StreamingApiConnector : Connector
     /// </summary>
     public event EventHandler<CommandEventArgs>? CommandExecuting;
 
+    /// <summary>
+    /// Event raised when a streaming data is being received.
+    /// </summary>
+    public event EventHandler<string>? StreamingDataReceived;
 
     /// <summary>
     /// Event raised when a tick record is received.
@@ -158,7 +162,7 @@ public class StreamingApiConnector : Connector
     /// </summary>
     private async Task ReadStreamMessageAsync(CancellationToken cancellationToken = default)
     {
-        string? commandName = null;
+        string? dataType = null;
         try
         {
             var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false)
@@ -167,7 +171,7 @@ public class StreamingApiConnector : Connector
             var responseBody = JsonNode.Parse(message)
                 ?? throw new InvalidOperationException("Result of incoming parsed streaming message is null.");
 
-            commandName = (responseBody["command"]?.ToString())
+            dataType = (responseBody["command"]?.ToString())
                 ?? throw new InvalidOperationException("Incoming streaming command is null.");
 
             var jsonSubnode = responseBody["data"]
@@ -175,9 +179,9 @@ public class StreamingApiConnector : Connector
 
             var jsonDataObject = jsonSubnode.AsObject();
 
-            //event streaming data received
+            StreamingDataReceived?.Invoke(this, dataType);
 
-            if (commandName == StreamingCommandName.TickPrices)
+            if (dataType == StreamingDataType.TickPrices)
             {
                 var tickRecord = new StreamingTickRecord();
                 tickRecord.FieldsFromJsonObject(jsonDataObject);
@@ -187,7 +191,7 @@ public class StreamingApiConnector : Connector
 
                 TickReceived?.Invoke(this, new(tickRecord));
             }
-            else if (commandName == StreamingCommandName.Trade)
+            else if (dataType == StreamingDataType.Trade)
             {
                 var tradeRecord = new StreamingTradeRecord();
                 tradeRecord.FieldsFromJsonObject(jsonDataObject);
@@ -197,7 +201,7 @@ public class StreamingApiConnector : Connector
 
                 TradeReceived?.Invoke(this, new(tradeRecord));
             }
-            else if (commandName == StreamingCommandName.Balance)
+            else if (dataType == StreamingDataType.Balance)
             {
                 var balanceRecord = new StreamingBalanceRecord();
                 balanceRecord.FieldsFromJsonObject(jsonDataObject);
@@ -207,7 +211,7 @@ public class StreamingApiConnector : Connector
 
                 BalanceReceived?.Invoke(this, new(balanceRecord));
             }
-            else if (commandName == StreamingCommandName.TradeStatus)
+            else if (dataType == StreamingDataType.TradeStatus)
             {
                 var tradeStatusRecord = new StreamingTradeStatusRecord();
                 tradeStatusRecord.FieldsFromJsonObject(jsonDataObject);
@@ -217,7 +221,7 @@ public class StreamingApiConnector : Connector
 
                 TradeStatusReceived?.Invoke(this, new(tradeStatusRecord));
             }
-            else if (commandName == StreamingCommandName.Profit)
+            else if (dataType == StreamingDataType.Profit)
             {
                 var profitRecord = new StreamingProfitRecord();
                 profitRecord.FieldsFromJsonObject(jsonDataObject);
@@ -227,7 +231,7 @@ public class StreamingApiConnector : Connector
 
                 ProfitReceived?.Invoke(this, new(profitRecord));
             }
-            else if (commandName == StreamingCommandName.News)
+            else if (dataType == StreamingDataType.News)
             {
                 var newsRecord = new StreamingNewsRecord();
                 newsRecord.FieldsFromJsonObject(jsonDataObject);
@@ -237,7 +241,7 @@ public class StreamingApiConnector : Connector
 
                 NewsReceived?.Invoke(this, new(newsRecord));
             }
-            else if (commandName == StreamingCommandName.KeepAlive)
+            else if (dataType == StreamingDataType.KeepAlive)
             {
                 var keepAliveRecord = new StreamingKeepAliveRecord();
                 keepAliveRecord.FieldsFromJsonObject(jsonDataObject);
@@ -247,7 +251,7 @@ public class StreamingApiConnector : Connector
 
                 KeepAliveReceived?.Invoke(this, new(keepAliveRecord));
             }
-            else if (commandName == StreamingCommandName.Candle)
+            else if (dataType == StreamingDataType.Candle)
             {
                 var candleRecord = new StreamingCandleRecord();
                 candleRecord.FieldsFromJsonObject(jsonDataObject);
@@ -259,7 +263,7 @@ public class StreamingApiConnector : Connector
             }
             else
             {
-                throw new APICommunicationException($"Unknown streaming record received. command:'{commandName}'");
+                throw new APICommunicationException($"Unknown streaming record received. command:'{dataType}'");
             }
         }
         catch (APICommunicationException ex) when (ex.InnerException.InnerException is SocketException se)
@@ -271,7 +275,7 @@ public class StreamingApiConnector : Connector
         }
         catch (Exception ex)
         {
-            OnStreamingErrorOccurred(ex, commandName);
+            OnStreamingErrorOccurred(ex, dataType);
         }
     }
 
