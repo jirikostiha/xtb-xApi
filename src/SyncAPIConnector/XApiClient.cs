@@ -105,7 +105,7 @@ public class XApiClient : IXApiClient, IDisposable
     /// <summary>
     /// Gets the streaming API connector for handling streaming data.
     /// </summary>
-    public StreamingApiConnector Streaming => ApiConnector.Streaming;
+    public StreamingApiConnector StreamingConnector => ApiConnector.Streaming;
 
     /// <summary>
     /// Gets the account ID after a successful login.
@@ -116,7 +116,7 @@ public class XApiClient : IXApiClient, IDisposable
     public IPEndPoint RequestingEndpoint => ApiConnector.Endpoint;
 
     /// <inheritdoc/>
-    public IPEndPoint StreamingEndpoint => Streaming.Endpoint;
+    public IPEndPoint StreamingEndpoint => StreamingConnector.Endpoint;
 
     /// <inheritdoc/>
     public void Connect()

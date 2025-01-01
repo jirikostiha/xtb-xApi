@@ -350,7 +350,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Connecting to streaming");
         try
         {
-            await Client.Streaming.ConnectAsync(cancellationToken);
+            await Client.StreamingConnector.ConnectAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -361,7 +361,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe keep alive");
         try
         {
-            await Client.Streaming.SubscribeKeepAliveAsync(cancellationToken);
+            await Client.StreamingConnector.SubscribeKeepAliveAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -372,7 +372,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe keep alive");
         try
         {
-            await Client.Streaming.UnsubscribeKeepAliveAsync(cancellationToken);
+            await Client.StreamingConnector.UnsubscribeKeepAliveAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -383,7 +383,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe balance");
         try
         {
-            await Client.Streaming.SubscribeBalanceAsync(cancellationToken);
+            await Client.StreamingConnector.SubscribeBalanceAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -394,7 +394,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe balance");
         try
         {
-            await Client.Streaming.UnsubscribeBalanceAsync(cancellationToken);
+            await Client.StreamingConnector.UnsubscribeBalanceAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -405,7 +405,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe news");
         try
         {
-            await Client.Streaming.SubscribeNewsAsync(cancellationToken);
+            await Client.StreamingConnector.SubscribeNewsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -416,7 +416,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe news");
         try
         {
-            await Client.Streaming.UnsubscribeNewsAsync(cancellationToken);
+            await Client.StreamingConnector.UnsubscribeNewsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -427,7 +427,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe profits");
         try
         {
-            await Client.Streaming.SubscribeProfitsAsync(cancellationToken);
+            await Client.StreamingConnector.SubscribeProfitsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -438,7 +438,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe profits");
         try
         {
-            await Client.Streaming.UnsubscribeProfitsAsync(cancellationToken);
+            await Client.StreamingConnector.UnsubscribeProfitsAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -449,7 +449,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe trades");
         try
         {
-            await Client.Streaming.SubscribeTradesAsync(cancellationToken);
+            await Client.StreamingConnector.SubscribeTradesAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -460,7 +460,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe trades");
         try
         {
-            await Client.Streaming.UnsubscribeTradesAsync(cancellationToken);
+            await Client.StreamingConnector.UnsubscribeTradesAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -471,7 +471,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe trade status");
         try
         {
-            await Client.Streaming.SubscribeTradeStatusAsync(cancellationToken);
+            await Client.StreamingConnector.SubscribeTradeStatusAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -482,7 +482,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe trade status");
         try
         {
-            await Client.Streaming.UnsubscribeTradeStatusAsync(cancellationToken);
+            await Client.StreamingConnector.UnsubscribeTradeStatusAsync(cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -493,7 +493,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe candles");
         try
         {
-            await Client.Streaming.SubscribeCandlesAsync("US500", cancellationToken);
+            await Client.StreamingConnector.SubscribeCandlesAsync("US500", cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -504,7 +504,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe candles");
         try
         {
-            await Client.Streaming.UnsubscribeCandlesAsync("US500", cancellationToken);
+            await Client.StreamingConnector.UnsubscribeCandlesAsync("US500", cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -515,7 +515,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe price");
         try
         {
-            await Client.Streaming.SubscribePriceAsync("US500", null, null, cancellationToken);
+            await Client.StreamingConnector.SubscribePriceAsync("US500", null, null, cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -526,7 +526,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe price");
         try
         {
-            await Client.Streaming.UnsubscribePriceAsync("US500", cancellationToken);
+            await Client.StreamingConnector.UnsubscribePriceAsync("US500", cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -537,7 +537,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Subscribe prices");
         try
         {
-            await Client.Streaming.SubscribePricesAsync(["US500"], cancellationToken);
+            await Client.StreamingConnector.SubscribePricesAsync(["US500"], cancellationToken);
             Pass();
         }
         catch (Exception ex)
@@ -548,7 +548,7 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Unsubscribe prices");
         try
         {
-            await Client.Streaming.UnsubscribePricesAsync(["US500"], cancellationToken);
+            await Client.StreamingConnector.UnsubscribePricesAsync(["US500"], cancellationToken);
             Pass();
         }
         catch (Exception ex)

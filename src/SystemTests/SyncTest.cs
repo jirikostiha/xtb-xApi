@@ -341,7 +341,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Connecting to streaming");
         try
         {
-            Client.Streaming.Connect();
+            Client.StreamingConnector.Connect();
             Pass();
         }
         catch (Exception ex)
@@ -352,7 +352,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe keep alive");
         try
         {
-            Client.Streaming.SubscribeKeepAlive();
+            Client.StreamingConnector.SubscribeKeepAlive();
             Pass();
         }
         catch (Exception ex)
@@ -363,7 +363,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe keep alive");
         try
         {
-            Client.Streaming.UnsubscribeKeepAlive();
+            Client.StreamingConnector.UnsubscribeKeepAlive();
             Pass();
         }
         catch (Exception ex)
@@ -374,7 +374,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe balance");
         try
         {
-            Client.Streaming.SubscribeBalance();
+            Client.StreamingConnector.SubscribeBalance();
             Pass();
         }
         catch (Exception ex)
@@ -385,7 +385,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe balance");
         try
         {
-            Client.Streaming.UnsubscribeBalance();
+            Client.StreamingConnector.UnsubscribeBalance();
             Pass();
         }
         catch (Exception ex)
@@ -396,7 +396,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe news");
         try
         {
-            Client.Streaming.SubscribeNews();
+            Client.StreamingConnector.SubscribeNews();
             Pass();
         }
         catch (Exception ex)
@@ -407,7 +407,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe news");
         try
         {
-            Client.Streaming.UnsubscribeNews();
+            Client.StreamingConnector.UnsubscribeNews();
             Pass();
         }
         catch (Exception ex)
@@ -418,7 +418,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe profits");
         try
         {
-            Client.Streaming.SubscribeProfits();
+            Client.StreamingConnector.SubscribeProfits();
             Pass();
         }
         catch (Exception ex)
@@ -429,7 +429,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe profits");
         try
         {
-            Client.Streaming.UnsubscribeProfits();
+            Client.StreamingConnector.UnsubscribeProfits();
             Pass();
         }
         catch (Exception ex)
@@ -440,7 +440,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe trades");
         try
         {
-            Client.Streaming.SubscribeTrades();
+            Client.StreamingConnector.SubscribeTrades();
             Pass();
         }
         catch (Exception ex)
@@ -451,7 +451,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe trades");
         try
         {
-            Client.Streaming.UnsubscribeTrades();
+            Client.StreamingConnector.UnsubscribeTrades();
             Pass();
         }
         catch (Exception ex)
@@ -462,7 +462,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe trade status");
         try
         {
-            Client.Streaming.SubscribeTradeStatus();
+            Client.StreamingConnector.SubscribeTradeStatus();
             Pass();
         }
         catch (Exception ex)
@@ -473,7 +473,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe trade status");
         try
         {
-            Client.Streaming.UnsubscribeTradeStatus();
+            Client.StreamingConnector.UnsubscribeTradeStatus();
             Pass();
         }
         catch (Exception ex)
@@ -484,7 +484,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe candles");
         try
         {
-            Client.Streaming.SubscribeCandles("US500");
+            Client.StreamingConnector.SubscribeCandles("US500");
             Pass();
         }
         catch (Exception ex)
@@ -495,7 +495,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe candles");
         try
         {
-            Client.Streaming.UnsubscribeCandles("US500");
+            Client.StreamingConnector.UnsubscribeCandles("US500");
             Pass();
         }
         catch (Exception ex)
@@ -506,7 +506,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe price");
         try
         {
-            Client.Streaming.SubscribePrice("US500");
+            Client.StreamingConnector.SubscribePrice("US500");
             Pass();
         }
         catch (Exception ex)
@@ -517,7 +517,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe price");
         try
         {
-            Client.Streaming.UnsubscribePrice("US500");
+            Client.StreamingConnector.UnsubscribePrice("US500");
             Pass();
         }
         catch (Exception ex)
@@ -528,7 +528,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Subscribe prices");
         try
         {
-            Client.Streaming.SubscribePrices(["US500"]);
+            Client.StreamingConnector.SubscribePrices(["US500"]);
             Pass();
         }
         catch (Exception ex)
@@ -539,7 +539,7 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Unsubscribe prices");
         try
         {
-            Client.Streaming.UnsubscribePrices(["US500"]);
+            Client.StreamingConnector.UnsubscribePrices(["US500"]);
             Pass();
         }
         catch (Exception ex)

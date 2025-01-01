@@ -508,9 +508,14 @@ public interface IXApiClientBase
     string? AccountId { get; }
 
     /// <summary>
+    /// Api connector for handling requests and responses.
+    /// </summary>
+    ApiConnector ApiConnector { get; }
+
+    /// <summary>
     /// Streaming api connector for handling streaming data.
     /// </summary>
-    StreamingApiConnector Streaming { get; }
+    StreamingApiConnector StreamingConnector { get; }
 
     /// <summary>
     /// Endpoint for requesting data.
