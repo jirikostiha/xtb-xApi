@@ -53,11 +53,6 @@ public class ApiConnector : Connector
     #region Events
 
     /// <summary>
-    /// Event raised when a connection is redirected.
-    /// </summary>
-    public event EventHandler<EndpointEventArgs>? Redirected;
-
-    /// <summary>
     /// Event raised when a command is being executed.
     /// </summary>
     public event EventHandler<CommandEventArgs>? CommandExecuting;
@@ -78,49 +73,6 @@ public class ApiConnector : Connector
     /// Stream session id (given upon login).
     /// </summary>
     public string? StreamSessionId { get; }
-
-    /// <summary>
-    /// Redirects to the given endpoint.
-    /// </summary>
-    /// <param name="endpoint">Endpoint to redirect to.</param>
-    public void Redirect(IPEndPoint endpoint)
-    {
-        if (IsConnected)
-            Disconnect();
-
-        Endpoint = endpoint;
-        Connect();
-
-        if (Streaming is not null)
-        {
-            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
-        }
-
-        Redirected?.Invoke(this, new(endpoint));
-    }
-
-    /// <summary>
-    /// Redirects to the given endpoint.
-    /// </summary>
-    /// <param name="endpoint">Endpoint to redirect to.</param>
-    /// <param name="cancellationToken">Token to cancel operation.</param>
-    public async Task RedirectAsync(IPEndPoint endpoint, CancellationToken cancellationToken = default)
-    {
-        Redirected?.Invoke(this, new(endpoint));
-
-        if (IsConnected)
-            await DisconnectAsync(cancellationToken).ConfigureAwait(false);
-
-        Endpoint = endpoint;
-        await ConnectAsync(cancellationToken).ConfigureAwait(false);
-
-        if (Streaming is not null)
-        {
-            Streaming.Endpoint = new IPEndPoint(endpoint.Address, Streaming.Endpoint.Port);
-        }
-
-        Redirected?.Invoke(this, new(endpoint));
-    }
 
     /// <summary>
     /// Executes given command and receives response (withholding API inter-command timeout).
@@ -177,6 +129,7 @@ public class ApiConnector : Connector
             await EnforceCommandDelayAsync();
 
             CommandExecuting?.Invoke(this, new(command));
+
             var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
             _lastCommandTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
 

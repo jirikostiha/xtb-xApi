@@ -58,6 +58,11 @@ public class BaseResponse
 
                     throw new APIErrorResponseException(ErrCode!, ErrorDescr!, body);
                 }
+                else
+                {
+                    var redirect = ob["redirect"];
+                    throw new APICommunicationException($"Redirection is not supported. redirect:{redirect?.ToString()}");
+                }
             }
         }
     }

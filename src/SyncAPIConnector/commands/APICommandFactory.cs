@@ -395,24 +395,6 @@ public static class APICommandFactory
             connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
         }
 
-        //var redirectCounter = 0;
-
-        //while (loginResponse.RedirectRecord != null)
-        //{
-        //    if (redirectCounter >= MAX_REDIRECTS)
-        //        throw new APICommunicationException($"Too many redirects ({redirectCounter}).");
-
-        //    var newServer = new Server(loginResponse.RedirectRecord.Address, loginResponse.RedirectRecord.MainPort, loginResponse.RedirectRecord.StreamingPort, true, "Redirected to: " + loginResponse.RedirectRecord.Address + ":" + loginResponse.RedirectRecord.MainPort + "/" + loginResponse.RedirectRecord.StreamingPort);
-        //    connector.Redirect(newServer);
-        //    redirectCounter++;
-        //    loginResponse = new LoginResponse(connector.ExecuteCommand(loginCommand).ToString());
-        //}
-
-        //if (loginResponse.StreamSessionId != null)
-        //{
-        //    connector.Streaming.StreamSessionId = loginResponse.StreamSessionId;
-        //}
-
         return loginResponse;
     }
 

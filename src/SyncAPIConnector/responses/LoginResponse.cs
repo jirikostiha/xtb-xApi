@@ -1,5 +1,4 @@
 using System.Text.Json.Nodes;
-using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
@@ -16,12 +15,9 @@ public sealed class LoginResponse : BaseResponse
 
         if (ob["redirect"] is JsonObject redirectJSON)
         {
-            RedirectRecord = new RedirectRecord();
-            RedirectRecord.FieldsFromJsonObject(redirectJSON);
+            throw new APICommunicationException($"Redirection is not supported. message:{redirectJSON.ToString()}");
         }
     }
 
     public string? StreamSessionId { get; init; }
-
-    public RedirectRecord? RedirectRecord { get; init; }
 }

@@ -73,15 +73,6 @@ public class XApiClient : IXApiClient, IDisposable
     }
 
     /// <summary>
-    /// Occurs when the client is redirected to a new endpoint.
-    /// </summary>
-    public event EventHandler<EndpointEventArgs>? Redirected
-    {
-        add { ApiConnector.Redirected += value; }
-        remove { ApiConnector.Redirected -= value; }
-    }
-
-    /// <summary>
     /// Occurs when the client is disconnected from the API.
     /// </summary>
     public event EventHandler? Disconnected
