@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Text.Json.Nodes;
 using Xtb.XApi.Records;
 
 namespace Xtb.XApi;
@@ -28,9 +29,11 @@ public class EndpointEventArgs(IPEndPoint endpoint) : EventArgs
     public IPEndPoint EndPoint { get; } = endpoint;
 }
 
-public class StreamingDataReceivedEventArgs(string dataType) : EventArgs
+public class DataReceivedEventArgs(string dataType, JsonNode responseObject) : EventArgs
 {
     public string DataType { get; } = dataType;
+
+    public JsonNode ResponseBody { get; } = responseObject;
 }
 
 public class TickReceivedEventArgs(StreamingTickRecord tickRecord) : EventArgs

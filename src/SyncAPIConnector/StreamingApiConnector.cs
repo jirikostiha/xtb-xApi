@@ -37,6 +37,7 @@ public class StreamingApiConnector : Connector
     }
 
     #region Events
+
     /// <summary>
     /// Event raised when a command is being executed.
     /// </summary>
@@ -45,7 +46,7 @@ public class StreamingApiConnector : Connector
     /// <summary>
     /// Event raised when a streaming data is being received.
     /// </summary>
-    public event EventHandler<string>? StreamingDataReceived;
+    public event EventHandler<DataReceivedEventArgs>? DataReceived;
 
     /// <summary>
     /// Event raised when a tick record is received.
@@ -179,7 +180,7 @@ public class StreamingApiConnector : Connector
 
             var jsonDataObject = jsonSubnode.AsObject();
 
-            StreamingDataReceived?.Invoke(this, dataType);
+            DataReceived?.Invoke(this, new(dataType, responseBody));
 
             if (dataType == StreamingDataType.TickPrices)
             {
