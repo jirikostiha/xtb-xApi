@@ -35,7 +35,7 @@ public static class TradeRecordExtensions
         symbol?.Symbol is not null && symbol.Symbol.EndsWith("_4", StringComparison.InvariantCulture);
 
     /// <summary>
-    /// Net profit is gross profit minus fees for storage (swap + rollover)
+    /// Net profit in account currency. It is gross profit minus fees for storage (swap + rollover)
     /// </summary>
     public static double? NetProfit(this ITradeRecord trade) =>
         trade.Profit + trade.Storage;

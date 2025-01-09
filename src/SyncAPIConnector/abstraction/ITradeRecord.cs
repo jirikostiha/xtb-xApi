@@ -5,6 +5,7 @@ namespace Xtb.XApi;
 
 public interface ITradeRecord : IHasSymbol, IPosition
 {
+    /// <summary> Close price in symbol currency. </summary>
     double? ClosePrice { get; }
 
     DateTimeOffset? CloseTime { get; }
@@ -25,17 +26,22 @@ public interface ITradeRecord : IHasSymbol, IPosition
 
     double? MarginRate { get; }
 
+    /// <summary> Open price in symbol currency. </summary>
     double? OpenPrice { get; }
 
     DateTimeOffset? OpenTime { get; }
 
+    /// <summary> Gross profit in account currency. </summary>
     double? Profit { get; set; }
 
+    /// <summary> Stop loss price in symbol currency. </summary>
     double? Sl { get; }
 
-    double? Storage { get; }
-
+    /// <summary> Take profit price in symbol currency. </summary>
     double? Tp { get; }
+
+    /// <summary> Fees (swap + rollover) in account currency. </summary>
+    double? Storage { get; }
 
     double? Volume { get; }
 }
