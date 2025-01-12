@@ -1,5 +1,8 @@
 ﻿namespace Xtb.XApi;
 
+/// <summary>
+/// Represents a candle with high, low, open, and close prices in symbol currency.
+/// </summary>
 public interface ICandle
 {
     /// <summary> High price in symbol currency. </summary>

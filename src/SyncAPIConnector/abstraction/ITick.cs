@@ -4,10 +4,14 @@ namespace Xtb.XApi;
 
 public interface ITick
 {
-    /// <summary> Ask price in symbol currency. </summary>
+    /// <summary>
+    /// Ask price in base currency.
+    /// </summary>
     double? Ask { get; }
 
-    /// <summary> Bid price in symbol currency. </summary>
+    /// <summary>
+    /// Bid price in base currency.
+    /// </summary>
     double? Bid { get; }
 
     /// <summary> High price in symbol currency. </summary>

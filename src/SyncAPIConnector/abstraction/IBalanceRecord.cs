@@ -8,13 +8,15 @@ public interface IBalanceRecord
     /// <summary> Account equity value in account currency. </summary>
     double? Equity { get; }
 
-    /// <summary> Account margin value in account currency. </summary>
+    /// <summary> Account margin requirements in account currency. </summary>
     double? Margin { get; }
 
     /// <summary> Account free margin value in account currency. </summary>
     double? MarginFree { get; }
 
+    /// <summary> Margin level percentage. </summary>
     double? MarginLevel { get; }
 
+    /// <summary> Credit in account currency. </summary>
     double? Credit { get; }
 }
