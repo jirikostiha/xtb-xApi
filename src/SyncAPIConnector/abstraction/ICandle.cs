@@ -16,10 +16,4 @@ public interface ICandle
 
     /// <summary> Close price in symbol currency. </summary>
     double? Close { get; }
-
-#if NETSTANDARD2_1_OR_GREATER
-    public double? Size => High - Low;
-
-    public double? Average => (High + Low) / 2;
-#endif
 }

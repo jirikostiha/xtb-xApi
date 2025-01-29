@@ -4,22 +4,18 @@ namespace Xtb.XApi;
 
 public interface ITick
 {
-    /// <summary>
-    /// Ask price in base currency.
-    /// </summary>
+    /// <summary> Ask price. </summary>
     double? Ask { get; }
 
-    /// <summary>
-    /// Bid price in base currency.
-    /// </summary>
+    /// <summary> Bid price. </summary>
     double? Bid { get; }
 
-    /// <summary> High price in symbol currency. </summary>
+    /// <summary> High price. </summary>
     double? High { get; }
 
-    /// <summary> Low price in symbol currency. </summary>
+    /// <summary> Low price. </summary>
     double? Low { get; }
 
-    /// <summary> Tick record time. </summary>
+    /// <summary> Tick time. </summary>
     DateTimeOffset? Time { get; }
 }

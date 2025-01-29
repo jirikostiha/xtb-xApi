@@ -5,6 +5,18 @@ namespace Xtb.XApi;
 
 public static class TradeRecordExtensions
 {
+    /// <summary> Middle price of ask and bid in base currency. </summary>
+    public static double? Mid(this ITick tick) => (tick.Bid - tick.Ask) / 2d;
+
+    /// <summary> Size of the candle. </summary>
+    public static double? Size(this ICandle candle) => candle.High - candle.Low;
+
+    /// <summary> Size of the candle as coefficient with open price as base. </summary>
+    public static double? SizeCoef(this ICandle candle) => (candle.High - candle.Low) / candle.Open;
+
+    /// <summary> Average price of the candle. </summary>
+    public static double? Average(this ICandle candle) => (candle.High + candle.Low) / 2d;
+
     /// <summary>
     /// Determines whether the specified trade is a long position.
     /// </summary>
