@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xtb.XApi.Codes;
 
 namespace Xtb.XApi;
@@ -44,4 +46,133 @@ public static class TradeRecordExtensions
     /// </summary>
     public static double? NetProfit(this ITradeRecord trade) =>
         trade.Profit + trade.Storage;
+    /// <summary>
+    /// Rounds the profit of a trade to the specified number of digits.
+    /// </summary>
+    public static double RoundedProfit(this ITradeRecord trade, int defaultDigits = 5) =>
+        Math.Round(trade.Profit ?? 0d, trade.Digits ?? defaultDigits);
+
+    /// <summary>
+    /// Rounds the total profit of multiple trades to the specified number of digits.
+    /// </summary>
+    public static double RoundedProfit(this IEnumerable<ITradeRecord> trades, int digits = 5) =>
+        Math.Round(trades.Sum(x => x?.Profit ?? 0d), digits);
+
+    /// <summary>
+    /// Rounds the profit of a trade converted using an exchange rate.
+    /// </summary>
+    public static double RoundedProfit(this ITradeRecord trade, double exchangeRate, int defaultDigits = 5) =>
+        Math.Round((trade.Profit ?? 0d) * exchangeRate, trade.Digits ?? defaultDigits);
+
+    /// <summary>
+    /// Rounds the total profit of multiple trades converted using an exchange rate.
+    /// </summary>
+    public static double RoundedProfit(this IEnumerable<ITradeRecord> trades, double exchangeRate, int digits = 5) =>
+        Math.Round(trades.Sum(x => x.Profit ?? 0d) * exchangeRate, digits);
+
+    /// <summary>
+    /// Rounds the storage fee of a trade to the specified number of digits.
+    /// </summary>
+    public static double RoundedStorage(this ITradeRecord trade, int defaultDigits = 5) =>
+        Math.Round(trade.Storage ?? 0d, trade.Digits ?? defaultDigits);
+
+    /// <summary>
+    /// Rounds the total storage fees of multiple trades to the specified number of digits.
+    /// </summary>
+    public static double RoundedStorage(this IEnumerable<ITradeRecord> trades, int digits = 5) =>
+        Math.Round(trades.Sum(x => x.Storage) ?? 0d, digits);
+
+    /// <summary>
+    /// Rounds the storage fee of a trade converted using an exchange rate.
+    /// </summary>
+    public static double RoundedStorage(this ITradeRecord trade, double exchangeRate, int defaultDigits = 5) =>
+        Math.Round((trade.Storage ?? 0d) * exchangeRate, trade.Digits ?? defaultDigits);
+
+    /// <summary>
+    /// Rounds the total storage fees of multiple trades converted using an exchange rate.
+    /// </summary>
+    public static double RoundedStorage(this IEnumerable<ITradeRecord> trades, double exchangeRate, int digits = 5) =>
+        Math.Round(trades.Sum(x => x.Storage ?? 0d) * exchangeRate, digits);
+
+    /// <summary>
+    /// Rounds the net profit of a trade to the specified number of digits.
+    /// </summary>
+    public static double RoundedNetProfit(this ITradeRecord trade, int defaultDigits = 5) =>
+        Math.Round(trade?.NetProfit() ?? 0d, trade?.Digits ?? defaultDigits);
+
+    /// <summary>
+    /// Rounds the total net profit of multiple trades to the specified number of digits.
+    /// </summary>
+    public static double RoundedNetProfit(this IEnumerable<ITradeRecord> trades, int digits = 5) =>
+        Math.Round(trades.Sum(x => x.NetProfit()) ?? 0d, digits);
+
+    /// <summary>
+    /// Rounds the net profit of a trade converted using an exchange rate.
+    /// </summary>
+    public static double RoundedNetProfit(this ITradeRecord trade, double exchangeRate, int defaultDigits = 5) =>
+        Math.Round((trade.NetProfit() ?? 0d) * exchangeRate, trade.Digits ?? defaultDigits);
+
+    /// <summary>
+    /// Rounds the total net profit of multiple trades converted using an exchange rate.
+    /// </summary>
+    public static double RoundedNetProfit(this IEnumerable<ITradeRecord> trades, double exchangeRate, int digits = 5) =>
+        Math.Round(trades.Sum(x => x.NetProfit() ?? 0d) * exchangeRate, digits);
+
+    /// <summary>
+    /// Calculates the average open price of multiple trades.
+    /// Warning: Trades must be of the same instrument for meaningful results.
+    /// </summary>
+    public static double? AverageOpenPrice(this IEnumerable<ITradeRecord> trades)
+    {
+        var totalPrice = trades.Sum(t => t.OpenPrice);
+        return totalPrice / trades.Count();
+    }
+
+    /// <summary>
+    /// Calculates the average gross profit of multiple trades.
+    /// Warning: Trades must be of the same instrument for meaningful results.
+    /// </summary>
+    public static double? AverageGrossProfit(this IEnumerable<ITradeRecord> trades)
+    {
+        var totalProfit = trades.Sum(t => t.Profit);
+        return totalProfit / trades.Count();
+    }
+
+    /// <summary>
+    /// Calculates the average storage fee of multiple trades.
+    /// Warning: Trades must be of the same instrument for meaningful results.
+    /// </summary>
+    public static double? AverageStorage(this IEnumerable<ITradeRecord> trades)
+    {
+        var totalFees = trades.Sum(t => t.Storage);
+        return totalFees / trades.Count();
+    }
+
+    /// <summary>
+    /// Calculates the average net profit of multiple trades.
+    /// Warning: Trades must be of the same instrument for meaningful results.
+    /// </summary>
+    public static double? AverageNetProfit(this IEnumerable<ITradeRecord> trades)
+    {
+        var totalProfit = trades.Sum(t => t.NetProfit());
+        return totalProfit / trades.Count();
+    }
+
+    /// <summary>
+    /// Calculates the net zero profit price based on the average open price and storage fees.
+    /// </summary>
+    public static double? NetZeroProfitPrice(this IEnumerable<ITradeRecord> trades) =>
+        AverageOpenPrice(trades) - AverageStorage(trades);
+
+    /// <summary>
+    /// Calculates the absolute total traded volume.
+    /// </summary>
+    public static double? AbsoluteVolume(this IEnumerable<ITradeRecord> trades) =>
+        trades.Sum(t => Math.Abs(t.Volume ?? 0d));
+
+    /// <summary>
+    /// Calculates the relative total traded volume: long volume - short volume.
+    /// </summary>
+    public static double? RelativeVolume(this IEnumerable<ITradeRecord> trades) =>
+        trades.Sum(t => t.Volume ?? 0d);
 }
