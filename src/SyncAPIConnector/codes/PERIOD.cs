@@ -25,6 +25,24 @@ public class PERIOD : BaseCode
     public static readonly PERIOD W1 = new(W1_CODE);
     public static readonly PERIOD MN1 = new(MN1_CODE);
 
+    public static PERIOD? FromPeriod(TimeSpan timeSpan)
+    {
+        int minutes = (int)timeSpan.TotalMinutes;
+        return minutes switch
+        {
+            M1_CODE => M1,
+            M5_CODE => M5,
+            M15_CODE => M15,
+            M30_CODE => M30,
+            H1_CODE => H1,
+            H4_CODE => H4,
+            D1_CODE => D1,
+            W1_CODE => W1,
+            MN1_CODE => MN1,
+            _ => null, // Return null for unsupported values
+        };
+    }
+
     public PERIOD(int code)
         : base(code)
     {
