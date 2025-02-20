@@ -43,6 +43,7 @@ For usage see [example code](./src/SystemTests/Program.cs ), [official page](htt
 
 ## Changelog
 
+2.5.26 extensions  
 2.5.25 extensions, documentation  
 2.5.24 fixes, updated dependencies, fully removed redirection, minor changes  
 2.5.23 new events, remove redirection, other minor changes  

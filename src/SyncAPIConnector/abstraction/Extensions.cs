@@ -46,6 +46,7 @@ public static class TradeRecordExtensions
     /// </summary>
     public static double? NetProfit(this ITradeRecord trade) =>
         trade.Profit + trade.Storage;
+
     /// <summary>
     /// Rounds the profit of a trade to the specified number of digits.
     /// </summary>
