@@ -161,7 +161,7 @@ public class StreamingApiConnector : Connector
     /// <summary>
     /// Reads stream message.
     /// </summary>
-    private async Task ReadStreamMessageAsync(CancellationToken cancellationToken = default)
+    private async ValueTask ReadStreamMessageAsync(CancellationToken cancellationToken = default)
     {
         string? dataType = null;
         try

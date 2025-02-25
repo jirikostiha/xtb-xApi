@@ -146,7 +146,7 @@ public class ApiConnector : Connector
         }
     }
 
-    private async Task EnforceCommandDelayAsync()
+    private async ValueTask EnforceCommandDelayAsync()
     {
         long currentTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
         long interval = currentTimestamp - _lastCommandTimestamp;
