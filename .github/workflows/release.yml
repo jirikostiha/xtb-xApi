@@ -39,12 +39,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore "${{ env.sln-path }}"
 
+      - name: Test
+        run: dotnet test "${{ env.sln-path }}" --no-restore -c Release
+
       - name: Build release
         run: dotnet build "${{ env.sln-path }}" --no-restore -c Release -o "${{ env.build-dir }}"
-
-      - name: Test
-        if: matrix.dotnet-version == '9.0.x'
-        run: dotnet test "${{ env.sln-path }}" --no-build --logger "trx;LogFileName=test-results.trx" || true
 
       - name: Upload artifact - binaries
         if: matrix.dotnet-version == '9.0.x'
