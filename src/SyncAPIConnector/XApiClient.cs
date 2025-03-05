@@ -315,11 +315,11 @@ public class XApiClient : IXApiClient, IDisposable
         => APICommandFactory.ExecuteTradeTransactionCommandAsync(ApiConnector, tradeTransInfoRecord, cancellationToken);
 
     /// <inheritdoc/>
-    public TradeRecordsResponse GetTradeRecords(LinkedList<long?> orderIds)
+    public TradeRecordsResponse GetTradeRecords(long?[] orderIds)
         => APICommandFactory.ExecuteTradeRecordsCommand(ApiConnector, orderIds);
 
     /// <inheritdoc/>
-    public Task<TradeRecordsResponse> GetTradeRecordsAsync(LinkedList<long?> orderIds, CancellationToken cancellationToken = default)
+    public Task<TradeRecordsResponse> GetTradeRecordsAsync(long?[] orderIds, CancellationToken cancellationToken = default)
         => APICommandFactory.ExecuteTradeRecordsCommandAsync(ApiConnector, orderIds, cancellationToken);
 
     /// <inheritdoc/>

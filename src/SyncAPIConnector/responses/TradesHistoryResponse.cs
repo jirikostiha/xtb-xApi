@@ -1,32 +1,36 @@
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text.Json.Nodes;
 using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
-[DebuggerDisplay("trades:{TradeRecords.Count}")]
+[DebuggerDisplay("trades:{TradeRecords.Length}")]
 public sealed class TradesHistoryResponse : BaseResponse
 {
-    public TradesHistoryResponse()
-        : base()
-    { }
+    public TradesHistoryResponse() : base() { }
 
-    public TradesHistoryResponse(string body)
-        : base(body)
+    public TradesHistoryResponse(string body) : base(body)
     {
-        if (ReturnData is null)
-            return;
-
-        var arr = ReturnData.AsArray();
-        foreach (var e in arr.OfType<JsonObject>())
+        if (ReturnData is not JsonArray arr || arr.Count == 0)
         {
-            var record = new TradeRecord();
-            record.FieldsFromJsonObject(e);
-            TradeRecords.AddLast(record);
+            return;
         }
+
+        int count = arr.Count;
+        var records = new TradeRecord[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            if (arr[i] is JsonObject jsonObj)
+            {
+                var record = new TradeRecord();
+                record.FieldsFromJsonObject(jsonObj);
+                records[i] = record;
+            }
+        }
+
+        TradeRecords = records;
     }
 
-    public LinkedList<TradeRecord> TradeRecords { get; init; } = [];
+    public TradeRecord[] TradeRecords { get; init; } = [];
 }

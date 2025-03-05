@@ -1,5 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text.Json.Nodes;
 
 namespace Xtb.XApi.Records;
@@ -10,23 +9,32 @@ public sealed record StepRuleRecord : IBaseResponseRecord
 
     public string? Name { get; set; }
 
-    public LinkedList<StepRecord> Steps { get; set; } = [];
+    public StepRecord[] Steps { get; private set; } = [];
 
     public void FieldsFromJsonObject(JsonObject value)
     {
         Id = (int?)value["id"];
         Name = (string?)value["name"];
 
-        Steps = new LinkedList<StepRecord>();
-        if (value["steps"] != null)
+        if (!(value["steps"] is JsonArray jsonArray) || jsonArray.Count == 0)
         {
-            JsonArray jsonarray = value["steps"]?.AsArray() ?? [];
-            foreach (JsonObject jsonObj in jsonarray.OfType<JsonObject>())
+            return;
+        }
+
+        int count = jsonArray.Count;
+        var records = new StepRecord[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            var jsonObj = jsonArray[i] as JsonObject;
+            if (jsonObj != null)
             {
-                StepRecord rec = new();
+                var rec = new StepRecord();
                 rec.FieldsFromJsonObject(jsonObj);
-                Steps.AddLast(rec);
+                records[i] = rec;
             }
         }
+
+        Steps = records;
     }
 }

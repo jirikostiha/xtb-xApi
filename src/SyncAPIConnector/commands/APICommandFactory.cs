@@ -158,7 +158,7 @@ public static class APICommandFactory
         return new TickPricesCommand(args, prettyPrint);
     }
 
-    public static TradeRecordsCommand CreateTradeRecordsCommand(LinkedList<long?> orderIds, bool prettyPrint = false)
+    public static TradeRecordsCommand CreateTradeRecordsCommand(long?[] orderIds, bool prettyPrint = false)
     {
         JsonObject args = [];
         JsonArray arr = [.. orderIds];
@@ -623,7 +623,7 @@ public static class APICommandFactory
         return new TickPricesResponse(jsonObj.ToString());
     }
 
-    public static TradeRecordsResponse ExecuteTradeRecordsCommand(ApiConnector connector, LinkedList<long?> orderIds, bool prettyPrint = false)
+    public static TradeRecordsResponse ExecuteTradeRecordsCommand(ApiConnector connector, long?[] orderIds, bool prettyPrint = false)
     {
         var command = CreateTradeRecordsCommand(orderIds, prettyPrint);
         var jsonObj = connector.ExecuteCommand(command);
@@ -631,7 +631,7 @@ public static class APICommandFactory
         return new TradeRecordsResponse(jsonObj.ToString());
     }
 
-    public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(ApiConnector connector, LinkedList<long?> orderIds, CancellationToken cancellationToken = default)
+    public static async Task<TradeRecordsResponse> ExecuteTradeRecordsCommandAsync(ApiConnector connector, long?[] orderIds, CancellationToken cancellationToken = default)
     {
         var command = CreateTradeRecordsCommand(orderIds);
         var jsonObj = await connector.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Nodes;
 using Xtb.XApi.Records;
 
@@ -7,24 +5,30 @@ namespace Xtb.XApi.Responses;
 
 public sealed class AllSymbolsResponse : BaseResponse
 {
-    public AllSymbolsResponse()
-        : base()
-    { }
+    public AllSymbolsResponse() : base() { }
 
-    public AllSymbolsResponse(string body)
-        : base(body)
+    public AllSymbolsResponse(string body) : base(body)
     {
-        if (ReturnData is null)
-            return;
-
-        var symbolRecordsArray = ReturnData.AsArray();
-        foreach (var e in symbolRecordsArray.OfType<JsonObject>())
+        if (ReturnData is not JsonArray jsonArray || jsonArray.Count == 0)
         {
-            var symbolRecord = new SymbolRecord();
-            symbolRecord.FieldsFromJsonObject(e);
-            SymbolRecords.AddLast(symbolRecord);
+            return;
         }
+
+        int count = jsonArray.Count;
+        var records = new SymbolRecord[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            if (jsonArray[i] is JsonObject jsonObj)
+            {
+                var symbolRecord = new SymbolRecord();
+                symbolRecord.FieldsFromJsonObject(jsonObj);
+                records[i] = symbolRecord;
+            }
+        }
+
+        SymbolRecords = records;
     }
 
-    public LinkedList<SymbolRecord> SymbolRecords { get; init; } = [];
+    public SymbolRecord[] SymbolRecords { get; init; } = [];
 }

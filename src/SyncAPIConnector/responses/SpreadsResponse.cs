@@ -1,30 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Nodes;
+﻿using System.Text.Json.Nodes;
 using Xtb.XApi.Records;
 
 namespace Xtb.XApi.Responses;
 
 public sealed class SpreadsResponse : BaseResponse
 {
-    public SpreadsResponse()
-        : base()
-    { }
+    public SpreadsResponse() : base() { }
 
-    public SpreadsResponse(string body)
-        : base(body)
+    public SpreadsResponse(string body) : base(body)
     {
-        if (ReturnData is null)
-            return;
-
-        var arr = ReturnData.AsArray();
-        foreach (var e in arr.OfType<JsonObject>())
+        if (ReturnData is not JsonArray arr || arr.Count == 0)
         {
-            var record = new SpreadRecord();
-            record.FieldsFromJsonObject(e);
-            SpreadRecords.AddLast(record);
+            return;
         }
+
+        int count = arr.Count;
+        var records = new SpreadRecord[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            if (arr[i] is JsonObject jsonObj)
+            {
+                var record = new SpreadRecord();
+                record.FieldsFromJsonObject(jsonObj);
+                records[i] = record;
+            }
+        }
+
+        SpreadRecords = records;
     }
 
-    public LinkedList<SpreadRecord> SpreadRecords { get; init; } = [];
+    public SpreadRecord[] SpreadRecords { get; init; } = [];
 }

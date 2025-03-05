@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Nodes;
 using Xtb.XApi.Records;
 
@@ -7,24 +5,30 @@ namespace Xtb.XApi.Responses;
 
 public sealed class StepRulesResponse : BaseResponse
 {
-    public StepRulesResponse()
-        : base()
-    { }
+    public StepRulesResponse() : base() { }
 
-    public StepRulesResponse(string body)
-        : base(body)
+    public StepRulesResponse(string body) : base(body)
     {
-        if (ReturnData is null)
-            return;
-
-        var arr = ReturnData.AsArray();
-        foreach (var e in arr.OfType<JsonObject>())
+        if (ReturnData is not JsonArray arr || arr.Count == 0)
         {
-            var record = new StepRuleRecord();
-            record.FieldsFromJsonObject(e);
-            StepRulesRecords.AddLast(record);
+            return;
         }
+
+        int count = arr.Count;
+        var records = new StepRuleRecord[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            if (arr[i] is JsonObject jsonObj)
+            {
+                var record = new StepRuleRecord();
+                record.FieldsFromJsonObject(jsonObj);
+                records[i] = record;
+            }
+        }
+
+        StepRulesRecords = records;
     }
 
-    public LinkedList<StepRuleRecord> StepRulesRecords { get; init; } = [];
+    public StepRuleRecord[] StepRulesRecords { get; init; } = [];
 }
