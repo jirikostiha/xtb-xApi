@@ -24,17 +24,23 @@
     <Version>2.5.27</Version>
     <Authors>Jiri Kostiha</Authors>
     <PackageIcon>package_icon.png</PackageIcon>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Include="..\..\..\readme.md">
+      <Link>readme.md</Link>
+      <Pack>true</Pack>
+      <PackagePath>readme.md</PackagePath>
+    </None>
     <None Update="package_icon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
 </Project>
