@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xtb.XApi.Codes;
+using Xtb.XApi.Records;
 
 namespace Xtb.XApi;
 
@@ -176,4 +177,24 @@ public static class TradeRecordExtensions
     /// </summary>
     public static double? RelativeVolume(this IEnumerable<ITradeRecord> trades) =>
         trades.Sum(t => t.Volume ?? 0d);
+
+    /// <summary>
+    /// Determines whether the specified time falls within the hours.
+    /// </summary>
+    /// <param name="hours"> Collection of hours. </param>
+    /// <param name="time">The <see cref="DateTime"/> to check.</param>
+    /// <returns>
+    /// <c>true</c> if the specified time is within the trading hours;
+    /// <c>false</c> if it is not;
+    /// </returns>
+    public static bool IsInsideHours(this IEnumerable<HoursRecord> hours, DateTime time)
+    {
+        foreach (var hour in hours)
+        {
+            if (hour.DayOfWeek == time.DayOfWeek
+                && (hour.IsInTimeInterval(time.TimeOfDay) ?? false))
+                return true;
+        }
+        return false;
+    }
 }

@@ -13,40 +13,6 @@ public sealed record TradingHoursRecord : IBaseResponseRecord, IHasSymbol
 
     public string? Symbol { get; set; }
 
-    public bool? IsInQuotesHours(DateTimeOffset time)
-    {
-        foreach (var hoursRecord in Quotes)
-        {
-            if (hoursRecord.DayOfWeek == time.DayOfWeek
-                && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
-                return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Determines whether the specified time falls within the trading hours.
-    /// </summary>
-    /// <param name="time">The <see cref="DateTimeOffset"/> to check.</param>
-    /// <returns>
-    /// <c>true</c> if the specified time is within the trading hours;
-    /// <c>false</c> if it is not;
-    /// <c>null</c> if the Trading collection is <c>null</c>.
-    /// </returns>
-    public bool? IsInTradingHours(DateTimeOffset time)
-    {
-        if (Trading is null)
-            return null;
-
-        foreach (var hoursRecord in Trading)
-        {
-            if (hoursRecord.DayOfWeek == time.DayOfWeek
-                && (hoursRecord.IsInTimeInterval(time.TimeOfDay) ?? false))
-                return true;
-        }
-        return false;
-    }
-
     public void FieldsFromJsonObject(JsonObject value)
     {
         Symbol = (string?)value["symbol"];
