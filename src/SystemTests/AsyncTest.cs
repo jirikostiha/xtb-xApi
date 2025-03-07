@@ -192,7 +192,7 @@ public sealed class AsyncTest : XApiClientTestBase
         {
             var response = await Client.GetAllSymbolsAsync(cancellationToken);
             Pass(response);
-            Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.SymbolRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -216,7 +216,7 @@ public sealed class AsyncTest : XApiClientTestBase
         {
             var response = await Client.GetTradingHoursAsync(["US500"], cancellationToken);
             Pass(response);
-            Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TradingHoursRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -247,7 +247,7 @@ public sealed class AsyncTest : XApiClientTestBase
             var response = await Client.GetChartLastAsync("US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10), cancellationToken);
             Pass(response);
-            Detail(response?.RateInfoRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.RateInfoRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -262,7 +262,7 @@ public sealed class AsyncTest : XApiClientTestBase
                 TimeProvider.System.GetUtcNow().AddDays(-10),
                 cancellationToken);
             Pass(response);
-            Detail(response?.RateInfoRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.RateInfoRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -323,7 +323,7 @@ public sealed class AsyncTest : XApiClientTestBase
                 default,
                 cancellationToken);
             Pass(response);
-            Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.NewsTopicRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -646,9 +646,9 @@ public sealed class AsyncTest : XApiClientTestBase
         Action($"Getting trades for orders");
         try
         {
-            var response = await Client.GetTradeRecordsAsync(new([orderId]), cancellationToken);
+            var response = await Client.GetTradeRecordsAsync([orderId], cancellationToken);
             Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TradeRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -696,7 +696,7 @@ public sealed class AsyncTest : XApiClientTestBase
                 default,
                 cancellationToken);
             Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TradeRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {

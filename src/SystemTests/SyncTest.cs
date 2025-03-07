@@ -192,7 +192,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetAllSymbols();
             Pass(response);
-            Detail(response?.SymbolRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.SymbolRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -216,7 +216,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetTradingHours(["US500"]);
             Pass(response);
-            Detail(response?.TradingHoursRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TradingHoursRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -247,7 +247,7 @@ public sealed class SyncTest : XApiClientTestBase
             var response = Client.GetChartLast("US500", PERIOD.H1,
                 TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
-            Detail(response?.RateInfoRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.RateInfoRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -261,7 +261,7 @@ public sealed class SyncTest : XApiClientTestBase
                 TimeProvider.System.GetUtcNow().AddDays(-20),
                 TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
-            Detail(response?.RateInfoRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.RateInfoRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -314,7 +314,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetNews(TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
-            Detail(response?.NewsTopicRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.NewsTopicRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -637,9 +637,9 @@ public sealed class SyncTest : XApiClientTestBase
         Action($"Getting trades for orders");
         try
         {
-            var response = Client.GetTradeRecords(new([orderId]));
+            var response = Client.GetTradeRecords([orderId]);
             Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TradeRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
@@ -684,7 +684,7 @@ public sealed class SyncTest : XApiClientTestBase
         {
             var response = Client.GetTradesHistory(TimeProvider.System.GetUtcNow().AddDays(-10));
             Pass(response);
-            Detail(response?.TradeRecords?.Count.ToString(CultureInfo.InvariantCulture) ?? "-");
+            Detail(response?.TradeRecords?.Length.ToString(CultureInfo.InvariantCulture) ?? "-");
         }
         catch (Exception ex)
         {
