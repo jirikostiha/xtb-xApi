@@ -1,7 +1,7 @@
 name: Release
 
 env:
-  sln-path: "./src/xtb.xapi.sln"
+  sln-path: "./src/xtb.xapi.client.sln"
   build-dir: "build"
 
 on:
