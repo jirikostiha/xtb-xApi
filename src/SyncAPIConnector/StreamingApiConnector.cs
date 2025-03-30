@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
@@ -9,7 +10,7 @@ using Xtb.XApi.Streaming;
 
 namespace Xtb.XApi;
 
-public class StreamingApiConnector : Connector
+public class StreamingApiConnector : IConnectable, IDisposable
 {
     private Task? _streamingReaderTask;
 
@@ -22,21 +23,50 @@ public class StreamingApiConnector : Connector
     public static StreamingApiConnector Create(string address, int port, IStreamingListener? streamingListener = null)
     {
         var endpoint = new IPEndPoint(IPAddress.Parse(address), port);
-        return new StreamingApiConnector(endpoint, streamingListener);
+
+        return Create(endpoint, streamingListener);
+    }
+
+    /// <summary>
+    /// Helper method to create a new instance based on address and port.
+    /// </summary>
+    /// <param name="endpoint">Endpoint for streaming data.</param>
+    /// <param name="streamingListener">Streaming listener.</param>
+    public static StreamingApiConnector Create(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
+    {
+        var client = new Connector(endpoint);
+
+        return new StreamingApiConnector(client, streamingListener)
+        {
+            IsConnectorOwner = true
+        };
     }
 
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    /// <param name="endpoint">Endpoint for streaming data.</param>
+    /// <param name="connector">Underlaying client.</param>
     /// <param name="streamingListener">Streaming listener.</param>
-    public StreamingApiConnector(IPEndPoint endpoint, IStreamingListener? streamingListener = null)
-        : base(endpoint)
+    public StreamingApiConnector(IClient connector, IStreamingListener? streamingListener = null)
     {
+        Connector = connector;
         StreamingListener = streamingListener;
     }
 
     #region Events
+    /// <inheritdoc/>
+    public event EventHandler<EndpointEventArgs>? Connected
+    {
+        add => Connector.Connected += value;
+        remove => Connector.Connected -= value;
+    }
+
+    /// <inheritdoc/>
+    public event EventHandler? Disconnected
+    {
+        add => Connector.Disconnected += value;
+        remove => Connector.Disconnected -= value;
+    }
 
     /// <summary>
     /// Event raised when a command is being executed.
@@ -92,8 +122,17 @@ public class StreamingApiConnector : Connector
     /// Event raised when read streamed message.
     /// </summary>
     public event EventHandler<ExceptionEventArgs>? StreamingErrorOccurred;
-
     #endregion Events
+
+    /// <summary>
+    /// Streaming connector.
+    /// </summary>
+    protected IClient Connector { get; private set; }
+
+    /// <summary>
+    /// Indicates whether the connector is owned.
+    /// </summary>
+    internal bool IsConnectorOwner { get; init; }
 
     /// <summary>
     /// Stream session id (member of login response). Should be set after the successful login.
@@ -106,14 +145,20 @@ public class StreamingApiConnector : Connector
     public IStreamingListener? StreamingListener { get; }
 
     /// <inheritdoc/>
-    public override void Connect()
+    public bool IsConnected => Connector.IsConnected;
+
+    /// <inheritdoc/>
+    public IPEndPoint Endpoint => Connector.Endpoint;
+
+    /// <inheritdoc/>
+    public void Connect()
     {
         if (StreamSessionId == null)
         {
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        base.Connect();
+        Connector.Connect();
 
         if (_streamingReaderTask == null)
         {
@@ -127,14 +172,14 @@ public class StreamingApiConnector : Connector
     }
 
     /// <inheritdoc/>
-    public override async Task ConnectAsync(CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (StreamSessionId == null)
         {
             throw new APICommunicationException("No session exists. Please login first.");
         }
 
-        await base.ConnectAsync(cancellationToken);
+        await Connector.ConnectAsync(cancellationToken);
 
         if (_streamingReaderTask == null)
         {
@@ -166,7 +211,7 @@ public class StreamingApiConnector : Connector
         string? dataType = null;
         try
         {
-            var message = await ReadMessageAsync(cancellationToken).ConfigureAwait(false)
+            var message = await Connector.ReadMessageAsync(cancellationToken).ConfigureAwait(false)
                 ?? throw new InvalidOperationException("Incoming streaming message is null.");
 
             var responseBody = JsonNode.Parse(message)
@@ -291,7 +336,7 @@ public class StreamingApiConnector : Connector
             var request = command.ToString();
 
             CommandExecuting?.Invoke(this, new(command));
-            SendMessage(request);
+            Connector.SendMessage(request);
         }
         catch (Exception ex)
         {
@@ -311,7 +356,7 @@ public class StreamingApiConnector : Connector
             var request = command.ToString();
 
             CommandExecuting?.Invoke(this, new(command));
-            await SendMessageAsync(request, cancellationToken).ConfigureAwait(false);
+            await Connector.SendMessageAsync(request, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -370,7 +415,7 @@ public class StreamingApiConnector : Connector
     public void UnsubscribeBalance()
     {
         var balanceRecordsStop = new BalanceRecordsStop();
-        SendMessage(balanceRecordsStop.ToString());
+        ExecuteCommand(balanceRecordsStop);
     }
 
     public void SubscribeTradeStatus()
@@ -560,22 +605,40 @@ public class StreamingApiConnector : Connector
 
         if (!args.Handled)
         {
-            // If the exception was not handled, rethrow it
+            // If the exception was not handled, re-throw it
             throw new APICommunicationException($"Read streaming message of '{dataType}' type failed.", ex);
         }
     }
+
+    /// <inheritdoc/>
+    public void Disconnect() => Connector.Disconnect();
+
+    /// <inheritdoc/>
+    public Task DisconnectAsync(CancellationToken cancellationToken = default) => Connector.DisconnectAsync(cancellationToken);
 
     /// <inheritdoc/>
     public override string ToString() => $"{base.ToString()}, {StreamSessionId ?? "no session"}";
 
     private bool _disposed;
 
-    protected override void Dispose(bool disposing)
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
     {
         if (!_disposed)
         {
-            base.Dispose(disposing);
-            StreamSessionId = null!;
+            if (disposing)
+            {
+                if (IsConnectorOwner && Connector is IDisposable disposableConnetor)
+                {
+                    disposableConnetor.Dispose();
+                }
+            }
 
             _disposed = true;
         }

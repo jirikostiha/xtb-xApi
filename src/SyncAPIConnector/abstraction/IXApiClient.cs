@@ -488,16 +488,6 @@ public interface IXApiClientSync : IXApiClientBase
 public interface IXApiClientBase
 {
     /// <summary>
-    /// Occurs when the client is connected to the API.
-    /// </summary>
-    event EventHandler<EndpointEventArgs>? Connected;
-
-    /// <summary>
-    /// Occurs when the client is disconnected from the API.
-    /// </summary>
-    event EventHandler? Disconnected;
-
-    /// <summary>
     /// Account id.
     /// </summary>
     string? AccountId { get; }

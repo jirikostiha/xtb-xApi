@@ -7,7 +7,7 @@ using Xtb.XApi.Commands;
 
 namespace Xtb.XApi;
 
-public class ApiConnector : Connector
+public class ApiConnector : IConnectable, IDisposable
 {
     /// <summary>
     /// Helper method to create a new instance based on address and ports.
@@ -20,7 +20,8 @@ public class ApiConnector : Connector
     {
         var requestingEndpoint = new IPEndPoint(IPAddress.Parse(address), requestingPort);
         var streamingEndpoint = new IPEndPoint(IPAddress.Parse(address), streamingPort);
-        return new ApiConnector(requestingEndpoint, new StreamingApiConnector(streamingEndpoint, streamingListener));
+
+        return Create(requestingEndpoint, streamingEndpoint);
     }
 
     /// <summary>
@@ -31,7 +32,14 @@ public class ApiConnector : Connector
     /// <param name="streamingListener">Streaming listener.</param>
     public static ApiConnector Create(IPEndPoint requestingEndpoint, IPEndPoint streamingEndpoint, IStreamingListener? streamingListener = null)
     {
-        return new ApiConnector(requestingEndpoint, new StreamingApiConnector(streamingEndpoint, streamingListener));
+        var requestingConnector = new Connector(requestingEndpoint);
+        var streamingApiConnector = StreamingApiConnector.Create(streamingEndpoint, streamingListener);
+
+        return new ApiConnector(requestingConnector, streamingApiConnector)
+        {
+            IsConnectorOwner = true,
+            IsStreamingApiConnectorOwner = true
+        };
     }
 
     /// <summary>
@@ -42,20 +50,43 @@ public class ApiConnector : Connector
     /// <summary>
     /// Creates new instance.
     /// </summary>
-    /// <param name="endpoint">Endpoint for requesting data.</param>
+    /// <param name="requestingConnector">Underlaying connector for requests.</param>
     /// <param name="streamingConnector">streaming connector.</param>
-    public ApiConnector(IPEndPoint endpoint, StreamingApiConnector streamingConnector)
-        : base(endpoint)
+    public ApiConnector(IClient requestingConnector, IClient streamingConnector)
+        : this(requestingConnector, new StreamingApiConnector(streamingConnector))
     {
+        IsStreamingApiConnectorOwner = true;
+    }
+
+    /// <summary>
+    /// Creates new instance.
+    /// </summary>
+    /// <param name="connector">Underlaying client.</param>
+    /// <param name="streamingConnector">streaming connector.</param>
+    public ApiConnector(IClient connector, StreamingApiConnector streamingConnector)
+    {
+        Connector = connector;
         Streaming = streamingConnector;
     }
 
     #region Events
 
-    /// <summary>
+    /// <inheritdoc/>
+    public event EventHandler<EndpointEventArgs>? Connected
+    {
+        add => Connector.Connected += value;
+        remove => Connector.Connected -= value;
+    }
     /// Event raised when a command is being executed.
     /// </summary>
     public event EventHandler<CommandEventArgs>? CommandExecuting;
+
+    /// <inheritdoc/>
+    public event EventHandler? Disconnected
+    {
+        add => Connector.Disconnected += value;
+        remove => Connector.Disconnected -= value;
+    }
 
     #endregion Events
 
@@ -67,14 +98,36 @@ public class ApiConnector : Connector
     /// <summary>
     /// Streaming connector.
     /// </summary>
-    public StreamingApiConnector Streaming { get; private init; }
+    public IClient Connector { get; private set; }
 
     /// <summary>
-    /// Stream session id (given upon login).
+    /// Indicates whether the connector is owned.
     /// </summary>
-    public string? StreamSessionId { get; }
+    internal bool IsConnectorOwner { get; init; }
 
+    /// <inheritdoc/>
+    public bool IsConnected => Connector.IsConnected;
+    /// <inheritdoc/>
+    public IPEndPoint Endpoint => Connector.Endpoint;
+    /// Streaming connector.
+    public StreamingApiConnector Streaming { get; private init; }
     /// <summary>
+    /// Indicates whether the streaming api connector is owned.
+    /// </summary>
+    internal bool IsStreamingApiConnectorOwner { get; init; }
+    /// <inheritdoc/>
+    public void Connect()
+    {
+        Connector.Connect();
+        //_streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
+    }
+    /// <inheritdoc/>
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
+    {
+        await Connector.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        //_streamingEndpoint = new IPEndPoint(endpoint.Address, _streamingEndpoint.Port);
+    }
+
     /// Executes given command and receives response (withholding API inter-command timeout).
     /// </summary>
     /// <param name="command">Command to execute</param>
@@ -88,7 +141,7 @@ public class ApiConnector : Connector
             EnforceCommandDelay();
 
             CommandExecuting?.Invoke(this, new(command));
-            var response = SendMessageWaitResponse(request);
+            var response = Connector.SendMessageWaitResponse(request);
             _lastCommandTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
             var parsedResponse = JsonNode.Parse(response)
@@ -129,8 +182,7 @@ public class ApiConnector : Connector
             await EnforceCommandDelayAsync();
 
             CommandExecuting?.Invoke(this, new(command));
-
-            var response = await SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
+            var response = await Connector.SendMessageWaitResponseAsync(request, cancellationToken).ConfigureAwait(false);
             _lastCommandTimestamp = DateTimeOffset.Now.Ticks / TimeSpan.TicksPerMillisecond;
 
             var parsedResponse = JsonNode.Parse(response)
@@ -158,22 +210,47 @@ public class ApiConnector : Connector
     }
 
     /// <inheritdoc/>
+    public void Disconnect()
+    {
+        Connector.Disconnect();
+    }
+
+    /// <inheritdoc/>
+    public Task DisconnectAsync(CancellationToken cancellationToken = default)
+    {
+        return Connector.DisconnectAsync(cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public override string ToString() => $"{base.ToString()}";
 
     private bool _disposed;
 
-    protected override void Dispose(bool disposing)
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
     {
         if (!_disposed)
         {
             if (disposing)
             {
-                Streaming?.Dispose();
+                if (IsConnectorOwner && Connector is IDisposable disposableConnetor)
+                {
+                    disposableConnetor.Dispose();
+                }
+
+                if (IsStreamingApiConnectorOwner && Streaming is IDisposable disposableStreming)
+                {
+                    disposableStreming.Dispose();
+                }
+
+                _disposed = true;
             }
-
-            base.Dispose(disposing);
-
-            _disposed = true;
         }
     }
 
