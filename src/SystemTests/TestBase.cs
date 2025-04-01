@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Xtb.XApi.Responses;
+using Xtb.XApi.Client.Model;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApi.Client.SystemTests;
 
 public abstract class TestBase
 {

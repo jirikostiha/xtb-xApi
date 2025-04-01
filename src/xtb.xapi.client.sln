@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34714.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncAPIConnect", "SyncAPIConnector\SyncAPIConnect.csproj", "{E6BC484B-A042-4CA6-9079-E91136D92207}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ci", "ci", "{2D6B372D-4BBE-456D-B399-D07957698056}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
@@ -23,9 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{CACC
 		..\.github\dependabot.yml = ..\.github\dependabot.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.SystemTests", "SystemTests\Xtb.XApi.SystemTests.csproj", "{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.UnitTests", "UnitTests\Xtb.XApi.UnitTests.csproj", "{84A4454D-B5D9-47E3-A373-6AE80A085FEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xtb.XApi.Client.SystemTests", "SystemTests\Xtb.XApi.Client.SystemTests.csproj", "{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{12D2B3B2-9C30-4008-B796-830E969219BE}"
 	ProjectSection(SolutionItems) = preProject
@@ -41,24 +37,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\LICENSE = ..\LICENSE
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtb.XApi.Client.UnitTests", "UnitTests\Xtb.XApi.Client.UnitTests.csproj", "{8FE887B9-92DD-4F0C-A9D1-098119704591}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xtb.XApi.Client", "Client\Xtb.XApi.Client.csproj", "{4C6D2068-98B7-6347-DF8F-9E34CAEFD1D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E6BC484B-A042-4CA6-9079-E91136D92207}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6BC484B-A042-4CA6-9079-E91136D92207}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6BC484B-A042-4CA6-9079-E91136D92207}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6BC484B-A042-4CA6-9079-E91136D92207}.Release|Any CPU.Build.0 = Release|Any CPU
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82751AFF-1738-409A-A6EF-BFE2E3ABDA9E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84A4454D-B5D9-47E3-A373-6AE80A085FEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FE887B9-92DD-4F0C-A9D1-098119704591}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FE887B9-92DD-4F0C-A9D1-098119704591}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FE887B9-92DD-4F0C-A9D1-098119704591}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FE887B9-92DD-4F0C-A9D1-098119704591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C6D2068-98B7-6347-DF8F-9E34CAEFD1D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C6D2068-98B7-6347-DF8F-9E34CAEFD1D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C6D2068-98B7-6347-DF8F-9E34CAEFD1D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C6D2068-98B7-6347-DF8F-9E34CAEFD1D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

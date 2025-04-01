@@ -3,10 +3,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Xtb.XApi.Codes;
-using Xtb.XApi.Records;
+using Xtb.XApi.Client.Model;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApi.Client.SystemTests;
 
 public sealed class AsyncTest : XApiClientTestBase
 {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using Xtb.XApi.Client.Model;
 
-namespace Xtb.XApi.SystemTests;
+namespace Xtb.XApi.Client.SystemTests;
 
 public abstract class XApiClientTestBase : TestBase
 {

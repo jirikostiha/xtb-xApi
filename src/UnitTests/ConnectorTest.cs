@@ -1,7 +1,7 @@
 using NSubstitute;
 using System.Net;
 
-namespace Xtb.XApi.UnitTests;
+namespace Xtb.XApi.Client.UnitTests;
 
 public class ConnectorTest
 {
