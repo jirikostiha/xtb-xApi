@@ -30,7 +30,11 @@ public class BaseResponse
         }
         else
         {
-            Status = (bool?)ob["status"];
+            if (Status is null)
+            {
+                throw new APIReplyParseException("Parsing json error. Status cannot be null.");
+            }
+
             if (Status == true)
             {
                 ReturnData = ob["returnData"];
@@ -42,11 +46,6 @@ public class BaseResponse
                 ErrorDescr = ob["errorDescr"]?.GetValue<string>() ?? null;
             }
             CustomTag = ob["customTag"]?.GetValue<string>() ?? null;
-
-            if (Status is null)
-            {
-                throw new APIReplyParseException("Parsing json error. Status cannot be null.");
-            }
 
             if ((bool)!Status)
             {
