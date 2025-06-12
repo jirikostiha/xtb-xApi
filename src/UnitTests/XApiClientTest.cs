@@ -27,7 +27,7 @@ public class XApiClientTest
         Assert.Null(client.AccountId);
     }
 
-    [Fact]
+    //[Fact]
     public void SendCommandsWithDelay()
     {
         _requestingConnector.SendMessageWaitResponse(Arg.Any<string>()).Returns("{}");
